@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xliff version="1.2" xmlns="urn:oasis:names:tc:xliff:document:1.2">
+    <file source-language="en" datatype="plaintext" product-name="academic_persons">
+        <header/>
+        <body>
+            <trans-unit id="extension_configuration.types.profileTypes.label">
+                <source>Profile Types: Comma-separated list of profile types</source>
+            </trans-unit>
+            <trans-unit id="extension_configuration.types.physicalAddressTypes.label">
+                <source>Physical Address Types: Comma-separated list of physical address types</source>
+            </trans-unit>
+            <trans-unit id="extension_configuration.types.emailAddressTypes.label">
+                <source>Email Address Types: Comma-separated list of email address types</source>
+            </trans-unit>
+            <trans-unit id="extension_configuration.types.phoneNumberTypes.label">
+                <source>Phone Number Types: Comma-separated list of phone number types</source>
+            </trans-unit>
+            <trans-unit id="extension_configuration.demand.allowedGroupByValues.label">
+                <source>Group By Values: Comma-separated list of allowed group by values</source>
+            </trans-unit>
+            <trans-unit id="extension_configuration.demand.allowedSortByValues.label">
+                <source>Sort By Values: Comma-separated list of allowed sort by values</source>
+            </trans-unit>
+
+            <trans-unit id="plugin.list.label">
+                <source>Profiles: List of profiles</source>
+            </trans-unit>
+            <trans-unit id="plugin.detail.label">
+                <source>Profiles: Detail view of one profile</source>
+            </trans-unit>
+            <trans-unit id="plugin.listAndDetail.label">
+                <source>Profiles: List and detail view of profiles</source>
+            </trans-unit>
+
+            <trans-unit id="flexform.tab.settings">
+                <source>Settings</source>
+            </trans-unit>
+            <trans-unit id="flexform.el.detailPid.label">
+                <source>Detail Page</source>
+            </trans-unit>
+            <trans-unit id="flexform.el.listPid.label">
+                <source>List Page</source>
+            </trans-unit>
+            <trans-unit id="flexform.el.groupBy.label">
+                <source>Group By</source>
+            </trans-unit>
+            <trans-unit id="flexform.el.groupBy.items.none">
+                <source>No grouping</source>
+            </trans-unit>
+            <trans-unit id="flexform.el.groupBy.items.first_name">
+                <source>First Name</source>
+            </trans-unit>
+            <trans-unit id="flexform.el.groupBy.items.last_name">
+                <source>Last Name</source>
+            </trans-unit>
+            <trans-unit id="flexform.el.sortBy.label">
+                <source>Sort By</source>
+            </trans-unit>
+            <trans-unit id="flexform.el.sortBy.items.none">
+                <source>No sorting</source>
+            </trans-unit>
+            <trans-unit id="flexform.el.sortBy.items.first_name">
+                <source>First Name</source>
+            </trans-unit>
+            <trans-unit id="flexform.el.sortBy.items.last_name">
+                <source>Last Name</source>
+            </trans-unit>
+            <trans-unit id="flexform.el.sortByDirection.label">
+                <source>Sort By Direction</source>
+            </trans-unit>
+            <trans-unit id="flexform.el.sortByDirection.items.asc">
+                <source>Ascending</source>
+            </trans-unit>
+            <trans-unit id="flexform.el.sortByDirection.items.desc">
+                <source>Descending</source>
+            </trans-unit>
+            <trans-unit id="flexform.el.paginationEnabled.label">
+                <source>Pagination</source>
+            </trans-unit>
+            <trans-unit id="flexform.el.paginationEnabled.items.0.label">
+                <source>Enabled</source>
+            </trans-unit>
+        </body>
+    </file>
+</xliff>

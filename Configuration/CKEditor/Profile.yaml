@@ -1,0 +1,47 @@
+imports:
+  - { resource: "EXT:rte_ckeditor/Configuration/RTE/Editor/Base.yaml" }
+
+processing:
+  mode: default
+
+  allowTags:
+    - br
+    - i
+    - li
+    - ol
+    - p
+    - strong
+    - u
+    - ul
+
+  allowTagsOutside: []
+
+  allowAttributes: [title, dir, lang, xml:lang, itemscope, itemtype, itemprop]
+
+  HTMLparser_db:
+    noAttrib: br
+    denyTags: img
+    removeTags: [ center, font, link, meta, o:p, sdfield, strike, style, title ]
+    keepNonMatchedTags: protect
+    htmlSanitize:
+      build: default
+
+editor:
+  config:
+    format_tags: "p"
+
+    toolbarGroups:
+      - { name: basicstyles, groups: [ basicstyles ] }
+      - { name: paragraph, groups: [ list ] }
+      - { name: clipboard, groups: [ cleanup ] }
+      - { name: editing, groups: [ spellchecker ] }
+      - { name: tools, groups: [ specialchar ] }
+      - { name: document, groups: [ mode ] }
+
+    removePlugins:
+      - image
+
+    removeButtons:
+      - Strike
+      - Subscript
+      - Superscript

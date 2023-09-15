@@ -1,0 +1,14 @@
+# cat=Types; type=string; label=LLL:EXT:academic_persons/Resources/Private/Language/locallang_be.xlf:extension_configuration.types.physicalAddressTypes.label
+types.physicalAddressTypes = private=Private,business=Business
+
+# cat=Types; type=string; label=LLL:EXT:academic_persons/Resources/Private/Language/locallang_be.xlf:extension_configuration.types.emailAddressTypes.label
+types.emailAddressTypes = private=Private,business=Business
+
+# cat=Types; type=string; label=LLL:EXT:academic_persons/Resources/Private/Language/locallang_be.xlf:extension_configuration.types.phoneNumberTypes.label
+types.phoneNumberTypes = private=Private,business=Business,mobile=Mobile
+
+#cat=Demand; type=string; label=LLL:EXT:academic_persons/Resources/Private/Language/locallang_be.xlf:extension_configuration.demand.allowedGroupByValues.label
+demand.allowedGroupByValues = firstNameAlpha=LLL:EXT:academic_persons/Resources/Private/Language/locallang_be.xlf:flexform.el.groupBy.items.first_name,lastNameAlpha=LLL:EXT:academic_persons/Resources/Private/Language/locallang_be.xlf:flexform.el.groupBy.items.last_name
+
+#cat=Demand; type=string; label=LLL:EXT:academic_persons/Resources/Private/Language/locallang_be.xlf:extension_configuration.demand.allowedSortByValues.label
+demand.allowedSortByValues = firstName=LLL:EXT:academic_persons/Resources/Private/Language/locallang_be.xlf:flexform.el.sortBy.items.first_name,lastName=LLL:EXT:academic_persons/Resources/Private/Language/locallang_be.xlf:flexform.el.sortBy.items.last_name
