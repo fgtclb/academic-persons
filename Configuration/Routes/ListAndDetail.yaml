@@ -1,0 +1,16 @@
+routeEnhancers:
+  ProfileListAndDetailPlugin:
+    type: Extbase
+    extension: AcademicPersons
+    plugin: ListAndDetail
+    routes:
+      - routePath: '/{profile_name}'
+        _controller: 'Profile::detail'
+        _arguments:
+          profile_name: 'profile'
+    defaultController: 'Profile::detail'
+    aspects:
+      profile_name:
+        type: PersistedAliasMapper
+        tableName: tx_academicpersons_domain_model_profile
+        routeFieldName: slug
