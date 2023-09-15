@@ -1,0 +1,89 @@
+<html data-namespace-typo3-fluid="true"
+      xmlns:f="http://typo3.org/ns/TYPO3/CMS/Fluid/ViewHelpers"
+>
+
+<h1>
+    {profile.firstName} {profile.lastName}
+</h1>
+
+<f:if condition="{profile.image}">
+    <f:image image="{profile.image}" maxWidth="500" maxHeight="500" alt="{profile.firstName} {profile.lastName}" />
+</f:if>
+
+<p>
+    <f:if condition="{profile.gender}">{profile.gender}</f:if>
+    <f:if condition="{profile.title}">{profile.title}</f:if>
+    {profile.firstName}{f:if(condition: profile.middleName, then: ' {profile.middleName}')} {profile.lastName}
+</p>
+
+<h2>Contracts</h2>
+
+<f:for each="{profile.contracts}" as="contract">
+    Employee Type: {contract.employeeType.title}<br />
+    Organisational Level 1: {contract.organisationalLevel1.title}<br />
+    Organisational Level 2: {contract.organisationalLevel2.title}<br />
+    Organisational Level 3: {contract.organisationalLevel3.title}<br />
+    <br />
+    <h3>Contact</h3>
+    Position: {contract.position}<br />
+    Room: {contract.room}<br />
+    <br />
+    <h4>Addresses</h4>
+    <f:for each="{contract.physicalAddressesFromOrganisation}" as="physicalAddress">
+        {physicalAddress.street} {physicalAddress.streetNumber}<br />
+        <f:if condition="{physicalAddress.additional}">{physicalAddress.additional}<br /></f:if>
+        {physicalAddress.zip} {physicalAddress.city}<br />
+        <f:if condition="{physicalAddress.state}">{physicalAddress.state}<br /></f:if>
+        <f:if condition="{physicalAddress.country}">{physicalAddress.country}</f:if><br />
+    </f:for>
+    <f:for each="{contract.physicalAddresses}" as="physicalAddress">
+        {physicalAddress.street} {physicalAddress.streetNumber}<br />
+        <f:if condition="{physicalAddress.additional}">{physicalAddress.additional}<br /></f:if>
+        {physicalAddress.zip} {physicalAddress.city}<br />
+        <f:if condition="{physicalAddress.state}">{physicalAddress.state}<br /></f:if>
+        <f:if condition="{physicalAddress.country}">{physicalAddress.country}</f:if><br />
+    </f:for>
+    <br />
+    <h4>Email address</h4>
+    <f:for each="{contract.emailAddresses}" as="emailAddress">
+        {emailAddress.email} ({emailAddress.type})<br />
+    </f:for>
+    <br />
+    <h4>Phone / Fax</h4>
+    <f:for each="{contract.phoneNumbers}" as="phoneNumber">
+        {phoneNumber.phoneNumber} ({phoneNumber.type})<br />
+    </f:for>
+</f:for>
+
+<h2>Additional Information</h2>
+
+Website: <a href="{profile.website}" target="_blank">{profile.website}</a><br />
+
+<h3>Teaching Area</h3>
+<f:format.html>{profile.teachingArea}</f:format.html>
+
+<h3>Main topics/core competencies</h3>
+<f:format.html>{profile.coreCompetences}</f:format.html>
+
+<h3>Offices/committees/memberships</h3>
+<f:format.html>{profile.memberships}</f:format.html>
+
+<h3>Supervised theses</h3>
+<f:format.html>{profile.supervisedThesis}</f:format.html>
+
+<h3>Supervised doctoral theses</h3>
+<f:format.html>{profile.supervisedDoctoralThesis}</f:format.html>
+
+<h3>Vita</h3>
+<f:format.html>{profile.vita}</f:format.html>
+
+<h3>Publications</h3>
+<f:format.html>{profile.publications}</f:format.html>
+<f:if condition="{profile.publicationsLink}">
+    Link to publications: <a href="{profile.publicationsLink}" target="_blank">{profile.publicationsLink}</a>
+</f:if>
+
+<h3>Miscellaneous information</h3>
+<f:format.html>{profile.miscellaneous}</f:format.html>
+
+</html>

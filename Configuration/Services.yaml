@@ -1,0 +1,13 @@
+services:
+  _defaults:
+    autowire: true
+    autoconfigure: true
+    public: false
+
+  Fgtclb\AcademicPersons\:
+    resource: '../Classes/*'
+    exclude: '../Classes/Domain/Model/*.php'
+
+  Fgtclb\AcademicPersons\Domain\Model\Dto\DemandInterface:
+    alias: Fgtclb\AcademicPersons\Domain\Model\Dto\ProfileDemand
+    public: true
