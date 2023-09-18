@@ -33,7 +33,7 @@ final class Version20230706063400 extends AbstractDataHandlerMigration
                     'first_name' => 'Johnny',
                     'middle_name' => 'the rocket',
                     'last_name' => 'English',
-                    'website' => 'https://mi7.test'
+                    'website' => 'https://mi7.test',
                 ],
                 'NEW1688621185' => [
                     'uuid' => '43972c72-8bff-4f3f-ad3d-f644e9f27bd0',
