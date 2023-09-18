@@ -91,7 +91,7 @@ final class ProfileController extends ActionController
         ]);
 
         $this->configurationManager->getContentObject()?->getTypoScriptFrontendController()?->addCacheTags([
-            'profile_list_view'
+            'profile_list_view',
         ]);
 
         return $this->htmlResponse();

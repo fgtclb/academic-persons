@@ -341,5 +341,5 @@ return [
                     phone_numbers,
             ',
         ],
-    ]
+    ],
 ];
