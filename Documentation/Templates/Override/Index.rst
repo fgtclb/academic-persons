@@ -2,6 +2,7 @@
 ..  index:: Templates; Override
 ..  _templates-override:
 
+====================
 Overriding templates
 ====================
 
