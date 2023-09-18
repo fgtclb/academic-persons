@@ -23,8 +23,7 @@ Academic Persons
 
 :License:
     This document is published under the
-    `Creative Commons BY 4.0 <https://creativecommons.org/licenses/by/4.0/>`__
-    license.
+   `Open Publication License <https://www.opencontent.org/openpub/>`__.
 
 :Rendered:
     |today|
