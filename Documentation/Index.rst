@@ -40,19 +40,12 @@ There is a list and a detail view for the frontend .
 **Table of Contents:**
 
 ..  toctree::
-    :maxdepth: 2
+    :maxdepth: 5
     :titlesonly:
+    :glob:
 
     Introduction/Index
     Installation/Index
     Configuration/Index
     Templates/Index
     KnownProblems/Index
-
-..  Meta Menu
-
-..  toctree::
-    :hidden:
-
-    Sitemap
-    genindex
