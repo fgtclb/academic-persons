@@ -49,6 +49,7 @@
     },
     "config": {
         "vendor-dir": ".Build/vendor",
+        "bin-dir": ".Build/bin",
         "allow-plugins": true
     },
     "scripts": {
@@ -58,7 +59,8 @@
     },
     "extra": {
         "typo3/cms": {
-            "web-dir": ".Build/public",
+            "web-dir": ".Build/Web",
+            "app-dir": ".Build",
             "extension-key": "academic_persons"
         },
         "patches": {

@@ -12,6 +12,7 @@ declare(strict_types=1);
 namespace Fgtclb\AcademicPersons\Tests\Functional\Hook;
 
 use TYPO3\CMS\Core\DataHandling\DataHandler;
+use TYPO3\CMS\Core\Localization\LanguageService;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\TestingFramework\Core\Functional\FunctionalTestCase;
 
@@ -23,7 +24,7 @@ class DataHandlerHooksTest extends FunctionalTestCase
      * @var list<non-empty-string>
      */
     protected array $testExtensionsToLoad = [
-        'typo3conf/ext/academic_persons'
+        'typo3conf/ext/academic_persons',
     ];
 
     protected function setUp(): void
@@ -34,6 +35,9 @@ class DataHandlerHooksTest extends FunctionalTestCase
         $this->importCSVDataSet(__DIR__ . '/../Fixtures/PageTree.csv');
 
         $this->setUpBackendUser(1);
+
+        $GLOBALS['LANG'] = GeneralUtility::makeInstance(LanguageService::class);
+        $GLOBALS['LANG']->init('en');
 
         $this->dataHandler = GeneralUtility::makeInstance(DataHandler::class);
     }
@@ -49,7 +53,7 @@ class DataHandlerHooksTest extends FunctionalTestCase
                     'pid' => 2,
                     'first_name' => 'John',
                     'last_name' => 'Doe',
-                ]
+                ],
             ],
         ];
 
@@ -58,9 +62,9 @@ class DataHandlerHooksTest extends FunctionalTestCase
 
         $records = $this->getAllRecords('tx_academicpersons_domain_model_profile', true);
 
-        self::assertCount(1, $records);
-        self::assertSame('j', $records[1]['first_name_alpha']);
-        self::assertSame('d', $records[1]['last_name_alpha']);
+        static::assertCount(1, $records);
+        static::assertSame('j', $records[1]['first_name_alpha']);
+        static::assertSame('d', $records[1]['last_name_alpha']);
     }
 
     /**
@@ -76,7 +80,7 @@ class DataHandlerHooksTest extends FunctionalTestCase
                     'pid' => 2,
                     'first_name' => 'Johnny',
                     'last_name' => 'English',
-                ]
+                ],
             ],
         ];
 
@@ -85,8 +89,8 @@ class DataHandlerHooksTest extends FunctionalTestCase
 
         $records = $this->getAllRecords('tx_academicpersons_domain_model_profile', true);
 
-        self::assertCount(1, $records);
-        self::assertSame('j', $records[1]['first_name_alpha']);
-        self::assertSame('e', $records[1]['last_name_alpha']);
+        static::assertCount(1, $records);
+        static::assertSame('j', $records[1]['first_name_alpha']);
+        static::assertSame('e', $records[1]['last_name_alpha']);
     }
 }
