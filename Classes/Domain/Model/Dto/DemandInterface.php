@@ -25,7 +25,11 @@ interface DemandInterface
 
     public function setSortByDirection(string $sortByDirection): self;
 
-    public function setCurrentPage(int $currentPage): void;
+    public function setCurrentPage(int $currentPage): self;
 
     public function getCurrentPage(): int;
+
+    public function setProfileList(string $profileList): self;
+
+    public function getProfileList(): string;
 }
