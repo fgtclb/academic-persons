@@ -18,6 +18,7 @@ use Fgtclb\AcademicPersons\Domain\Model\Profile;
 use Fgtclb\AcademicPersons\Event\ModifyProfileDemandEvent;
 use Psr\EventDispatcher\EventDispatcherInterface;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
+use TYPO3\CMS\Extbase\Persistence\Generic\Qom\ConstraintInterface;
 use TYPO3\CMS\Extbase\Persistence\QueryInterface;
 use TYPO3\CMS\Extbase\Persistence\QueryResultInterface;
 use TYPO3\CMS\Extbase\Persistence\Repository;
@@ -55,7 +56,30 @@ class ProfileRepository extends Repository
      */
     private function applyDemandForQuery(QueryInterface $query, DemandInterface $demand): void
     {
+        $filters = $this->setFilters($query, $demand);
+        if ($filters !== null) {
+            $query->matching($filters);
+        }
         $query->setOrderings($this->getOrderingsFromDemand($demand));
+    }
+
+    /**
+     * @param QueryInterface<Profile> $query
+     */
+    private function setFilters(QueryInterface $query, DemandInterface $demand): ?ConstraintInterface
+    {
+        $filters = [];
+
+        if (!empty($demand->getProfileList())) {
+            $profileUidArray = GeneralUtility::intExplode(',', $demand->getProfileList(), true);
+            $filters[] = $query->in('uid', $profileUidArray);
+        }
+
+        if (empty($filters)) {
+            return null;
+        }
+
+        return $query->logicalAnd(...$filters);
     }
 
     /**

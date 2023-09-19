@@ -5,6 +5,7 @@ plugin.tx_academicpersons {
       groupBy = {$plugin.tx_academicpersons.demand.groupBy}
       sortBy = {$plugin.tx_academicpersons.demand.sortBy}
       sortByDirection = {$plugin.tx_academicpersons.demand.sortByDirection}
+      profileList =
     }
     pagination {
       resultsPerPage = {$plugin.tx_academicpersons.pagination.resultsPerPage}

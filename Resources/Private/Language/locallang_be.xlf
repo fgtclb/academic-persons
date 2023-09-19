@@ -80,6 +80,9 @@
             <trans-unit id="flexform.el.paginationEnabled.items.0.label">
                 <source>Enabled</source>
             </trans-unit>
+            <trans-unit id="flexform.el.profileList.label">
+                <source>List of profiles</source>
+            </trans-unit>
         </body>
     </file>
 </xliff>
