@@ -1,6 +1,6 @@
 name: academic-persons
 type: typo3
-docroot: .Build/public
+docroot: .Build/Web
 # Using 8.1 instead of 8.0 to use helhum/typo3-console 8.
 # Version 7 throws an error during install:setup script.
 php_version: "8.1"
@@ -31,7 +31,7 @@ web_environment:
     - TYPO3_INSTALL_ADMIN_PASSWORD=password
     - TYPO3_INSTALL_SITE_NAME=academic-persons
     - TYPO3_INSTALL_SITE_SETUP_TYPE=no
-    - TYPO3_INSTALL_SITE_BASE_URL=https:/academic-persons.ddev.site
+    - TYPO3_INSTALL_SITE_BASE_URL=https://academic-persons.ddev.site
     - TYPO3_INSTALL_WEB_SERVER_CONFIG=none
     # Functional Testing
     - typo3DatabaseName=functional
