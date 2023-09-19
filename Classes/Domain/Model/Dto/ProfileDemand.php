@@ -21,6 +21,8 @@ class ProfileDemand implements DemandInterface
 
     protected int $currentPage = 1;
 
+    protected string $profileList = '';
+
     public function getGroupBy(): string
     {
         return $this->groupBy;
@@ -59,8 +61,20 @@ class ProfileDemand implements DemandInterface
         return $this->currentPage;
     }
 
-    public function setCurrentPage(int $currentPage): void
+    public function setCurrentPage(int $currentPage): self
     {
         $this->currentPage = $currentPage;
+        return $this;
+    }
+
+    public function getProfileList(): string
+    {
+        return $this->profileList;
+    }
+
+    public function setProfileList(string $profileList): self
+    {
+        $this->profileList = $profileList;
+        return $this;
     }
 }

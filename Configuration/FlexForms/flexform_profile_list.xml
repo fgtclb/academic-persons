@@ -87,6 +87,23 @@
                             </config>
                         </TCEforms>
                     </settings.paginationEnabled>
+                    <settings.demand.profileList>
+                        <TCEforms>
+                            <label>LLL:EXT:academic_persons/Resources/Private/Language/locallang_be.xlf:flexform.el.profileList.label</label>
+                            <config>
+                                <type>group</type>
+                                <allowed>tx_academicpersons_domain_model_profile</allowed>
+                                <foreign_table>tx_academicpersons_domain_model_profile</foreign_table>
+                                <size>5</size>
+                                <suggestOptions>
+                                    <default>
+                                        <additionalSearchFields>first_name,middle_name,last_name</additionalSearchFields>
+                                        <addWhere>sys_language_uid IN (-1,0)</addWhere>
+                                    </default>
+                                </suggestOptions>
+                            </config>
+                        </TCEforms>
+                    </settings.demand.profileList>
                 </el>
             </ROOT>
         </sDEF>
