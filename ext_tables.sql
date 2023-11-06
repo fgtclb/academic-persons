@@ -73,3 +73,7 @@ CREATE TABLE tx_academicpersons_domain_model_contract (
 CREATE TABLE tx_academicpersons_contract_address_mm (
     fieldname varchar(255) DEFAULT '' NOT NULL,
 );
+
+CREATE TABLE tx_academicpersons_domain_model_location (
+    title varchar(100) DEFAULT '' NOT NULL,
+);

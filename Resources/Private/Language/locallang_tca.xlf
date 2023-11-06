@@ -196,6 +196,13 @@
             <trans-unit id="tx_academicpersons_domain_model_contract.columns.publish.label">
                 <source>Show this contract online?</source>
             </trans-unit>
+
+            <trans-unit id="tx_academicpersons_domain_model_location.ctrl.label">
+                <source>Location</source>
+            </trans-unit>
+            <trans-unit id="tx_academicpersons_domain_model_location.columns.title.label">
+                <source>Title</source>
+            </trans-unit>
         </body>
     </file>
 </xliff>
