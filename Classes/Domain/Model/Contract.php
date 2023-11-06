@@ -72,10 +72,7 @@ class Contract extends AbstractEntity
      */
     protected string $position = '';
 
-    /**
-     * @Validate("TYPO3\CMS\Extbase\Validation\Validator\StringLengthValidator", options={"maximum": 255})
-     */
-    protected string $location = '';
+    protected ?Location $location = null;
 
     /**
      * @Validate("TYPO3\CMS\Extbase\Validation\Validator\StringLengthValidator", options={"maximum": 100})
@@ -208,12 +205,12 @@ class Contract extends AbstractEntity
         $this->position = $position;
     }
 
-    public function getLocation(): string
+    public function getLocation(): ?Location
     {
         return $this->location;
     }
 
-    public function setLocation(string $location): void
+    public function setLocation(Location $location): void
     {
         $this->location = $location;
     }
