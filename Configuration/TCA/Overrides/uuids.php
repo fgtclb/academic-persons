@@ -21,4 +21,5 @@ if (ExtensionManagementUtility::isLoaded('uuid')) {
     $tableConfigurationService->enableUuidForTable('tx_academicpersons_domain_model_profile');
     $tableConfigurationService->enableUuidForTable('tx_academicpersons_domain_model_contract');
     $tableConfigurationService->enableUuidForTable('tx_academicpersons_domain_model_address');
+    $tableConfigurationService->enableUuidForTable('tx_academicpersons_domain_model_location');
 }
