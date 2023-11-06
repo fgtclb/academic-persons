@@ -11,6 +11,7 @@ declare(strict_types=1);
 
 namespace Fgtclb\AcademicPersons\Domain\Model;
 
+use Fgtclb\AcademicPersons\Domain\Model\Profile;
 use TYPO3\CMS\Extbase\Annotation\ORM\Cascade;
 use TYPO3\CMS\Extbase\Annotation\ORM\Lazy;
 use TYPO3\CMS\Extbase\Annotation\Validate;
@@ -20,6 +21,11 @@ use TYPO3\CMS\Extbase\Persistence\ObjectStorage;
 
 class Contract extends AbstractEntity
 {
+    /**
+     * @var Profile|null
+     */
+    protected ?Profile $profile = null;
+
     /**
      * @var Category|null
      */
@@ -89,6 +95,16 @@ class Contract extends AbstractEntity
         $this->physicalAddresses = new ObjectStorage();
         $this->emailAddresses = new ObjectStorage();
         $this->phoneNumbers = new ObjectStorage();
+    }
+
+    public function getProfile(): ?Profile
+    {
+        return $this->profile;
+    }
+
+    public function setProfile(?Profile $profile): void
+    {
+        $this->profile = $profile;
     }
 
     public function getEmployeeType(): ?Category
