@@ -60,7 +60,7 @@ CREATE TABLE tx_academicpersons_domain_model_contract (
     physical_addresses_from_organisation int(11) unsigned DEFAULT '0' NOT NULL,
     physical_addresses int(11) unsigned DEFAULT '0' NOT NULL,
     position varchar(100) DEFAULT '' NOT NULL,
-    location varchar(255) DEFAULT '' NOT NULL,
+    location int(11) unsigned DEFAULT '0' NOT NULL,
     room varchar(100) DEFAULT '' NOT NULL,
     phone_numbers int(11) unsigned DEFAULT '0' NOT NULL,
     email_addresses int(11) unsigned DEFAULT '0' NOT NULL,
