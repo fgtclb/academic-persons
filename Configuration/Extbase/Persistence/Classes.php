@@ -58,4 +58,8 @@ return [
         'tableName' => 'tx_academicpersons_domain_model_phone_number',
         'recordType' => \Fgtclb\AcademicPersons\Domain\Model\PhoneNumber::class,
     ],
+    \Fgtclb\AcademicPersons\Domain\Model\Location::class => [
+        'tableName' => 'tx_academicpersons_domain_model_location',
+        'recordType' => \Fgtclb\AcademicPersons\Domain\Model\Location::class,
+    ],
 ];
