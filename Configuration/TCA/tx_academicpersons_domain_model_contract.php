@@ -74,6 +74,21 @@ return [
                 'type' => 'passthrough',
             ],
         ],
+        'profile' => [
+            'label' => 'LLL:EXT:academic_persons/Resources/Private/Language/locallang_tca.xlf:tx_academicpersons_domain_model_contract.columns.profile.label',
+            'l10n_display' => 'defaultAsReadonly',
+            'l10n_mode' => 'exclude',
+            'config' => [
+                'type' => 'select',
+                'renderType' => 'selectSingle',
+                'items' => [
+                    ['', 0],
+                ],
+                'foreign_table' => 'tx_academicpersons_domain_model_profile',
+                'minitems' => 1,
+                'default' => 0,
+            ],
+        ],
         'employee_type' => [
             'label' => 'LLL:EXT:academic_persons/Resources/Private/Language/locallang_tca.xlf:tx_academicpersons_domain_model_contract.columns.employee_type.label',
             'l10n_display' => 'defaultAsReadonly',
@@ -311,6 +326,7 @@ return [
         'general' => [
             'label' => 'LLL:EXT:frontend/Resources/Private/Language/locallang_ttc.xlf:palette.general',
             'showitem' => '
+                profile,
                 publish,
                 employee_type,
                 --linebreak--,
