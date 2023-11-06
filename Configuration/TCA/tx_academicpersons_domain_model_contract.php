@@ -268,9 +268,11 @@ return [
             'label' => 'LLL:EXT:academic_persons/Resources/Private/Language/locallang_tca.xlf:tx_academicpersons_domain_model_contract.columns.location.label',
             'exclude' => true,
             'config' => [
-                'type' => 'input',
-                'size' => 50,
-                'max' => 255,
+                'type' => 'select',
+                'renderType' => 'selectSingle',
+                'foreign_table' => 'tx_academicpersons_domain_model_location',
+                'foreign_table_where' => 'AND {#tx_academicpersons_domain_model_location}.{#sys_language_uid} IN (-1, 0)',
+                'default' => 0,
             ],
         ],
         'room' => [
