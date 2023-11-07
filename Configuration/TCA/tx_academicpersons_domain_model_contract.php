@@ -12,6 +12,7 @@ declare(strict_types=1);
 return [
     'ctrl' => [
         'label' => 'employee_type',
+        'label_userFunc' => \Fgtclb\AcademicPersons\Tca\ContractLabels::class . '->getTitle',
         'default_sortby' => 'sorting',
         'crdate' => 'crdate',
         'tstamp' => 'tstamp',
