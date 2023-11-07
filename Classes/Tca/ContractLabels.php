@@ -10,7 +10,7 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
 class ContractLabels
 {
     /**
-     * @param array{items: list<array<string, string|int>>} $parameters
+     * @param array<string, mixed> $parameters
      */
     public function getTitle(array &$parameters): void
     {
