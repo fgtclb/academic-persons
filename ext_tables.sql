@@ -12,13 +12,15 @@ CREATE TABLE tx_academicpersons_domain_model_profile (
     website varchar(255) DEFAULT '' NOT NULL,
     teaching_area text,
     core_competences text,
-    memberships text,
+    memberships int(11) unsigned DEFAULT '0' NOT NULL,
     supervised_thesis text,
     supervised_doctoral_thesis text,
-    vita text,
-    publications text,
+    vita int(11) unsigned DEFAULT '0' NOT NULL,
+    publications int(11) unsigned DEFAULT '0' NOT NULL,
     publications_link varchar(255) DEFAULT '' NOT NULL,
     miscellaneous text,
+    cooperation int(11) unsigned DEFAULT '0' NOT NULL,
+    lectures int(11) unsigned DEFAULT '0' NOT NULL,
 );
 
 CREATE TABLE tx_academicpersons_domain_model_address (
