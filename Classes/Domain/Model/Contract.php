@@ -260,4 +260,16 @@ class Contract extends AbstractEntity
     {
         $this->publish = $publish;
     }
+
+    public function getLabel(): string
+    {
+        $label = '';
+        if ($this->profile) {
+            $label .= $this->profile->getLastName() . ', ' . $this->profile->getFirstName();
+        }
+        if ($this->employeeType) {
+            $label .= ' (' . $this->employeeType->getTitle() . ')';
+        }
+        return $label;
+    }
 }
