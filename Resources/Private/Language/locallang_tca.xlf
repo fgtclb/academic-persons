@@ -147,6 +147,12 @@
             <trans-unit id="tx_academicpersons_domain_model_profile.columns.miscellaneous.label">
                 <source>Miscellaneous information</source>
             </trans-unit>
+            <trans-unit id="tx_academicpersons_domain_model_profile.columns.cooperation.label">
+                <source>Cooperation / Networks</source>
+            </trans-unit>
+            <trans-unit id="tx_academicpersons_domain_model_profile.columns.lectures.label">
+                <source>Lectures</source>
+            </trans-unit>
             <trans-unit id="tx_academicpersons_domain_model_profile.div.profileInformation.label">
                 <source>Personal Data</source>
             </trans-unit>
@@ -206,6 +212,9 @@
 
             <trans-unit id="tx_academicpersons_domain_model_profile_information.ctrl.label">
                 <source>Profile information</source>
+            </trans-unit>
+            <trans-unit id="tx_academicpersons_domain_model_profile_information.columns.profile.label">
+                <source>Profile</source>
             </trans-unit>
             <trans-unit id="tx_academicpersons_domain_model_profile_information.columns.type.label">
                 <source>Type</source>
