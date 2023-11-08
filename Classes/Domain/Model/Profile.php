@@ -72,15 +72,30 @@ class Profile extends AbstractEntity
 
     protected string $coreCompetences = '';
 
-    protected string $memberships = '';
+    /**
+     * @var ObjectStorage<ProfileInformation>
+     * @Lazy
+     * @Cascade("remove")
+     */
+    protected ObjectStorage $memberships;
 
     protected string $supervisedThesis = '';
 
     protected string $supervisedDoctoralThesis = '';
 
-    protected string $vita = '';
+    /**
+     * @var ObjectStorage<ProfileInformation>
+     * @Lazy
+     * @Cascade("remove")
+     */
+    protected ObjectStorage $vita;
 
-    protected string $publications = '';
+    /**
+     * @var ObjectStorage<ProfileInformation>
+     * @Lazy
+     * @Cascade("remove")
+     */
+    protected ObjectStorage $publications;
 
     /**
      * @Validate("TYPO3\CMS\Extbase\Validation\Validator\StringLengthValidator", options={"maximum": 255})
@@ -89,9 +104,28 @@ class Profile extends AbstractEntity
 
     protected string $miscellaneous = '';
 
+    /**
+     * @var ObjectStorage<ProfileInformation>
+     * @Lazy
+     * @Cascade("remove")
+     */
+    protected ObjectStorage $cooperation;
+
+    /**
+     * @var ObjectStorage<ProfileInformation>
+     * @Lazy
+     * @Cascade("remove")
+     */
+    protected ObjectStorage $lectures;
+
     public function __construct()
     {
         $this->contracts = new ObjectStorage();
+        $this->memberships = new ObjectStorage();
+        $this->vita = new ObjectStorage();
+        $this->publications = new ObjectStorage();
+        $this->cooperation = new ObjectStorage();
+        $this->lectures = new ObjectStorage();
     }
 
     public function getGender(): string
@@ -220,12 +254,18 @@ class Profile extends AbstractEntity
         $this->coreCompetences = $coreCompetences;
     }
 
-    public function getMemberships(): string
+    /**
+     * @return ObjectStorage<ProfileInformation>
+     */
+    public function getMemberships(): ObjectStorage
     {
         return $this->memberships;
     }
 
-    public function setMemberships(string $memberships): void
+    /**
+     * @param ObjectStorage<ProfileInformation> $memberships
+     */
+    public function setMemberships(ObjectStorage $memberships): void
     {
         $this->memberships = $memberships;
     }
@@ -250,22 +290,34 @@ class Profile extends AbstractEntity
         $this->supervisedDoctoralThesis = $supervisedDoctoralThesis;
     }
 
-    public function getVita(): string
+    /**
+     * @return ObjectStorage<ProfileInformation>
+     */
+    public function getVita(): ObjectStorage
     {
         return $this->vita;
     }
 
-    public function setVita(string $vita): void
+    /**
+     * @param ObjectStorage<ProfileInformation> $vita
+     */
+    public function setVita(ObjectStorage $vita): void
     {
         $this->vita = $vita;
     }
 
-    public function getPublications(): string
+    /**
+     * @return ObjectStorage<ProfileInformation>
+     */
+    public function getPublications(): ObjectStorage
     {
         return $this->publications;
     }
 
-    public function setPublications(string $publications): void
+    /**
+     * @param ObjectStorage<ProfileInformation> $publications
+     */
+    public function setPublications(ObjectStorage $publications): void
     {
         $this->publications = $publications;
     }
@@ -288,5 +340,37 @@ class Profile extends AbstractEntity
     public function setMiscellaneous(string $miscellaneous): void
     {
         $this->miscellaneous = $miscellaneous;
+    }
+
+    /**
+     * @return ObjectStorage<ProfileInformation>
+     */
+    public function getCooperation(): ObjectStorage
+    {
+        return $this->cooperation;
+    }
+
+    /**
+     * @param ObjectStorage<ProfileInformation> $cooperation
+     */
+    public function setCooperation(ObjectStorage $cooperation): void
+    {
+        $this->cooperation = $cooperation;
+    }
+
+    /**
+     * @return ObjectStorage<ProfileInformation>
+     */
+    public function getLectures(): ObjectStorage
+    {
+        return $this->lectures;
+    }
+
+    /**
+     * @param ObjectStorage<ProfileInformation> $lectures
+     */
+    public function setLectures(ObjectStorage $lectures): void
+    {
+        $this->lectures = $lectures;
     }
 }
