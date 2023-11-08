@@ -64,6 +64,12 @@ return [
     ],
     \Fgtclb\AcademicPersons\Domain\Model\ProfileInformation::class => [
         'tableName' => 'tx_academicpersons_domain_model_profile_information',
-        'recordType' => \Fgtclb\AcademicPersons\Domain\Model\ProfileInformation::class,
+        'subclasses' => [
+            'curriculum_vitae' => \Fgtclb\AcademicPersons\Domain\Model\ProfileInformation::class,
+            'membership' => \Fgtclb\AcademicPersons\Domain\Model\ProfileInformation::class,
+            'cooperation' => \Fgtclb\AcademicPersons\Domain\Model\ProfileInformation::class,
+            'publication' => \Fgtclb\AcademicPersons\Domain\Model\ProfileInformation::class,
+            'lecture' => \Fgtclb\AcademicPersons\Domain\Model\ProfileInformation::class,
+        ],
     ],
 ];
