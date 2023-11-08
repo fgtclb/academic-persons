@@ -203,6 +203,43 @@
             <trans-unit id="tx_academicpersons_domain_model_location.columns.title.label">
                 <source>Title</source>
             </trans-unit>
+
+            <trans-unit id="tx_academicpersons_domain_model_profile_information.ctrl.label">
+                <source>Profile information</source>
+            </trans-unit>
+            <trans-unit id="tx_academicpersons_domain_model_profile_information.columns.type.label">
+                <source>Type</source>
+            </trans-unit>
+            <trans-unit id="tx_academicpersons_domain_model_profile_information.columns.type.items.curriculum_vitae.label">
+                <source>Curriculum vitae</source>
+            </trans-unit>
+            <trans-unit id="tx_academicpersons_domain_model_profile_information.columns.type.items.membership.label">
+                <source>Membership / committee</source>
+            </trans-unit>
+            <trans-unit id="tx_academicpersons_domain_model_profile_information.columns.type.items.cooperation.label">
+                <source>Network / cooperation</source>
+            </trans-unit>
+            <trans-unit id="tx_academicpersons_domain_model_profile_information.columns.type.items.publication.label">
+                <source>Publication</source>
+            </trans-unit>
+            <trans-unit id="tx_academicpersons_domain_model_profile_information.columns.type.items.lecture.label">
+                <source>Lecture</source>
+            </trans-unit>
+            <trans-unit id="tx_academicpersons_domain_model_profile_information.columns.title.label">
+                <source>Title</source>
+            </trans-unit>
+            <trans-unit id="tx_academicpersons_domain_model_profile_information.columns.bodytext.label">
+                <source>Text</source>
+            </trans-unit>
+            <trans-unit id="tx_academicpersons_domain_model_profile_information.columns.link.label">
+                <source>External Link</source>
+            </trans-unit>
+            <trans-unit id="tx_academicpersons_domain_model_profile_information.columns.year.label">
+                <source>Year</source>
+            </trans-unit>
+            <trans-unit id="tx_academicpersons_domain_model_profile_information.columns.profile.label">
+                <source>Profile</source>
+            </trans-unit>
         </body>
     </file>
 </xliff>

@@ -32,4 +32,8 @@ return [
         'provider' => \TYPO3\CMS\Core\Imaging\IconProvider\SvgIconProvider::class,
         'source' => 'EXT:academic_persons/Resources/Public/Icons/tx_academicpersons_domain_model_location.svg',
     ],
+    'tx_academicpersons_domain_model_profile_information' => [
+        'provider' => \TYPO3\CMS\Core\Imaging\IconProvider\SvgIconProvider::class,
+        'source' => 'EXT:academic_persons/Resources/Public/Icons/tx_academicpersons_domain_model_profile_information.svg',
+    ],
 ];
