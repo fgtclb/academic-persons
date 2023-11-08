@@ -77,3 +77,13 @@ CREATE TABLE tx_academicpersons_contract_address_mm (
 CREATE TABLE tx_academicpersons_domain_model_location (
     title varchar(100) DEFAULT '' NOT NULL,
 );
+
+CREATE TABLE tx_academicpersons_domain_model_profile_information (
+    type varchar(100) DEFAULT '' NOT NULL,
+    title varchar(255) DEFAULT '' NOT NULL,
+    bodytext text,
+    link varchar(2048) DEFAULT '' NOT NULL,
+    year int(4) DEFAULT '0' NOT NULL,
+    profile int(11) unsigned DEFAULT '0' NOT NULL,
+    sorting int(11) unsigned DEFAULT '0' NOT NULL,
+);
