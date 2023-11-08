@@ -78,6 +78,15 @@ return [
                 'type' => 'passthrough',
             ],
         ],
+        'profile' => [
+            'label' => 'LLL:EXT:academic_persons/Resources/Private/Language/locallang_tca.xlf:tx_academicpersons_domain_model_profile_information.columns.profile.label',
+            'config' => [
+                'type' => 'select',
+                'renderType' => 'selectSingle',
+                'foreign_table' => 'tx_academicpersons_domain_model_profile',
+                'foreign_table_where' => 'AND {#tx_academicpersons_domain_model_profile}.{#sys_language_uid} IN (-1,0)'
+            ],
+        ],
         'type' => [
             'label' => 'LLL:EXT:academic_persons/Resources/Private/Language/locallang_tca.xlf:tx_academicpersons_domain_model_profile_information.columns.type.label',
             'config' => [
@@ -155,6 +164,8 @@ return [
         'general' => [
             'label' => 'LLL:EXT:frontend/Resources/Private/Language/locallang_ttc.xlf:palette.general',
             'showitem' => '
+                profile,
+                --linebreak--,
                 type,
             ',
         ],

@@ -13,6 +13,7 @@ use Fgtclb\AcademicPersons\Controller\ProfileController;
 use TYPO3\CMS\Extbase\Utility\ExtensionUtility;
 
 $GLOBALS['TYPO3_CONF_VARS']['RTE']['Presets']['profile'] = 'EXT:academic_persons/Configuration/CKEditor/Profile.yaml';
+$GLOBALS['TYPO3_CONF_VARS']['RTE']['Presets']['linkOnly'] = 'EXT:academic_persons/Configuration/CKEditor/LinkOnly.yaml';
 
 ExtensionUtility::configurePlugin(
     'AcademicPersons',
