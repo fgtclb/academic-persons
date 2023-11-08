@@ -62,4 +62,8 @@ return [
         'tableName' => 'tx_academicpersons_domain_model_location',
         'recordType' => \Fgtclb\AcademicPersons\Domain\Model\Location::class,
     ],
+    \Fgtclb\AcademicPersons\Domain\Model\ProfileInformation::class => [
+        'tableName' => 'tx_academicpersons_domain_model_profile_information',
+        'recordType' => \Fgtclb\AcademicPersons\Domain\Model\ProfileInformation::class,
+    ],
 ];
