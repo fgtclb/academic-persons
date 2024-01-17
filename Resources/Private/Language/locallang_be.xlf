@@ -42,7 +42,7 @@
                 <source>List Page</source>
             </trans-unit>
             <trans-unit id="flexform.el.groupBy.label">
-                <source>Group By (if set, this setting will override "Sort By" setting)</source>
+                <source>Group By (this setting will override the sorting settings)</source>
             </trans-unit>
             <trans-unit id="flexform.el.groupBy.items.none">
                 <source>No grouping</source>
