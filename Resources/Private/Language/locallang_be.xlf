@@ -54,7 +54,7 @@
                 <source>Last Name</source>
             </trans-unit>
             <trans-unit id="flexform.el.sortBy.label">
-                <source>Sort By (this setting only works when "Group By" is set at "No grouping")</source>
+                <source>Sort By (will be ignored if grouping is active)</source>
             </trans-unit>
             <trans-unit id="flexform.el.sortBy.items.none">
                 <source>No sorting</source>
