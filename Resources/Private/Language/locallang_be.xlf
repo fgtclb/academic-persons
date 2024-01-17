@@ -78,10 +78,10 @@
                 <source>Pagination</source>
             </trans-unit>
             <trans-unit id="flexform.el.resultsPerPage.label">
-                <source>Results per Page (only works when Pagination is set at Enabled [1])</source>
+                <source>Results per Page</source>
             </trans-unit>
             <trans-unit id="flexform.el.numberOfLinks.label">
-                <source>Number of Links (only works when Pagination is set at Enabled [1])</source>
+                <source>Number of Links</source>
             </trans-unit>
             <trans-unit id="flexform.el.paginationEnabled.items.0.label">
                 <source>Enabled</source>
