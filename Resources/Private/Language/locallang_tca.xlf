@@ -117,6 +117,9 @@
             <trans-unit id="tx_academicpersons_domain_model_profile.columns.contracts.label">
                 <source>Employee Contracts</source>
             </trans-unit>
+            <trans-unit id="tx_academicpersons_domain_model_profile.columns.website_title.label">
+                <source>Website Link Title</source>
+            </trans-unit>
             <trans-unit id="tx_academicpersons_domain_model_profile.columns.website.label">
                 <source>Website</source>
             </trans-unit>
@@ -140,6 +143,9 @@
             </trans-unit>
             <trans-unit id="tx_academicpersons_domain_model_profile.columns.publications.label">
                 <source>Publications</source>
+            </trans-unit>
+            <trans-unit id="tx_academicpersons_domain_model_profile.columns.publications_link_title.label">
+                <source>Publication Link Title</source>
             </trans-unit>
             <trans-unit id="tx_academicpersons_domain_model_profile.columns.publications_link.label">
                 <source>Link to external publications page</source>

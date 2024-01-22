@@ -139,14 +139,8 @@ return [
             'label' => 'LLL:EXT:academic_persons/Resources/Private/Language/locallang_tca.xlf:tx_academicpersons_domain_model_profile_information.columns.link.label',
             'config' => [
                 'type' => 'input',
-                'renderType' => 'inputLink',
-                'fieldControl' => [
-                    'linkPopup' => [
-                        'options' => [
-                            'blindLinkOptions' => 'page,file,folder,email'
-                        ],
-                    ],
-                ],
+                'size' => 50,
+                'max' => 255,
             ],
         ],
         'year' => [
