@@ -64,6 +64,11 @@ class Profile extends AbstractEntity
     protected ObjectStorage $contracts;
 
     /**
+     * @Validate("TYPO3\CMS\Extbase\Validation\Validator\StringLengthValidator", options={"maximum": 80})
+     */
+    protected string $websiteTitle = '';
+
+    /**
      * @Validate("TYPO3\CMS\Extbase\Validation\Validator\StringLengthValidator", options={"maximum": 255})
      */
     protected string $website = '';
@@ -101,6 +106,11 @@ class Profile extends AbstractEntity
      * @Validate("TYPO3\CMS\Extbase\Validation\Validator\StringLengthValidator", options={"maximum": 255})
      */
     protected string $publicationsLink = '';
+
+    /**
+     * @Validate("TYPO3\CMS\Extbase\Validation\Validator\StringLengthValidator", options={"maximum": 80})
+     */
+    protected string $publicationsLinkTitle = '';
 
     protected string $miscellaneous = '';
 
@@ -224,6 +234,16 @@ class Profile extends AbstractEntity
         $this->contracts = $contracts;
     }
 
+    public function getWebsiteTitle(): string
+    {
+        return $this->websiteTitle;
+    }
+
+    public function setWebsiteTitle(string $websiteTitle): void
+    {
+        $this->websiteTitle = $websiteTitle;
+    }
+
     public function getWebsite(): string
     {
         return $this->website;
@@ -330,6 +350,16 @@ class Profile extends AbstractEntity
     public function setPublicationsLink(string $publicationsLink): void
     {
         $this->publicationsLink = $publicationsLink;
+    }
+
+    public function getPublicationsLinkTitle(): string
+    {
+        return $this->publicationsLinkTitle;
+    }
+
+    public function setPublicationsLinkTitle(string $publicationsLinkTitle): void
+    {
+        $this->publicationsLinkTitle = $publicationsLinkTitle;
     }
 
     public function getMiscellaneous(): string

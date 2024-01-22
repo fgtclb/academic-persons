@@ -307,7 +307,7 @@ return [
                     'showSynchronizationLink' => false,
                     'enabledControls' => [
                         'info' => true,
-                        'new' =>  true,
+                        'new' => true,
                         'dragdrop' => true,
                         'sort' => false,
                         'hide' => true,
@@ -320,9 +320,18 @@ return [
                     'elementBrowserEnabled' => false,
                 ],
                 'enableCascadingDelete' => true,
-                'foreign_field' =>  'profile',
+                'foreign_field' => 'profile',
                 'foreign_sortby' => 'sorting',
                 'foreign_table' => 'tx_academicpersons_domain_model_contract',
+            ],
+        ],
+        'website_title' => [
+            'label' => 'LLL:EXT:academic_persons/Resources/Private/Language/locallang_tca.xlf:tx_academicpersons_domain_model_profile.columns.website_title.label',
+            'exclude' => true,
+            'config' => [
+                'type' => 'input',
+                'size' => 50,
+                'max' => 80,
             ],
         ],
         'website' => [
@@ -371,7 +380,7 @@ return [
                     'showSynchronizationLink' => false,
                     'enabledControls' => [
                         'info' => true,
-                        'new' =>  true,
+                        'new' => true,
                         'dragdrop' => true,
                         'sort' => false,
                         'hide' => true,
@@ -384,7 +393,7 @@ return [
                     'elementBrowserEnabled' => false,
                 ],
                 'enableCascadingDelete' => true,
-                'foreign_field' =>  'profile',
+                'foreign_field' => 'profile',
                 'foreign_sortby' => 'sorting',
                 'foreign_table' => 'tx_academicpersons_domain_model_profile_information',
                 'foreign_match_fields' => [
@@ -438,7 +447,7 @@ return [
                     'showSynchronizationLink' => false,
                     'enabledControls' => [
                         'info' => true,
-                        'new' =>  true,
+                        'new' => true,
                         'dragdrop' => true,
                         'sort' => false,
                         'hide' => true,
@@ -451,7 +460,7 @@ return [
                     'elementBrowserEnabled' => false,
                 ],
                 'enableCascadingDelete' => true,
-                'foreign_field' =>  'profile',
+                'foreign_field' => 'profile',
                 'foreign_sortby' => 'sorting',
                 'foreign_table' => 'tx_academicpersons_domain_model_profile_information',
                 'foreign_match_fields' => [
@@ -487,7 +496,7 @@ return [
                     'showSynchronizationLink' => false,
                     'enabledControls' => [
                         'info' => true,
-                        'new' =>  true,
+                        'new' => true,
                         'dragdrop' => true,
                         'sort' => false,
                         'hide' => true,
@@ -500,7 +509,7 @@ return [
                     'elementBrowserEnabled' => false,
                 ],
                 'enableCascadingDelete' => true,
-                'foreign_field' =>  'profile',
+                'foreign_field' => 'profile',
                 'foreign_sortby' => 'sorting',
                 'foreign_table' => 'tx_academicpersons_domain_model_profile_information',
                 'foreign_match_fields' => [
@@ -524,6 +533,15 @@ return [
                 'type' => 'text',
                 'enableRichtext' => true,
                 'richtextConfiguration' => 'profile',
+            ],
+        ],
+        'publications_link_title' => [
+            'label' => 'LLL:EXT:academic_persons/Resources/Private/Language/locallang_tca.xlf:tx_academicpersons_domain_model_profile.columns.publications_link_title.label',
+            'exclude' => true,
+            'config' => [
+                'type' => 'input',
+                'size' => 50,
+                'max' => 80,
             ],
         ],
         'publications_link' => [
@@ -554,7 +572,7 @@ return [
                     'showSynchronizationLink' => false,
                     'enabledControls' => [
                         'info' => true,
-                        'new' =>  true,
+                        'new' => true,
                         'dragdrop' => true,
                         'sort' => false,
                         'hide' => true,
@@ -567,7 +585,7 @@ return [
                     'elementBrowserEnabled' => false,
                 ],
                 'enableCascadingDelete' => true,
-                'foreign_field' =>  'profile',
+                'foreign_field' => 'profile',
                 'foreign_sortby' => 'sorting',
                 'foreign_table' => 'tx_academicpersons_domain_model_profile_information',
                 'foreign_match_fields' => [
@@ -603,7 +621,7 @@ return [
                     'showSynchronizationLink' => false,
                     'enabledControls' => [
                         'info' => true,
-                        'new' =>  true,
+                        'new' => true,
                         'dragdrop' => true,
                         'sort' => false,
                         'hide' => true,
@@ -616,7 +634,7 @@ return [
                     'elementBrowserEnabled' => false,
                 ],
                 'enableCascadingDelete' => true,
-                'foreign_field' =>  'profile',
+                'foreign_field' => 'profile',
                 'foreign_sortby' => 'sorting',
                 'foreign_table' => 'tx_academicpersons_domain_model_profile_information',
                 'foreign_match_fields' => [
@@ -680,6 +698,7 @@ return [
                     contracts,
                 --div--;LLL:EXT:academic_persons/Resources/Private/Language/locallang_tca.xlf:tx_academicpersons_domain_model_profile.div.profileInformation.label,
                     image,
+                    website_title,
                     website,
                     teaching_area,
                     core_competences,
@@ -688,6 +707,7 @@ return [
                     supervised_doctoral_thesis,
                     vita,
                     publications,
+                    publications_link_title,
                     publications_link,
                     miscellaneous,
                     cooperation,
