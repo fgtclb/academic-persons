@@ -57,7 +57,16 @@
 
 <h2>Additional Information</h2>
 
-Website: <a href="{profile.website}" target="_blank">{profile.website}</a><br />
+<f:if condition="{profile.website} && {profile.websiteTitle}">
+  <f:then>
+    Website: <a href="{profile.website}" target="_blank">{profile.websiteTitle}</a>
+  </f:then>
+  <f:else>
+    Website: <a href="{profile.website}" target="_blank">{profile.website}</a>
+  </f:else>
+</f:if>
+
+<br />
 
 <h3>Teaching Area</h3>
 <f:format.html>{profile.teachingArea}</f:format.html>
@@ -70,9 +79,9 @@ Website: <a href="{profile.website}" target="_blank">{profile.website}</a><br />
     <f:for each="{profile.memberships}" as="membership">
         <h4>{membership.year}: {membership.title}</h4>
         <p>{membership.bodytext -> f:format.nl2br()}</p>
-        <f:if condition="{memberhip.link}">
+        <f:if condition="{membership.link}">
             <p>
-                <f:link.external uri="{membership.link}">{membership.link}</f:link.external>
+                <f:link.external uri="{membership.link}">{membership.title}</f:link.external>
             </p>
         </f:if>
     </f:for>
@@ -101,15 +110,21 @@ Website: <a href="{profile.website}" target="_blank">{profile.website}</a><br />
     <f:for each="{profile.publications}" as="publication">
         <h4>{publication.year}: {publication.title}</h4>
         <f:format.raw>{publication.bodytext}</f:format.raw>
-        <f:if condition="{publication.link}">
+        <f:if condition="{publication.link} && ">
             <p>
-                <f:link.external uri="{publication.link}">{publication.link}</f:link.external>
+                <f:link.external uri="{publication.link}">{publication.title}</f:link.external>
             </p>
         </f:if>
     </f:for>
 </f:if>
-<f:if condition="{profile.publicationsLink}">
+
+<f:if condition="{profile.publicationsLink} && {profile.publicationsLinkTitle}">
+	<f:then>
+    Link to publications: <a href="{profile.publicationsLink}" target="_blank">{profile.publicationsLinkTitle}</a>
+	</f:then>
+	<f:else>
     Link to publications: <a href="{profile.publicationsLink}" target="_blank">{profile.publicationsLink}</a>
+	</f:else>
 </f:if>
 
 <f:if condition="{profile.miscellaneous}">
@@ -124,7 +139,7 @@ Website: <a href="{profile.website}" target="_blank">{profile.website}</a><br />
         <f:format.raw>{cooperation.bodytext}</f:format.raw>
         <f:if condition="{cooperation.link}">
             <p>
-                <f:link.external uri="{cooperation.link}">{cooperation.link}</f:link.external>
+                <f:link.external uri="{cooperation.link}">{cooperation.title}</f:link.external>
             </p>
         </f:if>
     </f:for>
@@ -137,7 +152,7 @@ Website: <a href="{profile.website}" target="_blank">{profile.website}</a><br />
         <f:format.raw>{lecture.bodytext}</f:format.raw>
         <f:if condition="{lecture.link}">
             <p>
-                <f:link.external uri="{lecture.link}">{lecture.link}</f:link.external>
+                <f:link.external uri="{lecture.link}">{lecture.title}</f:link.external>
             </p>
         </f:if>
     </f:for>
