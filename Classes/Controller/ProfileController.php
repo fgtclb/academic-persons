@@ -21,6 +21,8 @@ use Psr\Http\Message\ResponseInterface;
 use TYPO3\CMS\Core\Context\Context;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Extbase\Annotation\IgnoreValidation;
+use TYPO3\CMS\Extbase\Configuration\ConfigurationManagerInterface;
+use TYPO3\CMS\Extbase\Object\ObjectManager;
 use TYPO3\CMS\Extbase\Mvc\Controller\ActionController;
 use TYPO3\CMS\Extbase\Pagination\QueryResultPaginator;
 use TYPO3\CMS\Extbase\Persistence\Generic\Typo3QuerySettings;
@@ -73,9 +75,29 @@ final class ProfileController extends ActionController
         $event = $this->eventDispatcher->dispatch(new ModifyListProfilesEvent($profiles, $this->view));
         $profiles = $event->getProfiles();
 
+        $objectManager = GeneralUtility::makeInstance(ObjectManager::class);
+        $configurationManager = $objectManager->get(ConfigurationManagerInterface::class);
+        $ts_settings = $configurationManager->getConfiguration(ConfigurationManagerInterface::CONFIGURATION_TYPE_FULL_TYPOSCRIPT);
+        $ts_resultsPerPage = intval($ts_settings['plugin.']['tx_academicpersons.']['settings.']['pagination.']['resultsPerPage']);
+        $ts_numberOfLinks = intval($ts_settings['plugin.']['tx_academicpersons.']['settings.']['pagination.']['numberOfLinks']);
+
         if (($this->settings['paginationEnabled'] ?? null) === '1') {
-            $resultsPerPage = (int)($this->settings['pagination']['resultsPerPage'] ?? 10);
-            $numberOfPaginationLinks = (int)($this->settings['pagination']['numberOfLinks'] ?? 5);
+            if (isset($this->settings['pagination']['resultsPerPage']) && (int)($this->settings['pagination']['resultsPerPage']) > 0) {
+                $resultsPerPage = (int)($this->settings['pagination']['resultsPerPage']);
+            } elseif (isset($ts_resultsPerPage) && $ts_resultsPerPage > 0) {
+                $resultsPerPage = $ts_resultsPerPage;
+            } else {
+                $resultsPerPage = 12;
+            }
+
+            if (isset($this->settings['pagination']['numberOfLinks']) && (int)($this->settings['pagination']['numberOfLinks']) > 0) {
+                $numberOfPaginationLinks = (int)($this->settings['pagination']['numberOfLinks']);
+            } elseif (isset($ts_numberOfLinks) && $ts_numberOfLinks > 0) {
+                $numberOfPaginationLinks = $ts_numberOfLinks;
+            } else {
+                $numberOfPaginationLinks = 5;
+            }
+
             $paginator = new QueryResultPaginator($profiles, $demand->getCurrentPage(), $resultsPerPage);
             $pagination = new NumberedPagination($paginator, $numberOfPaginationLinks);
             $this->view->assignMultiple([
