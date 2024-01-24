@@ -84,7 +84,7 @@ final class ProfileController extends ActionController
         if (($this->settings['paginationEnabled'] ?? null) === '1') {
             if (isset($this->settings['pagination']['resultsPerPage']) && (int)($this->settings['pagination']['resultsPerPage']) > 0) {
                 $resultsPerPage = (int)($this->settings['pagination']['resultsPerPage']);
-            } elseif (isset($ts_resultsPerPage) && $ts_resultsPerPage > 0) {
+            } elseif ($ts_resultsPerPage > 0) {
                 $resultsPerPage = $ts_resultsPerPage;
             } else {
                 $resultsPerPage = 12;
@@ -92,7 +92,7 @@ final class ProfileController extends ActionController
 
             if (isset($this->settings['pagination']['numberOfLinks']) && (int)($this->settings['pagination']['numberOfLinks']) > 0) {
                 $numberOfPaginationLinks = (int)($this->settings['pagination']['numberOfLinks']);
-            } elseif (isset($ts_numberOfLinks) && $ts_numberOfLinks > 0) {
+            } elseif ($ts_numberOfLinks > 0) {
                 $numberOfPaginationLinks = $ts_numberOfLinks;
             } else {
                 $numberOfPaginationLinks = 5;
