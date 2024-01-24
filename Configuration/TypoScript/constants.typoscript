@@ -6,8 +6,10 @@ plugin.tx_academicpersons {
     sortByDirection = asc
   }
   pagination {
-    resultsPerPage = 1
-    numberOfLinks = 5
+    # cat=plugin.tx_academicpersons//pagination.resultsPerPage; type=int+; label= Number of results display in each paginated page
+    resultsPerPage =
+    # cat=plugin.tx_academicpersons//pagination.numberOfLinks; type=int+; label= Number of links display in pagination
+    numberOfLinks =
   }
   view {
     templateRootPath = EXT:academic_persons/Resources/Private/Templates/
