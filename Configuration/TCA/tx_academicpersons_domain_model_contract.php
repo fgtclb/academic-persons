@@ -99,6 +99,7 @@ return [
                 'relationship' => 'oneToOne',
                 'minitems' => 1,
                 'maxitems' => 1,
+                'size' => 5,
             ],
         ],
         'organisational_level_1' => [
@@ -327,7 +328,6 @@ return [
     ],
     'palettes' => [
         'general' => [
-            'label' => 'LLL:EXT:frontend/Resources/Private/Language/locallang_ttc.xlf:palette.general',
             'showitem' => '
                 profile,
                 publish,
