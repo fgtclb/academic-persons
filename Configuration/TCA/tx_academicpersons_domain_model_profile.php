@@ -167,7 +167,6 @@ return [
         ],
         'l10n_parent' => [
             'label' => 'LLL:EXT:core/Resources/Private/Language/locallang_general.xlf:LGL.l18n_parent',
-            'exclude' => true,
             'displayCond' => 'FIELD:sys_language_uid:>:0',
             'config' => [
                 'type' => 'select',
