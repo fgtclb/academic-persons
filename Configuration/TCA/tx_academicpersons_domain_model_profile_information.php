@@ -9,6 +9,8 @@ declare(strict_types=1);
  * LICENSE file that was distributed with this source code.
  */
 
+ $lPath = 'LLL:EXT:academic_persons/Resources/Private/Language/locallang_tca.xlf:tx_academicpersons_domain_model_profile_information.';
+
 return [
     'ctrl' => [
         'label' => 'type',
@@ -18,7 +20,7 @@ return [
         'default_sortby' => 'sorting',
         'crdate' => 'crdate',
         'tstamp' => 'tstamp',
-        'title' => 'LLL:EXT:academic_persons/Resources/Private/Language/locallang_tca.xlf:tx_academicpersons_domain_model_profile_information.ctrl.label',
+        'title' => $lPath . 'ctrl.label',
         'delete' => 'deleted',
         'origUid' => 't3_origuid',
         'transOrigPointerField' => 'l10n_parent',
@@ -79,7 +81,7 @@ return [
             ],
         ],
         'profile' => [
-            'label' => 'LLL:EXT:academic_persons/Resources/Private/Language/locallang_tca.xlf:tx_academicpersons_domain_model_profile_information.columns.profile.label',
+            'label' => $lPath . 'columns.profile.label',
             'config' => [
                 'type' => 'select',
                 'renderType' => 'selectSingle',
@@ -88,37 +90,12 @@ return [
             ],
         ],
         'type' => [
-            'label' => 'LLL:EXT:academic_persons/Resources/Private/Language/locallang_tca.xlf:tx_academicpersons_domain_model_profile_information.columns.type.label',
             'config' => [
-                'type' => 'select',
-                'renderType' => 'selectSingle',
-                'items' => [
-                    [
-                        'LLL:EXT:academic_persons/Resources/Private/Language/locallang_tca.xlf:tx_academicpersons_domain_model_profile_information.columns.type.items.curriculum_vitae.label',
-                        'curriculum_vitae',
-                    ],
-                    [
-                        'LLL:EXT:academic_persons/Resources/Private/Language/locallang_tca.xlf:tx_academicpersons_domain_model_profile_information.columns.type.items.membership.label',
-                        'membership',
-                    ],
-                    [
-                        'LLL:EXT:academic_persons/Resources/Private/Language/locallang_tca.xlf:tx_academicpersons_domain_model_profile_information.columns.type.items.cooperation.label',
-                        'cooperation',
-                    ],
-                    [
-                        'LLL:EXT:academic_persons/Resources/Private/Language/locallang_tca.xlf:tx_academicpersons_domain_model_profile_information.columns.type.items.publication.label',
-                        'publication',
-                    ],
-                    [
-                        'LLL:EXT:academic_persons/Resources/Private/Language/locallang_tca.xlf:tx_academicpersons_domain_model_profile_information.columns.type.items.lecture.label',
-                        'lecture',
-                    ],
-                ],
-                'default' => 'curriculum_vitae',
+                'type' => 'passthrough',
             ],
         ],
         'title' => [
-            'label' => 'LLL:EXT:academic_persons/Resources/Private/Language/locallang_tca.xlf:tx_academicpersons_domain_model_profile_information.columns.title.label',
+            'label' => $lPath . 'columns.title.label',
             'config' => [
                 'type' => 'input',
                 'size' => 50,
@@ -127,16 +104,15 @@ return [
             ],
         ],
         'bodytext' => [
-            'label' => 'LLL:EXT:academic_persons/Resources/Private/Language/locallang_tca.xlf:tx_academicpersons_domain_model_profile_information.columns.bodytext.label',
+            'label' => $lPath . 'columns.bodytext.label',
             'config' => [
                 'type' => 'text',
                 'cols' => 80,
                 'rows' => 5,
-                'eval' => 'required',
             ],
         ],
         'link' => [
-            'label' => 'LLL:EXT:academic_persons/Resources/Private/Language/locallang_tca.xlf:tx_academicpersons_domain_model_profile_information.columns.link.label',
+            'label' => $lPath . 'columns.link.label',
             'config' => [
                 'type' => 'input',
                 'size' => 50,
@@ -144,7 +120,33 @@ return [
             ],
         ],
         'year' => [
-            'label' => 'LLL:EXT:academic_persons/Resources/Private/Language/locallang_tca.xlf:tx_academicpersons_domain_model_profile_information.columns.year.label',
+            'label' => $lPath . 'columns.year.label',
+            'l10n_mode' => 'exclude',
+            'l10n_display' => 'defaultAsReadonly',
+            'config' => [
+                'type' => 'input',
+                'size' => 10,
+                'min' => 0,
+                'max' => 9999,
+                'eval' => 'int',
+            ],
+        ],
+        'year_start' => [
+            'label' => $lPath . 'columns.year_start.label',
+            'l10n_mode' => 'exclude',
+            'l10n_display' => 'defaultAsReadonly',
+            'config' => [
+                'type' => 'input',
+                'size' => 10,
+                'min' => 0,
+                'max' => 9999,
+                'eval' => 'int',
+            ],
+        ],
+        'year_end' => [
+            'label' => $lPath . 'columns.year_end.label',
+            'l10n_mode' => 'exclude',
+            'l10n_display' => 'defaultAsReadonly',
             'config' => [
                 'type' => 'input',
                 'size' => 10,
@@ -155,81 +157,108 @@ return [
         ],
     ],
     'palettes' => [
-        'general' => [
-            'label' => 'LLL:EXT:frontend/Resources/Private/Language/locallang_ttc.xlf:palette.general',
-            'showitem' => '
-                profile,
-                --linebreak--,
-                type,
-            ',
+        'date' => [
+            'label' => $lPath . 'palette.date',
+            'showitem' => implode(',', [
+                'year',
+                '--linebreak--',
+                'year_start',
+                'year_end',
+            ]),
         ],
         'language' => [
-            'showitem' => '
-                sys_language_uid;LLL:EXT:frontend/Resources/Private/Language/locallang_ttc.xlf:sys_language_uid_formlabel,
-                l10n_parent,
-            ',
+            'showitem' => implode(',', [
+                'sys_language_uid;LLL:EXT:frontend/Resources/Private/Language/locallang_ttc.xlf:sys_language_uid_formlabel',
+                'l10n_parent',
+            ]),
         ],
     ],
     'types' => [
         '1' => [
-            'showitem' => '
-                --div--;LLL:EXT:core/Resources/Private/Language/Form/locallang_tabs.xlf:general,
-                    --palette--;;general,
-                --div--;LLL:EXT:core/Resources/Private/Language/Form/locallang_tabs.xlf:language,
-                    --palette--;;language,
-                --div--;LLL:EXT:core/Resources/Private/Language/Form/locallang_tabs.xlf:extended,
-            '
-        ],
-        'curriculum_vitae' => [
-            'showitem' => '
-                --div--;LLL:EXT:core/Resources/Private/Language/Form/locallang_tabs.xlf:general,
-                    --palette--;;general,
-                    year,
-                    title,
-                    bodytext,
-                --div--;LLL:EXT:core/Resources/Private/Language/Form/locallang_tabs.xlf:language,
-                    --palette--;;language,
-                --div--;LLL:EXT:core/Resources/Private/Language/Form/locallang_tabs.xlf:extended,
-            ',
-        ],
-        'membership' => [
-            'showitem' => '
-                --div--;LLL:EXT:core/Resources/Private/Language/Form/locallang_tabs.xlf:general,
-                    --palette--;;general,
-                    year,
-                    title,
-                    bodytext,
-                    link,
-                --div--;LLL:EXT:core/Resources/Private/Language/Form/locallang_tabs.xlf:language,
-                    --palette--;;language,
-                --div--;LLL:EXT:core/Resources/Private/Language/Form/locallang_tabs.xlf:extended,
-            ',
+            'showitem' => implode(',', [
+                '--div--;LLL:EXT:core/Resources/Private/Language/Form/locallang_tabs.xlf:general',
+                    'profile',
+                '--div--;LLL:EXT:core/Resources/Private/Language/Form/locallang_tabs.xlf:language',
+                    '--palette--;;language',
+                '--div--;LLL:EXT:core/Resources/Private/Language/Form/locallang_tabs.xlf:extended',
+            ]),
         ],
         'cooperation' => [
-            'showitem' => '
-                --div--;LLL:EXT:core/Resources/Private/Language/Form/locallang_tabs.xlf:general,
-                    --palette--;;general,
-                    year,
-                    title,
-                    link,
-                    bodytext,
-                --div--;LLL:EXT:core/Resources/Private/Language/Form/locallang_tabs.xlf:language,
-                    --palette--;;language,
-                --div--;LLL:EXT:core/Resources/Private/Language/Form/locallang_tabs.xlf:extended,
-            ',
+            'showitem' => implode(',', [
+                '--div--;LLL:EXT:core/Resources/Private/Language/Form/locallang_tabs.xlf:general',
+                    'profile',
+                    '--palette--;;date',
+                    'title',
+                    'link',
+                    'bodytext',
+                '--div--;LLL:EXT:core/Resources/Private/Language/Form/locallang_tabs.xlf:language,
+                    --palette--;;language',
+                '--div--;LLL:EXT:core/Resources/Private/Language/Form/locallang_tabs.xlf:extended',
+            ]),
+        ],
+        'curriculum_vitae' => [
+            'showitem' => implode(',', [
+                '--div--;LLL:EXT:core/Resources/Private/Language/Form/locallang_tabs.xlf:general',
+                    'profile',
+                    '--palette--;;date',
+                    'title',
+                    'bodytext',
+                '--div--;LLL:EXT:core/Resources/Private/Language/Form/locallang_tabs.xlf:language,
+                    --palette--;;language',
+                '--div--;LLL:EXT:core/Resources/Private/Language/Form/locallang_tabs.xlf:extended',
+            ]),
+        ],
+        'lecture' => [
+            'showitem' => implode(',', [
+                '--div--;LLL:EXT:core/Resources/Private/Language/Form/locallang_tabs.xlf:general',
+                    'profile',
+                    '--palette--;;date',
+                    'title',
+                    'link',
+                    'bodytext',
+                '--div--;LLL:EXT:core/Resources/Private/Language/Form/locallang_tabs.xlf:language,
+                    --palette--;;language',
+                '--div--;LLL:EXT:core/Resources/Private/Language/Form/locallang_tabs.xlf:extended',
+            ]),
+        ],
+        'membership' => [
+            'showitem' => implode(',', [
+                '--div--;LLL:EXT:core/Resources/Private/Language/Form/locallang_tabs.xlf:general',
+                    'profile',
+                    '--palette--;;date',
+                    'title',
+                    'link',
+                    'bodytext',
+                '--div--;LLL:EXT:core/Resources/Private/Language/Form/locallang_tabs.xlf:language,
+                    --palette--;;language',
+                '--div--;LLL:EXT:core/Resources/Private/Language/Form/locallang_tabs.xlf:extended',
+            ]),
+        ],
+        'press_media' => [
+            'showitem' => implode(',', [
+                '--div--;LLL:EXT:core/Resources/Private/Language/Form/locallang_tabs.xlf:general',
+                    'profile',
+                    '--palette--;;date',
+                    'title',
+                    'link',
+                    'bodytext',
+                '--div--;LLL:EXT:core/Resources/Private/Language/Form/locallang_tabs.xlf:language,
+                    --palette--;;language',
+                '--div--;LLL:EXT:core/Resources/Private/Language/Form/locallang_tabs.xlf:extended',
+            ]),
         ],
         'publication' => [
-            'showitem' => '
-                --div--;LLL:EXT:core/Resources/Private/Language/Form/locallang_tabs.xlf:general,
-                    --palette--;;general,
-                    year,
-                    title,
-                    link,
-                    bodytext,
-                --div--;LLL:EXT:core/Resources/Private/Language/Form/locallang_tabs.xlf:language,
-                    --palette--;;language,
-                --div--;LLL:EXT:core/Resources/Private/Language/Form/locallang_tabs.xlf:extended,
-            ',
+            'showitem' => implode(',', [
+                '--div--;LLL:EXT:core/Resources/Private/Language/Form/locallang_tabs.xlf:general',
+                    'profile',
+                    '--palette--;;date',
+                    'title',
+                    'link',
+                    'bodytext',
+                '--div--;LLL:EXT:core/Resources/Private/Language/Form/locallang_tabs.xlf:language,
+                    --palette--;;language',
+                '--div--;LLL:EXT:core/Resources/Private/Language/Form/locallang_tabs.xlf:extended',
+            ]),
             'columnsOverrides' => [
                 'bodytext' => [
                     'config' => [
@@ -239,18 +268,18 @@ return [
                 ],
             ],
         ],
-        'lecture' => [
-            'showitem' => '
-                --div--;LLL:EXT:core/Resources/Private/Language/Form/locallang_tabs.xlf:general,
-                    --palette--;;general,
-                    year,
-                    title,
-                    link,
-                    bodytext,
-                --div--;LLL:EXT:core/Resources/Private/Language/Form/locallang_tabs.xlf:language,
-                    --palette--;;language,
-                --div--;LLL:EXT:core/Resources/Private/Language/Form/locallang_tabs.xlf:extended,
-            ',
+        'scientific_research' => [
+            'showitem' => implode(',', [
+                '--div--;LLL:EXT:core/Resources/Private/Language/Form/locallang_tabs.xlf:general',
+                    'profile',
+                    '--palette--;;date',
+                    'title',
+                    'link',
+                    'bodytext',
+                '--div--;LLL:EXT:core/Resources/Private/Language/Form/locallang_tabs.xlf:language,
+                    --palette--;;language',
+                '--div--;LLL:EXT:core/Resources/Private/Language/Form/locallang_tabs.xlf:extended',
+            ]),
         ],
     ],
 ];
