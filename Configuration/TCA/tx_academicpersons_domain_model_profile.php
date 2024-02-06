@@ -555,7 +555,11 @@ return [
     ],
 ];
 
-function getProfileInformationConfig($type): array
+/**
+ * @param string $type
+ * @return array<string, mixed>
+ */
+function getProfileInformationConfig(string $type): array
 {
     return [
         'type' => 'inline',
