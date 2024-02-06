@@ -153,6 +153,12 @@
             <trans-unit id="tx_academicpersons_domain_model_profile.columns.miscellaneous.label">
                 <source>Miscellaneous information</source>
             </trans-unit>
+            <trans-unit id="tx_academicpersons_domain_model_profile.columns.press_media.label">
+                <source>Press and Media</source>
+            </trans-unit>
+            <trans-unit id="tx_academicpersons_domain_model_profile.columns.scientific_research.label">
+                <source>Scientific Research</source>
+            </trans-unit>
             <trans-unit id="tx_academicpersons_domain_model_profile.columns.supervised_doctoral_thesis.label">
                 <source>Supervised doctoral theses</source>
             </trans-unit>
@@ -165,8 +171,11 @@
             <trans-unit id="tx_academicpersons_domain_model_profile.columns.website.label">
                 <source>Website</source>
             </trans-unit>
-            <trans-unit id="tx_academicpersons_domain_model_profile.div.profileInformation.label">
-                <source>Personal Data</source>
+            <trans-unit id="tx_academicpersons_domain_model_profile.div.structuredInformation.label">
+                <source>Structured Information</source>
+            </trans-unit>
+            <trans-unit id="tx_academicpersons_domain_model_profile.div.unstructuredInformation.label">
+                <source>Unstructured Information</source>
             </trans-unit>
 
             <trans-unit id="tx_academicpersons_domain_model_contract.ctrl.label">
@@ -257,6 +266,12 @@
             </trans-unit>
             <trans-unit id="tx_academicpersons_domain_model_profile_information.columns.year.label">
                 <source>Year</source>
+            </trans-unit>
+            <trans-unit id="tx_academicpersons_domain_model_profile_information.columns.year_end.label">
+                <source>End Year</source>
+            </trans-unit>
+            <trans-unit id="tx_academicpersons_domain_model_profile_information.columns.year_start.label">
+                <source>Start Year</source>
             </trans-unit>
             <trans-unit id="tx_academicpersons_domain_model_profile_information.columns.profile.label">
                 <source>Profile</source>
