@@ -33,8 +33,10 @@ return [
     ],
     'columns' => [
         'hidden' => [
-            'exclude' => true,
             'label' => 'LLL:EXT:core/Resources/Private/Language/locallang_general.xlf:LGL.visible',
+            'exclude' => true,
+            'l10n_mode' => 'exclude',
+            'l10n_display' => 'defaultAsReadonly',
             'config' => [
                 'type' => 'check',
                 'renderType' => 'checkboxToggle',
@@ -47,15 +49,16 @@ return [
             ],
         ],
         'sys_language_uid' => [
-            'exclude' => true,
             'label' => 'LLL:EXT:core/Resources/Private/Language/locallang_general.xlf:LGL.language',
+            'exclude' => true,
             'config' => [
                 'type' => 'language',
             ],
         ],
         'l10n_parent' => [
-            'displayCond' => 'FIELD:sys_language_uid:>:0',
             'label' => 'LLL:EXT:core/Resources/Private/Language/locallang_general.xlf:LGL.l18n_parent',
+            'exclude' => true,
+            'displayCond' => 'FIELD:sys_language_uid:>:0',
             'config' => [
                 'type' => 'select',
                 'renderType' => 'selectSingle',
@@ -77,8 +80,6 @@ return [
         ],
         'profile' => [
             'label' => 'LLL:EXT:academic_persons/Resources/Private/Language/locallang_tca.xlf:tx_academicpersons_domain_model_contract.columns.profile.label',
-            'l10n_display' => 'defaultAsReadonly',
-            'l10n_mode' => 'exclude',
             'config' => [
                 'type' => 'select',
                 'renderType' => 'selectSingle',
@@ -92,8 +93,8 @@ return [
         ],
         'employee_type' => [
             'label' => 'LLL:EXT:academic_persons/Resources/Private/Language/locallang_tca.xlf:tx_academicpersons_domain_model_contract.columns.employee_type.label',
-            'l10n_display' => 'defaultAsReadonly',
             'l10n_mode' => 'exclude',
+            'l10n_display' => 'defaultAsReadonly',
             'config' => [
                 'type' => 'category',
                 'relationship' => 'oneToOne',
@@ -103,8 +104,8 @@ return [
         ],
         'organisational_level_1' => [
             'label' => 'LLL:EXT:academic_persons/Resources/Private/Language/locallang_tca.xlf:tx_academicpersons_domain_model_contract.columns.organisational_level_1.label',
-            'l10n_display' => 'defaultAsReadonly',
             'l10n_mode' => 'exclude',
+            'l10n_display' => 'defaultAsReadonly',
             'config' => [
                 'type' => 'category',
                 'relationship' => 'oneToOne',
@@ -114,8 +115,8 @@ return [
         ],
         'organisational_level_2' => [
             'label' => 'LLL:EXT:academic_persons/Resources/Private/Language/locallang_tca.xlf:tx_academicpersons_domain_model_contract.columns.organisational_level_2.label',
-            'l10n_display' => 'defaultAsReadonly',
             'l10n_mode' => 'exclude',
+            'l10n_display' => 'defaultAsReadonly',
             'config' => [
                 'type' => 'category',
                 'relationship' => 'oneToOne',
@@ -125,8 +126,8 @@ return [
         ],
         'organisational_level_3' => [
             'label' => 'LLL:EXT:academic_persons/Resources/Private/Language/locallang_tca.xlf:tx_academicpersons_domain_model_contract.columns.organisational_level_3.label',
-            'l10n_display' => 'defaultAsReadonly',
             'l10n_mode' => 'exclude',
+            'l10n_display' => 'defaultAsReadonly',
             'config' => [
                 'type' => 'category',
                 'relationship' => 'oneToOne',
