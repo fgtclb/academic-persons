@@ -11,6 +11,55 @@ declare(strict_types=1);
 
 $lPath = 'LLL:EXT:academic_persons/Resources/Private/Language/locallang_tca.xlf:tx_academicpersons_domain_model_profile.';
 
+$profileInformationConfig = function(string $type): array
+{
+    return [
+        'type' => 'inline',
+        'appearance' => [
+            'collapseAll' => true,
+            'expandSingle' => false,
+            'showNewRecordLink' => true,
+            'newRecordLinkAddTitle' => true,
+            'levelLinksPosition' => 'top',
+            'useCombination' => false,
+            'suppressCombinationWarning' => false,
+            'useSortable' => true,
+            'showPossibleLocalizationRecords' => true,
+            'showAllLocalizationLink' => true,
+            'showSynchronizationLink' => true,
+            'enabledControls' => [
+                'info' => true,
+                'new' => true,
+                'dragdrop' => true,
+                'sort' => false,
+                'hide' => true,
+                'delete' => true,
+                'localize' => true,
+            ],
+            'showPossibleRecordsSelector' => false,
+            'fileUploadAllowed' => false,
+            'fileByUrlAllowed' => false,
+            'elementBrowserEnabled' => false,
+        ],
+        'enableCascadingDelete' => true,
+        'foreign_field' => 'profile',
+        'foreign_sortby' => 'sorting',
+        'foreign_table' => 'tx_academicpersons_domain_model_profile_information',
+        'foreign_match_fields' => [
+            'type' => $type,
+        ],
+        'overrideChildTca' => [
+            'columns' => [
+                'type' => [
+                    'config' => [
+                        'default' => $type,
+                    ],
+                ],
+            ],
+        ],
+    ];
+};
+
 return [
     'ctrl' => [
         'label' => 'last_name',
@@ -433,37 +482,37 @@ return [
         'cooperation' => [
             'label' => $lPath . 'columns.cooperation.label',
             'exclude' => true,
-            'config' => getProfileInformationConfig('cooperation'),
+            'config' => $profileInformationConfig('cooperation'),
         ],
         'lectures' => [
             'label' => $lPath . 'columns.lectures.label',
             'exclude' => true,
-            'config' => getProfileInformationConfig('lecture'),
+            'config' => $profileInformationConfig('lecture'),
         ],
         'memberships' => [
             'label' => $lPath . 'columns.memberships.label',
             'exclude' => true,
-            'config' => getProfileInformationConfig('membership'),
+            'config' => $profileInformationConfig('membership'),
         ],
         'press_media' => [
             'label' => $lPath . 'columns.press_media.label',
             'exclude' => true,
-            'config' => getProfileInformationConfig('press_media'),
+            'config' => $profileInformationConfig('press_media'),
         ],
         'publications' => [
             'label' => $lPath . 'columns.publications.label',
             'exclude' => true,
-                'config' => getProfileInformationConfig('publication'),
+                'config' => $profileInformationConfig('publication'),
         ],
         'scientific_research' => [
             'label' => $lPath . 'columns.scientific_research.label',
             'exclude' => true,
-            'config' => getProfileInformationConfig('scientific_research'),
+            'config' => $profileInformationConfig('scientific_research'),
         ],
         'vita' => [
             'label' => $lPath . 'columns.vita.label',
             'exclude' => true,
-            'config' => getProfileInformationConfig('curriculum_vitae'),
+            'config' => $profileInformationConfig('curriculum_vitae'),
         ],
     ],
     'palettes' => [
@@ -554,56 +603,3 @@ return [
         ],
     ],
 ];
-
-/**
- * @param string $type
- * @return array<string, mixed>
- */
-function getProfileInformationConfig(string $type): array
-{
-    return [
-        'type' => 'inline',
-        'appearance' => [
-            'collapseAll' => true,
-            'expandSingle' => false,
-            'showNewRecordLink' => true,
-            'newRecordLinkAddTitle' => true,
-            'levelLinksPosition' => 'top',
-            'useCombination' => false,
-            'suppressCombinationWarning' => false,
-            'useSortable' => true,
-            'showPossibleLocalizationRecords' => true,
-            'showAllLocalizationLink' => true,
-            'showSynchronizationLink' => true,
-            'enabledControls' => [
-                'info' => true,
-                'new' => true,
-                'dragdrop' => true,
-                'sort' => false,
-                'hide' => true,
-                'delete' => true,
-                'localize' => true,
-            ],
-            'showPossibleRecordsSelector' => false,
-            'fileUploadAllowed' => false,
-            'fileByUrlAllowed' => false,
-            'elementBrowserEnabled' => false,
-        ],
-        'enableCascadingDelete' => true,
-        'foreign_field' => 'profile',
-        'foreign_sortby' => 'sorting',
-        'foreign_table' => 'tx_academicpersons_domain_model_profile_information',
-        'foreign_match_fields' => [
-            'type' => $type,
-        ],
-        'overrideChildTca' => [
-            'columns' => [
-                'type' => [
-                    'config' => [
-                        'default' => $type,
-                    ],
-                ],
-            ],
-        ],
-    ];
-}
