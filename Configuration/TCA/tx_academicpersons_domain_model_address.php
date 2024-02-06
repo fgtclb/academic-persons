@@ -19,6 +19,7 @@ return [
         'tstamp' => 'tstamp',
         'title' => 'LLL:EXT:academic_persons/Resources/Private/Language/locallang_tca.xlf:tx_academicpersons_domain_model_address.ctrl.label',
         'delete' => 'deleted',
+        'hideTable' => true,
         'origUid' => 't3_origuid',
         'transOrigPointerField' => 'l10n_parent',
         'transOrigDiffSourceField' => 'l10n_diffsource',
@@ -206,48 +207,48 @@ return [
     'palettes' => [
         'general' => [
             'label' => 'LLL:EXT:frontend/Resources/Private/Language/locallang_ttc.xlf:palette.general',
-            'showitem' => '
-                type,
-                --linebreak--,
-                employee_type,
-                --linebreak--,
-                organisational_level_1,
-                organisational_level_2,
-                organisational_level_3,
-            ',
+            'showitem' => implode(',', [
+                'type',
+                '--linebreak--',
+                'employee_type',
+                '--linebreak--',
+                'organisational_level_1',
+                'organisational_level_2',
+                'organisational_level_3',
+            ]),
         ],
         'address' => [
-            'showitem' => '
-                street,
-                street_number,
-                --linebreak--,
-                additional,
-                --linebreak--,
-                zip,
-                city,
-                --linebreak--,
-                state,
-                --linebreak--,
-                country
-            ',
+            'showitem' => implode(',', [
+                'street',
+                'street_number',
+                '--linebreak--',
+                'additional',
+                '--linebreak--',
+                'zip',
+                'city',
+                '--linebreak--',
+                'state',
+                '--linebreak--',
+                'country',
+            ]),
         ],
         'language' => [
-            'showitem' => '
-                sys_language_uid;LLL:EXT:frontend/Resources/Private/Language/locallang_ttc.xlf:sys_language_uid_formlabel,
-                l10n_parent,
-            ',
+            'showitem' => implode(',', [
+                'sys_language_uid;LLL:EXT:frontend/Resources/Private/Language/locallang_ttc.xlf:sys_language_uid_formlabel',
+                'l10n_parent',
+            ]),
         ],
     ],
     'types' => [
         '1' => [
-            'showitem' => '
-                --div--;LLL:EXT:core/Resources/Private/Language/Form/locallang_tabs.xlf:general,
-                    --palette--;;general,
-                    --palette--;;address,
-                --div--;LLL:EXT:core/Resources/Private/Language/Form/locallang_tabs.xlf:language,
-                    --palette--;;language,
-                --div--;LLL:EXT:core/Resources/Private/Language/Form/locallang_tabs.xlf:extended,
-            ',
+            'showitem' => implode(',', [
+                '--div--;LLL:EXT:core/Resources/Private/Language/Form/locallang_tabs.xlf:general',
+                    '--palette--;;general',
+                    '--palette--;;address',
+                '--div--;LLL:EXT:core/Resources/Private/Language/Form/locallang_tabs.xlf:language',
+                    '--palette--;;language',
+                '--div--;LLL:EXT:core/Resources/Private/Language/Form/locallang_tabs.xlf:extended',
+            ]),
         ],
     ],
 ];
