@@ -8,9 +8,42 @@ routeEnhancers:
         _controller: 'Profile::list'
         _arguments:
           page: 'demand/currentPage'
+      - routePath: '/{char}'
+        _controller: 'Profile::list'
+        _arguments:
+          char: 'demand/alphabetFilter'
     defaultController: 'Profile::list'
     aspects:
       page:
         type: StaticRangeMapper
         start: '1'
         end: '1000'
+      char:
+        type: StaticValueMapper
+        map:
+          A: 'A'
+          B: 'B'
+          C: 'C'
+          D: 'D'
+          E: 'E'
+          F: 'F'
+          G: 'G'
+          H: 'H'
+          I: 'I'
+          J: 'J'
+          K: 'K'
+          L: 'L'
+          M: 'M'
+          N: 'N'
+          O: 'O'
+          P: 'P'
+          Q: 'Q'
+          R: 'R'
+          S: 'S'
+          T: 'T'
+          U: 'U'
+          V: 'V'
+          W: 'W'
+          X: 'X'
+          Y: 'Y'
+          Z: 'Z'
