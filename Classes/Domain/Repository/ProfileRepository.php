@@ -75,6 +75,10 @@ class ProfileRepository extends Repository
             $filters[] = $query->in('uid', $profileUidArray);
         }
 
+        if ($demand->getAlphabetFilter() != '') {
+            $filters[] = $query->like('last_name', $demand->getAlphabetFilter() . '%');
+        }
+
         if (empty($filters)) {
             return null;
         }
