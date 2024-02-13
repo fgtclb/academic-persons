@@ -1,0 +1,16 @@
+routeEnhancers:
+  ProfileListPlugin:
+    type: Extbase
+    extension: AcademicPersons
+    plugin: List
+    routes:
+      - routePath: '/{page}'
+        _controller: 'Profile::list'
+        _arguments:
+          page: 'demand/currentPage'
+    defaultController: 'Profile::list'
+    aspects:
+      page:
+        type: StaticRangeMapper
+        start: '1'
+        end: '1000'
