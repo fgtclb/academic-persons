@@ -60,6 +60,7 @@ final class ProfileController extends ActionController
         $demandArray = array_replace_recursive($demandArray, $this->settings['demand'] ?? []);
         $propertyMappingConfiguration = $this->arguments->getArgument('demand')->getPropertyMappingConfiguration();
         $propertyMappingConfiguration->allowProperties(...array_keys(array_merge($this->settings['demand'] ?? [], ['currentPage' => 1])));
+        $propertyMappingConfiguration->allowProperties(...array_keys(array_merge($this->settings['demand'] ?? [], ['alphabetFilter' => ''])));
         $propertyMappingConfiguration->skipUnknownProperties();
 
         $this->request = $this->request->withArgument('demand', $demandArray);
@@ -72,6 +73,10 @@ final class ProfileController extends ActionController
         /** @var ModifyListProfilesEvent $event */
         $event = $this->eventDispatcher->dispatch(new ModifyListProfilesEvent($profiles, $this->view));
         $profiles = $event->getProfiles();
+
+        if ($demand->getAlphabetFilter() !== '') {
+            $this->settings['paginationEnabled'] = '0';
+        }
 
         if (($this->settings['paginationEnabled'] ?? null) === '1') {
             $resultsPerPage = (int)($this->settings['pagination']['resultsPerPage'] ?? 10);
