@@ -29,6 +29,10 @@ interface DemandInterface
 
     public function getCurrentPage(): int;
 
+    public function setAlphabetFilter(string $alphabetFilter): self;
+
+    public function getAlphabetFilter(): string;
+
     public function setProfileList(string $profileList): self;
 
     public function getProfileList(): string;
