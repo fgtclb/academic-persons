@@ -25,6 +25,10 @@ class ProfileInformation extends AbstractEntity
 
     protected int $year = 0;
 
+    protected int $yearStart = 0;
+
+    protected int $yearEnd = 0;
+
     public function getType(): string
     {
         return $this->type;
@@ -73,5 +77,25 @@ class ProfileInformation extends AbstractEntity
     public function setYear(int $year): void
     {
         $this->year = $year;
+    }
+
+    public function getYearStart(): int
+    {
+        return $this->yearStart;
+    }
+
+    public function setYearStart(int $yearStart): void
+    {
+        $this->yearStart = $yearStart;
+    }
+
+    public function getYearEnd(): int
+    {
+        return $this->yearEnd;
+    }
+
+    public function setYearEnd(int $yearEnd): void
+    {
+        $this->yearEnd = $yearEnd;
     }
 }
