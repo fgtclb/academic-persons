@@ -170,6 +170,10 @@
                 <source>Offices/committees/memberships</source>
                 <target>Ämter/Ausschüsse/Mitgliedschaften</target>
             </trans-unit>
+            <trans-unit id="tx_academicpersons_domain_model_profile.columns.scientific_research.label">
+                <source>Research projects</source>
+                <target>Forschungsprojekte</target>
+            </trans-unit>
             <trans-unit id="tx_academicpersons_domain_model_profile.columns.supervised_thesis.label">
                 <source>Supervised thesis</source>
                 <target>Beaufsichtigte Abschlussarbeit</target>
@@ -178,9 +182,10 @@
                 <source>Supervised doctoral theses</source>
                 <target>Beaufsichtigte Doktorarbeit</target>
             </trans-unit>
+
             <trans-unit id="tx_academicpersons_domain_model_profile.columns.vita.label">
-                <source>Vita</source>
-                <target>Lebenslauf</target>
+                <source>Academic career</source>
+                <target>Akademischer Werdegang</target>
             </trans-unit>
             <trans-unit id="tx_academicpersons_domain_model_profile.columns.publications.label">
                 <source>Publications</source>
@@ -202,6 +207,23 @@
                 <source>Lectures</source>
                 <target>Vorlesungen</target>
             </trans-unit>
+            <trans-unit id="tx_academicpersons_domain_model_profile.div.general.label">
+                <source>General</source>
+                <target>Stammdaten</target>
+            </trans-unit>
+            <trans-unit id="tx_academicpersons_domain_model_profile.div.contracts.label">
+                <source>Contracts</source>
+                <target>Beschäftigungsverhältnis</target>
+            </trans-unit>
+            <trans-unit id="tx_academicpersons_domain_model_profile.div.unstructuredInformation.label">
+                <source>Text Data</source>
+                <target>Profil unstrukturiert</target>
+            </trans-unit>
+            <trans-unit id="tx_academicpersons_domain_model_profile.div.structuredInformation.label">
+                <source>Structured Data</source>
+                <target>Timeline</target>
+            </trans-unit>
+
             <trans-unit id="tx_academicpersons_domain_model_profile.div.profileInformation.label">
                 <source>Personal Data</source>
                 <target>Persönliche Daten</target>
