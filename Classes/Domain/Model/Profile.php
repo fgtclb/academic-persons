@@ -84,6 +84,13 @@ class Profile extends AbstractEntity
      */
     protected ObjectStorage $memberships;
 
+    /**
+     * @var ObjectStorage<ProfileInformation>
+     * @Lazy
+     * @Cascade("remove")
+     */
+    protected ObjectStorage $pressMedia;
+
     protected string $supervisedThesis = '';
 
     protected string $supervisedDoctoralThesis = '';
@@ -101,6 +108,13 @@ class Profile extends AbstractEntity
      * @Cascade("remove")
      */
     protected ObjectStorage $publications;
+
+    /**
+     * @var ObjectStorage<ProfileInformation>
+     * @Lazy
+     * @Cascade("remove")
+     */
+    protected ObjectStorage $scientificResearch;
 
     /**
      * @Validate("TYPO3\CMS\Extbase\Validation\Validator\StringLengthValidator", options={"maximum": 255})
@@ -132,8 +146,10 @@ class Profile extends AbstractEntity
     {
         $this->contracts = new ObjectStorage();
         $this->memberships = new ObjectStorage();
+        $this->pressMedia = new ObjectStorage();
         $this->vita = new ObjectStorage();
         $this->publications = new ObjectStorage();
+        $this->scientificResearch = new ObjectStorage();
         $this->cooperation = new ObjectStorage();
         $this->lectures = new ObjectStorage();
     }
@@ -290,6 +306,22 @@ class Profile extends AbstractEntity
         $this->memberships = $memberships;
     }
 
+    /**
+     * @return ObjectStorage<ProfileInformation>
+     */
+    public function getPressMedia(): ObjectStorage
+    {
+        return $this->pressMedia;
+    }
+
+    /**
+     * @param ObjectStorage<ProfileInformation> $pressMedia
+     */
+    public function setPressMedia(ObjectStorage $pressMedia): void
+    {
+        $this->pressMedia = $pressMedia;
+    }
+
     public function getSupervisedThesis(): string
     {
         return $this->supervisedThesis;
@@ -340,6 +372,22 @@ class Profile extends AbstractEntity
     public function setPublications(ObjectStorage $publications): void
     {
         $this->publications = $publications;
+    }
+
+    /**
+     * @return ObjectStorage<ProfileInformation>
+     */
+    public function getScientificResearch(): ObjectStorage
+    {
+        return $this->scientificResearch;
+    }
+
+    /**
+     * @param ObjectStorage<ProfileInformation> $scientificResearch
+     */
+    public function setScientificResearch(ObjectStorage $scientificResearch): void
+    {
+        $this->scientificResearch = $scientificResearch;
     }
 
     public function getPublicationsLink(): string
