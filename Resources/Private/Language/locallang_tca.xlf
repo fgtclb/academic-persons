@@ -157,7 +157,7 @@
                 <source>Press and Media</source>
             </trans-unit>
             <trans-unit id="tx_academicpersons_domain_model_profile.columns.scientific_research.label">
-                <source>Scientific Research</source>
+                <source>Research projects</source>
             </trans-unit>
             <trans-unit id="tx_academicpersons_domain_model_profile.columns.supervised_doctoral_thesis.label">
                 <source>Supervised doctoral theses</source>
@@ -166,16 +166,22 @@
                 <source>Supervised theses</source>
             </trans-unit>
             <trans-unit id="tx_academicpersons_domain_model_profile.columns.vita.label">
-                <source>Vita</source>
+                <source>Academic career</source>
             </trans-unit>
             <trans-unit id="tx_academicpersons_domain_model_profile.columns.website.label">
                 <source>Website</source>
             </trans-unit>
-            <trans-unit id="tx_academicpersons_domain_model_profile.div.structuredInformation.label">
-                <source>Structured Information</source>
+            <trans-unit id="tx_academicpersons_domain_model_profile.div.general.label">
+                <source>General</source>
+            </trans-unit>
+            <trans-unit id="tx_academicpersons_domain_model_profile.div.contracts.label">
+                <source>Contracts</source>
             </trans-unit>
             <trans-unit id="tx_academicpersons_domain_model_profile.div.unstructuredInformation.label">
-                <source>Unstructured Information</source>
+                <source>Text Data</source>
+            </trans-unit>
+            <trans-unit id="tx_academicpersons_domain_model_profile.div.structuredInformation.label">
+                <source>Structured Data</source>
             </trans-unit>
 
             <trans-unit id="tx_academicpersons_domain_model_contract.ctrl.label">

@@ -546,12 +546,12 @@ return [
     'types' => [
         '1' => [
             'showitem' => implode(',', [
-                '--div--;LLL:EXT:core/Resources/Private/Language/Form/locallang_tabs.xlf:general',
+                '--div--;LLL:EXT:academic_persons/Resources/Private/Language/locallang_tca.xlf:tx_academicpersons_domain_model_profile.div.general.label',
                     '--palette--;;name',
                     '--palette--;;website',
                     'image',
                     '--palette--;;slug',
-                '--div--;Contracts',
+                '--div--;LLL:EXT:academic_persons/Resources/Private/Language/locallang_tca.xlf:tx_academicpersons_domain_model_profile.div.contracts.label',
                     'contracts',
                 '--div--;LLL:EXT:academic_persons/Resources/Private/Language/locallang_tca.xlf:tx_academicpersons_domain_model_profile.div.unstructuredInformation.label',
                     'teaching_area',
