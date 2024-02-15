@@ -199,7 +199,6 @@ return [
                     'fields' => [
                         'first_name',
                         'last_name',
-                        'uid',
                     ],
                     'fieldSeparator' => '-',
                     'prefixParentPageSlug' => false,
