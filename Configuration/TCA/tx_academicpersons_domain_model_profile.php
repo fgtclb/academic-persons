@@ -304,6 +304,7 @@ return [
         'image' => [
             'label' => $lPath . 'columns.image.label',
             'l10n_mode' => 'exclude',
+            'l10n_display' => 'defaultAsReadonly',
             'config' => \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::getFileFieldTCAConfig(
                 'image',
                 [
