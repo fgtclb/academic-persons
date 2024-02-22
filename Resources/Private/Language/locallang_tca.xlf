@@ -82,7 +82,7 @@
                 <source>Profile</source>
             </trans-unit>
             <trans-unit id="tx_academicpersons_domain_model_profile.columns.cooperation.label">
-                <source>Cooperation / Networks</source>
+                <source>Networks and Cooperations</source>
             </trans-unit>
             <trans-unit id="tx_academicpersons_domain_model_profile.columns.contracts.label">
                 <source>Employee Contracts</source>
@@ -130,10 +130,10 @@
                 <source>Publications</source>
             </trans-unit>
             <trans-unit id="tx_academicpersons_domain_model_profile.columns.publications_link_title.label">
-                <source>Publication Link Title</source>
+                <source>Title of link to publications</source>
             </trans-unit>
             <trans-unit id="tx_academicpersons_domain_model_profile.columns.publications_link.label">
-                <source>Link to external publications page</source>
+                <source>Link to publications</source>
             </trans-unit>
             <trans-unit id="tx_academicpersons_domain_model_profile.columns.slug.label">
                 <source>URL Path</source>
@@ -148,13 +148,13 @@
                 <source>Website Link Title</source>
             </trans-unit>
             <trans-unit id="tx_academicpersons_domain_model_profile.columns.memberships.label">
-                <source>Offices/committees/memberships</source>
+                <source>Memberships/Committee activities</source>
             </trans-unit>
             <trans-unit id="tx_academicpersons_domain_model_profile.columns.miscellaneous.label">
                 <source>Miscellaneous information</source>
             </trans-unit>
             <trans-unit id="tx_academicpersons_domain_model_profile.columns.press_media.label">
-                <source>Press and Media</source>
+                <source>Press/Media</source>
             </trans-unit>
             <trans-unit id="tx_academicpersons_domain_model_profile.columns.scientific_research.label">
                 <source>Research projects</source>
@@ -181,7 +181,7 @@
                 <source>Profile (Text)</source>
             </trans-unit>
             <trans-unit id="tx_academicpersons_domain_model_profile.div.structuredInformation.label">
-                <source>Structured Data</source>
+                <source>Profile (Timeline)</source>
             </trans-unit>
 
             <trans-unit id="tx_academicpersons_domain_model_contract.ctrl.label">
@@ -268,7 +268,7 @@
                 <source>Text</source>
             </trans-unit>
             <trans-unit id="tx_academicpersons_domain_model_profile_information.columns.link.label">
-                <source>External Link</source>
+                <source>Link</source>
             </trans-unit>
             <trans-unit id="tx_academicpersons_domain_model_profile_information.columns.year.label">
                 <source>Year</source>
