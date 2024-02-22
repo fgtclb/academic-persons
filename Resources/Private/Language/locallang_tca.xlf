@@ -88,7 +88,7 @@
                 <source>Employee Contracts</source>
             </trans-unit>
             <trans-unit id="tx_academicpersons_domain_model_profile.columns.core_competences.label">
-                <source>Main topics/core competencies</source>
+                <source>Research areas</source>
             </trans-unit>
             <trans-unit id="tx_academicpersons_domain_model_profile.columns.gender.label">
                 <source>Gender</source>
@@ -139,7 +139,7 @@
                 <source>URL Path</source>
             </trans-unit>
             <trans-unit id="tx_academicpersons_domain_model_profile.columns.teaching_area.label">
-                <source>Teaching Area</source>
+                <source>Teaching areas/Fields of activity</source>
             </trans-unit>
             <trans-unit id="tx_academicpersons_domain_model_profile.columns.title.label">
                 <source>Title</source>
@@ -178,7 +178,7 @@
                 <source>Contracts</source>
             </trans-unit>
             <trans-unit id="tx_academicpersons_domain_model_profile.div.unstructuredInformation.label">
-                <source>Text Data</source>
+                <source>Profile (Text)</source>
             </trans-unit>
             <trans-unit id="tx_academicpersons_domain_model_profile.div.structuredInformation.label">
                 <source>Structured Data</source>
