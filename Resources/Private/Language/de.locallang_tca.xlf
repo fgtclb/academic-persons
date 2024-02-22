@@ -130,9 +130,17 @@
                 <source>Title</source>
                 <target>Titel</target>
             </trans-unit>
+            <trans-unit id="tx_academicpersons_domain_model_profile.columns.website_title.label">
+                <source>Website Link Title</source>
+                <target>Website Link-Titel</target>
+            </trans-unit>
             <trans-unit id="tx_academicpersons_domain_model_profile.columns.first_name.label">
                 <source>First Name</source>
                 <target>Vorname</target>
+            </trans-unit>
+            <trans-unit id="tx_academicpersons_domain_model_profile.columns.first_name_alpha.label">
+                <source>First Letter of First Name</source>
+                <target>Erster Buchstabe Vorname</target>
             </trans-unit>
             <trans-unit id="tx_academicpersons_domain_model_profile.columns.middle_name.label">
                 <source>Middle Name</source>
@@ -141,6 +149,10 @@
             <trans-unit id="tx_academicpersons_domain_model_profile.columns.last_name.label">
                 <source>Last Name</source>
                 <target>Nachname</target>
+            </trans-unit>
+            <trans-unit id="tx_academicpersons_domain_model_profile.columns.last_name_alpha.label">
+                <source>First Letter of Last Name</source>
+                <target>Erster Buchstabe Nachname</target>
             </trans-unit>
             <trans-unit id="tx_academicpersons_domain_model_profile.columns.image.label">
                 <source>Image</source>
