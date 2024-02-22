@@ -179,8 +179,8 @@
                 <target>Forschungsgebiete</target>
             </trans-unit>
             <trans-unit id="tx_academicpersons_domain_model_profile.columns.memberships.label">
-                <source>Offices/committees/memberships</source>
-                <target>Ämter/Ausschüsse/Mitgliedschaften</target>
+                <source>Memberships/Committee activities</source>
+                <target>Mitgliedschaften/Gremientätigkeiten</target>
             </trans-unit>
             <trans-unit id="tx_academicpersons_domain_model_profile.columns.scientific_research.label">
                 <source>Research projects</source>
@@ -201,23 +201,31 @@
             </trans-unit>
             <trans-unit id="tx_academicpersons_domain_model_profile.columns.publications.label">
                 <source>Publications</source>
-                <target>Veröffentlichungen</target>
+                <target>Publikationen</target>
+            </trans-unit>
+            <trans-unit id="tx_academicpersons_domain_model_profile.columns.publications_link_title.label">
+                <source>Title of link to publications</source>
+                <target>Titel für Link zu Publikationen</target>
             </trans-unit>
             <trans-unit id="tx_academicpersons_domain_model_profile.columns.publications_link.label">
-                <source>Link to external publications page</source>
-                <target>Link zur Seite mit den externen Veröffentlichungen</target>
+                <source>Link to publications</source>
+                <target>Link zu Publikationen</target>
             </trans-unit>
             <trans-unit id="tx_academicpersons_domain_model_profile.columns.miscellaneous.label">
                 <source>Miscellaneous information</source>
                 <target>Sonstige Informationen</target>
             </trans-unit>
+            <trans-unit id="tx_academicpersons_domain_model_profile.columns.press_media.label">
+                <source>Press/Media</source>
+                <target>Presse/Medien</target>
+            </trans-unit>
             <trans-unit id="tx_academicpersons_domain_model_profile.columns.cooperation.label">
-                <source>Cooperation / Networks</source>
-                <target>Zusammenarbeit / Netzwerke</target>
+                <source>Networks and Cooperations</source>
+                <target>Netzwerke/Kooperationen</target>
             </trans-unit>
             <trans-unit id="tx_academicpersons_domain_model_profile.columns.lectures.label">
                 <source>Lectures</source>
-                <target>Vorlesungen</target>
+                <target>Vorträge</target>
             </trans-unit>
             <trans-unit id="tx_academicpersons_domain_model_profile.div.general.label">
                 <source>General</source>
@@ -232,8 +240,8 @@
                 <target>Profil (Text)</target>
             </trans-unit>
             <trans-unit id="tx_academicpersons_domain_model_profile.div.structuredInformation.label">
-                <source>Structured Data</source>
-                <target>Timeline</target>
+                <source>Profile (Timeline)</source>
+                <target>Profil (Timeline)</target>
             </trans-unit>
 
             <trans-unit id="tx_academicpersons_domain_model_profile.div.profileInformation.label">
@@ -352,8 +360,8 @@
                 <target>Text</target>
             </trans-unit>
             <trans-unit id="tx_academicpersons_domain_model_profile_information.columns.link.label">
-                <source>External Link</source>
-                <target>Externer Link</target>
+                <source>Link</source>
+                <target>Link</target>
             </trans-unit>
             <trans-unit id="tx_academicpersons_domain_model_profile_information.columns.year.label">
                 <source>Year</source>
