@@ -171,12 +171,12 @@
                 <target>Website</target>
             </trans-unit>
             <trans-unit id="tx_academicpersons_domain_model_profile.columns.teaching_area.label">
-                <source>Teaching Area</source>
-                <target>Lehrbereich</target>
+                <source>Teaching areas/Fields of activity</source>
+                <target>Lehrgebiete/Aufgabenbereiche</target>
             </trans-unit>
             <trans-unit id="tx_academicpersons_domain_model_profile.columns.core_competences.label">
-                <source>Main topics/core competencies</source>
-                <target>Hauptthemen/Kernkompetenzen</target>
+                <source>Research areas</source>
+                <target>Forschungsgebiete</target>
             </trans-unit>
             <trans-unit id="tx_academicpersons_domain_model_profile.columns.memberships.label">
                 <source>Offices/committees/memberships</source>
@@ -228,8 +228,8 @@
                 <target>Beschäftigungsverhältnis</target>
             </trans-unit>
             <trans-unit id="tx_academicpersons_domain_model_profile.div.unstructuredInformation.label">
-                <source>Text Data</source>
-                <target>Profil unstrukturiert</target>
+                <source>Profile (Text)</source>
+                <target>Profil (Text)</target>
             </trans-unit>
             <trans-unit id="tx_academicpersons_domain_model_profile.div.structuredInformation.label">
                 <source>Structured Data</source>
