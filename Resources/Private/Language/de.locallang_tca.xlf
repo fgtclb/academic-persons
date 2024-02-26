@@ -204,8 +204,8 @@
                 <target>Publikationen</target>
             </trans-unit>
             <trans-unit id="tx_academicpersons_domain_model_profile.columns.publications_link_title.label">
-                <source>Title of link to publications</source>
-                <target>Titel für Link zu Publikationen</target>
+                <source>Website link title (e.g. OPUS4)</source>
+                <target>Website Link-Titel (z.B. OPUS4)</target>
             </trans-unit>
             <trans-unit id="tx_academicpersons_domain_model_profile.columns.publications_link.label">
                 <source>Link to publications</source>

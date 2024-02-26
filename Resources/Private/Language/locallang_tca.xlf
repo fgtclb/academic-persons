@@ -130,7 +130,7 @@
                 <source>Publications</source>
             </trans-unit>
             <trans-unit id="tx_academicpersons_domain_model_profile.columns.publications_link_title.label">
-                <source>Title of link to publications</source>
+                <source>Website link title (e.g. OPUS4)</source>
             </trans-unit>
             <trans-unit id="tx_academicpersons_domain_model_profile.columns.publications_link.label">
                 <source>Link to publications</source>
