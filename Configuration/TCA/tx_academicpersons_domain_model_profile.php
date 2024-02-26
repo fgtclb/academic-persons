@@ -513,8 +513,8 @@ return [
         ],
         'publications' => [
             'showitem' => implode(',', [
-                'publications_link',
                 'publications_link_title',
+                'publications_link',
             ]),
         ],
         'slug' => [
