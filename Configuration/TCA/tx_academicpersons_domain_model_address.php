@@ -2,22 +2,29 @@
 
 declare(strict_types=1);
 
-/*
+/**
  * This file is part of the "academic_persons" Extension for TYPO3 CMS.
  *
  * For the full copyright and license information, please read the
  * LICENSE file that was distributed with this source code.
  */
 
+$ll = fn (string $langKey): string => 'LLL:EXT:academic_persons/Resources/Private/Language/locallang_tca.xlf:tx_academicpersons_domain_model_address.' . $langKey;
+
 return [
     'ctrl' => [
         'label' => 'type',
-        'label_alt' => 'street,street_number,zip,city',
+        'label_alt' => implode(',', [
+            'street',
+            'street_number',
+            'zip',
+            'city',
+        ]),
         'label_alt_force' => true,
         'default_sortby' => 'sorting',
         'crdate' => 'crdate',
         'tstamp' => 'tstamp',
-        'title' => 'LLL:EXT:academic_persons/Resources/Private/Language/locallang_tca.xlf:tx_academicpersons_domain_model_address.ctrl.label',
+        'title' => $ll('ctrl.label'),
         'delete' => 'deleted',
         'hideTable' => true,
         'origUid' => 't3_origuid',
@@ -28,7 +35,14 @@ return [
         'enablecolumns' => [
             'disabled' => 'hidden',
         ],
-        'searchFields' => 'street,zip,city,state,country,additional',
+        'searchFields' => implode(',', [
+            'street',
+            'zip',
+            'city',
+            'state',
+            'country',
+            'additional',
+        ]),
         'typeicon_classes' => [
             'default' => 'tx_academicpersons_domain_model_address',
         ],
@@ -77,8 +91,13 @@ return [
                 'type' => 'passthrough',
             ],
         ],
+        'contract' => [
+            'config' => [
+                'type' => 'passthrough',
+            ],
+        ],
         'employee_type' => [
-            'label' => 'LLL:EXT:academic_persons/Resources/Private/Language/locallang_tca.xlf:tx_academicpersons_domain_model_address.columns.employee_type.label',
+            'label' => $ll('columns.employee_type.label'),
             'l10n_display' => 'defaultAsReadonly',
             'l10n_mode' => 'exclude',
             'displayCond' => 'FIELD:contract:REQ:false',
@@ -90,7 +109,7 @@ return [
             ],
         ],
         'organisational_level_1' => [
-            'label' => 'LLL:EXT:academic_persons/Resources/Private/Language/locallang_tca.xlf:tx_academicpersons_domain_model_address.columns.organisational_level_1.label',
+            'label' => $ll('columns.organisational_level_1.label'),
             'l10n_display' => 'defaultAsReadonly',
             'l10n_mode' => 'exclude',
             'displayCond' => 'FIELD:contract:REQ:false',
@@ -102,7 +121,7 @@ return [
             ],
         ],
         'organisational_level_2' => [
-            'label' => 'LLL:EXT:academic_persons/Resources/Private/Language/locallang_tca.xlf:tx_academicpersons_domain_model_address.columns.organisational_level_2.label',
+            'label' => $ll('columns.organisational_level_2.label'),
             'l10n_display' => 'defaultAsReadonly',
             'l10n_mode' => 'exclude',
             'displayCond' => 'FIELD:contract:REQ:false',
@@ -114,7 +133,7 @@ return [
             ],
         ],
         'organisational_level_3' => [
-            'label' => 'LLL:EXT:academic_persons/Resources/Private/Language/locallang_tca.xlf:tx_academicpersons_domain_model_address.columns.organisational_level_3.label',
+            'label' => $ll('columns.organisational_level_3.label'),
             'l10n_display' => 'defaultAsReadonly',
             'l10n_mode' => 'exclude',
             'displayCond' => 'FIELD:contract:REQ:false',
@@ -126,7 +145,7 @@ return [
             ],
         ],
         'street' => [
-            'label' => 'LLL:EXT:academic_persons/Resources/Private/Language/locallang_tca.xlf:tx_academicpersons_domain_model_address.columns.street.label',
+            'label' => $ll('columns.street.label'),
             'config' => [
                 'type' => 'input',
                 'size' => 50,
@@ -135,7 +154,7 @@ return [
             ],
         ],
         'street_number' => [
-            'label' => 'LLL:EXT:academic_persons/Resources/Private/Language/locallang_tca.xlf:tx_academicpersons_domain_model_address.columns.street_number.label',
+            'label' => $ll('columns.street_number.label'),
             'config' => [
                 'type' => 'input',
                 'size' => 10,
@@ -143,7 +162,7 @@ return [
             ],
         ],
         'additional' => [
-            'label' => 'LLL:EXT:academic_persons/Resources/Private/Language/locallang_tca.xlf:tx_academicpersons_domain_model_address.columns.additional.label',
+            'label' => $ll('columns.additional.label'),
             'config' => [
                 'type' => 'input',
                 'size' => 50,
@@ -151,7 +170,7 @@ return [
             ],
         ],
         'zip' => [
-            'label' => 'LLL:EXT:academic_persons/Resources/Private/Language/locallang_tca.xlf:tx_academicpersons_domain_model_address.columns.zip.label',
+            'label' => $ll('columns.zip.label'),
             'config' => [
                 'type' => 'input',
                 'size' => 10,
@@ -160,7 +179,7 @@ return [
             ],
         ],
         'city' => [
-            'label' => 'LLL:EXT:academic_persons/Resources/Private/Language/locallang_tca.xlf:tx_academicpersons_domain_model_address.columns.city.label',
+            'label' => $ll('columns.city.label'),
             'config' => [
                 'type' => 'input',
                 'size' => 50,
@@ -169,7 +188,7 @@ return [
             ],
         ],
         'state' => [
-            'label' => 'LLL:EXT:academic_persons/Resources/Private/Language/locallang_tca.xlf:tx_academicpersons_domain_model_address.columns.state.label',
+            'label' => $ll('columns.state.label'),
             'config' => [
                 'type' => 'input',
                 'size' => 50,
@@ -177,7 +196,7 @@ return [
             ],
         ],
         'country' => [
-            'label' => 'LLL:EXT:academic_persons/Resources/Private/Language/locallang_tca.xlf:tx_academicpersons_domain_model_address.columns.country.label',
+            'label' => $ll('columns.country.label'),
             'config' => [
                 'type' => 'input',
                 'size' => 50,
@@ -186,21 +205,19 @@ return [
             ],
         ],
         'type' => [
-            'label' => 'LLL:EXT:academic_persons/Resources/Private/Language/locallang_tca.xlf:tx_academicpersons_domain_model_address.columns.type.label',
+            'label' => $ll('columns.type.label'),
             'l10n_mode' => 'exclude',
             'l10n_display' => 'defaultAsReadonly',
             'config' => [
                 'type' => 'select',
                 'renderType' => 'selectSingle',
                 'items' => [
-                    ['LLL:EXT:academic_persons/Resources/Private/Language/locallang_tca.xlf:tx_academicpersons_domain_model_address.columns.type.items.undefined.label', ''],
+                    [
+                        $ll('columns.type.items.undefined.label'),
+                        ''
+                    ],
                 ],
                 'itemsProcFunc' => \Fgtclb\AcademicPersons\Tca\RecordTypes::class . '->getPhysicalAddressTypes',
-            ],
-        ],
-        'contract' => [
-            'config' => [
-                'type' => 'passthrough',
             ],
         ],
     ],
