@@ -2,20 +2,22 @@
 
 declare(strict_types=1);
 
-/*
+/**
  * This file is part of the "academic_persons" Extension for TYPO3 CMS.
  *
  * For the full copyright and license information, please read the
  * LICENSE file that was distributed with this source code.
  */
 
+$ll = fn (string $langKey): string => 'LLL:EXT:academic_persons/Resources/Private/Language/locallang_tca.xlf:tx_academicpersons_domain_model_email.' . $langKey;
+ 
 return [
     'ctrl' => [
         'label' => 'email',
         'default_sortby' => 'sorting',
         'crdate' => 'crdate',
         'tstamp' => 'tstamp',
-        'title' => 'LLL:EXT:academic_persons/Resources/Private/Language/locallang_tca.xlf:tx_academicpersons_domain_model_email.ctrl.label',
+        'title' => $ll('ctrl.label'),
         'delete' => 'deleted',
         'hideTable' => true,
         'origUid' => 't3_origuid',
@@ -75,8 +77,13 @@ return [
                 'type' => 'passthrough',
             ],
         ],
+        'contract' => [
+            'config' => [
+                'type' => 'passthrough',
+            ],
+        ],
         'email' => [
-            'label' => 'LLL:EXT:academic_persons/Resources/Private/Language/locallang_tca.xlf:tx_academicpersons_domain_model_email.columns.email.label',
+            'label' => $ll('columns.email.label'),
             'config' => [
                 'type' => 'input',
                 'size' => 50,
@@ -85,52 +92,46 @@ return [
             ],
         ],
         'type' => [
-            'label' => 'LLL:EXT:academic_persons/Resources/Private/Language/locallang_tca.xlf:tx_academicpersons_domain_model_email.columns.type.label',
+            'label' => $ll('columns.type.label'),
             'l10n_mode' => 'exclude',
             'l10n_display' => 'defaultAsReadonly',
             'config' => [
                 'type' => 'select',
                 'renderType' => 'selectSingle',
                 'items' => [
-                    ['LLL:EXT:academic_persons/Resources/Private/Language/locallang_tca.xlf:tx_academicpersons_domain_model_email.columns.type.items.undefined.label', ''],
+                    [
+                        $ll('columns.type.items.undefined.label'),
+                        ''
+                    ],
                 ],
                 'itemsProcFunc' => \Fgtclb\AcademicPersons\Tca\RecordTypes::class . '->getEmailAddressTypes',
-            ],
-        ],
-        'contract' => [
-            'label' => 'LLL:EXT:academic_persons/Resources/Private/Language/locallang_tca.xlf:tx_academicpersons_domain_model_email.columns.contract.label',
-            'config' => [
-                'type' => 'select',
-                'renderType' => 'selectSingle',
-                'readOnly' => true,
-                'foreign_table' => 'tx_academicpersons_domain_model_contract',
             ],
         ],
     ],
     'palettes' => [
         'general' => [
             'label' => 'LLL:EXT:frontend/Resources/Private/Language/locallang_ttc.xlf:palette.general',
-            'showitem' => '
-                email,
-                type,
-            ',
+            'showitem' => implode(',', [
+                'email',
+                'type',
+            ]),
         ],
         'language' => [
-            'showitem' => '
-                sys_language_uid;LLL:EXT:frontend/Resources/Private/Language/locallang_ttc.xlf:sys_language_uid_formlabel,
-                l10n_parent,
-            ',
+            'showitem' => implode(',', [
+                'sys_language_uid;LLL:EXT:frontend/Resources/Private/Language/locallang_ttc.xlf:sys_language_uid_formlabel',
+                'l10n_parent',
+            ]),
         ],
     ],
     'types' => [
         '1' => [
-            'showitem' => '
-                --div--;LLL:EXT:core/Resources/Private/Language/Form/locallang_tabs.xlf:general,
-                    --palette--;;general,
-                --div--;LLL:EXT:core/Resources/Private/Language/Form/locallang_tabs.xlf:language,
-                    --palette--;;language,
-                --div--;LLL:EXT:core/Resources/Private/Language/Form/locallang_tabs.xlf:extended,
-            ',
+            'showitem' => implode(',', [
+                '--div--;LLL:EXT:core/Resources/Private/Language/Form/locallang_tabs.xlf:general',
+                    '--palette--;;general',
+                '--div--;LLL:EXT:core/Resources/Private/Language/Form/locallang_tabs.xlf:language',
+                    '--palette--;;language',
+                '--div--;LLL:EXT:core/Resources/Private/Language/Form/locallang_tabs.xlf:extended',
+            ]),
         ],
     ],
 ];

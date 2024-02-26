@@ -68,7 +68,7 @@ return [
         'default_sortby' => 'last_name',
         'crdate' => 'crdate',
         'tstamp' => 'tstamp',
-        'title' => $lPath . 'ctrl.label',
+        'title' => $ll('ctrl.label'),
         'delete' => 'deleted',
         'origUid' => 't3_origuid',
         'transOrigPointerField' => 'l10n_parent',
@@ -188,7 +188,7 @@ return [
             ],
         ],
         'slug' => [
-            'label' => $lPath . 'columns.slug.label',
+            'label' => $ll('columns.slug.label'),
             'exclude' => true,
             'l10n_mode' => 'exclude',
             'l10n_display' => 'defaultAsReadonly',
@@ -213,7 +213,7 @@ return [
             ],
         ],
         'gender' => [
-            'label' => $lPath . 'columns.gender.label',
+            'label' => $ll('columns.gender.label'),
             'l10n_mode' => 'exclude',
             'l10n_display' => 'defaultAsReadonly',
             'config' => [
@@ -221,19 +221,19 @@ return [
                 'renderType' => 'selectSingle',
                 'items' => [
                     [
-                        $lPath . 'columns.gender.items.none',
+                        $ll('columns.gender.items.none'),
                         '',
                     ],
                     [
-                        $lPath . 'columns.gender.items.mr',
+                        $ll('columns.gender.items.mr'),
                         'mr',
                     ],
                     [
-                        $lPath . 'columns.gender.items.ms',
+                        $ll('columns.gender.items.ms'),
                         'ms',
                     ],
                     [
-                        $lPath . 'columns.gender.items.diverse',
+                        $ll('columns.gender.items.diverse'),
                         'diverse',
                     ],
                 ],
@@ -241,7 +241,7 @@ return [
             ],
         ],
         'title' => [
-            'label' => $lPath . 'columns.title.label',
+            'label' => $ll('columns.title.label'),
             'config' => [
                 'type' => 'input',
                 'size' => 50,
@@ -249,7 +249,7 @@ return [
             ],
         ],
         'first_name' => [
-            'label' => $lPath . 'columns.first_name.label',
+            'label' => $ll('columns.first_name.label'),
             'l10n_mode' => 'exclude',
             'l10n_display' => 'defaultAsReadonly',
             'config' => [
@@ -260,7 +260,7 @@ return [
             ],
         ],
         'first_name_alpha' => [
-            'label' => $lPath . 'columns.first_name_alpha.label',
+            'label' => $ll('columns.first_name_alpha.label'),
             'l10n_mode' => 'exclude',
             'l10n_display' => 'defaultAsReadonly',
             'config' => [
@@ -271,7 +271,7 @@ return [
             ],
         ],
         'middle_name' => [
-            'label' => $lPath . 'columns.middle_name.label',
+            'label' => $ll('columns.middle_name.label'),
             'l10n_mode' => 'exclude',
             'l10n_display' => 'defaultAsReadonly',
             'config' => [
@@ -281,7 +281,7 @@ return [
             ],
         ],
         'last_name' => [
-            'label' => $lPath . 'columns.last_name.label',
+            'label' => $ll('columns.last_name.label'),
             'l10n_mode' => 'exclude',
             'l10n_display' => 'defaultAsReadonly',
             'config' => [
@@ -292,7 +292,7 @@ return [
             ],
         ],
         'last_name_alpha' => [
-            'label' => $lPath . 'columns.last_name_alpha.label',
+            'label' => $ll('columns.last_name_alpha.label'),
             'l10n_mode' => 'exclude',
             'l10n_display' => 'defaultAsReadonly',
             'config' => [
@@ -303,7 +303,7 @@ return [
             ],
         ],
         'image' => [
-            'label' => $lPath . 'columns.image.label',
+            'label' => $ll('columns.image.label'),
             'l10n_mode' => 'exclude',
             'config' => \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::getFileFieldTCAConfig(
                 'image',
@@ -335,7 +335,7 @@ return [
             ),
         ],
         'contracts' => [
-            'label' => $lPath . 'columns.contracts.label',
+            'label' => $ll('columns.contracts.label'),
             'exclude' => true,
             'config' => [
                 'type' => 'inline',
@@ -372,7 +372,7 @@ return [
             ],
         ],
         'website_title' => [
-            'label' => $lPath . 'columns.website_title.label',
+            'label' => $ll('columns.website_title.label'),
             'config' => [
                 'type' => 'input',
                 'size' => 50,
@@ -380,7 +380,7 @@ return [
             ],
         ],
         'website' => [
-            'label' => $lPath . 'columns.website.label',
+            'label' => $ll('columns.website.label'),
             'l10n_mode' => 'exclude',
             'l10n_display' => 'defaultAsReadonly',
             'config' => [
@@ -390,7 +390,7 @@ return [
             ],
         ],
         'teaching_area' => [
-            'label' => $lPath . 'columns.teaching_area.label',
+            'label' => $ll('columns.teaching_area.label'),
             'exclude' => true,
             'config' => [
                 'type' => 'text',
@@ -399,7 +399,7 @@ return [
             ],
         ],
         'core_competences' => [
-            'label' => $lPath . 'columns.core_competences.label',
+            'label' => $ll('columns.core_competences.label'),
             'exclude' => true,
             'config' => [
                 'type' => 'text',
@@ -408,7 +408,7 @@ return [
             ],
         ],
         'supervised_thesis' => [
-            'label' => $lPath . 'columns.supervised_thesis.label',
+            'label' => $ll('columns.supervised_thesis.label'),
             'exclude' => true,
             'config' => [
                 'type' => 'text',
@@ -417,7 +417,7 @@ return [
             ],
         ],
         'supervised_doctoral_thesis' => [
-            'label' => $lPath . 'columns.supervised_doctoral_thesis.label',
+            'label' => $ll('columns.supervised_doctoral_thesis.label'),
             'exclude' => true,
             'config' => [
                 'type' => 'text',
@@ -426,7 +426,7 @@ return [
             ],
         ],
         'miscellaneous' => [
-            'label' => $lPath . 'columns.miscellaneous.label',
+            'label' => $ll('columns.miscellaneous.label'),
             'exclude' => true,
             'config' => [
                 'type' => 'text',
@@ -435,7 +435,7 @@ return [
             ],
         ],
         'publications_link_title' => [
-            'label' => $lPath . 'columns.publications_link_title.label',
+            'label' => $ll('columns.publications_link_title.label'),
             'exclude' => true,
             'config' => [
                 'type' => 'input',
@@ -444,7 +444,7 @@ return [
             ],
         ],
         'publications_link' => [
-            'label' => $lPath . 'columns.publications_link.label',
+            'label' => $ll('columns.publications_link.label'),
             'l10n_mode' => 'exclude',
             'l10n_display' => 'defaultAsReadonly',
             'exclude' => true,
@@ -455,37 +455,37 @@ return [
             ],
         ],
         'cooperation' => [
-            'label' => $lPath . 'columns.cooperation.label',
+            'label' => $ll('columns.cooperation.label'),
             'exclude' => true,
             'config' => $profileInformationConfig('cooperation'),
         ],
         'lectures' => [
-            'label' => $lPath . 'columns.lectures.label',
+            'label' => $ll('columns.lectures.label'),
             'exclude' => true,
             'config' => $profileInformationConfig('lecture'),
         ],
         'memberships' => [
-            'label' => $lPath . 'columns.memberships.label',
+            'label' => $ll('columns.memberships.label'),
             'exclude' => true,
             'config' => $profileInformationConfig('membership'),
         ],
         'press_media' => [
-            'label' => $lPath . 'columns.press_media.label',
+            'label' => $ll('columns.press_media.label'),
             'exclude' => true,
             'config' => $profileInformationConfig('press_media'),
         ],
         'publications' => [
-            'label' => $lPath . 'columns.publications.label',
+            'label' => $ll('columns.publications.label'),
             'exclude' => true,
                 'config' => $profileInformationConfig('publication'),
         ],
         'scientific_research' => [
-            'label' => $lPath . 'columns.scientific_research.label',
+            'label' => $ll('columns.scientific_research.label'),
             'exclude' => true,
             'config' => $profileInformationConfig('scientific_research'),
         ],
         'vita' => [
-            'label' => $lPath . 'columns.vita.label',
+            'label' => $ll('columns.vita.label'),
             'exclude' => true,
             'config' => $profileInformationConfig('curriculum_vitae'),
         ],
