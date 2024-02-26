@@ -2,12 +2,14 @@
 
 declare(strict_types=1);
 
-/*
+/**
  * This file is part of the "academic_persons" Extension for TYPO3 CMS.
  *
  * For the full copyright and license information, please read the
  * LICENSE file that was distributed with this source code.
  */
+
+$ll = fn (string $langKey): string => 'LLL:EXT:academic_persons/Resources/Private/Language/locallang_tca.xlf:tx_academicpersons_domain_model_location.' . $langKey;
 
 return [
     'ctrl' => [
@@ -15,7 +17,7 @@ return [
         'default_sortby' => 'title asc',
         'crdate' => 'crdate',
         'tstamp' => 'tstamp',
-        'title' => 'LLL:EXT:academic_persons/Resources/Private/Language/locallang_tca.xlf:tx_academicpersons_domain_model_location.ctrl.label',
+        'title' => $ll('ctrl.label'),
         'delete' => 'deleted',
         'origUid' => 't3_origuid',
         'transOrigPointerField' => 'l10n_parent',
@@ -75,7 +77,7 @@ return [
             ],
         ],
         'title' => [
-            'label' => 'LLL:EXT:academic_persons/Resources/Private/Language/locallang_tca.xlf:tx_academicpersons_domain_model_location.columns.title.label',
+            'label' => $ll('columns.title.label'),
             'config' => [
                 'type' => 'input',
                 'size' => 50,
@@ -87,26 +89,26 @@ return [
     'palettes' => [
         'general' => [
             'label' => 'LLL:EXT:frontend/Resources/Private/Language/locallang_ttc.xlf:palette.general',
-            'showitem' => '
-                title,
-            ',
+            'showitem' => implode(',', [
+                'title',
+            ]),
         ],
         'language' => [
-            'showitem' => '
-                sys_language_uid;LLL:EXT:frontend/Resources/Private/Language/locallang_ttc.xlf:sys_language_uid_formlabel,
-                l10n_parent,
-            ',
+            'showitem' => implode(',', [
+                'sys_language_uid;LLL:EXT:frontend/Resources/Private/Language/locallang_ttc.xlf:sys_language_uid_formlabel',
+                'l10n_parent',
+            ]),
         ],
     ],
     'types' => [
         '1' => [
-            'showitem' => '
-                --div--;LLL:EXT:core/Resources/Private/Language/Form/locallang_tabs.xlf:general,
-                    --palette--;;general,
-                --div--;LLL:EXT:core/Resources/Private/Language/Form/locallang_tabs.xlf:language,
-                    --palette--;;language,
-                --div--;LLL:EXT:core/Resources/Private/Language/Form/locallang_tabs.xlf:extended,
-            ',
+            'showitem' => implode(',', [
+                '--div--;LLL:EXT:core/Resources/Private/Language/Form/locallang_tabs.xlf:general',
+                    '--palette--;;general',
+                '--div--;LLL:EXT:core/Resources/Private/Language/Form/locallang_tabs.xlf:language',
+                    '--palette--;;language',
+                '--div--;LLL:EXT:core/Resources/Private/Language/Form/locallang_tabs.xlf:extended',
+            ]),
         ],
     ],
 ];
