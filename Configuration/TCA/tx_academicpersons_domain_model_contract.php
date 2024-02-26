@@ -192,10 +192,6 @@ return [
                 'foreign_field' =>  'contract',
                 'foreign_sortby' => 'sorting',
                 'foreign_table' => 'tx_academicpersons_domain_model_address',
-                'MM' => 'tx_academicpersons_contract_address_mm',
-                'MM_match_fields' => [
-                    'fieldname' => 'physical_addresses',
-                ],
             ],
         ],
         'email_addresses' => [
