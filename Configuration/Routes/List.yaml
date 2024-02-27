@@ -4,7 +4,7 @@ routeEnhancers:
     extension: AcademicPersons
     plugin: List
     routes:
-      - routePath: 'page-{page}'
+      - routePath: '{localized_page}-{page}'
         _controller: 'Profile::list'
         _arguments:
           page: 'demand/currentPage'
@@ -14,6 +14,14 @@ routeEnhancers:
           letter: 'demand/alphabetFilter'
     defaultController: 'Profile::list'
     aspects:
+      localized_page:
+        type: LocaleModifier
+        default: 'page'
+        localeMap:
+          - locale: 'en_EN.*'
+            value: 'page'
+          - locale: 'de_DE.*'
+            value: 'seite'
       page:
         type: StaticRangeMapper
         start: '1'
