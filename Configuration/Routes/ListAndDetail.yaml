@@ -8,7 +8,7 @@ routeEnhancers:
         _controller: 'Profile::detail'
         _arguments:
           profile_name: 'profile'
-      - routePath: '/{page}'
+      - routePath: '/page-{page}'
         _controller: 'Profile::list'
         _arguments:
           page: 'demand/currentPage'
@@ -28,5 +28,5 @@ routeEnhancers:
         end: '1000'
       letter:
         type: StaticRangeMapper
-        start: 'A'
-        end: 'Z'
+        start: 'a'
+        end: 'z'
