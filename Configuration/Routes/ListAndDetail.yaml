@@ -8,7 +8,7 @@ routeEnhancers:
         _controller: 'Profile::detail'
         _arguments:
           profile_name: 'profile'
-      - routePath: '/page-{page}'
+      - routePath: '/{localized_page}-{page}'
         _controller: 'Profile::list'
         _arguments:
           page: 'demand/currentPage'
@@ -18,6 +18,14 @@ routeEnhancers:
           letter: 'demand/alphabetFilter'
     defaultController: 'Profile::list'
     aspects:
+      localized_page:
+        type: LocaleModifier
+        default: 'page'
+        localeMap:
+          - locale: 'en_EN.*'
+            value: 'page'
+          - locale: 'de_DE.*'
+            value: 'seite'
       profile_name:
         type: PersistedAliasMapper
         tableName: tx_academicpersons_domain_model_profile
