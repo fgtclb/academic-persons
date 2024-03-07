@@ -117,6 +117,10 @@
                 <source>List of profiles</source>
                 <target>Liste von Profilen</target>
             </trans-unit>
+            <trans-unit id="flexform.el.fallbackForNonTranslated.label">
+                <source>Fallback to default language for non translated profiles</source>
+                <target>Fallback auf die Standardsprache für nicht übersetzte Profile</target>
+            </trans-unit>
         </body>
     </file>
 </xliff>
