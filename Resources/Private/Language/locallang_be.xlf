@@ -42,19 +42,19 @@
                 <source>List Page</source>
             </trans-unit>
             <trans-unit id="flexform.el.groupBy.label">
-                <source>Group By (this setting will override the sorting settings)</source>
+                <source>Group By (is given priority in sorting if activ)</source>
             </trans-unit>
             <trans-unit id="flexform.el.groupBy.items.none">
                 <source>No grouping</source>
             </trans-unit>
             <trans-unit id="flexform.el.groupBy.items.first_name">
-                <source>First Name</source>
+                <source>First Letter of First Name</source>
             </trans-unit>
             <trans-unit id="flexform.el.groupBy.items.last_name">
-                <source>Last Name</source>
+                <source>First Letter of Last Name</source>
             </trans-unit>
             <trans-unit id="flexform.el.sortBy.label">
-                <source>Sort By (will be ignored if grouping is active)</source>
+                <source>Sort By (sorting of activated grouping has priority)</source>
             </trans-unit>
             <trans-unit id="flexform.el.sortBy.items.none">
                 <source>No sorting</source>
@@ -88,6 +88,9 @@
             </trans-unit>
             <trans-unit id="flexform.el.profileList.label">
                 <source>List of profiles</source>
+            </trans-unit>
+            <trans-unit id="flexform.el.fallbackForNonTranslated.label">
+                <source>Fallback to default language for non translated profiles</source>
             </trans-unit>
         </body>
     </file>
