@@ -74,17 +74,23 @@
             <trans-unit id="flexform.el.sortByDirection.items.desc">
                 <source>Descending</source>
             </trans-unit>
+            <trans-unit id="flexform.el.alphabetPaginationEnabled.label">
+                <source>Alphabetical Pagination</source>
+            </trans-unit>
+            <trans-unit id="flexform.el.alphabetPaginationEnabled.items.0.label">
+                <source>Enabled</source>
+            </trans-unit>
             <trans-unit id="flexform.el.paginationEnabled.label">
                 <source>Pagination</source>
+            </trans-unit>
+            <trans-unit id="flexform.el.paginationEnabled.items.0.label">
+                <source>Enabled</source>
             </trans-unit>
             <trans-unit id="flexform.el.resultsPerPage.label">
                 <source>Results per Page</source>
             </trans-unit>
             <trans-unit id="flexform.el.numberOfLinks.label">
                 <source>Number of Links</source>
-            </trans-unit>
-            <trans-unit id="flexform.el.paginationEnabled.items.0.label">
-                <source>Enabled</source>
             </trans-unit>
             <trans-unit id="flexform.el.profileList.label">
                 <source>List of profiles</source>
