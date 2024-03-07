@@ -122,6 +122,23 @@
                             </config>
                         </TCEforms>
                     </settings.demand.profileList>
+                    <settings.fallbackForNonTranslated>
+                        <TCEforms>
+                            <label>LLL:EXT:academic_persons/Resources/Private/Language/locallang_be.xlf:flexform.el.fallbackForNonTranslated.label</label>
+                            <config>
+                                <type>check</type>
+                                <renderType>checkboxToggle</renderType>
+                                <items>
+                                    <numIndex index="0" type="array">
+                                        <numIndex index="0">LLL:EXT:academic_persons/Resources/Private/Language/locallang_be.xlf:flexform.el.fallbackForNonTranslated.items.0.label</numIndex>
+                                        <labelChecked>Enabled</labelChecked>
+                                        <labelUnchecked>Disabled</labelUnchecked>
+                                    </numIndex>
+                                </items>
+                                <default>1</default>
+                            </config>
+                        </TCEforms>
+                    </settings.fallbackForNonTranslated>
                 </el>
             </ROOT>
         </sDEF>
