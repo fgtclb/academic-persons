@@ -54,24 +54,24 @@
                 <target>Listen Seite</target>
             </trans-unit>
             <trans-unit id="flexform.el.groupBy.label">
-                <source>Group By (this setting will override the sorting settings)</source>
-                <target>Gruppieren nach (diese Einstellung wird die Sortiereinstellungen überschreiben)</target>
+                <source>Group By (is given priority in sorting if activ)</source>
+                <target>Gruppieren nach (wird vorrangig bei der Sortierung berücksichtigt)</target>
             </trans-unit>
             <trans-unit id="flexform.el.groupBy.items.none">
                 <source>No grouping</source>
                 <target>Keine Gruppierung</target>
             </trans-unit>
             <trans-unit id="flexform.el.groupBy.items.first_name">
-                <source>First Name</source>
-                <target>Vorname</target>
+                <source>First Letter of First Name</source>
+                <target>Erster Buchstabe des Vornamens</target>
             </trans-unit>
             <trans-unit id="flexform.el.groupBy.items.last_name">
-                <source>Last Name</source>
-                <target>Nachname</target>
+                <source>First Letter of Last Name</source>
+                <target>Erster Buchstabe des Nachnamens</target>
             </trans-unit>
             <trans-unit id="flexform.el.sortBy.label">
-                <source>Sort By (will be ignored if grouping is active)</source>
-                <target>Sortieren nach (wird ignoriert, wenn die Gruppierung aktiv ist)</target>
+                <source>Sort By (sorting of activated grouping has priority)</source>
+                <target>Sortieren nach (wird nachrangig bei aktivierter Gruppierung berücksichtigt)</target>
             </trans-unit>
             <trans-unit id="flexform.el.sortBy.items.none">
                 <source>No sorting</source>
