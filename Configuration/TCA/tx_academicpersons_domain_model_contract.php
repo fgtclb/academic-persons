@@ -166,8 +166,8 @@ return [
                     'suppressCombinationWarning' => false,
                     'useSortable' => true,
                     'showPossibleLocalizationRecords' => true,
-                    'showAllLocalizationLink' => false,
-                    'showSynchronizationLink' => false,
+                    'showAllLocalizationLink' => true,
+                    'showSynchronizationLink' => true,
                     'enabledControls' => [
                         'info' => true,
                         'new' =>  true,
@@ -203,8 +203,8 @@ return [
                     'suppressCombinationWarning' => false,
                     'useSortable' => true,
                     'showPossibleLocalizationRecords' => true,
-                    'showAllLocalizationLink' => false,
-                    'showSynchronizationLink' => false,
+                    'showAllLocalizationLink' => true,
+                    'showSynchronizationLink' => true,
                     'enabledControls' => [
                         'info' => true,
                         'new' =>  true,
@@ -240,8 +240,8 @@ return [
                     'suppressCombinationWarning' => false,
                     'useSortable' => true,
                     'showPossibleLocalizationRecords' => true,
-                    'showAllLocalizationLink' => false,
-                    'showSynchronizationLink' => false,
+                    'showAllLocalizationLink' => true,
+                    'showSynchronizationLink' => true,
                     'enabledControls' => [
                         'info' => true,
                         'new' =>  true,
