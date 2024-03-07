@@ -87,6 +87,22 @@
                             </config>
                         </TCEforms>
                     </settings.paginationEnabled>
+                    <settings.alphabetPaginationEnabled>
+                        <TCEforms>
+                            <label>LLL:EXT:academic_persons/Resources/Private/Language/locallang_be.xlf:flexform.el.alphabetPaginationEnabled.label</label>
+                            <config>
+                                <type>check</type>
+                                <renderType>checkboxToggle</renderType>
+                                <items>
+                                    <numIndex index="0" type="array">
+                                        <numIndex index="0">LLL:EXT:academic_persons/Resources/Private/Language/locallang_be.xlf:flexform.el.alphabetPaginationEnabled.items.0.label</numIndex>
+                                        <labelChecked>Enabled</labelChecked>
+                                        <labelUnchecked>Disabled</labelUnchecked>
+                                    </numIndex>
+                                </items>
+                            </config>
+                        </TCEforms>
+                    </settings.alphabetPaginationEnabled>
                     <settings.pagination.resultsPerPage>
                         <TCEforms>
                             <label>LLL:EXT:academic_persons/Resources/Private/Language/locallang_be.xlf:flexform.el.resultsPerPage.label</label>

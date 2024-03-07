@@ -75,7 +75,7 @@
             </trans-unit>
             <trans-unit id="flexform.el.sortBy.items.none">
                 <source>No sorting</source>
-                <target>Keine Gruppierung</target>
+                <target>Keine Sortierung</target>
             </trans-unit>
             <trans-unit id="flexform.el.sortBy.items.first_name">
                 <source>First Name</source>
@@ -97,9 +97,21 @@
                 <source>Descending</source>
                 <target>Absteigend</target>
             </trans-unit>
+            <trans-unit id="flexform.el.alphabetPaginationEnabled.label">
+                <source>Alphabetical Pagination</source>
+                <target>Alphabetische Paginierung</target>
+            </trans-unit>
+            <trans-unit id="flexform.el.alphabetPaginationEnabled.items.0.label">
+                <source>Enabled</source>
+                <target>Aktiviert</target>
+            </trans-unit>
             <trans-unit id="flexform.el.paginationEnabled.label">
                 <source>Pagination</source>
                 <target>Paginierung</target>
+            </trans-unit>
+            <trans-unit id="flexform.el.paginationEnabled.items.0.label">
+                <source>Enabled</source>
+                <target>Aktiviert</target>
             </trans-unit>
             <trans-unit id="flexform.el.resultsPerPage.label">
                 <source>Results per Page</source>
