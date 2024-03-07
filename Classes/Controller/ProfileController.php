@@ -38,13 +38,25 @@ final class ProfileController extends ActionController
 
     public function initializeAction(): void
     {
+        $context = GeneralUtility::makeInstance(Context::class);
+        $querySettings = new Typo3QuerySettings($context, $this->configurationManager);
+
         $contentObjectData = $this->configurationManager->getContentObject()?->data;
-        if (is_array($contentObjectData) && !empty($contentObjectData['pages'])) {
-            $context = GeneralUtility::makeInstance(Context::class);
-            $querySettings = new Typo3QuerySettings($context, $this->configurationManager);
-            $querySettings->setStoragePageIds(GeneralUtility::intExplode(',', $contentObjectData['pages']));
-            $this->profileRepository->setDefaultQuerySettings($querySettings);
+        if (is_array($contentObjectData)
+            && !empty($contentObjectData['pages'])
+        ) {
+            $querySettings->setStoragePageIds(
+                GeneralUtility::intExplode(',', $contentObjectData['pages'])
+            );
         }
+
+        if (isset($this->settings['fallbackForNonTranslated']) 
+            & (int)$this->settings['fallbackForNonTranslated'] === 1
+        ) {
+            $querySettings->setLanguageOverlayMode(true);
+        }
+
+        $this->profileRepository->setDefaultQuerySettings($querySettings);
     }
 
     public function initializeListAction(): void
