@@ -5,7 +5,7 @@
         <body>
             <trans-unit id="tx_academicpersons_domain_model_phone_number.ctrl.label">
                 <source>Phone Number</source>
-                <target>Handynummer</target>
+                <target>Telefonnummer</target>
             </trans-unit>
             <trans-unit id="tx_academicpersons_domain_model_phone_number.columns.phone_number.label">
                 <source>Phone Number</source>
@@ -26,11 +26,11 @@
 
             <trans-unit id="tx_academicpersons_domain_model_email.ctrl.label">
                 <source>Email Address</source>
-                <target>E-Mail Adresse</target>
+                <target>E-Mail-Adresse</target>
             </trans-unit>
             <trans-unit id="tx_academicpersons_domain_model_email.columns.email.label">
                 <source>Email Address</source>
-                <target>E-Mail Adresse</target>
+                <target>E-Mail-Adresse</target>
             </trans-unit>
             <trans-unit id="tx_academicpersons_domain_model_email.columns.type.label">
                 <source>Type</source>
@@ -295,11 +295,11 @@
             </trans-unit>
             <trans-unit id="tx_academicpersons_domain_model_contract.columns.phone_numbers.label">
                 <source>Phone Numbers</source>
-                <target>Telefon Nummern</target>
+                <target>Telefonnummern</target>
             </trans-unit>
             <trans-unit id="tx_academicpersons_domain_model_contract.columns.email_addresses.label">
                 <source>Email Addresses</source>
-                <target>E-Mail Adressen</target>
+                <target>E-Mail-Adressen</target>
             </trans-unit>
             <trans-unit id="tx_academicpersons_domain_model_contract.columns.office_hours.label">
                 <source>Office hours</source>
