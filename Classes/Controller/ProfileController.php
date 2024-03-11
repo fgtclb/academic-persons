@@ -101,6 +101,20 @@ final class ProfileController extends ActionController
             ]);
         }
 
+        // If profiles were selected manually, sort them by order in selection
+        if (!empty($this->settings['demand']['profileList'])) {
+            $selectedProfiles = [];
+            $profileUidArray = GeneralUtility::intExplode(',', $this->settings['demand']['profileList'], true);
+            foreach($profileUidArray as $uid) {
+                foreach($profiles as $profile) {
+                    if ($profile->getUid() === $uid) {
+                        $selectedProfiles[] = $profile;
+                    }
+                }
+            }
+            $profiles = $selectedProfiles;
+        }
+
         $this->view->assignMultiple([
             'data' => $this->configurationManager->getContentObject()?->data,
             'profiles' => $profiles,
