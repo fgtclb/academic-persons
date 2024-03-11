@@ -60,7 +60,10 @@ class ProfileRepository extends Repository
         if ($filters !== null) {
             $query->matching($filters);
         }
-        $query->setOrderings($this->getOrderingsFromDemand($demand));
+
+        if (empty($demand->getProfileList())) {
+            $query->setOrderings($this->getOrderingsFromDemand($demand));
+        }
     }
 
     /**
