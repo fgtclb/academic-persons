@@ -48,6 +48,8 @@ final class ProfileController extends ActionController
             $querySettings->setStoragePageIds(
                 GeneralUtility::intExplode(',', $contentObjectData['pages'])
             );
+        } else {
+            $querySettings->setRespectStoragePage(false);
         }
 
         if (isset($this->settings['fallbackForNonTranslated']) 
