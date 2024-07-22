@@ -14,7 +14,8 @@ use TYPO3\CMS\Extbase\Utility\ExtensionUtility;
 ExtensionUtility::registerPlugin(
     'AcademicPersons',
     'List',
-    'LLL:EXT:academic_persons/Resources/Private/Language/locallang_be.xlf:plugin.list.label'
+    'LLL:EXT:academic_persons/Resources/Private/Language/locallang_be.xlf:plugin.list.label',
+    'EXT:academic_persons/Resources/Public/Icons/persons_icon.svg'
 );
 $GLOBALS['TCA']['tt_content']['types']['list']['subtypes_excludelist']['academicpersons_list'] = 'recursive,select_key';
 $GLOBALS['TCA']['tt_content']['types']['list']['subtypes_addlist']['academicpersons_list'] = 'pi_flexform';
@@ -26,14 +27,16 @@ $GLOBALS['TCA']['tt_content']['types']['list']['subtypes_addlist']['academicpers
 ExtensionUtility::registerPlugin(
     'AcademicPersons',
     'Detail',
-    'LLL:EXT:academic_persons/Resources/Private/Language/locallang_be.xlf:plugin.detail.label'
+    'LLL:EXT:academic_persons/Resources/Private/Language/locallang_be.xlf:plugin.detail.label',
+    'EXT:academic_persons/Resources/Public/Icons/persons_icon.svg'
 );
 $GLOBALS['TCA']['tt_content']['types']['list']['subtypes_excludelist']['academicpersons_detail'] = 'recursive,select_key';
 
 ExtensionUtility::registerPlugin(
     'AcademicPersons',
     'ListAndDetail',
-    'LLL:EXT:academic_persons/Resources/Private/Language/locallang_be.xlf:plugin.listAndDetail.label'
+    'LLL:EXT:academic_persons/Resources/Private/Language/locallang_be.xlf:plugin.listAndDetail.label',
+    'EXT:academic_persons/Resources/Public/Icons/persons_icon.svg'
 );
 $GLOBALS['TCA']['tt_content']['types']['list']['subtypes_excludelist']['academicpersons_listanddetail'] = 'recursive,select_key';
 $GLOBALS['TCA']['tt_content']['types']['list']['subtypes_addlist']['academicpersons_listanddetail'] = 'pi_flexform';
