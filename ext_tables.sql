@@ -1,3 +1,91 @@
+CREATE TABLE tx_academicpersons_domain_model_address (
+    contract int(11) unsigned DEFAULT '0' NOT NULL,
+
+    employee_type int(11) unsigned DEFAULT '0' NOT NULL,
+    organisational_level_1 int(11) unsigned DEFAULT '0' NOT NULL,
+    organisational_level_2 int(11) unsigned DEFAULT '0' NOT NULL,
+    organisational_level_3 int(11) unsigned DEFAULT '0' NOT NULL,
+    type varchar(100) DEFAULT '' NOT NULL,
+
+    street varchar(120) DEFAULT '' NOT NULL,
+    street_number varchar(6) DEFAULT '' NOT NULL,
+    additional varchar(120) DEFAULT '' NOT NULL,
+    zip varchar(10) DEFAULT '' NOT NULL,
+    city varchar(100) DEFAULT '' NOT NULL,
+    state varchar(60) DEFAULT '' NOT NULL,
+    country varchar(100) DEFAULT '' NOT NULL,
+
+    sorting int(11) unsigned DEFAULT '0' NOT NULL,
+);
+
+CREATE TABLE tx_academicpersons_domain_model_contract (
+    profile int(11) unsigned DEFAULT '0' NOT NULL,
+
+    organisational_unit varchar(255) DEFAULT '' NOT NULL,
+    function_type varchar(255) DEFAULT '' NOT NULL,
+    valid_from int(11) unsigned DEFAULT '0' NOT NULL,
+    valid_to int(11) unsigned DEFAULT '0' NOT NULL,
+    his_id int(11) DEFAULT '0' NOT NULL,
+
+    employee_type int(11) unsigned DEFAULT '0' NOT NULL,
+    position varchar(100) DEFAULT '' NOT NULL,
+    organisational_level_1 int(11) unsigned DEFAULT '0' NOT NULL,
+    organisational_level_2 int(11) unsigned DEFAULT '0' NOT NULL,
+    organisational_level_3 int(11) unsigned DEFAULT '0' NOT NULL,
+    location int(11) unsigned DEFAULT '0' NOT NULL,
+
+    room varchar(100) DEFAULT '' NOT NULL,
+    office_hours text,
+
+    physical_addresses int(11) unsigned DEFAULT '0' NOT NULL,
+    physical_addresses_from_organisation int(11) unsigned DEFAULT '0' NOT NULL,
+    phone_numbers int(11) unsigned DEFAULT '0' NOT NULL,
+    email_addresses int(11) unsigned DEFAULT '0' NOT NULL,
+
+    publish tinyint(4) unsigned DEFAULT '0' NOT NULL,
+    sorting int(11) unsigned DEFAULT '0' NOT NULL,
+);
+
+CREATE TABLE tx_academicpersons_domain_model_email (
+    contract int(11) unsigned DEFAULT '0' NOT NULL,
+
+    type varchar(100) DEFAULT '' NOT NULL,
+    email varchar(255) DEFAULT '' NOT NULL,
+
+    sorting int(11) unsigned DEFAULT '0' NOT NULL,
+);
+
+CREATE TABLE tx_academicpersons_domain_model_function_type (
+    function_name varchar(255) DEFAULT '' NOT NULL,
+    function_name_male varchar(255) DEFAULT '' NOT NULL,
+    function_name_female varchar(255) DEFAULT '' NOT NULL,
+    his_id int(11) DEFAULT '0' NOT NULL,
+);
+
+CREATE TABLE tx_academicpersons_domain_model_location (
+    title varchar(100) DEFAULT '' NOT NULL,
+);
+
+CREATE TABLE tx_academicpersons_domain_model_organisational_unit (
+    parent int(11) unsigned DEFAULT '0' NOT NULL,
+    unit_name varchar(255) DEFAULT '' NOT NULL,
+    unique_name varchar(255) DEFAULT '' NOT NULL,
+    display_text text,
+    long_text text,
+    valid_from int(11) unsigned DEFAULT '0' NOT NULL,
+    valid_to int(11) unsigned DEFAULT '0' NOT NULL,
+    his_id int(11) DEFAULT '0' NOT NULL,
+);
+
+CREATE TABLE tx_academicpersons_domain_model_phone_number (
+    contract int(11) unsigned DEFAULT '0' NOT NULL,
+
+    type varchar(100) DEFAULT '' NOT NULL,
+    phone_number varchar(60) DEFAULT '' NOT NULL,
+
+    sorting int(11) unsigned DEFAULT '0' NOT NULL,
+);
+
 CREATE TABLE tx_academicpersons_domain_model_profile (
     gender varchar(50) DEFAULT '' NOT NULL,
     title varchar(50) DEFAULT '' NOT NULL,
@@ -30,74 +118,10 @@ CREATE TABLE tx_academicpersons_domain_model_profile (
     vita int(11) unsigned DEFAULT '0' NOT NULL,
 );
 
-CREATE TABLE tx_academicpersons_domain_model_contract (
-    profile int(11) unsigned DEFAULT '0' NOT NULL,
-    employee_type int(11) unsigned DEFAULT '0' NOT NULL,
-    position varchar(100) DEFAULT '' NOT NULL,
-    organisational_level_1 int(11) unsigned DEFAULT '0' NOT NULL,
-    organisational_level_2 int(11) unsigned DEFAULT '0' NOT NULL,
-    organisational_level_3 int(11) unsigned DEFAULT '0' NOT NULL,
-    location int(11) unsigned DEFAULT '0' NOT NULL,
-
-    room varchar(100) DEFAULT '' NOT NULL,
-    office_hours text,
-
-    physical_addresses int(11) unsigned DEFAULT '0' NOT NULL,
-    physical_addresses_from_organisation int(11) unsigned DEFAULT '0' NOT NULL,
-    phone_numbers int(11) unsigned DEFAULT '0' NOT NULL,
-    email_addresses int(11) unsigned DEFAULT '0' NOT NULL,
-
-    publish tinyint(4) unsigned DEFAULT '0' NOT NULL,
-    sorting int(11) unsigned DEFAULT '0' NOT NULL,
-);
-
-CREATE TABLE tx_academicpersons_domain_model_address (
-    contract int(11) unsigned DEFAULT '0' NOT NULL,
-    employee_type int(11) unsigned DEFAULT '0' NOT NULL,
-    organisational_level_1 int(11) unsigned DEFAULT '0' NOT NULL,
-    organisational_level_2 int(11) unsigned DEFAULT '0' NOT NULL,
-    organisational_level_3 int(11) unsigned DEFAULT '0' NOT NULL,
-    type varchar(100) DEFAULT '' NOT NULL,
-
-    street varchar(120) DEFAULT '' NOT NULL,
-    street_number varchar(6) DEFAULT '' NOT NULL,
-    additional varchar(120) DEFAULT '' NOT NULL,
-    zip varchar(10) DEFAULT '' NOT NULL,
-    city varchar(100) DEFAULT '' NOT NULL,
-    state varchar(60) DEFAULT '' NOT NULL,
-    country varchar(100) DEFAULT '' NOT NULL,
-
-    sorting int(11) unsigned DEFAULT '0' NOT NULL,
-);
-
-CREATE TABLE tx_academicpersons_domain_model_email (
-    contract int(11) unsigned DEFAULT '0' NOT NULL,
-    type varchar(100) DEFAULT '' NOT NULL,
-    email varchar(255) DEFAULT '' NOT NULL,
-
-    sorting int(11) unsigned DEFAULT '0' NOT NULL,
-);
-
-CREATE TABLE tx_academicpersons_domain_model_phone_number (
-    contract int(11) unsigned DEFAULT '0' NOT NULL,
-    type varchar(100) DEFAULT '' NOT NULL,
-    phone_number varchar(60) DEFAULT '' NOT NULL,
-    
-    sorting int(11) unsigned DEFAULT '0' NOT NULL,
-);
-
-CREATE TABLE tx_academicpersons_contract_address_mm (
-    fieldname varchar(255) DEFAULT '' NOT NULL,
-);
-
-CREATE TABLE tx_academicpersons_domain_model_location (
-    title varchar(100) DEFAULT '' NOT NULL,
-);
-
 CREATE TABLE tx_academicpersons_domain_model_profile_information (
     profile int(11) unsigned DEFAULT '0' NOT NULL,
-    type varchar(100) DEFAULT '' NOT NULL,
 
+    type varchar(100) DEFAULT '' NOT NULL,
     title varchar(255) DEFAULT '' NOT NULL,
     bodytext text,
     link varchar(2048) DEFAULT '' NOT NULL,
@@ -106,4 +130,8 @@ CREATE TABLE tx_academicpersons_domain_model_profile_information (
     year_end int(4) DEFAULT '0' NOT NULL,
 
     sorting int(11) unsigned DEFAULT '0' NOT NULL,
+);
+
+CREATE TABLE tx_academicpersons_contract_address_mm (
+    fieldname varchar(255) DEFAULT '' NOT NULL,
 );
