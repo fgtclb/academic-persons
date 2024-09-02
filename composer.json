@@ -50,7 +50,8 @@
     "config": {
         "vendor-dir": ".Build/vendor",
         "bin-dir": ".Build/bin",
-        "allow-plugins": true
+        "allow-plugins": true,
+        "sort-packages": true
     },
     "extra": {
         "typo3/cms": {
