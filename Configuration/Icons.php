@@ -20,6 +20,14 @@ return [
         'provider' => \TYPO3\CMS\Core\Imaging\IconProvider\SvgIconProvider::class,
         'source' => 'EXT:academic_persons/Resources/Public/Icons/tx_academicpersons_domain_model_email.svg',
     ],
+    'tx_academicpersons_domain_model_function_type' => [
+        'provider' => \TYPO3\CMS\Core\Imaging\IconProvider\SvgIconProvider::class,
+        'source' => 'EXT:academic_persons/Resources/Public/Icons/tx_academicpersons_domain_model_function_type.svg',
+    ],
+    'tx_academicpersons_domain_model_organisational_unit' => [
+        'provider' => \TYPO3\CMS\Core\Imaging\IconProvider\SvgIconProvider::class,
+        'source' => 'EXT:academic_persons/Resources/Public/Icons/tx_academicpersons_domain_model_organisational_unit.svg',
+    ],
     'tx_academicpersons_domain_model_phone_number' => [
         'provider' => \TYPO3\CMS\Core\Imaging\IconProvider\SvgIconProvider::class,
         'source' => 'EXT:academic_persons/Resources/Public/Icons/tx_academicpersons_domain_model_phone_number.svg',
