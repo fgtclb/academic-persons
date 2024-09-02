@@ -96,54 +96,6 @@ return [
                 'type' => 'passthrough',
             ],
         ],
-        'employee_type' => [
-            'label' => $ll('columns.employee_type.label'),
-            'l10n_display' => 'defaultAsReadonly',
-            'l10n_mode' => 'exclude',
-            'displayCond' => 'FIELD:contract:REQ:false',
-            'config' => [
-                'type' => 'category',
-                'relationship' => 'oneToOne',
-                'minitems' => 1,
-                'maxitems' => 1,
-            ],
-        ],
-        'organisational_level_1' => [
-            'label' => $ll('columns.organisational_level_1.label'),
-            'l10n_display' => 'defaultAsReadonly',
-            'l10n_mode' => 'exclude',
-            'displayCond' => 'FIELD:contract:REQ:false',
-            'config' => [
-                'type' => 'category',
-                'relationship' => 'oneToOne',
-                'minitems' => 1,
-                'maxitems' => 1,
-            ],
-        ],
-        'organisational_level_2' => [
-            'label' => $ll('columns.organisational_level_2.label'),
-            'l10n_display' => 'defaultAsReadonly',
-            'l10n_mode' => 'exclude',
-            'displayCond' => 'FIELD:contract:REQ:false',
-            'config' => [
-                'type' => 'category',
-                'relationship' => 'oneToOne',
-                'minitems' => 1,
-                'maxitems' => 1,
-            ],
-        ],
-        'organisational_level_3' => [
-            'label' => $ll('columns.organisational_level_3.label'),
-            'l10n_display' => 'defaultAsReadonly',
-            'l10n_mode' => 'exclude',
-            'displayCond' => 'FIELD:contract:REQ:false',
-            'config' => [
-                'type' => 'category',
-                'relationship' => 'oneToOne',
-                'minitems' => 0,
-                'maxitems' => 1,
-            ],
-        ],
         'street' => [
             'label' => $ll('columns.street.label'),
             'config' => [
@@ -222,20 +174,10 @@ return [
         ],
     ],
     'palettes' => [
-        'general' => [
-            'label' => 'LLL:EXT:frontend/Resources/Private/Language/locallang_ttc.xlf:palette.general',
+        'address' => [
             'showitem' => implode(',', [
                 'type',
                 '--linebreak--',
-                'employee_type',
-                '--linebreak--',
-                'organisational_level_1',
-                'organisational_level_2',
-                'organisational_level_3',
-            ]),
-        ],
-        'address' => [
-            'showitem' => implode(',', [
                 'street',
                 'street_number',
                 '--linebreak--',
@@ -245,7 +187,6 @@ return [
                 'city',
                 '--linebreak--',
                 'state',
-                '--linebreak--',
                 'country',
             ]),
         ],
@@ -260,7 +201,6 @@ return [
         '1' => [
             'showitem' => implode(',', [
                 '--div--;LLL:EXT:core/Resources/Private/Language/Form/locallang_tabs.xlf:general',
-                    '--palette--;;general',
                     '--palette--;;address',
                 '--div--;LLL:EXT:core/Resources/Private/Language/Form/locallang_tabs.xlf:language',
                     '--palette--;;language',

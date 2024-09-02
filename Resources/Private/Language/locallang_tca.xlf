@@ -86,9 +86,6 @@
             <trans-unit id="tx_academicpersons_domain_model_contract.columns.physical_addresses_chosen.label">
                 <source>Address</source>
             </trans-unit>
-            <trans-unit id="tx_academicpersons_domain_model_contract.columns.physical_addresses_from_organisation.label">
-                <source>Addresses from organisation</source>
-            </trans-unit>
             <trans-unit id="tx_academicpersons_domain_model_contract.columns.position.label">
                 <source>Position</source>
             </trans-unit>
