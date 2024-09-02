@@ -13,19 +13,19 @@ $ll = fn (string $langKey): string => 'LLL:EXT:academic_persons/Resources/Privat
 
 return [
     'ctrl' => [
+        'title' => $ll('ctrl.label'),
         'label' => 'employee_type',
         'label_userFunc' => \Fgtclb\AcademicPersons\Tca\ContractLabels::class . '->getTitle',
         'default_sortby' => 'sorting',
-        'crdate' => 'crdate',
-        'tstamp' => 'tstamp',
-        'title' => $ll('ctrl.label'),
-        'delete' => 'deleted',
-        'hideTable' => true,
+        //'hideTable' => true,
         'origUid' => 't3_origuid',
         'transOrigPointerField' => 'l10n_parent',
         'transOrigDiffSourceField' => 'l10n_diffsource',
         'languageField' => 'sys_language_uid',
         'translationSource' => 'l10n_source',
+        'crdate' => 'crdate',
+        'tstamp' => 'tstamp',
+        'delete' => 'deleted',
         'enablecolumns' => [
             'disabled' => 'hidden',
         ],
@@ -84,6 +84,79 @@ return [
                 'type' => 'passthrough',
             ],
         ],
+        'publish' => [
+            'label' => $ll('columns.publish.label'),
+            'exclude' => true,
+            'config' => [
+                'type' => 'check',
+                'renderType' => 'checkboxToggle',
+                'items' => [
+                    [
+                        0 => '',
+                        'labelChecked' => 'Enabled',
+                        'labelUnchecked' => 'Disabled',
+                    ],
+                ],
+            ],
+        ],
+        'organisational_unit' => [
+            'label' => $ll('columns.organisational_unit.label'),
+            'l10n_mode' => 'exclude',
+            'l10n_display' => 'defaultAsReadonly',
+            'config' => [
+                'type' => 'select',
+                'renderType' => 'selectSingle',
+                'items' => [
+                    [
+                        '--none--',
+                        '',
+                    ],
+                ],
+                'foreign_table' => 'tx_academicpersons_domain_model_organisational_unit',
+                'foreign_table_where' => 'AND {#tx_academicpersons_domain_model_organisational_unit}.{#sys_language_uid} IN (-1, 0)',
+                'minitems' => 1,
+                'required' => true,
+            ],
+        ],
+        'function_type' => [
+            'label' => $ll('columns.function_type.label'),
+            'l10n_mode' => 'exclude',
+            'l10n_display' => 'defaultAsReadonly',
+            'config' => [
+                'type' => 'select',
+                'renderType' => 'selectSingle',
+                'items' => [
+                    [
+                        '--none--',
+                        '',
+                    ],
+                ],
+                'foreign_table' => 'tx_academicpersons_domain_model_function_type',
+                'foreign_table_where' => 'AND {#tx_academicpersons_domain_model_function_type}.{#sys_language_uid} IN (-1, 0)',
+                'minitems' => 1,
+                'required' => true,
+            ],
+        ],
+        'valid_from' => [
+            'label' => $ll('columns.valid_from.label'),
+            'l10n_mode' => 'exclude',
+            'l10n_display' => 'defaultAsReadonly',
+            'config' => [
+                'type' => 'input',
+                'renderType' => 'inputDateTime',
+                'eval' => 'date',
+            ],
+        ],
+        'valid_to' => [
+            'label' => $ll('columns.valid_to.label'),
+            'l10n_mode' => 'exclude',
+            'l10n_display' => 'defaultAsReadonly',
+            'config' => [
+                'type' => 'input',
+                'renderType' => 'inputDateTime',
+                'eval' => 'date',
+            ],
+        ],
         'employee_type' => [
             'label' => $ll('columns.employee_type.label'),
             'l10n_mode' => 'exclude',
@@ -94,61 +167,6 @@ return [
                 'minitems' => 1,
                 'maxitems' => 1,
                 'size' => 5,
-            ],
-        ],
-        'organisational_level_1' => [
-            'label' => $ll('columns.organisational_level_1.label'),
-            'l10n_mode' => 'exclude',
-            'l10n_display' => 'defaultAsReadonly',
-            'config' => [
-                'type' => 'category',
-                'relationship' => 'oneToOne',
-                'minitems' => 1,
-                'maxitems' => 1,
-            ],
-        ],
-        'organisational_level_2' => [
-            'label' => $ll('columns.organisational_level_2.label'),
-            'l10n_mode' => 'exclude',
-            'l10n_display' => 'defaultAsReadonly',
-            'config' => [
-                'type' => 'category',
-                'relationship' => 'oneToOne',
-                'minitems' => 1,
-                'maxitems' => 1,
-            ],
-        ],
-        'organisational_level_3' => [
-            'label' => $ll('columns.organisational_level_3.label'),
-            'l10n_mode' => 'exclude',
-            'l10n_display' => 'defaultAsReadonly',
-            'config' => [
-                'type' => 'category',
-                'relationship' => 'oneToOne',
-                'minitems' => 0,
-                'maxitems' => 1,
-            ],
-        ],
-        'physical_addresses_from_organisation' => [
-            'label' => $ll('columns.physical_addresses_from_organisation.label'),
-            'exclude' => true,
-            'config' => [
-                'type' => 'select',
-                'renderType' => 'selectMultipleSideBySide',
-                'foreign_table' => 'tx_academicpersons_domain_model_address',
-                'MM' => 'tx_academicpersons_contract_address_mm',
-                'MM_match_fields' => [
-                    'fieldname' => 'physical_addresses_from_organisation',
-                ],
-                'foreign_table_where' =>  implode(' AND ', [
-                    'tx_academicpersons_domain_model_address.employee_type = ###REC_FIELD_employee_type###',
-                    'tx_academicpersons_domain_model_address.organisational_level_1 = ###REC_FIELD_organisational_level_1###',
-                    'tx_academicpersons_domain_model_address.organisational_level_2 = ###REC_FIELD_organisational_level_2###',
-                    'tx_academicpersons_domain_model_address.organisational_level_3 = ###REC_FIELD_organisational_level_3###',
-                ]),
-                'size' => 5,
-                'autoSizeMax' => 10,
-                'maxitems' => 1,
             ],
         ],
         'physical_addresses' => [
@@ -277,9 +295,15 @@ return [
             'config' => [
                 'type' => 'select',
                 'renderType' => 'selectSingle',
+                'items' => [
+                    [
+                        '',
+                        '',
+                    ],
+                ],
                 'foreign_table' => 'tx_academicpersons_domain_model_location',
                 'foreign_table_where' => 'AND {#tx_academicpersons_domain_model_location}.{#sys_language_uid} IN (-1, 0)',
-                'default' => 0,
+                'default' => '',
             ],
         ],
         'room' => [
@@ -300,32 +324,20 @@ return [
                 'cols' => 60,
             ],
         ],
-        'publish' => [
-            'label' => $ll('columns.publish.label'),
-            'exclude' => true,
-            'config' => [
-                'type' => 'check',
-                'renderType' => 'checkboxToggle',
-                'items' => [
-                    [
-                        0 => '',
-                        'labelChecked' => 'Enabled',
-                        'labelUnchecked' => 'Disabled',
-                    ],
-                ],
-            ],
-        ],
     ],
     'palettes' => [
         'general' => [
             'showitem' => implode(',', [
                 'profile',
                 'publish',
-                'employee_type',
                 '--linebreak--',
-                'organisational_level_1',
-                'organisational_level_2',
-                'organisational_level_3',
+                'position',
+                '--linebreak--',
+                'organisational_unit',
+                'function_type',
+                '--linebreak--',
+                'valid_from',
+                'valid_to',
             ]),
         ],
         'contactInformation' => [
@@ -333,21 +345,22 @@ return [
                 'location',
                 'room',
                 '--linebreak--',
-                'position',
+                'office_hours',
             ]),
         ],
     ],
     'types' => [
         '0' => [
             'showitem' => implode(',', [
-                '--div--;LLL:EXT:core/Resources/Private/Language/Form/locallang_tabs.xlf:general',
+                '--div--;'. $ll('div.general.label'),
                     '--palette--;;general',
                     '--palette--;;contactInformation',
-                    'office_hours',
-                    'physical_addresses_from_organisation',
+                    '--div--;'. $ll('div.addresses.label'),
                     'physical_addresses',
                     'email_addresses',
                     'phone_numbers',
+                    '--div--;'. $ll('div.employeeType.label'),
+                    'employee_type',
             ]),
         ],
     ],
