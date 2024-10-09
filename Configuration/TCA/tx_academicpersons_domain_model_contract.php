@@ -13,10 +13,10 @@ $ll = fn (string $langKey): string => 'LLL:EXT:academic_persons/Resources/Privat
 return [
     'ctrl' => [
         'title' => $ll('ctrl.label'),
-        'label' => 'employee_type',
+        'label' => 'profile',
         'label_userFunc' => \Fgtclb\AcademicPersons\Tca\ContractLabels::class . '->getTitle',
         'default_sortby' => 'sorting',
-        //'hideTable' => true,
+        'hideTable' => true,
         'origUid' => 't3_origuid',
         'transOrigPointerField' => 'l10n_parent',
         'transOrigDiffSourceField' => 'l10n_diffsource',
@@ -107,7 +107,7 @@ return [
                 'renderType' => 'selectSingle',
                 'items' => [
                     [
-                        '--none--',
+                        $ll('please_select'),
                         '',
                     ],
                 ],
@@ -126,7 +126,7 @@ return [
                 'renderType' => 'selectSingle',
                 'items' => [
                     [
-                        '--none--',
+                        $ll('please_select'),
                         '',
                     ],
                 ],
@@ -163,7 +163,7 @@ return [
             'config' => [
                 'type' => 'category',
                 'relationship' => 'oneToOne',
-                'minitems' => 1,
+                'minitems' => 0,
                 'maxitems' => 1,
                 'size' => 5,
             ],
@@ -351,14 +351,14 @@ return [
     'types' => [
         '0' => [
             'showitem' => implode(',', [
-                '--div--;'. $ll('div.general.label'),
+                '--div--;' . $ll('div.general.label'),
                     '--palette--;;general',
                     '--palette--;;contactInformation',
-                    '--div--;'. $ll('div.addresses.label'),
+                    '--div--;' . $ll('div.addresses.label'),
                     'physical_addresses',
                     'email_addresses',
                     'phone_numbers',
-                    '--div--;'. $ll('div.employeeType.label'),
+                    '--div--;' . $ll('div.employeeType.label'),
                     'employee_type',
             ]),
         ],
