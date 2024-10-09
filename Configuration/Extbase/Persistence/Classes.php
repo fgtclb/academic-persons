@@ -10,9 +10,14 @@ declare(strict_types=1);
  */
 
 return [
-    \Fgtclb\AcademicPersons\Domain\Model\Profile::class => [
-        'tableName' => 'tx_academicpersons_domain_model_profile',
-        'recordType' => \Fgtclb\AcademicPersons\Domain\Model\Profile::class,
+    \Fgtclb\AcademicPersons\Domain\Model\Address::class => [
+        'tableName' => 'tx_academicpersons_domain_model_address',
+        'recordType' => \Fgtclb\AcademicPersons\Domain\Model\Address::class,
+        'properties' => [
+            'employeeType' => [
+                'fieldName' => 'employee_type',
+            ],
+        ],
     ],
     \Fgtclb\AcademicPersons\Domain\Model\Contract::class => [
         'tableName' => 'tx_academicpersons_domain_model_contract',
@@ -21,46 +26,31 @@ return [
             'employeeType' => [
                 'fieldName' => 'employee_type',
             ],
-            'organisationalLevel1' => [
-                'fieldName' => 'organisational_level_1',
-            ],
-            'organisationalLevel2' => [
-                'fieldName' => 'organisational_level_2',
-            ],
-            'organisationalLevel3' => [
-                'fieldName' => 'organisational_level_3',
-            ],
-        ],
-    ],
-    \Fgtclb\AcademicPersons\Domain\Model\Address::class => [
-        'tableName' => 'tx_academicpersons_domain_model_address',
-        'recordType' => \Fgtclb\AcademicPersons\Domain\Model\Address::class,
-        'properties' => [
-            'employeeType' => [
-                'fieldName' => 'employee_type',
-            ],
-            'organisationalLevel1' => [
-                'fieldName' => 'organisational_level_1',
-            ],
-            'organisationalLevel2' => [
-                'fieldName' => 'organisational_level_2',
-            ],
-            'organisationalLevel3' => [
-                'fieldName' => 'organisational_level_3',
-            ],
         ],
     ],
     \Fgtclb\AcademicPersons\Domain\Model\Email::class => [
         'tableName' => 'tx_academicpersons_domain_model_email',
         'recordType' => \Fgtclb\AcademicPersons\Domain\Model\Email::class,
     ],
-    \Fgtclb\AcademicPersons\Domain\Model\PhoneNumber::class => [
-        'tableName' => 'tx_academicpersons_domain_model_phone_number',
-        'recordType' => \Fgtclb\AcademicPersons\Domain\Model\PhoneNumber::class,
+    \Fgtclb\AcademicPersons\Domain\Model\FunctionType::class => [
+        'tableName' => 'tx_academicpersons_domain_model_function_type',
+        'recordType' => \Fgtclb\AcademicPersons\Domain\Model\FunctionType::class,
     ],
     \Fgtclb\AcademicPersons\Domain\Model\Location::class => [
         'tableName' => 'tx_academicpersons_domain_model_location',
         'recordType' => \Fgtclb\AcademicPersons\Domain\Model\Location::class,
+    ],
+    \Fgtclb\AcademicPersons\Domain\Model\OrganisationalUnit::class => [
+        'tableName' => 'tx_academicpersons_domain_model_organisational_unit',
+        'recordType' => \Fgtclb\AcademicPersons\Domain\Model\OrganisationalUnit::class,
+    ],
+    \Fgtclb\AcademicPersons\Domain\Model\PhoneNumber::class => [
+        'tableName' => 'tx_academicpersons_domain_model_phone_number',
+        'recordType' => \Fgtclb\AcademicPersons\Domain\Model\PhoneNumber::class,
+    ],
+    \Fgtclb\AcademicPersons\Domain\Model\Profile::class => [
+        'tableName' => 'tx_academicpersons_domain_model_profile',
+        'recordType' => \Fgtclb\AcademicPersons\Domain\Model\Profile::class,
     ],
     \Fgtclb\AcademicPersons\Domain\Model\ProfileInformation::class => [
         'tableName' => 'tx_academicpersons_domain_model_profile_information',
