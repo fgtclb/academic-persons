@@ -92,6 +92,9 @@
             <trans-unit id="tx_academicpersons_domain_model_contract.ctrl.label">
                 <source>Employee Contract</source>
             </trans-unit>
+            <trans-unit id="tx_academicpersons_domain_model_contract.please_select">
+                <source>Please select...</source>
+            </trans-unit>
 
             <!-- Email Addresses -->
 
