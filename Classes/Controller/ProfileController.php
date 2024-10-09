@@ -52,7 +52,7 @@ final class ProfileController extends ActionController
             $querySettings->setRespectStoragePage(false);
         }
 
-        if (isset($this->settings['fallbackForNonTranslated']) 
+        if (isset($this->settings['fallbackForNonTranslated'])
             & (int)$this->settings['fallbackForNonTranslated'] === 1
         ) {
             $querySettings->setLanguageOverlayMode(true);
@@ -107,8 +107,8 @@ final class ProfileController extends ActionController
         if (!empty($this->settings['demand']['profileList'])) {
             $selectedProfiles = [];
             $profileUidArray = GeneralUtility::intExplode(',', $this->settings['demand']['profileList'], true);
-            foreach($profileUidArray as $uid) {
-                foreach($profiles as $profile) {
+            foreach ($profileUidArray as $uid) {
+                foreach ($profiles as $profile) {
                     if ($profile->getUid() === $uid) {
                         $selectedProfiles[] = $profile;
                     }

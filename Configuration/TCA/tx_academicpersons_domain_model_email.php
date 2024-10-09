@@ -8,9 +8,8 @@ declare(strict_types=1);
  * For the full copyright and license information, please read the
  * LICENSE file that was distributed with this source code.
  */
-
 $ll = fn (string $langKey): string => 'LLL:EXT:academic_persons/Resources/Private/Language/locallang_tca.xlf:tx_academicpersons_domain_model_email.' . $langKey;
- 
+
 return [
     'ctrl' => [
         'label' => 'email',
@@ -101,7 +100,7 @@ return [
                 'items' => [
                     [
                         $ll('columns.type.items.undefined.label'),
-                        ''
+                        '',
                     ],
                 ],
                 'itemsProcFunc' => \Fgtclb\AcademicPersons\Tca\RecordTypes::class . '->getEmailAddressTypes',
