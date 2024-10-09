@@ -14,18 +14,6 @@
             <trans-unit id="tx_academicpersons_domain_model_address.columns.country.label">
                 <source>Country</source>
             </trans-unit>
-            <trans-unit id="tx_academicpersons_domain_model_address.columns.employee_type.label">
-                <source>Employee Type</source>
-            </trans-unit>
-            <trans-unit id="tx_academicpersons_domain_model_address.columns.organisational_level_1.label">
-                <source>Organisational Level 1</source>
-            </trans-unit>
-            <trans-unit id="tx_academicpersons_domain_model_address.columns.organisational_level_2.label">
-                <source>Organisational Level 2</source>
-            </trans-unit>
-            <trans-unit id="tx_academicpersons_domain_model_address.columns.organisational_level_3.label">
-                <source>Organisational Level 3</source>
-            </trans-unit>
             <trans-unit id="tx_academicpersons_domain_model_address.columns.state.label">
                 <source>State</source>
             </trans-unit>
