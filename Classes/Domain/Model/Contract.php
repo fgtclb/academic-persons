@@ -11,7 +11,7 @@ declare(strict_types=1);
 
 namespace Fgtclb\AcademicPersons\Domain\Model;
 
-use Fgtclb\AcademicPersons\Domain\Model\Profile;
+use DateTime;
 use TYPO3\CMS\Extbase\Annotation\ORM\Cascade;
 use TYPO3\CMS\Extbase\Annotation\ORM\Lazy;
 use TYPO3\CMS\Extbase\Annotation\Validate;
@@ -21,36 +21,33 @@ use TYPO3\CMS\Extbase\Persistence\ObjectStorage;
 
 class Contract extends AbstractEntity
 {
-    /**
-     * @var Profile|null
-     */
     protected ?Profile $profile = null;
 
-    /**
-     * @var Category|null
-     */
+    protected ?OrganisationalUnit $organisationalUnit = null;
+
+    protected ?FunctionType $functionType = null;
+
+    protected ?DateTime $validFrom = null;
+
+    protected ?DateTime $validTo = null;
+
     protected ?Category $employeeType = null;
 
     /**
-     * @var Category|null
+     * @Validate("TYPO3\CMS\Extbase\Validation\Validator\StringLengthValidator", options={"maximum": 100})
      */
-    protected ?Category $organisationalLevel1 = null;
+    protected string $position = '';
+
+    protected ?Location $location = null;
 
     /**
-     * @var Category|null
+     * @Validate("TYPO3\CMS\Extbase\Validation\Validator\StringLengthValidator", options={"maximum": 100})
      */
-    protected ?Category $organisationalLevel2 = null;
+    protected string $room = '';
 
-    /**
-     * @var Category|null
-     */
-    protected ?Category $organisationalLevel3 = null;
+    protected string $officeHours = '';
 
-    /**
-     * @var ObjectStorage<Address>
-     * @Lazy
-     */
-    protected ObjectStorage $physicalAddressesFromOrganisation;
+    protected bool $publish = false;
 
     /**
      * @var ObjectStorage<Address>
@@ -73,33 +70,11 @@ class Contract extends AbstractEntity
      */
     protected ObjectStorage $phoneNumbers;
 
-    /**
-     * @Validate("TYPO3\CMS\Extbase\Validation\Validator\StringLengthValidator", options={"maximum": 100})
-     */
-    protected string $position = '';
-
-    protected ?Location $location = null;
-
-    /**
-     * @Validate("TYPO3\CMS\Extbase\Validation\Validator\StringLengthValidator", options={"maximum": 100})
-     */
-    protected string $room = '';
-
-    protected string $officeHours = '';
-
-    protected bool $publish = false;
-
     public function __construct()
     {
-        $this->physicalAddressesFromOrganisation = new ObjectStorage();
         $this->physicalAddresses = new ObjectStorage();
         $this->emailAddresses = new ObjectStorage();
         $this->phoneNumbers = new ObjectStorage();
-    }
-
-    public function getProfile(): ?Profile
-    {
-        return $this->profile;
     }
 
     public function setProfile(?Profile $profile): void
@@ -107,9 +82,49 @@ class Contract extends AbstractEntity
         $this->profile = $profile;
     }
 
-    public function getEmployeeType(): ?Category
+    public function getProfile(): ?Profile
     {
-        return $this->employeeType;
+        return $this->profile;
+    }
+
+    public function setOrganisationalUnit(?OrganisationalUnit $organisationalUnit): void
+    {
+        $this->organisationalUnit = $organisationalUnit;
+    }
+
+    public function getOrganisationalUnit(): ?OrganisationalUnit
+    {
+        return $this->organisationalUnit;
+    }
+
+    public function setFunctionType(?FunctionType $functionType): void
+    {
+        $this->functionType = $functionType;
+    }
+
+    public function getFunctionType(): ?FunctionType
+    {
+        return $this->functionType;
+    }
+
+    public function setValidFrom(?DateTime $validFrom): void
+    {
+        $this->validFrom = $validFrom;
+    }
+
+    public function getValidFrom(): ?DateTime
+    {
+        return $this->validFrom;
+    }
+
+    public function setValidTo(?DateTime $validTo): void
+    {
+        $this->validTo = $validTo;
+    }
+
+    public function getValidTo(): ?DateTime
+    {
+        return $this->validTo;
     }
 
     public function setEmployeeType(?Category $employeeType): void
@@ -117,50 +132,77 @@ class Contract extends AbstractEntity
         $this->employeeType = $employeeType;
     }
 
-    public function getOrganisationalLevel1(): ?Category
+    public function getEmployeeType(): ?Category
     {
-        return $this->organisationalLevel1;
+        return $this->employeeType;
     }
 
-    public function setOrganisationalLevel1(?Category $organisationalLevel1): void
+    public function setPosition(string $position): void
     {
-        $this->organisationalLevel1 = $organisationalLevel1;
+        $this->position = $position;
     }
 
-    public function getOrganisationalLevel2(): ?Category
+    public function getPosition(): string
     {
-        return $this->organisationalLevel2;
+        return $this->position;
     }
 
-    public function setOrganisationalLevel2(?Category $organisationalLevel2): void
+    public function setLocation(Location $location): void
     {
-        $this->organisationalLevel2 = $organisationalLevel2;
+        $this->location = $location;
     }
 
-    public function getOrganisationalLevel3(): ?Category
+    public function getLocation(): ?Location
     {
-        return $this->organisationalLevel3;
+        return $this->location;
     }
 
-    public function setOrganisationalLevel3(?Category $organisationalLevel3): void
+    public function setRoom(string $room): void
     {
-        $this->organisationalLevel3 = $organisationalLevel3;
+        $this->room = $room;
+    }
+
+    public function getRoom(): string
+    {
+        return $this->room;
+    }
+
+    public function setOfficeHours(string $officeHours): void
+    {
+        $this->officeHours = $officeHours;
+    }
+
+    public function getOfficeHours(): string
+    {
+        return $this->officeHours;
+    }
+
+    public function setPublish(bool $publish): void
+    {
+        $this->publish = $publish;
+    }
+
+    public function isPublish(): bool
+    {
+        return $this->publish;
     }
 
     /**
-     * @return ObjectStorage<Address>
+     * @param ObjectStorage<Address> $physicalAddresses
      */
-    public function getPhysicalAddressesFromOrganisation(): ObjectStorage
+    public function setPhysicalAddresses(ObjectStorage $physicalAddresses): void
     {
-        return $this->physicalAddressesFromOrganisation;
+        $this->physicalAddresses = $physicalAddresses;
     }
 
-    /**
-     * @param ObjectStorage<Address> $physicalAddressesFromOrganisation
-     */
-    public function setPhysicalAddressesFromOrganisation(ObjectStorage $physicalAddressesFromOrganisation): void
+    public function addPhysicalAddress(Address $physicalAddress): void
     {
-        $this->physicalAddressesFromOrganisation = $physicalAddressesFromOrganisation;
+        $this->physicalAddresses->attach($physicalAddress);
+    }
+
+    public function removePhysicalAddress(Address $physicalAddress): void
+    {
+        $this->physicalAddresses->detach($physicalAddress);
     }
 
     /**
@@ -172,11 +214,21 @@ class Contract extends AbstractEntity
     }
 
     /**
-     * @param ObjectStorage<Address> $physicalAddresses
+     * @param ObjectStorage<Email> $emailAddresses
      */
-    public function setPhysicalAddresses(ObjectStorage $physicalAddresses): void
+    public function setEmailAddresses(ObjectStorage $emailAddresses): void
     {
-        $this->physicalAddresses = $physicalAddresses;
+        $this->emailAddresses = $emailAddresses;
+    }
+
+    public function addEmailAddress(Email $emailAddress): void
+    {
+        $this->emailAddresses->attach($emailAddress);
+    }
+
+    public function removeEmailAddress(Email $emailAddress): void
+    {
+        $this->emailAddresses->detach($emailAddress);
     }
 
     /**
@@ -188,11 +240,21 @@ class Contract extends AbstractEntity
     }
 
     /**
-     * @param ObjectStorage<Email> $emailAddresses
+     * @param ObjectStorage<PhoneNumber> $phoneNumbers
      */
-    public function setEmailAddresses(ObjectStorage $emailAddresses): void
+    public function setPhoneNumbers(ObjectStorage $phoneNumbers): void
     {
-        $this->emailAddresses = $emailAddresses;
+        $this->phoneNumbers = $phoneNumbers;
+    }
+
+    public function addPhoneNumber(PhoneNumber $phoneNumber): void
+    {
+        $this->phoneNumbers->attach($phoneNumber);
+    }
+
+    public function removePhoneNumber(PhoneNumber $phoneNumber): void
+    {
+        $this->phoneNumbers->detach($phoneNumber);
     }
 
     /**
@@ -203,73 +265,36 @@ class Contract extends AbstractEntity
         return $this->phoneNumbers;
     }
 
-    /**
-     * @param ObjectStorage<PhoneNumber> $phoneNumbers
-     */
-    public function setPhoneNumbers(ObjectStorage $phoneNumbers): void
-    {
-        $this->phoneNumbers = $phoneNumbers;
-    }
-
-    public function getPosition(): string
-    {
-        return $this->position;
-    }
-
-    public function setPosition(string $position): void
-    {
-        $this->position = $position;
-    }
-
-    public function getLocation(): ?Location
-    {
-        return $this->location;
-    }
-
-    public function setLocation(Location $location): void
-    {
-        $this->location = $location;
-    }
-
-    public function getRoom(): string
-    {
-        return $this->room;
-    }
-
-    public function setRoom(string $room): void
-    {
-        $this->room = $room;
-    }
-
-    public function getOfficeHours(): string
-    {
-        return $this->officeHours;
-    }
-
-    public function setOfficeHours(string $officeHours): void
-    {
-        $this->officeHours = $officeHours;
-    }
-
-    public function isPublish(): bool
-    {
-        return $this->publish;
-    }
-
-    public function setPublish(bool $publish): void
-    {
-        $this->publish = $publish;
-    }
-
     public function getLabel(): string
     {
-        $label = '';
-        if ($this->profile) {
-            $label .= $this->profile->getLastName() . ', ' . $this->profile->getFirstName();
+        $firstName = '-';
+        $lastName = '-';
+        if ($this->profile !== null) {
+            $firstName = $this->profile->getLastName() ?? '-';
+            $lastName = $this->profile->getFirstName() ?? '-';
         }
-        if ($this->employeeType) {
-            $label .= ' (' . $this->employeeType->getTitle() . ')';
+
+        $functionType = '-';
+        if ($this->functionType !== null) {
+            $functionType = $this->functionType->getFunctionName() ?? '-';
         }
-        return $label;
+
+        $organisationalUnit = '-';
+        if ($this->organisationalUnit !== null) {
+            $organisationalUnit = $this->organisationalUnit->getUnitName() ?? '-';
+        }
+
+        $validFrom = $this->validFrom ? $this->validFrom->format('Y-m-d') : '-';
+        $validTo = $this->validTo ? $this->validTo->format('Y-m-d') : '-';
+
+        return sprintf(
+            '%s, %s / %s / %s / %s-%s',
+            $firstName,
+            $lastName,
+            $functionType,
+            $organisationalUnit,
+            $validFrom,
+            $validTo
+        );
     }
 }
