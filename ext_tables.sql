@@ -66,6 +66,8 @@ CREATE TABLE tx_academicpersons_domain_model_organisational_unit (
     valid_from int(11) unsigned DEFAULT '0' NOT NULL,
     valid_to int(11) unsigned DEFAULT '0' NOT NULL,
     his_id int(11) DEFAULT '0' NOT NULL,
+    his_parent_id int(11) DEFAULT '0' NOT NULL,
+    contracts int(11) unsigned DEFAULT '0' NOT NULL,
 );
 
 CREATE TABLE tx_academicpersons_domain_model_phone_number (

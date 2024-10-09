@@ -102,7 +102,7 @@ class ProfileRepository extends Repository
         if (in_array($demand->getGroupBy(), $allowedGroupingValues, true)) {
             $orderings[$demand->getGroupBy()] = QueryInterface::ORDER_ASCENDING;
         }
-        
+
         if (
             in_array($demand->getSortBy(), $allowedSortByValues, true) &&
             in_array($demand->getSortByDirection(), $allowedSortByDirectionValues, true)
