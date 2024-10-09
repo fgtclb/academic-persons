@@ -21,18 +21,6 @@
                 <source>Employee Type</source>
                 <target>Mitarbeitertyp</target>
             </trans-unit>
-            <trans-unit id="tx_academicpersons_domain_model_address.columns.organisational_level_1.label">
-                <source>Organisational Level 1</source>
-                <target>Organisatorische Ebene 1</target>
-            </trans-unit>
-            <trans-unit id="tx_academicpersons_domain_model_address.columns.organisational_level_2.label">
-                <source>Organisational Level 2</source>
-                <target>Organisatorische Ebene 2</target>
-            </trans-unit>
-            <trans-unit id="tx_academicpersons_domain_model_address.columns.organisational_level_3.label">
-                <source>Organisational Level 3</source>
-                <target>Organisatorische Ebene 3</target>
-            </trans-unit>
             <trans-unit id="tx_academicpersons_domain_model_address.columns.state.label">
                 <source>State</source>
                 <target>Bundesland</target>
