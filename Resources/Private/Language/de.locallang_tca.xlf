@@ -120,6 +120,10 @@
                 <source>General</source>
                 <target>Stammdaten</target>
             </trans-unit>
+            <trans-unit id="tx_academicpersons_domain_model_contract.please_select">
+                <source>Please select...</source>
+                <target>Bitte auswählen...</target>
+            </trans-unit>
 
             <!-- Email Addresses -->
 
