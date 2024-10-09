@@ -64,5 +64,11 @@
                 "Load migrations from autoload-dev": "patches/migrations/autoload.patch"
             }
         }
+    },
+    "scripts": {
+        "cs:check": ".Build/bin/php-cs-fixer fix --config Build/php-cs-fixer/php-cs-rules.php --ansi --diff --verbose --dry-run",
+        "cs:fix": ".Build/bin/php-cs-fixer fix --config Build/php-cs-fixer/php-cs-rules.php --ansi",
+        "analyze:php": ".Build/bin/phpstan analyse --ansi --no-progress --memory-limit=768M --configuration=Build/phpstan/Core11/phpstan.neon",
+        "analyze:baseline": ".Build/bin/phpstan analyse --ansi --no-progress --memory-limit=768M --configuration=Build/phpstan/Core11/phpstan.neon --generate-baseline=Build/phpstan/Core11/phpstan-baseline.neon"
     }
 }
