@@ -22,14 +22,7 @@ class ContractLabels
         $contract = $contractRepository->findByUid($parameters['row']['uid']);
 
         if ($contract) {
-            $newTitle = '';
-            if ($contract->getProfile()) {
-                $newTitle .= $contract->getProfile()->getLastName() . ', ' . $contract->getProfile()->getFirstName();
-            }
-            if ($contract->getEmployeeType()) {
-                $newTitle .= ' (' . $contract->getEmployeeType()->getTitle() . ')';
-            }
-            $parameters['title'] = $newTitle;
+            $parameters['title'] = $contract->getLabel();
         }
     }
 }
