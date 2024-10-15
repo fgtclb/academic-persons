@@ -100,7 +100,7 @@ return [
             'config' => [
                 'type' => 'input',
                 'size' => 50,
-                'max' => 120,
+                'max' => 255,
                 'eval' => 'required',
             ],
         ],
@@ -109,7 +109,7 @@ return [
             'config' => [
                 'type' => 'input',
                 'size' => 10,
-                'max' => 6,
+                'max' => 255,
             ],
         ],
         'additional' => [
@@ -117,7 +117,7 @@ return [
             'config' => [
                 'type' => 'input',
                 'size' => 50,
-                'max' => 120,
+                'max' => 255,
             ],
         ],
         'zip' => [
@@ -125,7 +125,7 @@ return [
             'config' => [
                 'type' => 'input',
                 'size' => 10,
-                'max' => 10,
+                'max' => 255,
                 'eval' => 'required',
             ],
         ],
@@ -134,7 +134,7 @@ return [
             'config' => [
                 'type' => 'input',
                 'size' => 50,
-                'max' => 100,
+                'max' => 255,
                 'eval' => 'required',
             ],
         ],
@@ -143,7 +143,7 @@ return [
             'config' => [
                 'type' => 'input',
                 'size' => 50,
-                'max' => 60,
+                'max' => 255,
             ],
         ],
         'country' => [
@@ -151,7 +151,7 @@ return [
             'config' => [
                 'type' => 'input',
                 'size' => 50,
-                'max' => 100,
+                'max' => 255,
                 'eval' => 'required',
             ],
         ],

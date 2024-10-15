@@ -285,7 +285,7 @@ return [
             'config' => [
                 'type' => 'input',
                 'size' => 50,
-                'max' => 100,
+                'max' => 255,
             ],
         ],
         'location' => [
@@ -311,7 +311,7 @@ return [
             'config' => [
                 'type' => 'input',
                 'size' => 50,
-                'max' => 100,
+                'max' => 255,
             ],
         ],
         'office_hours' => [

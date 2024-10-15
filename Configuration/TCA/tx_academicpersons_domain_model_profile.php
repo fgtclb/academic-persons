@@ -242,7 +242,7 @@ return [
             'config' => [
                 'type' => 'input',
                 'size' => 50,
-                'max' => 50,
+                'max' => 255,
             ],
         ],
         'first_name' => [
@@ -252,7 +252,7 @@ return [
             'config' => [
                 'type' => 'input',
                 'size' => 50,
-                'max' => 80,
+                'max' => 255,
                 'eval' => 'required',
             ],
         ],
@@ -264,7 +264,7 @@ return [
                 'type' => 'input',
                 'readOnly' => true,
                 'size' => 2,
-                'max' => 2,
+                'max' => 1,
             ],
         ],
         'middle_name' => [
@@ -274,7 +274,7 @@ return [
             'config' => [
                 'type' => 'input',
                 'size' => 50,
-                'max' => 80,
+                'max' => 255,
             ],
         ],
         'last_name' => [
@@ -284,7 +284,7 @@ return [
             'config' => [
                 'type' => 'input',
                 'size' => 50,
-                'max' => 80,
+                'max' => 255,
                 'eval' => 'required',
             ],
         ],
@@ -296,7 +296,7 @@ return [
                 'type' => 'input',
                 'readOnly' => true,
                 'size' => 2,
-                'max' => 2,
+                'max' => 1,
             ],
         ],
         'image' => [
@@ -374,7 +374,7 @@ return [
             'config' => [
                 'type' => 'input',
                 'size' => 50,
-                'max' => 80,
+                'max' => 250,
             ],
         ],
         'website' => [
@@ -384,7 +384,7 @@ return [
             'config' => [
                 'type' => 'input',
                 'size' => 50,
-                'max' => 255,
+                'max' => 2048,
             ],
         ],
         'teaching_area' => [
@@ -438,7 +438,7 @@ return [
             'config' => [
                 'type' => 'input',
                 'size' => 50,
-                'max' => 80,
+                'max' => 255,
             ],
         ],
         'publications_link' => [
@@ -449,7 +449,7 @@ return [
             'config' => [
                 'type' => 'input',
                 'size' => 50,
-                'max' => 255,
+                'max' => 2048,
             ],
         ],
         'cooperation' => [
