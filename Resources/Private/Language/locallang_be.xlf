@@ -32,6 +32,28 @@
                 <source>Profiles: List and detail view of profiles</source>
             </trans-unit>
 
+            <trans-unit id="newContentElement.wizardItems.academic">
+                <source>Academic</source>
+            </trans-unit>
+            <trans-unit id="newContentElement.wizardItems.academic.list.title">
+                <source>Academic Persons List</source>
+            </trans-unit>
+            <trans-unit id="newContentElement.wizardItems.academic.list.description">
+                <source>Plugin for listing academic persons</source>
+            </trans-unit>
+            <trans-unit id="newContentElement.wizardItems.academic.detail.title">
+                <source>Academic Persons Detail</source>
+            </trans-unit>
+            <trans-unit id="newContentElement.wizardItems.academic.detail.description">
+                <source>Plugin for viewing single academic persons</source>
+            </trans-unit>
+            <trans-unit id="newContentElement.wizardItems.academic.listAndDetail.title">
+                <source>Academic Persons List and Detail</source>
+            </trans-unit>
+            <trans-unit id="newContentElement.wizardItems.academic.listAndDetail.description">
+                <source>Plugin for listing and viewing academic persons</source>
+            </trans-unit>
+
             <trans-unit id="flexform.tab.settings">
                 <source>Settings</source>
             </trans-unit>
