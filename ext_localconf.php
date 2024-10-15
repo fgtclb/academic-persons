@@ -10,6 +10,7 @@ declare(strict_types=1);
  */
 
 use Fgtclb\AcademicPersons\Controller\ProfileController;
+use TYPO3\CMS\Core\Utility\ExtensionManagementUtility;
 use TYPO3\CMS\Extbase\Utility\ExtensionUtility;
 
 $GLOBALS['TYPO3_CONF_VARS']['RTE']['Presets']['profile'] = 'EXT:academic_persons/Configuration/CKEditor/Profile.yaml';
@@ -41,3 +42,5 @@ ExtensionUtility::configurePlugin(
 
 $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['t3lib/class.t3lib_tcemain.php']['processDatamapClass']['academicPersons']
     = \Fgtclb\AcademicPersons\Hook\DataHandlerHooks::class;
+
+ExtensionManagementUtility::addPageTSConfig('@import \'EXT:academic_persons/Configuration/TSconfig/page.tsconfig\'');
