@@ -86,7 +86,7 @@ return [
             'config' => [
                 'type' => 'input',
                 'size' => 50,
-                'max' => 60,
+                'max' => 255,
                 'eval' => 'required',
             ],
         ],

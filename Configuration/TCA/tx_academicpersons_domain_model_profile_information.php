@@ -116,7 +116,7 @@ return [
             'config' => [
                 'type' => 'input',
                 'size' => 50,
-                'max' => 255,
+                'max' => 2048,
             ],
         ],
         'year' => [

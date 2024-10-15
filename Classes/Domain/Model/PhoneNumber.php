@@ -18,13 +18,11 @@ class PhoneNumber extends AbstractEntity
 {
     /**
      * @Validate("TYPO3\CMS\Extbase\Validation\Validator\NotEmptyValidator")
-     * @Validate("TYPO3\CMS\Extbase\Validation\Validator\StringLengthValidator", options={"maximum": 60})
      */
     protected string $phoneNumber = '';
 
     /**
      * @Validate("TYPO3\CMS\Extbase\Validation\Validator\NotEmptyValidator")
-     * @Validate("TYPO3\CMS\Extbase\Validation\Validator\StringLengthValidator", options={"maximum": 100})
      */
     protected string $type = '';
 

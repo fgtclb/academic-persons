@@ -14,7 +14,6 @@ namespace Fgtclb\AcademicPersons\Domain\Model;
 use DateTime;
 use TYPO3\CMS\Extbase\Annotation\ORM\Cascade;
 use TYPO3\CMS\Extbase\Annotation\ORM\Lazy;
-use TYPO3\CMS\Extbase\Annotation\Validate;
 use TYPO3\CMS\Extbase\Domain\Model\Category;
 use TYPO3\CMS\Extbase\DomainObject\AbstractEntity;
 use TYPO3\CMS\Extbase\Persistence\ObjectStorage;
@@ -33,16 +32,10 @@ class Contract extends AbstractEntity
 
     protected ?Category $employeeType = null;
 
-    /**
-     * @Validate("TYPO3\CMS\Extbase\Validation\Validator\StringLengthValidator", options={"maximum": 100})
-     */
     protected string $position = '';
 
     protected ?Location $location = null;
 
-    /**
-     * @Validate("TYPO3\CMS\Extbase\Validation\Validator\StringLengthValidator", options={"maximum": 100})
-     */
     protected string $room = '';
 
     protected string $officeHours = '';

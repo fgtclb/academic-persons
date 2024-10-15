@@ -17,68 +17,40 @@ use TYPO3\CMS\Extbase\DomainObject\AbstractEntity;
 
 class Address extends AbstractEntity
 {
-    /**
-     * @var Category|null
-     */
     protected ?Category $employeeType = null;
 
-    /**
-     * @var Category|null
-     */
-    protected ?Category $organisationalLevel1 = null;
+    protected ?OrganisationalUnit $organisationalUnit = null;
 
-    /**
-     * @var Category|null
-     */
-    protected ?Category $organisationalLevel2 = null;
-
-    /**
-     * @var Category|null
-     */
-    protected ?Category $organisationalLevel3 = null;
+    protected ?FunctionType $functionType = null;
 
     /**
      * @Validate("TYPO3\CMS\Extbase\Validation\Validator\NotEmptyValidator")
-     * @Validate("TYPO3\CMS\Extbase\Validation\Validator\StringLengthValidator", options={"maximum": 120})
      */
     protected string $street = '';
 
-    /**
-     * @Validate("TYPO3\CMS\Extbase\Validation\Validator\StringLengthValidator", options={"maximum": 10})
-     */
     protected string $streetNumber = '';
 
-    /**
-     * @Validate("TYPO3\CMS\Extbase\Validation\Validator\StringLengthValidator", options={"maximum": 120})
-     */
     protected string $additional = '';
 
     /**
      * @Validate("TYPO3\CMS\Extbase\Validation\Validator\NotEmptyValidator")
-     * @Validate("TYPO3\CMS\Extbase\Validation\Validator\StringLengthValidator", options={"maximum": 10})
      */
     protected string $zip = '';
 
     /**
      * @Validate("TYPO3\CMS\Extbase\Validation\Validator\NotEmptyValidator")
-     * @Validate("TYPO3\CMS\Extbase\Validation\Validator\StringLengthValidator", options={"maximum": 100})
      */
     protected string $city = '';
 
-    /**
-     * @Validate("TYPO3\CMS\Extbase\Validation\Validator\StringLengthValidator", options={"maximum": 60})
-     */
     protected string $state = '';
 
     /**
      * @Validate("TYPO3\CMS\Extbase\Validation\Validator\NotEmptyValidator")
-     * @Validate("TYPO3\CMS\Extbase\Validation\Validator\StringLengthValidator", options={"maximum": 100})
      */
     protected string $country = '';
 
     /**
      * @Validate("TYPO3\CMS\Extbase\Validation\Validator\NotEmptyValidator")
-     * @Validate("TYPO3\CMS\Extbase\Validation\Validator\StringLengthValidator", options={"maximum": 100})
      */
     protected string $type = '';
 
@@ -92,34 +64,24 @@ class Address extends AbstractEntity
         $this->employeeType = $employeeType;
     }
 
-    public function getOrganisationalLevel1(): ?Category
+    public function setOrganisationalUnit(?OrganisationalUnit $organisationalUnit): void
     {
-        return $this->organisationalLevel1;
+        $this->organisationalUnit = $organisationalUnit;
     }
 
-    public function setOrganisationalLevel1(?Category $organisationalLevel1): void
+    public function getOrganisationalUnit(): ?OrganisationalUnit
     {
-        $this->organisationalLevel1 = $organisationalLevel1;
+        return $this->organisationalUnit;
     }
 
-    public function getOrganisationalLevel2(): ?Category
+    public function setFunctionType(?FunctionType $functionType): void
     {
-        return $this->organisationalLevel2;
+        $this->functionType = $functionType;
     }
 
-    public function setOrganisationalLevel2(?Category $organisationalLevel2): void
+    public function getFunctionType(): ?FunctionType
     {
-        $this->organisationalLevel2 = $organisationalLevel2;
-    }
-
-    public function getOrganisationalLevel3(): ?Category
-    {
-        return $this->organisationalLevel3;
-    }
-
-    public function setOrganisationalLevel3(?Category $organisationalLevel3): void
-    {
-        $this->organisationalLevel3 = $organisationalLevel3;
+        return $this->functionType;
     }
 
     public function getStreet(): string
