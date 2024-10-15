@@ -18,18 +18,11 @@ class FunctionType extends AbstractEntity
 {
     /**
      * @Validate("TYPO3\CMS\Extbase\Validation\Validator\NotEmptyValidator")
-     * @Validate("StringLength", options={"maximum": 255})
      */
     protected string $functionName = '';
 
-    /**
-     * @Validate("StringLength", options={"maximum": 255})
-     */
     protected string $functionNameMale = '';
 
-    /**
-     * @Validate("StringLength", options={"maximum": 255})
-     */
     protected string $functionNameFemale = '';
 
     protected int $hisId = 0;
