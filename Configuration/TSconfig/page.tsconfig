@@ -1,0 +1,34 @@
+mod.wizards.newContentElement.wizardItems.academic {
+    header = LLL:EXT:academic_persons/Resources/Private/Language/locallang_be.xlf:newContentElement.wizardItems.academic
+    after = special
+    elements {
+        academicpersons_list {
+            iconIdentifier = persons_icon
+            title = LLL:EXT:academic_persons/Resources/Private/Language/locallang_be.xlf:newContentElement.wizardItems.academic.list.title
+            description = LLL:EXT:academic_persons/Resources/Private/Language/locallang_be.xlf:newContentElement.wizardItems.academic.list.description
+            tt_content_defValues {
+                CType = list
+                list_type = academicpersons_list
+            }
+        }
+        academicpersons_detail {
+            iconIdentifier = persons_icon
+            title = LLL:EXT:academic_persons/Resources/Private/Language/locallang_be.xlf:newContentElement.wizardItems.academic.detail.title
+            description = LLL:EXT:academic_persons/Resources/Private/Language/locallang_be.xlf:newContentElement.wizardItems.academic.detail.description
+            tt_content_defValues {
+                CType = list
+                list_type = academicpersons_detail
+            }
+        }
+        academicpersons_listanddetail {
+            iconIdentifier = persons_icon
+            title = LLL:EXT:academic_persons/Resources/Private/Language/locallang_be.xlf:newContentElement.wizardItems.academic.listAndDetail.title
+            description = LLL:EXT:academic_persons/Resources/Private/Language/locallang_be.xlf:newContentElement.wizardItems.academic.listAndDetail.description
+            tt_content_defValues {
+                CType = list
+                list_type = academicpersons_listanddetail
+            }
+        }
+    }
+    show := addToList(academicpersons_list,academicpersons_detail,academicpersons_listanddetail)
+}

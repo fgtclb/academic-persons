@@ -41,6 +41,35 @@
                 <target>Profile: Liste und Detailansicht von Profilen</target>
             </trans-unit>
 
+            <trans-unit id="newContentElement.wizardItems.academic">
+                <source>Academic</source>
+                <target>Akademisch</target>
+            </trans-unit>
+            <trans-unit id="newContentElement.wizardItems.academic.list.title">
+                <source>Academic Persons List</source>
+                <target>Akademische Personen Liste</target>
+            </trans-unit>
+            <trans-unit id="newContentElement.wizardItems.academic.list.description">
+                <source>Plugin for listing academic persons</source>
+                <target>Plugin zur Auflistung akademischer Personen</target>
+            </trans-unit>
+            <trans-unit id="newContentElement.wizardItems.academic.detail.title">
+                <source>Academic Persons Detail</source>
+                <target>Akademische Personen Detail</target>
+            </trans-unit>
+            <trans-unit id="newContentElement.wizardItems.academic.detail.description">
+                <source>Plugin for viewing single academic persons</source>
+                <target>Plugin zur Ansicht einzelner akademischer Personen</target>
+            </trans-unit>
+            <trans-unit id="newContentElement.wizardItems.academic.listAndDetail.title">
+                <source>Academic Persons List and Detail</source>
+                <target>Akademische Personen Liste und Detail</target>
+            </trans-unit>
+            <trans-unit id="newContentElement.wizardItems.academic.listAndDetail.description">
+                <source>Plugin for listing and viewing academic persons</source>
+                <target>Plugin zur Auflistung und Ansicht akademischer Personen</target>
+            </trans-unit>
+
             <trans-unit id="flexform.tab.settings">
                 <source>Settings</source>
                 <target>Einstellungen</target>
