@@ -12,6 +12,13 @@ declare(strict_types=1);
 namespace Fgtclb\AcademicPersons\Domain\Model;
 
 use DateTime;
+use Fgtclb\AcademicPersons\Domain\Model\Address;
+use Fgtclb\AcademicPersons\Domain\Model\Email;
+use Fgtclb\AcademicPersons\Domain\Model\FunctionType;
+use Fgtclb\AcademicPersons\Domain\Model\Location;
+use Fgtclb\AcademicPersons\Domain\Model\OrganisationalUnit;
+use Fgtclb\AcademicPersons\Domain\Model\PhoneNumber;
+use Fgtclb\AcademicPersons\Domain\Model\Profile;
 use TYPO3\CMS\Extbase\Annotation\ORM\Cascade;
 use TYPO3\CMS\Extbase\Annotation\ORM\Lazy;
 use TYPO3\CMS\Extbase\Domain\Model\Category;
