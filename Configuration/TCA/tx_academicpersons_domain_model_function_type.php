@@ -8,17 +8,16 @@ declare(strict_types=1);
  * For the full copyright and license information, please read the
  * LICENSE file that was distributed with this source code.
  */
-$ll = fn (string $langKey): string => 'LLL:EXT:academic_persons/Resources/Private/Language/locallang_tca.xlf:tx_academicpersons_domain_model_email.' . $langKey;
+$ll = fn (string $langKey): string => 'LLL:EXT:academic_persons/Resources/Private/Language/locallang_tca.xlf:tx_academicpersons_domain_model_function_type.' . $langKey;
 
 return [
     'ctrl' => [
-        'label' => 'email',
-        'default_sortby' => 'sorting',
+        'label' => 'function_name',
+        'default_sortby' => 'function_name',
         'crdate' => 'crdate',
         'tstamp' => 'tstamp',
         'title' => $ll('ctrl.label'),
         'delete' => 'deleted',
-        'hideTable' => true,
         'origUid' => 't3_origuid',
         'transOrigPointerField' => 'l10n_parent',
         'transOrigDiffSourceField' => 'l10n_diffsource',
@@ -27,9 +26,9 @@ return [
         'enablecolumns' => [
             'disabled' => 'hidden',
         ],
-        'searchFields' => 'email',
+        'searchFields' => 'function_name',
         'typeicon_classes' => [
-            'default' => 'tx_academicpersons_domain_model_email',
+            'default' => 'tx_academicpersons_domain_model_function_type',
         ],
     ],
     'columns' => [
@@ -66,8 +65,8 @@ return [
                         0,
                     ],
                 ],
-                'foreign_table' => 'tx_academicpersons_domain_model_email',
-                'foreign_table_where' => 'AND {#tx_academicpersons_domain_model_email}.{#pid}=###CURRENT_PID### AND {#tx_academicpersons_domain_model_email}.{#sys_language_uid} IN (-1,0)',
+                'foreign_table' => 'tx_academicpersons_domain_model_function_type',
+                'foreign_table_where' => 'AND {#tx_academicpersons_domain_model_function_type}.{#pid}=###CURRENT_PID### AND {#tx_academicpersons_domain_model_function_type}.{#sys_language_uid} IN (-1,0)',
                 'default' => 0,
             ],
         ],
@@ -76,13 +75,13 @@ return [
                 'type' => 'passthrough',
             ],
         ],
-        'contract' => [
+        'his_id' => [
             'config' => [
                 'type' => 'passthrough',
             ],
         ],
-        'email' => [
-            'label' => $ll('columns.email.label'),
+        'function_name' => [
+            'label' => $ll('columns.function_name.label'),
             'config' => [
                 'type' => 'input',
                 'size' => 50,
@@ -90,31 +89,24 @@ return [
                 'eval' => 'required',
             ],
         ],
-        'type' => [
-            'label' => $ll('columns.type.label'),
-            'l10n_mode' => 'exclude',
-            'l10n_display' => 'defaultAsReadonly',
+        'function_name_female' => [
+            'label' => $ll('columns.function_name_female.label'),
             'config' => [
-                'type' => 'select',
-                'renderType' => 'selectSingle',
-                'items' => [
-                    [
-                        $ll('columns.type.items.undefined.label'),
-                        '',
-                    ],
-                ],
-                'itemsProcFunc' => \Fgtclb\AcademicPersons\Tca\RecordTypes::class . '->getEmailAddressTypes',
+                'type' => 'input',
+                'size' => 50,
+                'max' => 255,
+            ],
+        ],
+        'function_name_male' => [
+            'label' => $ll('columns.function_name_male.label'),
+            'config' => [
+                'type' => 'input',
+                'size' => 50,
+                'max' => 255,
             ],
         ],
     ],
     'palettes' => [
-        'general' => [
-            'label' => 'LLL:EXT:frontend/Resources/Private/Language/locallang_ttc.xlf:palette.general',
-            'showitem' => implode(',', [
-                'email',
-                'type',
-            ]),
-        ],
         'language' => [
             'showitem' => implode(',', [
                 'sys_language_uid;LLL:EXT:frontend/Resources/Private/Language/locallang_ttc.xlf:sys_language_uid_formlabel',
@@ -126,7 +118,9 @@ return [
         '1' => [
             'showitem' => implode(',', [
                 '--div--;LLL:EXT:core/Resources/Private/Language/Form/locallang_tabs.xlf:general',
-                    '--palette--;;general',
+                    'function_name',
+                    'function_name_female',
+                    'function_name_male',
                 '--div--;LLL:EXT:core/Resources/Private/Language/Form/locallang_tabs.xlf:language',
                     '--palette--;;language',
                 '--div--;LLL:EXT:core/Resources/Private/Language/Form/locallang_tabs.xlf:extended',

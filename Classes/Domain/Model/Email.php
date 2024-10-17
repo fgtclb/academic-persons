@@ -19,13 +19,11 @@ class Email extends AbstractEntity
     /**
      * @Validate("TYPO3\CMS\Extbase\Validation\Validator\NotEmptyValidator")
      * @Validate("TYPO3\CMS\Extbase\Validation\Validator\EmailAddressValidator")
-     * @Validate("TYPO3\CMS\Extbase\Validation\Validator\StringLengthValidator", options={"maximum": 255})
      */
     protected string $email = '';
 
     /**
      * @Validate("TYPO3\CMS\Extbase\Validation\Validator\NotEmptyValidator")
-     * @Validate("TYPO3\CMS\Extbase\Validation\Validator\StringLengthValidator", options={"maximum": 100})
      */
     protected string $type = '';
 

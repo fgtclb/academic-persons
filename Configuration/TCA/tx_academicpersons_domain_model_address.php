@@ -8,7 +8,6 @@ declare(strict_types=1);
  * For the full copyright and license information, please read the
  * LICENSE file that was distributed with this source code.
  */
-
 $ll = fn (string $langKey): string => 'LLL:EXT:academic_persons/Resources/Private/Language/locallang_tca.xlf:tx_academicpersons_domain_model_address.' . $langKey;
 
 return [
@@ -96,60 +95,12 @@ return [
                 'type' => 'passthrough',
             ],
         ],
-        'employee_type' => [
-            'label' => $ll('columns.employee_type.label'),
-            'l10n_display' => 'defaultAsReadonly',
-            'l10n_mode' => 'exclude',
-            'displayCond' => 'FIELD:contract:REQ:false',
-            'config' => [
-                'type' => 'category',
-                'relationship' => 'oneToOne',
-                'minitems' => 1,
-                'maxitems' => 1,
-            ],
-        ],
-        'organisational_level_1' => [
-            'label' => $ll('columns.organisational_level_1.label'),
-            'l10n_display' => 'defaultAsReadonly',
-            'l10n_mode' => 'exclude',
-            'displayCond' => 'FIELD:contract:REQ:false',
-            'config' => [
-                'type' => 'category',
-                'relationship' => 'oneToOne',
-                'minitems' => 1,
-                'maxitems' => 1,
-            ],
-        ],
-        'organisational_level_2' => [
-            'label' => $ll('columns.organisational_level_2.label'),
-            'l10n_display' => 'defaultAsReadonly',
-            'l10n_mode' => 'exclude',
-            'displayCond' => 'FIELD:contract:REQ:false',
-            'config' => [
-                'type' => 'category',
-                'relationship' => 'oneToOne',
-                'minitems' => 1,
-                'maxitems' => 1,
-            ],
-        ],
-        'organisational_level_3' => [
-            'label' => $ll('columns.organisational_level_3.label'),
-            'l10n_display' => 'defaultAsReadonly',
-            'l10n_mode' => 'exclude',
-            'displayCond' => 'FIELD:contract:REQ:false',
-            'config' => [
-                'type' => 'category',
-                'relationship' => 'oneToOne',
-                'minitems' => 0,
-                'maxitems' => 1,
-            ],
-        ],
         'street' => [
             'label' => $ll('columns.street.label'),
             'config' => [
                 'type' => 'input',
                 'size' => 50,
-                'max' => 120,
+                'max' => 255,
                 'eval' => 'required',
             ],
         ],
@@ -158,7 +109,7 @@ return [
             'config' => [
                 'type' => 'input',
                 'size' => 10,
-                'max' => 6,
+                'max' => 255,
             ],
         ],
         'additional' => [
@@ -166,7 +117,7 @@ return [
             'config' => [
                 'type' => 'input',
                 'size' => 50,
-                'max' => 120,
+                'max' => 255,
             ],
         ],
         'zip' => [
@@ -174,7 +125,7 @@ return [
             'config' => [
                 'type' => 'input',
                 'size' => 10,
-                'max' => 10,
+                'max' => 255,
                 'eval' => 'required',
             ],
         ],
@@ -183,7 +134,7 @@ return [
             'config' => [
                 'type' => 'input',
                 'size' => 50,
-                'max' => 100,
+                'max' => 255,
                 'eval' => 'required',
             ],
         ],
@@ -192,7 +143,7 @@ return [
             'config' => [
                 'type' => 'input',
                 'size' => 50,
-                'max' => 60,
+                'max' => 255,
             ],
         ],
         'country' => [
@@ -200,7 +151,7 @@ return [
             'config' => [
                 'type' => 'input',
                 'size' => 50,
-                'max' => 100,
+                'max' => 255,
                 'eval' => 'required',
             ],
         ],
@@ -214,7 +165,7 @@ return [
                 'items' => [
                     [
                         $ll('columns.type.items.undefined.label'),
-                        ''
+                        '',
                     ],
                 ],
                 'itemsProcFunc' => \Fgtclb\AcademicPersons\Tca\RecordTypes::class . '->getPhysicalAddressTypes',
@@ -222,20 +173,10 @@ return [
         ],
     ],
     'palettes' => [
-        'general' => [
-            'label' => 'LLL:EXT:frontend/Resources/Private/Language/locallang_ttc.xlf:palette.general',
+        'address' => [
             'showitem' => implode(',', [
                 'type',
                 '--linebreak--',
-                'employee_type',
-                '--linebreak--',
-                'organisational_level_1',
-                'organisational_level_2',
-                'organisational_level_3',
-            ]),
-        ],
-        'address' => [
-            'showitem' => implode(',', [
                 'street',
                 'street_number',
                 '--linebreak--',
@@ -245,7 +186,6 @@ return [
                 'city',
                 '--linebreak--',
                 'state',
-                '--linebreak--',
                 'country',
             ]),
         ],
@@ -260,7 +200,6 @@ return [
         '1' => [
             'showitem' => implode(',', [
                 '--div--;LLL:EXT:core/Resources/Private/Language/Form/locallang_tabs.xlf:general',
-                    '--palette--;;general',
                     '--palette--;;address',
                 '--div--;LLL:EXT:core/Resources/Private/Language/Form/locallang_tabs.xlf:language',
                     '--palette--;;language',

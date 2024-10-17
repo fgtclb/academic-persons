@@ -86,7 +86,7 @@ return [
                 'type' => 'select',
                 'renderType' => 'selectSingle',
                 'foreign_table' => 'tx_academicpersons_domain_model_profile',
-                'foreign_table_where' => 'AND {#tx_academicpersons_domain_model_profile}.{#sys_language_uid} IN (-1,0)'
+                'foreign_table_where' => 'AND {#tx_academicpersons_domain_model_profile}.{#sys_language_uid} IN (-1,0)',
             ],
         ],
         'type' => [
@@ -116,7 +116,7 @@ return [
             'config' => [
                 'type' => 'input',
                 'size' => 50,
-                'max' => 255,
+                'max' => 2048,
             ],
         ],
         'year' => [

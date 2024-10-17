@@ -11,6 +11,8 @@ declare(strict_types=1);
 
 namespace Fgtclb\AcademicPersons\Domain\Model;
 
+use Fgtclb\AcademicPersons\Domain\Model\Contract;
+use Fgtclb\AcademicPersons\Domain\Model\ProfileInformation;
 use TYPO3\CMS\Extbase\Annotation\ORM\Cascade;
 use TYPO3\CMS\Extbase\Annotation\ORM\Lazy;
 use TYPO3\CMS\Extbase\Annotation\Validate;
@@ -20,32 +22,21 @@ use TYPO3\CMS\Extbase\Persistence\ObjectStorage;
 
 class Profile extends AbstractEntity
 {
-    /**
-     * @Validate("TYPO3\CMS\Extbase\Validation\Validator\StringLengthValidator", options={"maximum": 50})
-     */
     protected string $gender = '';
 
-    /**
-     * @Validate("TYPO3\CMS\Extbase\Validation\Validator\StringLengthValidator", options={"maximum": 50})
-     */
     protected string $title = '';
 
     /**
      * @Validate("TYPO3\CMS\Extbase\Validation\Validator\NotEmptyValidator")
-     * @Validate("TYPO3\CMS\Extbase\Validation\Validator\StringLengthValidator", options={"maximum": 80})
      */
     protected string $firstName = '';
 
     protected string $firstNameAlpha = '';
 
-    /**
-     * @Validate("TYPO3\CMS\Extbase\Validation\Validator\StringLengthValidator", options={"maximum": 80})
-     */
     protected string $middleName = '';
 
     /**
      * @Validate("TYPO3\CMS\Extbase\Validation\Validator\NotEmptyValidator")
-     * @Validate("TYPO3\CMS\Extbase\Validation\Validator\StringLengthValidator", options={"maximum": 80})
      */
     protected string $lastName = '';
 
@@ -63,14 +54,8 @@ class Profile extends AbstractEntity
      */
     protected ObjectStorage $contracts;
 
-    /**
-     * @Validate("TYPO3\CMS\Extbase\Validation\Validator\StringLengthValidator", options={"maximum": 80})
-     */
     protected string $websiteTitle = '';
 
-    /**
-     * @Validate("TYPO3\CMS\Extbase\Validation\Validator\StringLengthValidator", options={"maximum": 255})
-     */
     protected string $website = '';
 
     protected string $teachingArea = '';
@@ -116,14 +101,8 @@ class Profile extends AbstractEntity
      */
     protected ObjectStorage $scientificResearch;
 
-    /**
-     * @Validate("TYPO3\CMS\Extbase\Validation\Validator\StringLengthValidator", options={"maximum": 255})
-     */
     protected string $publicationsLink = '';
 
-    /**
-     * @Validate("TYPO3\CMS\Extbase\Validation\Validator\StringLengthValidator", options={"maximum": 80})
-     */
     protected string $publicationsLinkTitle = '';
 
     protected string $miscellaneous = '';
