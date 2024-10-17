@@ -11,6 +11,8 @@ declare(strict_types=1);
 
 namespace Fgtclb\AcademicPersons\Domain\Model;
 
+use Fgtclb\AcademicPersons\Domain\Model\FunctionType;
+use Fgtclb\AcademicPersons\Domain\Model\OrganisationalUnit;
 use TYPO3\CMS\Extbase\Annotation\Validate;
 use TYPO3\CMS\Extbase\Domain\Model\Category;
 use TYPO3\CMS\Extbase\DomainObject\AbstractEntity;

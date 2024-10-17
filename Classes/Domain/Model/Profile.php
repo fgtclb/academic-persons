@@ -11,6 +11,8 @@ declare(strict_types=1);
 
 namespace Fgtclb\AcademicPersons\Domain\Model;
 
+use Fgtclb\AcademicPersons\Domain\Model\Contract;
+use Fgtclb\AcademicPersons\Domain\Model\ProfileInformation;
 use TYPO3\CMS\Extbase\Annotation\ORM\Cascade;
 use TYPO3\CMS\Extbase\Annotation\ORM\Lazy;
 use TYPO3\CMS\Extbase\Annotation\Validate;
