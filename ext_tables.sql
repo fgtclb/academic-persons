@@ -2,6 +2,10 @@ CREATE TABLE tx_academicpersons_domain_model_address (
     contract int(11) unsigned DEFAULT '0' NOT NULL,
     type varchar(40) DEFAULT '' NOT NULL,
 
+		employee_type int(11) unsigned DEFAULT '0' NOT NULL,
+		organisational_unit int(11) unsigned DEFAULT NULL,
+    function_type int(11) unsigned DEFAULT NULL,
+
     street varchar(255) DEFAULT '' NOT NULL,
     street_number varchar(255) DEFAULT '' NOT NULL,
     additional varchar(255) DEFAULT '' NOT NULL,
