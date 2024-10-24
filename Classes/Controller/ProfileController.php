@@ -53,7 +53,7 @@ final class ProfileController extends ActionController
         }
 
         if (isset($this->settings['fallbackForNonTranslated'])
-            & (int)$this->settings['fallbackForNonTranslated'] === 1
+            && (int)$this->settings['fallbackForNonTranslated'] === 1
         ) {
             $querySettings->setLanguageOverlayMode(true);
         }
