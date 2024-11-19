@@ -133,7 +133,7 @@ final class ProfileController extends ActionController
     /**
      * @IgnoreValidation("profile")
      */
-    public function detailAction(Profile $profile = null): ResponseInterface
+    public function detailAction(?Profile $profile = null): ResponseInterface
     {
         if ($profile === null) {
             GeneralUtility::makeInstance(ErrorController::class)->pageNotFoundAction(
