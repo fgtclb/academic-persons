@@ -14,6 +14,9 @@
             <trans-unit id="tx_academicpersons_domain_model_address.columns.country.label">
                 <source>Country</source>
             </trans-unit>
+            <trans-unit id="tx_academicpersons_domain_model_address.columns.employee_type.label">
+                <source>Employee Type</source>
+            </trans-unit>
             <trans-unit id="tx_academicpersons_domain_model_address.columns.state.label">
                 <source>State</source>
             </trans-unit>
@@ -53,18 +56,6 @@
             <trans-unit id="tx_academicpersons_domain_model_contract.columns.office_hours.label">
                 <source>Office hours</source>
             </trans-unit>
-            <trans-unit id="tx_academicpersons_domain_model_contract.columns.organisational_level_1.label">
-                <source>Organisational Level 1</source>
-            </trans-unit>
-            <trans-unit id="tx_academicpersons_domain_model_contract.columns.organisational_level_2.label">
-                <source>Organisational Level 2</source>
-            </trans-unit>
-            <trans-unit id="tx_academicpersons_domain_model_contract.columns.organisational_level_3.label">
-                <source>Organisational Level 3</source>
-            </trans-unit>
-            <trans-unit id="tx_academicpersons_domain_model_contract.columns.organisational_unit.label">
-                <source>Organisational Unit</source>
-            </trans-unit>
             <trans-unit id="tx_academicpersons_domain_model_contract.columns.phone_numbers.label">
                 <source>Phone Numbers</source>
             </trans-unit>
@@ -92,6 +83,15 @@
             <trans-unit id="tx_academicpersons_domain_model_contract.ctrl.label">
                 <source>Employee Contract</source>
             </trans-unit>
+            <trans-unit id="tx_academicpersons_domain_model_contract.div.addresses.label">
+                <source>Addresses</source>
+            </trans-unit>
+            <trans-unit id="tx_academicpersons_domain_model_contract.div.employeeType.label">
+                <source>Employee Type</source>
+            </trans-unit>
+            <trans-unit id="tx_academicpersons_domain_model_contract.div.general.label">
+                <source>General</source>
+            </trans-unit>
             <trans-unit id="tx_academicpersons_domain_model_contract.please_select">
                 <source>Please select...</source>
             </trans-unit>
@@ -115,7 +115,6 @@
             </trans-unit>
 
             <!-- Function Types -->
-
             <trans-unit id="tx_academicpersons_domain_model_function_type.columns.function_name.label">
                 <source>Function Name</source>
             </trans-unit>
@@ -139,6 +138,7 @@
             </trans-unit>
 
             <!-- Organisational Units -->
+
             <trans-unit id="tx_academicpersons_domain_model_organisational_unit.columns.display_text.label">
                 <source>Display Text</source>
             </trans-unit>
