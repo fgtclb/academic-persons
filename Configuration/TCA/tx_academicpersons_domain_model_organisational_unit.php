@@ -123,7 +123,10 @@ return [
             'config' => [
                 'type' => 'input',
                 'renderType' => 'inputDateTime',
-                'eval' => 'date',
+                'eval' => implode(',', [
+                    'date',
+                    'int',
+                ]),
             ],
         ],
         'valid_to' => [
@@ -133,7 +136,10 @@ return [
             'config' => [
                 'type' => 'input',
                 'renderType' => 'inputDateTime',
-                'eval' => 'date',
+                'eval' => implode(',', [
+                    'date',
+                    'int',
+                ]),
             ],
         ],
         'contracts' => [
