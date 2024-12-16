@@ -57,7 +57,7 @@ final class DataHandlerHooks
                     continue;
                 }
 
-                $data[$alphaColumnName] = strtolower(substr($data[$correspondingFieldName], 0, 1));
+                $data[$alphaColumnName] = strtolower(mb_substr($data[$correspondingFieldName], 0, 1));
             }
         }
     }
@@ -76,8 +76,8 @@ final class DataHandlerHooks
                 continue;
             }
 
-            $alphaStringLength = strlen('_alpha');
-            $correspondingColumnName = substr($profileColumnName, 0, strlen($profileColumnName) - $alphaStringLength);
+            $alphaStringLength = mb_strlen('_alpha');
+            $correspondingColumnName = mb_substr($profileColumnName, 0, mb_strlen($profileColumnName) - $alphaStringLength);
 
             if (isset($profileColumns[$correspondingColumnName])) {
                 $alphaColumns[$profileColumnName] = $correspondingColumnName;
