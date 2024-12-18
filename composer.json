@@ -16,9 +16,11 @@
     },
     "homepage": "https://github.com/fgtclb/academic-persons",
     "require": {
-        "php": "^8.0",
-        "typo3/cms-core": "^11.5",
-        "typo3/cms-rte-ckeditor": "^11.5"
+        "php": "^7.4 || ^8.0 || ^8.1 || ^8.2 || ^8.3",
+		"typo3/cms-backend": "^11.5 || ^12.4 || ^13.4",
+		"typo3/cms-core": "^11.5 || ^12.4 || ^13.4",
+		"typo3/cms-extbase": "^11.5 || ^12.4 || ^13.4",
+		"typo3/cms-fluid": "^11.5 || ^12.4 || ^13.4",
     },
     "require-dev": {
         "typo3/minimal": "v11.5.0",
