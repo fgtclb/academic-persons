@@ -15,9 +15,6 @@
         "source": "https://github.com/fgtclb/academic-persons"
     },
     "homepage": "https://github.com/fgtclb/academic-persons",
-    "repositories":  [
-        { "type": "git", "url": "https://github.com/andreaswolf/typo3-ext-migrations.git" }
-    ],
     "require": {
         "php": "^8.0",
         "typo3/cms-core": "^11.5",
@@ -27,11 +24,9 @@
     "require-dev": {
         "typo3/minimal": "v11.5.0",
         "typo3/cms-composer-installers": "v4.0.0-RC1",
-        "kaystrobach/migrations": "0.11.0",
         "helhum/typo3-console": "^7.1 || ^8.0",
         "saschaegerer/phpstan-typo3": "^1.8",
         "friendsofphp/php-cs-fixer": "^3.14",
-        "andreaswolf/typo3-uuid": "^0.3.0",
         "typo3/testing-framework": "^7.0",
         "bk2k/bootstrap-package": "^14.0",
         "cweagans/composer-patches": "^1.7"
@@ -43,7 +38,6 @@
     },
     "autoload-dev": {
         "psr-4": {
-            "Fgtclb\\AcademicPersons\\Migrations\\": "Migrations/",
             "Fgtclb\\AcademicPersons\\Tests\\": "Tests/"
         }
     },
@@ -58,11 +52,6 @@
             "web-dir": ".Build/Web",
             "app-dir": ".Build",
             "extension-key": "academic_persons"
-        },
-        "patches": {
-            "kaystrobach/migrations": {
-                "Load migrations from autoload-dev": "patches/migrations/autoload.patch"
-            }
         }
     },
     "scripts": {
