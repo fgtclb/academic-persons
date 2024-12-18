@@ -11,6 +11,5 @@
 /.ddev export-ignore
 /.gitlab export-ignore
 /config export-ignore
-/Migrations export-ignore
 /patches export-ignore
 /Tests export-ignore
