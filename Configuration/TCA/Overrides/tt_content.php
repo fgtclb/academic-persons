@@ -23,7 +23,7 @@ $GLOBALS['TCA']['tt_content']['types']['list']['subtypes_excludelist']['academic
 $GLOBALS['TCA']['tt_content']['types']['list']['subtypes_addlist']['academicpersons_list'] = 'pi_flexform';
 \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addPiFlexFormValue(
     'academicpersons_list',
-    // @todo Remove core11 condition when v11 support is dropped.
+    // @todo Remove core11 condition when v11 support is dropped in 2.x.x.
     // @see https://docs.typo3.org/c/typo3/cms-core/main/en-us/Changelog/12.0/Deprecation-97126-TCEformsRemovedInFlexForm.html
     (((new Typo3Version())->getMajorVersion() < 12)
         ? 'FILE:EXT:academic_persons/Configuration/FlexForms/Core11/List.xml'
@@ -48,7 +48,7 @@ $GLOBALS['TCA']['tt_content']['types']['list']['subtypes_excludelist']['academic
 $GLOBALS['TCA']['tt_content']['types']['list']['subtypes_addlist']['academicpersons_listanddetail'] = 'pi_flexform';
 \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addPiFlexFormValue(
     'academicpersons_listanddetail',
-    // @todo Remove core11 condition when v11 support is dropped.
+    // @todo Remove core11 condition when v11 support is dropped in 2.x.x.
     // @see https://docs.typo3.org/c/typo3/cms-core/main/en-us/Changelog/12.0/Deprecation-97126-TCEformsRemovedInFlexForm.html
     (((new Typo3Version())->getMajorVersion() < 12)
         ? 'FILE:EXT:academic_persons/Configuration/FlexForms/Core11/List.xml'
@@ -69,7 +69,7 @@ $GLOBALS['TCA']['tt_content']['types']['list']['subtypes_excludelist']['academic
 $GLOBALS['TCA']['tt_content']['types']['list']['subtypes_addlist']['academicpersons_selectedprofiles'] = 'pi_flexform';
 \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addPiFlexFormValue(
     'academicpersons_selectedprofiles',
-    // @todo Remove core11 condition when v11 support is dropped.
+    // @todo Remove core11 condition when v11 support is dropped in 2.x.x.
     // @see https://docs.typo3.org/c/typo3/cms-core/main/en-us/Changelog/12.0/Deprecation-97126-TCEformsRemovedInFlexForm.html
     (((new Typo3Version())->getMajorVersion() < 12)
         ? 'FILE:EXT:academic_persons/Configuration/FlexForms/Core11/SelectedProfiles.xml'
@@ -90,7 +90,7 @@ $GLOBALS['TCA']['tt_content']['types']['list']['subtypes_excludelist']['academic
 $GLOBALS['TCA']['tt_content']['types']['list']['subtypes_addlist']['academicpersons_selectedcontracts'] = 'pi_flexform';
 \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addPiFlexFormValue(
     'academicpersons_selectedcontracts',
-    // @todo Remove core11 condition when v11 support is dropped.
+    // @todo Remove core11 condition when v11 support is dropped in 2.x.x.
     // @see https://docs.typo3.org/c/typo3/cms-core/main/en-us/Changelog/12.0/Deprecation-97126-TCEformsRemovedInFlexForm.html
     (((new Typo3Version())->getMajorVersion() < 12)
         ? 'FILE:EXT:academic_persons/Configuration/FlexForms/Core11/SelectedContracts.xml'
