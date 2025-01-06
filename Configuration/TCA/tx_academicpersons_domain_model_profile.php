@@ -2,6 +2,9 @@
 
 declare(strict_types=1);
 
+use TYPO3\CMS\Core\Information\Typo3Version;
+use TYPO3\CMS\Core\Utility\GeneralUtility;
+
 /**
  * This file is part of the "academic_persons" Extension for TYPO3 CMS.
  *
@@ -9,6 +12,48 @@ declare(strict_types=1);
  * LICENSE file that was distributed with this source code.
  */
 $ll = fn (string $langKey): string => 'LLL:EXT:academic_persons/Resources/Private/Language/locallang_tca.xlf:tx_academicpersons_domain_model_profile.' . $langKey;
+
+$versionInformation = GeneralUtility::makeInstance(Typo3Version::class);
+
+// The getFileFieldTCAConfig() method has been replaced with the new field type File in TYPO3 v12.0.
+// @see https://docs.typo3.org/m/typo3/reference-coreapi/12.4/en-us/ApiOverview/Fal/UsingFal/Tca.html
+// @see https://docs.typo3.org/m/typo3/reference-tca/12.4/en-us/ColumnsConfig/Type/File/Index.html#columns-file-migration
+if (version_compare($versionInformation->getVersion(), '12.0.0', '>=')) {
+    $fileConfig =  [
+        'type' => 'file',
+        'maxitems' => 6,
+        'allowed' => 'common-image-types',
+    ];
+} else {
+    $fileConfig = \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::getFileFieldTCAConfig(
+        'image',
+        [
+            'maxitems' => 1,
+            'appearance' => [
+                'createNewRelationLinkTitle' => 'LLL:EXT:frontend/Resources/Private/Language/locallang_ttc.xlf:images.addFileReference',
+                'showPossibleLocalizationRecords' => true,
+            ],
+            // Needed for create file references with Extbase
+            'foreign_match_fields' => [
+                'fieldname' => 'image',
+                'tablenames' => 'tx_academicpersons_domain_model_profile',
+                'table_local' => 'sys_file',
+            ],
+            // custom configuration for displaying fields in the overlay/reference table
+            // to use the imageoverlayPalette instead of the basicoverlayPalette
+            'overrideChildTca' => [
+                'types' => [
+                    \TYPO3\CMS\Core\Resource\File::FILETYPE_IMAGE => [
+                        'showitem' => '
+                            --palette--;;imageoverlayPalette,
+                            --palette--;;filePalette',
+                    ],
+                ],
+            ],
+        ],
+        $GLOBALS['TYPO3_CONF_VARS']['GFX']['imagefile_ext']
+    );
+}
 
 $profileInformationConfig = function (string $type): array {
     return [
@@ -303,34 +348,7 @@ return [
             'label' => $ll('columns.image.label'),
             'l10n_mode' => 'exclude',
             'l10n_display' => 'defaultAsReadonly',
-            'config' => \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::getFileFieldTCAConfig(
-                'image',
-                [
-                    'maxitems' => 1,
-                    'appearance' => [
-                        'createNewRelationLinkTitle' => 'LLL:EXT:frontend/Resources/Private/Language/locallang_ttc.xlf:images.addFileReference',
-                        'showPossibleLocalizationRecords' => true,
-                    ],
-                    // Needed for create file references with Extbase
-                    'foreign_match_fields' => [
-                        'fieldname' => 'image',
-                        'tablenames' => 'tx_academicpersons_domain_model_profile',
-                        'table_local' => 'sys_file',
-                    ],
-                    // custom configuration for displaying fields in the overlay/reference table
-                    // to use the imageoverlayPalette instead of the basicoverlayPalette
-                    'overrideChildTca' => [
-                        'types' => [
-                            \TYPO3\CMS\Core\Resource\File::FILETYPE_IMAGE => [
-                                'showitem' => '
-                                    --palette--;;imageoverlayPalette,
-                                    --palette--;;filePalette',
-                            ],
-                        ],
-                    ],
-                ],
-                $GLOBALS['TYPO3_CONF_VARS']['GFX']['imagefile_ext']
-            ),
+            'config' => $fileConfig,
         ],
         'contracts' => [
             'label' => $ll('columns.contracts.label'),
