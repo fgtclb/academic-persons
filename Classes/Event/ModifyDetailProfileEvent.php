@@ -12,12 +12,14 @@ declare(strict_types=1);
 namespace Fgtclb\AcademicPersons\Event;
 
 use Fgtclb\AcademicPersons\Domain\Model\Profile;
-use TYPO3\CMS\Extbase\Mvc\View\ViewInterface;
+use TYPO3Fluid\Fluid\View\ViewInterface;
 
 final class ModifyDetailProfileEvent
 {
     private Profile $profile;
 
+    // The Extbase ViewInterface has been deprecated in TYPO3 v11.5 and has to be replaced with the TYPO3Fluid ViewInterface.
+    // @see https://docs.typo3.org/c/typo3/cms-core/main/en-us/Changelog/11.5/Deprecation-95222-ExtbaseViewInterface.html
     private ViewInterface $view;
 
     public function __construct(Profile $profile, ViewInterface $view)
