@@ -11,25 +11,37 @@ declare(strict_types=1);
 
 namespace Fgtclb\AcademicPersons\Controller;
 
-use Fgtclb\AcademicPersons\Domain\Model\Dto\DemandInterface;
+use Fgtclb\AcademicPersons\Domain\Model\Dto\ProfileDemand;
 use Fgtclb\AcademicPersons\Domain\Model\Profile;
 use Fgtclb\AcademicPersons\Domain\Repository\ProfileRepository;
 use Fgtclb\AcademicPersons\Event\ModifyDetailProfileEvent;
 use Fgtclb\AcademicPersons\Event\ModifyListProfilesEvent;
 use GeorgRinger\NumberedPagination\NumberedPagination;
 use Psr\Http\Message\ResponseInterface;
+use TYPO3\CMS\Core\Cache\CacheTag;
 use TYPO3\CMS\Core\Context\Context;
+use TYPO3\CMS\Core\Context\LanguageAspect;
+use TYPO3\CMS\Core\Information\Typo3Version;
+use TYPO3\CMS\Core\Pagination\SimplePagination;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Extbase\Annotation\IgnoreValidation;
 use TYPO3\CMS\Extbase\Mvc\Controller\ActionController;
 use TYPO3\CMS\Extbase\Pagination\QueryResultPaginator;
 use TYPO3\CMS\Extbase\Persistence\Generic\Typo3QuerySettings;
+use TYPO3\CMS\Frontend\ContentObject\ContentObjectRenderer;
 use TYPO3\CMS\Frontend\Controller\ErrorController;
 use TYPO3\CMS\Frontend\Page\PageAccessFailureReasons;
 
 final class ProfileController extends ActionController
 {
     private ProfileRepository $profileRepository;
+
+    private ContentObjectRenderer $contentObject;
+
+    private Typo3Version $versionInformation;
+
+    /** @var array<string, mixed> */
+    private array $contentObjectData;
 
     public function injectProfileRepository(ProfileRepository $profileRepository): void
     {
@@ -38,27 +50,14 @@ final class ProfileController extends ActionController
 
     public function initializeAction(): void
     {
-        $context = GeneralUtility::makeInstance(Context::class);
-        $querySettings = new Typo3QuerySettings($context, $this->configurationManager);
+        // Initialize version information
+        $this->versionInformation = GeneralUtility::makeInstance(Typo3Version::class);
 
-        $contentObjectData = $this->configurationManager->getContentObject()?->data;
-        if (is_array($contentObjectData)
-            && !empty($contentObjectData['pages'])
-        ) {
-            $querySettings->setStoragePageIds(
-                GeneralUtility::intExplode(',', $contentObjectData['pages'])
-            );
-        } else {
-            $querySettings->setRespectStoragePage(false);
-        }
+        // Initialize content object
+        $this->contentObject = $this->getContentObject();
 
-        if (isset($this->settings['fallbackForNonTranslated'])
-            && (int)$this->settings['fallbackForNonTranslated'] === 1
-        ) {
-            $querySettings->setLanguageOverlayMode(true);
-        }
-
-        $this->profileRepository->setDefaultQuerySettings($querySettings);
+        // Initialize query settings
+        $this->profileRepository->setDefaultQuerySettings($this->getQuerySettings());
     }
 
     public function initializeListAction(): void
@@ -80,7 +79,7 @@ final class ProfileController extends ActionController
         $this->request = $this->request->withArgument('demand', $demandArray);
     }
 
-    public function listAction(DemandInterface $demand): ResponseInterface
+    public function listAction(ProfileDemand $demand): ResponseInterface
     {
         $profiles = $this->profileRepository->findByDemand($demand);
 
@@ -96,7 +95,11 @@ final class ProfileController extends ActionController
             $resultsPerPage = (int)($this->settings['pagination']['resultsPerPage'] ?? 10);
             $numberOfPaginationLinks = (int)($this->settings['pagination']['numberOfLinks'] ?? 5);
             $paginator = new QueryResultPaginator($profiles, $demand->getCurrentPage(), $resultsPerPage);
-            $pagination = new NumberedPagination($paginator, $numberOfPaginationLinks);
+            if (class_exists(NumberedPagination::class)) {
+                $pagination = new NumberedPagination($paginator, $numberOfPaginationLinks);
+            } else {
+                $pagination =new SimplePagination($paginator, $numberOfPaginationLinks);
+            }
             $this->view->assignMultiple([
                 'paginator' => $paginator,
                 'pagination' => $pagination,
@@ -118,14 +121,12 @@ final class ProfileController extends ActionController
         }
 
         $this->view->assignMultiple([
-            'data' => $this->configurationManager->getContentObject()?->data,
+            'data' => $this->contentObject->data,
             'profiles' => $profiles,
             'demand' => $demand,
         ]);
 
-        $this->configurationManager->getContentObject()?->getTypoScriptFrontendController()?->addCacheTags([
-            'profile_list_view',
-        ]);
+        $this->addCacheTag('profile_list_view');
 
         return $this->htmlResponse();
     }
@@ -150,11 +151,72 @@ final class ProfileController extends ActionController
 
         $this->view->assign('profile', $profile);
 
-        $this->configurationManager->getContentObject()?->getTypoScriptFrontendController()?->addCacheTags([
-            'profile_detail_view',
-            sprintf('profile_detail_view_%d', $profile->getUid()),
-        ]);
+        $this->addCacheTag('profile_detail_view');
+        $this->addCacheTag(sprintf('profile_detail_view_%d', $profile->getUid()));
 
         return $this->htmlResponse();
+    }
+
+    private function getContentObject(): ContentObjectRenderer
+    {
+        // With version TYPO3 v12 the access to the content object renderer has changed
+        // @see https://docs.typo3.org/m/typo3/reference-coreapi/12.4/en-us/ApiOverview/RequestLifeCycle/RequestAttributes/CurrentContentObject.html
+        if (version_compare($this->versionInformation->getVersion(), '12.0.0', '>=')) {
+            $contentObject = $this->request->getAttribute('currentContentObject');
+        } else {
+            $contentObject = $this->configurationManager->getContentObject();
+        }
+
+        return $contentObject;
+    }
+
+    private function addCacheTag(string $tag): void
+    {
+        // With version TYPO3 v13.3 the method addCacheTags() has been marked as deprecated.
+        // @see https://docs.typo3.org/c/typo3/cms-core/main/en-us/Changelog/13.3/Deprecation-102422-TypoScriptFrontendController-addCacheTags.html
+        if (version_compare($this->versionInformation->getVersion(), '12.0.0', '>=')) {
+            $this->request->getAttribute('frontend.cache.collector')->addCacheTags(
+                new CacheTag($tag)
+            );
+        } else {
+            $this->contentObject->getTypoScriptFrontendController()?->addCacheTags([
+                $tag,
+            ]);
+        }
+    }
+
+    private function getQuerySettings(): Typo3QuerySettings
+    {
+        $context = GeneralUtility::makeInstance(Context::class);
+        $querySettings = new Typo3QuerySettings($context, $this->configurationManager);
+
+        if (!empty($this->contentObjectData['pages'])) {
+            $querySettings->setStoragePageIds(
+                GeneralUtility::intExplode(',', $this->contentObjectData['pages'])
+            );
+        } else {
+            $querySettings->setRespectStoragePage(false);
+        }
+
+        if (isset($this->settings['fallbackForNonTranslated'])
+            && (int)$this->settings['fallbackForNonTranslated'] === 1
+        ) {
+            // With version TYPO3 v12.0 some the method setLanguageOverlayMode() is removed.
+            // @see https://docs.typo3.org/c/typo3/cms-core/main/en-us/Changelog/12.0/Breaking-97926-ExtbaseQuerySettingsMethodsRemoved.html
+            if (version_compare($this->versionInformation->getVersion(), '12.0.0', '>=')) {
+                $currentLanguageAspect = $querySettings->getLanguageAspect();
+                $changedLanguageAspect = new LanguageAspect(
+                    $currentLanguageAspect->getId(),
+                    $currentLanguageAspect->getContentId(),
+                    LanguageAspect::OVERLAYS_ON,
+                    $currentLanguageAspect->getFallbackChain()
+                );
+                $querySettings->setLanguageAspect($changedLanguageAspect);
+            } else {
+                $querySettings->setLanguageOverlayMode(true);
+            }
+        }
+
+        return $querySettings;
     }
 }
