@@ -73,15 +73,13 @@
                                 <strong>{physicalAddress.type}:</strong>
                             </f:if>
                             {f:if(condition: '{physicalAddressesInterator.isFirst}', then: '', else: '|')}
-                            {physicalAddress.street}
-                            {physicalAddress.streetNumber}
+                            {physicalAddress.street} {physicalAddress.streetNumber},
                             <f:if condition="{physicalAddress.additional}">
-                                {physicalAddress.additional}
+                                {physicalAddress.additional},
                             </f:if>
-                            {physicalAddress.zip}
-                            {physicalAddress.city}
-                            <f:if condition="{physicalAddress.state}">{physicalAddress.state}</f:if>
-                            <f:if condition="{physicalAddress.country}">{physicalAddress.country}</f:if>
+                            {physicalAddress.zip} {physicalAddress.city}
+                            <f:if condition="{physicalAddress.state}">, {physicalAddress.state}</f:if>
+                            <f:if condition="{physicalAddress.country}">, {physicalAddress.country}</f:if>
                         </p>
                     </f:for>
                 </f:if>
@@ -90,8 +88,6 @@
     </f:for>
 
     <h2 class="mt-4">Additional Information</h2>
-
-    <f:comment><!-- Profile (text) --></f:comment>
 
     <f:if condition="{profile.website}">
         <p>
@@ -105,8 +101,11 @@
             </a>
         </p>
     </f:if>
+
+    <f:comment><!-- Profile (text) --></f:comment>
+
     <f:for
-        each="{0:'researchInterests', 1:'teachingArea', 2:'coreCompetences', 3:'supervisedThesis', 4:'supervisedDoctoralThesis', 5:'miscellaneous'}"
+        each="{0:'teachingArea', 1:'coreCompetences', 2:'supervisedThesis', 3:'supervisedDoctoralThesis', 4:'miscellaneous'}"
         as="text"
     >
         <f:if condition="{profile.{text}}">
@@ -128,7 +127,7 @@
     <f:comment><!-- Profile (timeline) --></f:comment>
 
     <f:for 
-        each="{0:'vita', 1:'memberships', 2:'publications', 3:'cooperation', 4:'lectures'}"
+        each="{0:'scientificResearch', 1:'vita', 2:'memberships', 3:'cooperation', 4:'publications', 5:'lectures', 6:'pressMedia'}"
         as="timeline"
     >
         <f:if condition="{profile.{timeline}}">
