@@ -1,8 +1,8 @@
 {
     "name": "fgtclb/academic-persons",
     "description": "Adds a person database to TYPO3 with plugins to show them in the frontend.",
-    "type": "typo3-cms-extension",
     "license": "GPL-2.0-or-later",
+    "type": "typo3-cms-extension",
     "authors": [
         {
             "name": "Tim Schreiner",
@@ -10,34 +10,36 @@
             "role": "Developer"
         }
     ],
+    "homepage": "https://github.com/fgtclb/academic-persons",
     "support": {
         "issues": "https://github.com/fgtclb/academic-persons/issues",
         "source": "https://github.com/fgtclb/academic-persons"
     },
-    "homepage": "https://github.com/fgtclb/academic-persons",
     "require": {
         "php": "^7.4 || ^8.0 || ^8.1 || ^8.2 || ^8.3",
-		"typo3/cms-backend": "^11.5 || ^12.4 || ^13.4",
-		"typo3/cms-core": "^11.5 || ^12.4 || ^13.4",
-		"typo3/cms-extbase": "^11.5 || ^12.4 || ^13.4",
-		"typo3/cms-fluid": "^11.5 || ^12.4 || ^13.4"
+        "typo3/cms-backend": "^11.5 || ^12.4 || ^13.4",
+        "typo3/cms-core": "^11.5 || ^12.4 || ^13.4",
+        "typo3/cms-extbase": "^11.5 || ^12.4 || ^13.4",
+        "typo3/cms-fluid": "^11.5 || ^12.4 || ^13.4"
     },
     "require-dev": {
-		"fakerphp/faker": "^1.23",
-		"friendsofphp/php-cs-fixer": "^3.14",
-		"helhum/typo3-console": "^7.1.6 || ^8.0.2",
-		"helmich/typo3-typoscript-lint": "^3.1.0",
-		"phpstan/phpstan": "^1.10",
-		"phpunit/phpunit": "^10.1",
-		"saschaegerer/phpstan-typo3": "^1.8",
-		"typo3/cms-extensionmanager": "^11.5 || ^12.4 || ^13.4",
-		"typo3/cms-fluid-styled-content": "^11.5 || ^12.4 || ^13.4",
-		"typo3/cms-frontend": "^11.5 || ^12.4 || ^13.4",
-		"typo3/cms-info": "^11.5 || ^12.4 || ^13.4",
-		"typo3/cms-lowlevel": "^11.5 || ^12.4 || ^13.4",
-		"typo3/cms-tstemplate": "^11.5 || ^12.4 || ^13.4",
-		"typo3/coding-standards": "^0.7.1",
-		"typo3/testing-framework": "^7.0"
+        "ergebnis/composer-normalize": "^2.45",
+        "fakerphp/faker": "^1.23",
+        "friendsofphp/php-cs-fixer": "^3.14",
+        "helhum/typo3-console": "^7.1.6 || ^8.0.2",
+        "helmich/typo3-typoscript-lint": "^3.1.0",
+        "phpstan/phpstan": "^1.10",
+        "phpunit/phpunit": "^10.1",
+        "saschaegerer/phpstan-typo3": "^1.8",
+        "typo3/cms-extensionmanager": "^11.5 || ^12.4 || ^13.4",
+        "typo3/cms-fluid-styled-content": "^11.5 || ^12.4 || ^13.4",
+        "typo3/cms-frontend": "^11.5 || ^12.4 || ^13.4",
+        "typo3/cms-info": "^11.5 || ^12.4 || ^13.4",
+        "typo3/cms-install": "^11.5 || ^12.4 || ^13.4",
+        "typo3/cms-lowlevel": "^11.5 || ^12.4 || ^13.4",
+        "typo3/cms-tstemplate": "^11.5 || ^12.4 || ^13.4",
+        "typo3/coding-standards": "^0.7.1",
+        "typo3/testing-framework": "^7.0"
     },
     "autoload": {
         "psr-4": {
@@ -50,22 +52,23 @@
         }
     },
     "config": {
-        "vendor-dir": ".Build/vendor",
-        "bin-dir": ".Build/bin",
         "allow-plugins": true,
-        "sort-packages": true
+        "bin-dir": ".Build/bin",
+        "sort-packages": true,
+        "vendor-dir": ".Build/vendor"
     },
     "extra": {
         "typo3/cms": {
-            "web-dir": ".Build/Web",
             "app-dir": ".Build",
-            "extension-key": "academic_persons"
+            "extension-key": "academic_persons",
+            "web-dir": ".Build/Web"
         }
     },
     "scripts": {
         "cs:check": ".Build/bin/php-cs-fixer fix --config Build/php-cs-fixer/php-cs-rules.php --ansi --diff --verbose --dry-run",
         "cs:fix": ".Build/bin/php-cs-fixer fix --config Build/php-cs-fixer/php-cs-rules.php --ansi",
-        "analyze:php": ".Build/bin/phpstan analyse --ansi --no-progress --memory-limit=768M --configuration=Build/phpstan/Core11/phpstan.neon",
-        "analyze:baseline": ".Build/bin/phpstan analyse --ansi --no-progress --memory-limit=768M --configuration=Build/phpstan/Core11/phpstan.neon --generate-baseline=Build/phpstan/Core11/phpstan-baseline.neon"
+        "lint:php": "find .*.php *.php Classes Configuration Tests -name '*.php' -print0 | xargs -r -0 -n 1 -P 4 php -l",
+        "phpstan": "@php .Build/bin/phpstan analyse --ansi --no-progress --memory-limit=768M",
+        "lint:typoscript": "@tl --ansi --config=Build/typoscript-lint/typoscript-lint.yml"
     }
 }
