@@ -25,11 +25,11 @@ indent_size = 4
 # HTML-Files / Fluid standalone template
 [*.html]
 indent_style = tab
-indent_size = 2
+indent_size = 4
 
 # JSON-Files
 [*.json]
-indent_style = tab
+indent_style = space
 indent_size = 4
 
 # ReST-Files
