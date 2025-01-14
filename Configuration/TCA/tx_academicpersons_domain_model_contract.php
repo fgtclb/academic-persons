@@ -114,7 +114,6 @@ return [
                 'foreign_table' => 'tx_academicpersons_domain_model_organisational_unit',
                 'foreign_table_where' => 'AND {#tx_academicpersons_domain_model_organisational_unit}.{#sys_language_uid} IN (-1, 0)',
                 'minitems' => 1,
-                'required' => true,
             ],
         ],
         'function_type' => [
@@ -133,7 +132,6 @@ return [
                 'foreign_table' => 'tx_academicpersons_domain_model_function_type',
                 'foreign_table_where' => 'AND {#tx_academicpersons_domain_model_function_type}.{#sys_language_uid} IN (-1, 0)',
                 'minitems' => 1,
-                'required' => true,
             ],
         ],
         'valid_from' => [
