@@ -1,34 +1,66 @@
 mod.wizards.newContentElement.wizardItems.academic {
-    header = LLL:EXT:academic_persons/Resources/Private/Language/locallang_be.xlf:newContentElement.wizardItems.academic
-    after = special
-    elements {
-        academicpersons_list {
-            iconIdentifier = persons_icon
-            title = LLL:EXT:academic_persons/Resources/Private/Language/locallang_be.xlf:newContentElement.wizardItems.academic.list.title
-            description = LLL:EXT:academic_persons/Resources/Private/Language/locallang_be.xlf:newContentElement.wizardItems.academic.list.description
-            tt_content_defValues {
-                CType = list
-                list_type = academicpersons_list
-            }
-        }
-        academicpersons_detail {
-            iconIdentifier = persons_icon
-            title = LLL:EXT:academic_persons/Resources/Private/Language/locallang_be.xlf:newContentElement.wizardItems.academic.detail.title
-            description = LLL:EXT:academic_persons/Resources/Private/Language/locallang_be.xlf:newContentElement.wizardItems.academic.detail.description
-            tt_content_defValues {
-                CType = list
-                list_type = academicpersons_detail
-            }
-        }
-        academicpersons_listanddetail {
-            iconIdentifier = persons_icon
-            title = LLL:EXT:academic_persons/Resources/Private/Language/locallang_be.xlf:newContentElement.wizardItems.academic.listAndDetail.title
-            description = LLL:EXT:academic_persons/Resources/Private/Language/locallang_be.xlf:newContentElement.wizardItems.academic.listAndDetail.description
-            tt_content_defValues {
-                CType = list
-                list_type = academicpersons_listanddetail
-            }
-        }
+  header = LLL:EXT:academic_persons/Resources/Private/Language/locallang_be.xlf:newContentElement.wizardItems.academic
+  after = special
+  elements {
+    academicpersons_list {
+      iconIdentifier = persons_icon
+      title = LLL:EXT:academic_persons/Resources/Private/Language/locallang_be.xlf:newContentElement.wizardItems.academic.list.title
+      description = LLL:EXT:academic_persons/Resources/Private/Language/locallang_be.xlf:newContentElement.wizardItems.academic.list.description
+      tt_content_defValues {
+        CType = list
+        list_type = academicpersons_list
+      }
     }
-    show := addToList(academicpersons_list,academicpersons_detail,academicpersons_listanddetail)
+
+    academicpersons_detail {
+      iconIdentifier = persons_icon
+      title = LLL:EXT:academic_persons/Resources/Private/Language/locallang_be.xlf:newContentElement.wizardItems.academic.detail.title
+      description = LLL:EXT:academic_persons/Resources/Private/Language/locallang_be.xlf:newContentElement.wizardItems.academic.detail.description
+      tt_content_defValues {
+        CType = list
+        list_type = academicpersons_detail
+      }
+    }
+
+    academicpersons_listanddetail {
+      iconIdentifier = persons_icon
+      title = LLL:EXT:academic_persons/Resources/Private/Language/locallang_be.xlf:newContentElement.wizardItems.academic.listAndDetail.title
+      description = LLL:EXT:academic_persons/Resources/Private/Language/locallang_be.xlf:newContentElement.wizardItems.academic.listAndDetail.description
+      tt_content_defValues {
+        CType = list
+        list_type = academicpersons_listanddetail
+      }
+    }
+
+    academicpersons_card {
+      iconIdentifier = actions-user
+      title = LLL:EXT:academic_persons/Resources/Private/Language/locallang_be.xlf:newContentElement.wizardItems.academic.card.title
+      description = LLL:EXT:academic_persons/Resources/Private/Language/locallang_be.xlf:newContentElement.wizardItems.academic.card.description
+      tt_content_defValues {
+        CType = academicpersons_card
+      }
+    }
+  }
+
+  show := addToList(academicpersons_list,academicpersons_detail,academicpersons_listanddetail,academicpersons_card)
+}
+
+
+TCEFORM.tt_content {
+  pi_flexform {
+    academicpersons_card {
+      sDEF {
+        settings\.detailPid.disabled = 1
+        settings\.demand\.groupBy.disabled = 1
+        settings\.demand\.sortBy.disabled = 1
+        settings\.demand\.sortByDirection.disabled = 1
+        settings\.paginationEnabled.disabled = 1
+        settings\.alphabetPaginationEnabled.disabled = 1
+        settings\.pagination\.resultsPerPage.disabled = 1
+        settings\.pagination\.numberOfLinks.disabled = 1
+        settings\.viewMode\.enabled.disabled = 1
+        settings\.viewMode\.default.disabled = 1
+      }
+    }
+  }
 }

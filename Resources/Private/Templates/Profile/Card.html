@@ -1,0 +1,87 @@
+<html
+	data-namespace-typo3-fluid="true"
+	xmlns:f="http://typo3.org/ns/TYPO3/CMS/Fluid/ViewHelpers"
+>
+
+<f:if condition="{profiles}">
+	<f:then >
+		<f:for each="{profiles}" as="profile">
+			<f:if condition="{profile.contracts}">
+				<f:variable name="contract">{profile.contracts.0}</f:variable>
+				<f:render section="Person" arguments="{profile: profile, contract: contract}" />
+				<f:if condition="{contract.emailAddresses}">
+					<f:render section="Email" arguments="{profile: profile, emailAddresses: contract.emailAddresses}" />
+				</f:if>
+				<f:if condition="{contract.phoneNumbers}">
+					<f:render section="Phone" arguments="{profile: profile, phoneNumbers: contract.phoneNumbers}" />
+				</f:if>
+			</f:if>
+		</f:for>
+	</f:then>
+	<f:else>
+		<f:translate key="no_profile" extensionName="academic_persons" default="No profile was selected" />
+	</f:else>
+</f:if>
+
+<f:section name="Person">
+	<f:if condition="{profile.title} || {profile.firstName} || {profile.middleName} || {profile.lastName}">
+		<f:link.action
+			action="detail"
+			pageUid="{settings.detailPid}"
+			extensionName="AcademicPersons"
+			controller="Profile"
+			pluginName="Detail"
+			arguments="{profile: address.profile}"
+		>
+			{profile.title} {profile.firstName} {profile.middleName} {profile.lastName}
+		</f:link.action>
+	</f:if>
+	<f:if condition="{contract.position}">
+		<div>
+			<p>
+				{contract.position}
+			</p>
+		</div>
+	</f:if>
+</f:section>
+
+<f:section name="Email">
+	<f:for each="{emailAddresses}" as="emailAddress">
+		<address>
+			<f:if condition="{emailAddress.email}">
+				<div>
+					<f:variable name="emailAddressTitle">
+						{f:if(condition: '{profile.firstName}', then: '{profile.firstName}')}
+						{f:if(condition: ' {profile.middleName}', then:'{profile.middleName}')}
+						{f:if(condition: '{profile.lastName}', then: '{profile.lastName}')}
+					</f:variable>
+					<f:link.email
+						email="{emailAddress.email}"
+						title="{emailAddressTitle}"
+					/>
+				</div>
+			</f:if>
+		</address>
+	</f:for>
+</f:section>
+
+<f:section name="Phone">
+	<f:for each="{phoneNumbers}" as="phoneNumber">
+		<f:if condition="{phoneNumber.phoneNumber}">
+			<div class="profile-contract-item-wrapper">
+				<f:variable name="phoneAddressTitle">
+					{f:if(condition: '{profile.firstName}', then: '{profile.firstName}')}
+					{f:if(condition: ' {profile.middleName}', then:'{profile.middleName}')}
+					{f:if(condition: '{profile.lastName}', then: '{profile.lastName}')}
+				</f:variable>
+				<a href="tel:{phoneNumber.phoneNumber}"
+				   title="{phoneAddressTitle}"
+				>
+					{phoneNumber.phoneNumber}
+				</a>
+			</div>
+		</f:if>
+	</f:for>
+</f:section>
+
+</html>

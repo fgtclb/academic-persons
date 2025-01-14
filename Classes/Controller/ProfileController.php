@@ -161,6 +161,23 @@ final class ProfileController extends ActionController
         return $this->htmlResponse();
     }
 
+    public function cardAction(): ResponseInterface
+    {
+        $profiles = [];
+        if ($this->settings['demand']['profileList'] !== '') {
+            $profileDemand = new ProfileDemand();
+            $profileDemand->setProfileList($this->settings['demand']['profileList'] ?? '');
+            $profiles = $this->profileRepository->findByDemand($profileDemand);
+        }
+
+        $this->view->assignMultiple([
+            'data' => $this->contentObject->data,
+            'profiles' => $profiles,
+        ]);
+
+        return $this->htmlResponse();
+    }
+
     private function getContentObject(): ContentObjectRenderer
     {
         // With version TYPO3 v12 the access to the content object renderer has changed
