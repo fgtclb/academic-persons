@@ -13,4 +13,8 @@
 /.cache/
 /Build/testing-docker/.env
 
+
 /tailor-version-artefact/
+
+/config/system/settings.php
+
