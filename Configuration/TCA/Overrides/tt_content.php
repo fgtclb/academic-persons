@@ -9,42 +9,102 @@ declare(strict_types=1);
  * LICENSE file that was distributed with this source code.
  */
 
+use TYPO3\CMS\Core\Utility\ExtensionManagementUtility;
 use TYPO3\CMS\Extbase\Utility\ExtensionUtility;
 
 (function () {
-    ExtensionUtility::registerPlugin(
-        'AcademicPersons',
-        'List',
-        'LLL:EXT:academic_persons/Resources/Private/Language/locallang_be.xlf:plugin.list.label',
-        'EXT:academic_persons/Resources/Public/Icons/persons_icon.svg'
-    );
-    $GLOBALS['TCA']['tt_content']['types']['list']['subtypes_excludelist']['academicpersons_list'] = 'recursive,select_key';
-    $GLOBALS['TCA']['tt_content']['types']['list']['subtypes_addlist']['academicpersons_list'] = 'pi_flexform';
-    \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addPiFlexFormValue(
-        'academicpersons_list',
-        'FILE:EXT:academic_persons/Configuration/FlexForms/flexform_profile_list.xml'
+    ExtensionManagementUtility::addTcaSelectItemGroup(
+        'tt_content',
+        'CType',
+        'academicpersons',
+        'LLL:EXT:academic_persons/Resources/Private/Language/locallang_be.xlf:content.ctype.group.label',
     );
 
-    ExtensionUtility::registerPlugin(
-        'AcademicPersons',
-        'Detail',
-        'LLL:EXT:academic_persons/Resources/Private/Language/locallang_be.xlf:plugin.detail.label',
-        'EXT:academic_persons/Resources/Public/Icons/persons_icon.svg'
-    );
-    $GLOBALS['TCA']['tt_content']['types']['list']['subtypes_excludelist']['academicpersons_detail'] = 'recursive,select_key';
+    // Add Content Element Detail
+    (function () {
+        $contentIdentifier = 'academicpersons_list';
+        // ToDo: After drop v11 Support transform first parameter to @see TYPO3\CMS\Core\Schema\Struct\SelectItem
+        \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addPlugin(
+            [
+                ((new \TYPO3\CMS\Core\Information\Typo3Version())->getMajorVersion() >= 12 ? 'label' : 0) => 'LLL:EXT:academic_persons/Resources/Private/Language/locallang_be.xlf:plugin.list.label',
+                ((new \TYPO3\CMS\Core\Information\Typo3Version())->getMajorVersion() >= 12 ? 'value' : 1) => $contentIdentifier,
+                ((new \TYPO3\CMS\Core\Information\Typo3Version())->getMajorVersion() >= 12 ? 'icon' : 2) => 'persons_icon',
+                ((new \TYPO3\CMS\Core\Information\Typo3Version())->getMajorVersion() >= 12 ? 'group' : 3) => 'academicpersons',
+            ],
+            ExtensionUtility::PLUGIN_TYPE_CONTENT_ELEMENT,
+            'academic_persons'
+        );
 
-    ExtensionUtility::registerPlugin(
-        'AcademicPersons',
-        'ListAndDetail',
-        'LLL:EXT:academic_persons/Resources/Private/Language/locallang_be.xlf:plugin.listAndDetail.label',
-        'EXT:academic_persons/Resources/Public/Icons/persons_icon.svg'
-    );
-    $GLOBALS['TCA']['tt_content']['types']['list']['subtypes_excludelist']['academicpersons_listanddetail'] = 'recursive,select_key';
-    $GLOBALS['TCA']['tt_content']['types']['list']['subtypes_addlist']['academicpersons_listanddetail'] = 'pi_flexform';
-    \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addPiFlexFormValue(
-        'academicpersons_listanddetail',
-        'FILE:EXT:academic_persons/Configuration/FlexForms/flexform_profile_list.xml'
-    );
+        \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addToAllTCAtypes(
+            'tt_content',
+            implode(',', [
+                '--div--;LLL:EXT:academic_persons/Resources/Private/Language/locallang_be.xlf:element.tab.configuration',
+                'pi_flexform',
+            ]),
+            $contentIdentifier,
+            'after:header'
+        );
+
+        $GLOBALS['TCA']['tt_content']['types']['list']['subtypes_excludelist']['academicpersons_list'] = 'recursive,select_key';
+        $GLOBALS['TCA']['tt_content']['types']['list']['subtypes_addlist']['academicpersons_list'] = 'pi_flexform';
+
+        \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addPiFlexFormValue(
+            '*',
+            'FILE:EXT:academic_persons/Configuration/FlexForms/flexform_profile_list.xml',
+            $contentIdentifier
+        );
+    })();
+
+    // Add Content Element Detail
+    (function () {
+        $contentIdentifier = 'academicpersons_detail';
+        // ToDo: After drop v11 Support transform first parameter to @see TYPO3\CMS\Core\Schema\Struct\SelectItem
+        \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addPlugin(
+            [
+                ((new \TYPO3\CMS\Core\Information\Typo3Version())->getMajorVersion() >= 12 ? 'label' : 0) => 'LLL:EXT:academic_persons/Resources/Private/Language/locallang_be.xlf:plugin.detail.label',
+                ((new \TYPO3\CMS\Core\Information\Typo3Version())->getMajorVersion() >= 12 ? 'value' : 1) => $contentIdentifier,
+                ((new \TYPO3\CMS\Core\Information\Typo3Version())->getMajorVersion() >= 12 ? 'icon' : 2) => 'persons_icon',
+                ((new \TYPO3\CMS\Core\Information\Typo3Version())->getMajorVersion() >= 12 ? 'group' : 3) => 'academicpersons',
+            ],
+            ExtensionUtility::PLUGIN_TYPE_CONTENT_ELEMENT,
+            'academic_persons'
+        );
+    })();
+
+    // Add Content Element ListAndDetail
+    (function () {
+        $contentIdentifier = 'academicpersons_listanddetail';
+        // ToDo: After drop v11 Support transform first parameter to @see TYPO3\CMS\Core\Schema\Struct\SelectItem
+        \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addPlugin(
+            [
+                ((new \TYPO3\CMS\Core\Information\Typo3Version())->getMajorVersion() >= 12 ? 'label' : 0) => 'LLL:EXT:academic_persons/Resources/Private/Language/locallang_be.xlf:plugin.listAndDetail.label',
+                ((new \TYPO3\CMS\Core\Information\Typo3Version())->getMajorVersion() >= 12 ? 'value' : 1) => $contentIdentifier,
+                ((new \TYPO3\CMS\Core\Information\Typo3Version())->getMajorVersion() >= 12 ? 'icon' : 2) => 'persons_icon',
+                ((new \TYPO3\CMS\Core\Information\Typo3Version())->getMajorVersion() >= 12 ? 'group' : 3) => 'academicpersons',
+            ],
+            ExtensionUtility::PLUGIN_TYPE_CONTENT_ELEMENT,
+            'academic_persons'
+        );
+
+        \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addToAllTCAtypes(
+            'tt_content',
+            implode(',', [
+                '--div--;LLL:EXT:academic_persons/Resources/Private/Language/locallang_be.xlf:element.tab.configuration',
+                'pi_flexform',
+            ]),
+            $contentIdentifier,
+            'after:header'
+        );
+
+        $GLOBALS['TCA']['tt_content']['types']['list']['subtypes_excludelist']['academicpersons_listanddetail'] = 'recursive,select_key';
+        $GLOBALS['TCA']['tt_content']['types']['list']['subtypes_addlist']['academicpersons_listanddetail'] = 'pi_flexform';
+
+        \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addPiFlexFormValue(
+            '*',
+            'FILE:EXT:academic_persons/Configuration/FlexForms/flexform_profile_list.xml',
+            $contentIdentifier
+        );
+    })();
 
     // Add Content Element Card
     (function () {
@@ -54,7 +114,8 @@ use TYPO3\CMS\Extbase\Utility\ExtensionUtility;
             [
                 ((new \TYPO3\CMS\Core\Information\Typo3Version())->getMajorVersion() >= 12 ? 'label' : 0) => 'LLL:EXT:academic_persons/Resources/Private/Language/locallang_be.xlf:newContentElement.wizardItems.academic.card.title',
                 ((new \TYPO3\CMS\Core\Information\Typo3Version())->getMajorVersion() >= 12 ? 'value' : 1) => $contentIdentifier,
-                ((new \TYPO3\CMS\Core\Information\Typo3Version())->getMajorVersion() >= 12 ? 'icon' : 2) => '',
+                ((new \TYPO3\CMS\Core\Information\Typo3Version())->getMajorVersion() >= 12 ? 'icon' : 2) => 'persons_icon',
+                ((new \TYPO3\CMS\Core\Information\Typo3Version())->getMajorVersion() >= 12 ? 'group' : 3) => 'academicpersons',
             ],
             ExtensionUtility::PLUGIN_TYPE_CONTENT_ELEMENT,
             'academic_persons'
@@ -63,6 +124,7 @@ use TYPO3\CMS\Extbase\Utility\ExtensionUtility;
         \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addToAllTCAtypes(
             'tt_content',
             implode(',', [
+                '--div--;LLL:EXT:academic_persons/Resources/Private/Language/locallang_be.xlf:element.tab.configuration',
                 'pi_flexform',
             ]),
             $contentIdentifier,
