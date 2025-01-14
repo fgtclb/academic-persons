@@ -1,5 +1,21 @@
 parameters:
-  ignoreErrors:
-    - message: "#^Variable \\$_EXTKEY might not be defined\\.$#"
-      count: 1
-      path: ../../../ext_emconf.php
+	ignoreErrors:
+		-
+			message: "#^Class TYPO3\\\\CMS\\\\Core\\\\Pagination\\\\SimplePagination constructor invoked with 2 parameters, 1 required\\.$#"
+			count: 1
+			path: ../../../Classes/Controller/ProfileController.php
+
+		-
+			message: "#^Instantiated class TYPO3\\\\CMS\\\\Core\\\\Cache\\\\CacheTag not found\\.$#"
+			count: 1
+			path: ../../../Classes/Controller/ProfileController.php
+
+		-
+			message: "#^Method Fgtclb\\\\AcademicPersons\\\\Controller\\\\ProfileController\\:\\:getContentObject\\(\\) should return TYPO3\\\\CMS\\\\Frontend\\\\ContentObject\\\\ContentObjectRenderer but returns TYPO3\\\\CMS\\\\Frontend\\\\ContentObject\\\\ContentObjectRenderer\\|null\\.$#"
+			count: 1
+			path: ../../../Classes/Controller/ProfileController.php
+
+		-
+			message: "#^There is no request attribute \"frontend\\.cache\\.collector\" configured so we can't figure out the exact type to return when calling Psr\\\\Http\\\\Message\\\\ServerRequestInterface\\:\\:getAttribute$#"
+			count: 1
+			path: ../../../Classes/Controller/ProfileController.php
