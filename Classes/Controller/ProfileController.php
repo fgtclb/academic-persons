@@ -165,7 +165,7 @@ final class ProfileController extends ActionController
     {
         // With version TYPO3 v12 the access to the content object renderer has changed
         // @see https://docs.typo3.org/m/typo3/reference-coreapi/12.4/en-us/ApiOverview/RequestLifeCycle/RequestAttributes/CurrentContentObject.html
-        if (version_compare($this->versionInformation->getVersion(), '12.0.0', '>=')) {
+        if ($this->versionInformation->getMajorVersion() >= 12) {
             $contentObject = $this->request->getAttribute('currentContentObject');
         } else {
             $contentObject = $this->configurationManager->getContentObject();
@@ -178,7 +178,7 @@ final class ProfileController extends ActionController
     {
         // With version TYPO3 v13.3 the method addCacheTags() has been marked as deprecated.
         // @see https://docs.typo3.org/c/typo3/cms-core/main/en-us/Changelog/13.3/Deprecation-102422-TypoScriptFrontendController-addCacheTags.html
-        if (version_compare($this->versionInformation->getVersion(), '12.0.0', '>=')) {
+        if ($this->versionInformation->getMajorVersion() > 12) {
             $this->request->getAttribute('frontend.cache.collector')->addCacheTags(
                 new CacheTag($tag)
             );
@@ -207,7 +207,7 @@ final class ProfileController extends ActionController
         ) {
             // With version TYPO3 v12.0 some the method setLanguageOverlayMode() is removed.
             // @see https://docs.typo3.org/c/typo3/cms-core/main/en-us/Changelog/12.0/Breaking-97926-ExtbaseQuerySettingsMethodsRemoved.html
-            if (version_compare($this->versionInformation->getVersion(), '12.0.0', '>=')) {
+            if ($this->versionInformation->getMajorVersion() >= 12) {
                 $currentLanguageAspect = $querySettings->getLanguageAspect();
                 $changedLanguageAspect = new LanguageAspect(
                     $currentLanguageAspect->getId(),
