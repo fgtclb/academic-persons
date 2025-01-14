@@ -9,9 +9,9 @@ declare(strict_types=1);
  * LICENSE file that was distributed with this source code.
  */
 
+// <<<<<<< HEAD
 use TYPO3\CMS\Core\Information\Typo3Version;
 use TYPO3\CMS\Extbase\Utility\ExtensionUtility;
-
 
 ExtensionUtility::registerPlugin(
     'AcademicPersons',
@@ -95,4 +95,34 @@ $GLOBALS['TCA']['tt_content']['types']['list']['subtypes_addlist']['academicpers
     (((new Typo3Version())->getMajorVersion() < 12)
         ? 'FILE:EXT:academic_persons/Configuration/FlexForms/Core11/SelectedContracts.xml'
         : 'FILE:EXT:academic_persons/Configuration/FlexForms/SelectedContracts.xml')
+);
+
+// @todo After drop v11 Support transform first parameter to @see TYPO3\CMS\Core\Schema\Struct\SelectItem
+\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addPlugin(
+    [
+        ((new \TYPO3\CMS\Core\Information\Typo3Version())->getMajorVersion() >= 12 ? 'label' : 0) => 'LLL:EXT:academic_persons/Resources/Private/Language/locallang_be.xlf:newContentElement.wizardItems.academic.card.title',
+        ((new \TYPO3\CMS\Core\Information\Typo3Version())->getMajorVersion() >= 12 ? 'value' : 1) => 'academicpersons_card',
+        ((new \TYPO3\CMS\Core\Information\Typo3Version())->getMajorVersion() >= 12 ? 'icon' : 2) => '',
+    ],
+    ExtensionUtility::PLUGIN_TYPE_CONTENT_ELEMENT,
+    'academic_persons'
+);
+
+\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addToAllTCAtypes(
+    'tt_content',
+    implode(',', [
+        'pi_flexform',
+    ]),
+    'academicpersons_card',
+    'after:header'
+);
+
+\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addPiFlexFormValue(
+    '*',
+    // @todo Remove core11 condition when v11 support is dropped in 2.x.x.
+    // @see https://docs.typo3.org/c/typo3/cms-core/main/en-us/Changelog/12.0/Deprecation-97126-TCEformsRemovedInFlexForm.html
+    (((new Typo3Version())->getMajorVersion() < 12)
+        ? 'FILE:EXT:academic_persons/Configuration/FlexForms/Core11/List.xml'
+        : 'FILE:EXT:academic_persons/Configuration/FlexForms/List.xml'),
+    'academicpersons_card'
 );
