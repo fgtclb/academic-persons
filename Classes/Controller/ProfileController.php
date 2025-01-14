@@ -124,6 +124,47 @@ final class ProfileController extends ActionController
     }
 
     /**
+     * @todo This action is literally broken in multi language sites. Needs to be adopted and covered
+     *       with functional tests.
+     *
+     * @return ResponseInterface
+     */
+    public function cardAction(): ResponseInterface
+    {
+        $profiles = [];
+        if (isset($this->settings['demand'])
+            && is_array($this->settings['demand'])
+            && isset($this->settings['demand']['profileList'])
+            && is_string($this->settings['demand']['profileList'])
+            && $this->settings['demand']['profileList'] !== ''
+        ) {
+            $profileDemand = new ProfileDemand();
+            $profileDemand->setProfileList($this->settings['demand']['profileList'] ?? '');
+            /**
+             * Introduced with https://github.com/fgtclb/academic-persons/pull/30 to have the option to display profiles in
+             * fallback mode even when site language (non-default) is configured to be in strict mode.
+             *
+             * {@see AcademicPersonsListAndDetailPluginTest::fullyLocalizedListDisplaysLocalizedSelectedProfilesForRequestedLanguageInSelectedOrder()}
+             * {@see AcademicPersonsListPluginTest::fullyLocalizedListDisplaysLocalizedSelectedProfilesForRequestedLanguageInSelectedOrder()}
+             */
+            $fallbackForNonTranslated = (int)($this->settings['fallbackForNonTranslated'] ?? 0);
+            if ($fallbackForNonTranslated === 1) {
+                $profileDemand->setFallbackForNonTranslated($fallbackForNonTranslated);
+            }
+            $profiles = $this->profileRepository->findByDemand($profileDemand);
+        }
+
+        // @todo Add enforced sorting based on selected uid's order, similar to listAction/selectedProfilesAction ?
+
+        $this->view->assignMultiple([
+            'data' => $this->getContentObject()?->data,
+            'profiles' => $profiles,
+        ]);
+
+        return $this->htmlResponse();
+    }
+
+    /**
      * @IgnoreValidation("profile")
      */
     public function detailAction(?Profile $profile = null): ResponseInterface
