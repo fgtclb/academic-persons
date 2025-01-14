@@ -1,17 +1,3 @@
-plugin.tx_academicpersons {
-  detailPid =
-  demand {
-    groupBy =
-    sortBy =
-    sortByDirection = asc
-  }
-  pagination {
-    resultsPerPage = 1
-    numberOfLinks = 5
-  }
-  view {
-    templateRootPath = EXT:academic_persons/Resources/Private/Templates/
-    partialRootPath = EXT:academic_persons/Resources/Private/Partials/
-    layoutRootPath = EXT:academic_persons/Resources/Private/Layouts/
-  }
-}
+# @deprecated and will be removed in 2.x.x in favour of Configuration/TypoScript/Default/constants.typoscript
+# Please use Configuration/TypoScript/Default/constants.typoscript directly.
+@import 'EXT:academic_persons/Configuration/TypoScript/Default/constants.tsconfig'

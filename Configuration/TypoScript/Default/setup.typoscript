@@ -1,0 +1,29 @@
+plugin.tx_academicpersons {
+  settings {
+    detailPid = {$plugin.tx_academicpersons.detailPid}
+    demand {
+      groupBy = {$plugin.tx_academicpersons.demand.groupBy}
+      sortBy = {$plugin.tx_academicpersons.demand.sortBy}
+      sortByDirection = {$plugin.tx_academicpersons.demand.sortByDirection}
+      profileList =
+    }
+    pagination {
+      resultsPerPage = {$plugin.tx_academicpersons.pagination.resultsPerPage}
+      numberOfLinks = {$plugin.tx_academicpersons.pagination.numberOfLinks}
+    }
+  }
+  view {
+    templateRootPaths {
+      0 = EXT:academic_persons/Resources/Private/Templates/
+      1 = {$plugin.tx_academicpersons.view.templateRootPath}
+    }
+    partialRootPaths {
+      0 = EXT:academic_persons/Resources/Private/Partials/
+      1 = {$plugin.tx_academicpersons.view.partialRootPath}
+    }
+    layoutRootPaths {
+      0 = EXT:academic_persons/Resources/Private/Layouts/
+      1 = {$plugin.tx_academicpersons.view.layoutRootPath}
+    }
+  }
+}

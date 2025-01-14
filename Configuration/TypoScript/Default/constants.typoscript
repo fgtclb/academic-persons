@@ -1,0 +1,17 @@
+plugin.tx_academicpersons {
+  detailPid =
+  demand {
+    groupBy =
+    sortBy =
+    sortByDirection = asc
+  }
+  pagination {
+    resultsPerPage = 1
+    numberOfLinks = 5
+  }
+  view {
+    templateRootPath = EXT:academic_persons/Resources/Private/Templates/
+    partialRootPath = EXT:academic_persons/Resources/Private/Partials/
+    layoutRootPath = EXT:academic_persons/Resources/Private/Layouts/
+  }
+}
