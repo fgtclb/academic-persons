@@ -10,3 +10,4 @@
 
 /.cache/
 /Build/testing-docker/.env
+/config/system/settings.php
