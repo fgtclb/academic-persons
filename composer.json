@@ -65,6 +65,10 @@
         }
     },
     "scripts": {
+        "analyze:baseline:11": "@phpstan --configuration=Build/phpstan/Core11/phpstan.neon --generate-baseline=Build/phpstan/Core11/phpstan-baseline.neon",
+        "analyze:baseline:12": "@phpstan --configuration=Build/phpstan/Core12/phpstan.neon --generate-baseline=Build/phpstan/Core12/phpstan-baseline.neon",
+        "analyze:php:11": "@phpstan --configuration=Build/phpstan/Core11/phpstan.neon",
+        "analyze:php:12": "@phpstan --configuration=Build/phpstan/Core12/phpstan.neon",
         "cs:check": ".Build/bin/php-cs-fixer fix --config Build/php-cs-fixer/php-cs-rules.php --ansi --diff --verbose --dry-run",
         "cs:fix": ".Build/bin/php-cs-fixer fix --config Build/php-cs-fixer/php-cs-rules.php --ansi",
         "lint:php": "find .*.php *.php Classes Configuration Tests -name '*.php' -print0 | xargs -r -0 -n 1 -P 4 php -l",
