@@ -40,9 +40,6 @@ final class ProfileController extends ActionController
 
     private Typo3Version $versionInformation;
 
-    /** @var array<string, mixed> */
-    private array $contentObjectData;
-
     public function injectProfileRepository(ProfileRepository $profileRepository): void
     {
         $this->profileRepository = $profileRepository;
@@ -211,9 +208,9 @@ final class ProfileController extends ActionController
         $context = GeneralUtility::makeInstance(Context::class);
         $querySettings = new Typo3QuerySettings($context, $this->configurationManager);
 
-        if (!empty($this->contentObjectData['pages'])) {
+        if (!empty($this->contentObject->data['pages'])) {
             $querySettings->setStoragePageIds(
-                GeneralUtility::intExplode(',', $this->contentObjectData['pages'])
+                GeneralUtility::intExplode(',', $this->contentObject->data['pages'])
             );
         } else {
             $querySettings->setRespectStoragePage(false);
