@@ -28,7 +28,9 @@ defined('TYPO3') or die;
         'List',
         [
             ProfileController::class => 'list',
-        ]
+        ],
+        [],
+        ExtensionUtility::PLUGIN_TYPE_CONTENT_ELEMENT
     );
 
     ExtensionUtility::configurePlugin(
@@ -36,7 +38,9 @@ defined('TYPO3') or die;
         'SelectedProfiles',
         [
             ProfileController::class => 'selectedProfiles',
-        ]
+        ],
+        [],
+        ExtensionUtility::PLUGIN_TYPE_CONTENT_ELEMENT
     );
 
     ExtensionUtility::configurePlugin(
@@ -44,7 +48,9 @@ defined('TYPO3') or die;
         'SelectedContracts',
         [
             ProfileController::class => 'selectedContracts',
-        ]
+        ],
+        [],
+        ExtensionUtility::PLUGIN_TYPE_CONTENT_ELEMENT
     );
 
     ExtensionUtility::configurePlugin(
@@ -52,7 +58,9 @@ defined('TYPO3') or die;
         'Detail',
         [
             ProfileController::class => 'detail',
-        ]
+        ],
+        [],
+        ExtensionUtility::PLUGIN_TYPE_CONTENT_ELEMENT
     );
 
     ExtensionUtility::configurePlugin(
@@ -63,7 +71,9 @@ defined('TYPO3') or die;
                 'list',
                 'detail',
             ]),
-        ]
+        ],
+        [],
+        ExtensionUtility::PLUGIN_TYPE_CONTENT_ELEMENT
     );
 
     ExtensionUtility::configurePlugin(
@@ -79,11 +89,16 @@ defined('TYPO3') or die;
     $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['t3lib/class.t3lib_tcemain.php']['processDatamapClass']['academicPersons']
         = \Fgtclb\AcademicPersons\Hook\DataHandlerHooks::class;
 
-    // Starting with TYPO3 v12.0 Configuration/page.tsconfig in an Extension is automatically loaded during build time.
-    // @see https://docs.typo3.org/m/typo3/reference-tsconfig/12.4/en-us/UsingSetting/PageTSconfig.html#pagesettingdefaultpagetsconfig
     if ($versionInformation->getMajorVersion() < 12) {
+        // Starting with TYPO3 v12.0 Configuration/page.tsconfig in an Extension is automatically loaded during build time.
+        // @see https://docs.typo3.org/m/typo3/reference-tsconfig/12.4/en-us/UsingSetting/PageTSconfig.html#pagesettingdefaultpagetsconfig
         ExtensionManagementUtility::addPageTSConfig('
             @import \'EXT:academic_programs/Configuration/page.tsconfig\'
         ');
+
+        // Starting with TYPO3 v12.0 can this remove
+        // @see https://docs.typo3.org/m/typo3/reference-coreapi/12.4/en-us/ExtensionArchitecture/HowTo/UpdateExtensions/UpdateWizards/Creation.html#upgrade-wizard-interface
+        $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['ext/install']['update']['academicPerson_pluginContent']
+            = \Fgtclb\AcademicPersons\Upgrades\PluginContentUpgrade::class;
     }
 })();

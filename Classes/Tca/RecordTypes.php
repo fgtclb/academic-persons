@@ -23,14 +23,11 @@ class RecordTypes
      */
     public function getPhysicalAddressTypes(array &$parameters): void
     {
-        $typo3MajorVersion = (new \TYPO3\CMS\Core\Information\Typo3Version())->getMajorVersion();
-        $selectLabelKey = ($typo3MajorVersion >= 12) ? 'label' : 0;
-        $selectValueKey = ($typo3MajorVersion >= 12) ? 'value' : 1;
         $types = GeneralUtility::makeInstance(PhysicalAddressTypes::class)->getAll();
         foreach ($types as $value => $label) {
             $parameters['items'][] = [
-                $selectLabelKey => $label,
-                $selectValueKey => $value,
+                'label' => $label,
+                'value' => $value,
             ];
         }
     }
@@ -40,14 +37,11 @@ class RecordTypes
      */
     public function getEmailAddressTypes(array &$parameters): void
     {
-        $typo3MajorVersion = (new \TYPO3\CMS\Core\Information\Typo3Version())->getMajorVersion();
-        $selectLabelKey = ($typo3MajorVersion >= 12) ? 'label' : 0;
-        $selectValueKey = ($typo3MajorVersion >= 12) ? 'value' : 1;
         $types = GeneralUtility::makeInstance(EmailAddressTypes::class)->getAll();
         foreach ($types as $value => $label) {
             $parameters['items'][] = [
-                $selectLabelKey => $label,
-                $selectValueKey => $value,
+                'label' => $label,
+                'value' => $value,
             ];
         }
     }
@@ -57,14 +51,11 @@ class RecordTypes
      */
     public function getPhoneNumberTypes(array &$parameters): void
     {
-        $typo3MajorVersion = (new \TYPO3\CMS\Core\Information\Typo3Version())->getMajorVersion();
-        $selectLabelKey = ($typo3MajorVersion >= 12) ? 'label' : 0;
-        $selectValueKey = ($typo3MajorVersion >= 12) ? 'value' : 1;
         $types = GeneralUtility::makeInstance(PhoneNumberTypes::class)->getAll();
         foreach ($types as $value => $label) {
             $parameters['items'][] = [
-                $selectLabelKey => $label,
-                $selectValueKey => $value,
+                'label' => $label,
+                'value' => $value,
             ];
         }
     }

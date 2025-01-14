@@ -29,16 +29,36 @@
             </trans-unit>
 
             <trans-unit id="plugin.list.label">
-                <source>Profiles: List of profiles</source>
-                <target>Profile: Liste von Profilen</target>
+                <source> List of profiles</source>
+                <target>Liste von Profilen</target>
             </trans-unit>
             <trans-unit id="plugin.detail.label">
-                <source>Profiles: Detail view of one profile</source>
-                <target>Profile: Detailansicht eines Profils</target>
+                <source>Detail view of one profile</source>
+                <target>Detailansicht eines Profils</target>
             </trans-unit>
             <trans-unit id="plugin.listAndDetail.label">
-                <source>Profiles: List and detail view of profiles</source>
-                <target>Profile: Liste und Detailansicht von Profilen</target>
+                <source>List and detail view of profiles</source>
+                <target>Liste und Detailansicht von Profilen</target>
+            </trans-unit>
+            <trans-unit id="content.ctype.group.label">
+                <source>Academic</source>
+                <target>Academic</target>
+            </trans-unit>
+            <trans-unit id="plugin.selectedprofiles.label">
+                <source>Profiles: Selected Profiles</source>
+                <target>Profiles: Selected Profiles</target>
+            </trans-unit>
+            <trans-unit id="plugin.selectedprofiles.description">
+                <source>Plugin to list only selected profiles</source>
+                <target>Plugin to list only selected profiles</target>
+            </trans-unit>
+            <trans-unit id="plugin.selectedcontracts.label">
+                <source>Profiles: Selected Contracts</source>
+                <target>Profiles: Selected Contracts</target>
+            </trans-unit>
+            <trans-unit id="plugin.selectedcontracts.description">
+                <source>Plugin to list only selected contracts</source>
+                <target>Plugin to list only selected contracts</target>
             </trans-unit>
 
             <trans-unit id="newContentElement.wizardItems.academic">
@@ -78,7 +98,10 @@
                 <target>Fügt ein oder mehrere Kontakte hinzu</target>
             </trans-unit>
 
-
+            <trans-unit id="element.tab.configuration">
+                <source>Configuration</source>
+                <target>Konfiguration</target>
+            </trans-unit>
             <trans-unit id="flexform.tab.settings">
                 <source>Settings</source>
                 <target>Einstellungen</target>
