@@ -53,6 +53,12 @@
             <trans-unit id="newContentElement.wizardItems.academic.listAndDetail.description">
                 <source>Plugin for listing and viewing academic persons</source>
             </trans-unit>
+            <trans-unit id="newContentElement.wizardItems.academic.card.title">
+                <source>Contacts</source>
+            </trans-unit>
+            <trans-unit id="newContentElement.wizardItems.academic.card.description">
+                <source>Adds one or more contacts</source>
+            </trans-unit>
 
             <trans-unit id="flexform.tab.settings">
                 <source>Settings</source>
