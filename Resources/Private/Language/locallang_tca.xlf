@@ -92,6 +92,15 @@
             <trans-unit id="tx_academicpersons_domain_model_contract.ctrl.label">
                 <source>Employee Contract</source>
             </trans-unit>
+            <trans-unit id="tx_academicpersons_domain_model_contract.div.addresses.label">
+                <source>Addresses</source>
+            </trans-unit>
+            <trans-unit id="tx_academicpersons_domain_model_contract.div.employeeType.label">
+                <source>Employee Type</source>
+            </trans-unit>
+            <trans-unit id="tx_academicpersons_domain_model_contract.div.general.label">
+                <source>General</source>
+            </trans-unit>
             <trans-unit id="tx_academicpersons_domain_model_contract.please_select">
                 <source>Please select...</source>
             </trans-unit>
