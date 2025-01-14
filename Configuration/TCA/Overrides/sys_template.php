@@ -11,6 +11,12 @@ declare(strict_types=1);
 
 \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addStaticFile(
     'academic_persons',
-    'Configuration/TypoScript/',
+    'Configuration/TypoScript/Default',
     'Academic Persons Settings'
+);
+
+\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addStaticFile(
+    'academic_persons',
+    'Configuration/TypoScript/Standalone',
+    'Academic Persons Standalone'
 );
