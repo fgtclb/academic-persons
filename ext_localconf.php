@@ -28,7 +28,9 @@ defined('TYPO3') or die;
         'List',
         [
             ProfileController::class => 'list',
-        ]
+        ],
+        [],
+        ExtensionUtility::PLUGIN_TYPE_CONTENT_ELEMENT
     );
 
     ExtensionUtility::configurePlugin(
@@ -36,7 +38,9 @@ defined('TYPO3') or die;
         'Detail',
         [
             ProfileController::class => 'detail',
-        ]
+        ],
+        [],
+        ExtensionUtility::PLUGIN_TYPE_CONTENT_ELEMENT
     );
 
     ExtensionUtility::configurePlugin(
@@ -47,7 +51,9 @@ defined('TYPO3') or die;
                 'list',
                 'detail',
             ]),
-        ]
+        ],
+        [],
+        ExtensionUtility::PLUGIN_TYPE_CONTENT_ELEMENT
     );
 
     ExtensionUtility::configurePlugin(
