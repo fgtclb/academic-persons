@@ -8,6 +8,10 @@
         <f:variable name="profilesToList" value="{pagination.paginator.paginatedItems}" />
     </f:if>
 
+	<f:if condition="{settings.alphabetPaginationEnabled}">
+		<f:render partial="List/AlphabetPagination" arguments="{demand: demand}" />
+	</f:if>
+
     <f:if condition="{demand.groupBy}">
         <f:then>
             <f:groupedFor as="groupedProfiles" groupBy="{demand.groupBy}" each="{profilesToList}">
