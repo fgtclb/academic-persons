@@ -1,6 +1,6 @@
-<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
-<xliff version="1.0">
-    <file source-language="en" datatype="plaintext" original="messages" date="2025-02-24T11:41:07Z" product-name="academic_persons">
+<?xml version="1.0" encoding="UTF-8"?>
+<xliff version="1.2" xmlns="urn:oasis:names:tc:xliff:document:1.2">
+    <file source-language="en" target-language="de" datatype="plaintext" product-name="academic_persons">
         <header/>
         <body>
 
@@ -8,24 +8,30 @@
 
             <trans-unit id="contracts.room">
                 <source>Room</source>
+                <target>Raum</target>
             </trans-unit>
             <trans-unit id="contracts.officeHours">
                 <source>Office Hours</source>
+                <target>Bürozeiten</target>
             </trans-unit>
             <trans-unit id="contracts.email">
                 <source>E-Mail</source>
+                <target>E-Mail</target>
             </trans-unit>
             <trans-unit id="contracts.phone">
                 <source>Phone</source>
+                <target>Telefon</target>
             </trans-unit>
             <trans-unit id="contracts.zip">
                 <source>Addresses</source>
+                <target>Adressen</target>
             </trans-unit>
 
             <!-- List -->
 
             <trans-unit id="list.noProfilesFound" resname="list.noProfilesFound">
                 <source>No profiles found.</source>
+                <target>Keine Profile gefunden.</target>
             </trans-unit>
         </body>
     </file>
