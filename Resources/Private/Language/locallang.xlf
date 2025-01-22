@@ -27,6 +27,78 @@
             <trans-unit id="list.noProfilesFound" resname="list.noProfilesFound">
                 <source>No profiles found.</source>
             </trans-unit>
+
+            <!-- Detail -->
+
+            <trans-unit id="detail.contracts" resname="detail.contracts">
+                <source>Contracts</source>
+            </trans-unit>
+            <trans-unit id="detail.room" resname="detail.room">
+                <source>Room</source>
+            </trans-unit>
+            <trans-unit id="detail.phoneNumbers" resname="detail.phoneNumbers">
+                <source>Phone number(s)</source>
+            </trans-unit>
+            <trans-unit id="detail.emailAddresses" resname="detail.emailAddresses">
+                <source>Email address(es)</source>
+            </trans-unit>
+            <trans-unit id="detail.physicalAddress.private" resname="detail.physicalAddress.private">
+                <source>Private</source>
+            </trans-unit>
+            <trans-unit id="detail.physicalAddress.business" resname="detail.physicalAddress.business">
+                <source>Business</source>
+            </trans-unit>
+            <trans-unit id="detail.additionalInformation" resname="detail.additionalInformation">
+                <source>Additional information</source>
+            </trans-unit>
+            <trans-unit id="detail.website" resname="detail.website">
+                <source>Website</source>
+            </trans-unit>
+            <trans-unit id="detail.teachingArea" resname="detail.teachingArea">
+                <source>Teaching areas</source>
+            </trans-unit>
+            <trans-unit id="detail.coreCompetences" resname="detail.coreCompetences">
+                <source>Core competences</source>
+            </trans-unit>
+            <trans-unit id="detail.supervisedThesis" resname="detail.supervisedThesis">
+                <source>Supervised thesis</source>
+            </trans-unit>
+            <trans-unit id="detail.supervisedDoctoralThesis" resname="detail.supervisedDoctoralThesis">
+                <source>Supervised doctoral thesis</source>
+            </trans-unit>
+            <trans-unit id="detail.miscellaneous" resname="detail.miscellaneous">
+                <source>Miscellaneous information</source>
+            </trans-unit>
+            <trans-unit id="detail.scientificResearch" resname="detail.scientificResearch">
+                <source>Research projects</source>
+            </trans-unit>
+            <trans-unit id="detail.vita" resname="detail.vita">
+                <source>Academic career</source>
+            </trans-unit>
+            <trans-unit id="detail.memberships" resname="detail.memberships">
+                <source>Memberships/Committee activities</source>
+            </trans-unit>
+            <trans-unit id="detail.cooperation" resname="detail.cooperation">
+                <source>Network/cooperation</source>
+            </trans-unit>
+            <trans-unit id="detail.publications" resname="detail.publications">
+                <source>Publications</source>
+            </trans-unit>
+            <trans-unit id="detail.lectures" resname="detail.lectures">
+                <source>Lectures</source>
+            </trans-unit>
+            <trans-unit id="detail.pressMedia" resname="detail.pressMedia">
+                <source>Press/Media</source>
+            </trans-unit>
+            <trans-unit id="detail.publicationsLink" resname="detail.publicationsLink">
+                <source>Link to publications</source>
+            </trans-unit>
+            <trans-unit id="detail.since" resname="detail.since">
+                <source>Since</source>
+            </trans-unit>
+            <trans-unit id="detail.till" resname="detail.till">
+                <source>Till</source>
+            </trans-unit>
         </body>
     </file>
 </xliff>
