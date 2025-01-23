@@ -128,6 +128,13 @@
                 <source>Till</source>
                 <target>Bis</target>
             </trans-unit>
+
+            <!-- Card -->
+
+            <trans-unit id="card.noProfileSelected" resname="card.noProfileSelected">
+                <source>No profile was selected.</source>
+                <target>Es wurde kein Profil ausgewählt.</target>
+            </trans-unit>
         </body>
     </file>
 </xliff>
