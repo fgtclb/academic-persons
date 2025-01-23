@@ -81,6 +81,12 @@
             <trans-unit id="detail.till" resname="detail.till">
                 <source>Till</source>
             </trans-unit>
+
+            <!-- Card -->
+
+            <trans-unit id="card.noProfileSelected" resname="card.noProfileSelected">
+                <source>No profile was selected.</source>
+            </trans-unit>
         </body>
     </file>
 </xliff>
