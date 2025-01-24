@@ -42,14 +42,17 @@
                             as="phoneNumber"
                             iteration="phoneNumbersIterator"
                         >
-                            {phoneNumber.phoneNumber}
-                            {f:if(
-                                condition: '{phoneNumber.type}',
-                                then: '({phoneNumber.type})'
-                            )}{f:if(
-                                condition: '!{phoneNumbersIterator.isLast}',
-                                then: ', '
-                            )}
+							<a href="tel:{phoneNumber.phoneNumber}">
+								{phoneNumber.phoneNumber}
+
+								{f:if(
+									condition: '{phoneNumber.type}',
+									then: '({phoneNumber.type})'
+								)}{f:if(
+									condition: '!{phoneNumbersIterator.isLast}',
+									then: ', '
+								)}
+							</a>
                         </f:for>
                     </p>
                 </f:if>
@@ -63,14 +66,17 @@
                             as="emailAddress"
                             iteration="emailAddressesIterator"
                         >
-                            {emailAddress.email}
-                            {f:if(
-                                condition: '{emailAddress.type}',
-                                then: '({emailAddress.type})'
-                            )}{f:if(
-                                condition: '!{emailAddressesIterator.isLast}',
-                                then: ', '
-                            )}
+							<f:link.email email="{emailAddress.email}">
+								{emailAddress.email}
+
+								{f:if(
+									condition: '{emailAddress.type}',
+									then: '({emailAddress.type})'
+								)}{f:if(
+									condition: '!{emailAddressesIterator.isLast}',
+									then: ', '
+								)}
+							</f:link.email>
                         </f:for>
                     </p>
                 </f:if>
