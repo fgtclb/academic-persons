@@ -20,3 +20,9 @@ declare(strict_types=1);
     'Configuration/TypoScript/Standalone',
     'Academic Persons Standalone'
 );
+
+\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addStaticFile(
+    'academic_persons',
+    'Configuration/TypoScript/StylingExamples/',
+    'Academic Persons Styling Example'
+);

@@ -112,6 +112,61 @@
                 <source>No profile was selected.</source>
                 <target>Es wurde kein Profil ausgewählt.</target>
             </trans-unit>
+
+            <!-- Styling Example translations -->
+
+            <trans-unit id="profile.position.label">
+                <source>Position:</source>
+                <target>Position:</target>
+            </trans-unit>
+            <trans-unit id="profile.email_address.label">
+                <source>Email address(es):</source>
+                <target>E-Mail Adresse(n):</target>
+            </trans-unit>
+            <trans-unit id="profile.email_address.title">
+                <source>Send %s %s an email</source>
+                <target>Schreiben Sie %s %s eine E-Mail</target>
+            </trans-unit>
+            <trans-unit id="profile.phone_number.label">
+                <source>Phone number(s):</source>
+                <target>Telefon-Nummer(n):</target>
+            </trans-unit>
+            <trans-unit id="profile.phone_number.title">
+                <source>Call %s %s</source>
+                <target>Rufen Sie %s %s an</target>
+            </trans-unit>
+            <trans-unit id="profile.contracts.label">
+                <source>Contracts</source>
+                <target>Verträge</target>
+            </trans-unit>
+            <trans-unit id="profile.main_contract.label">
+                <source>Main Contract</source>
+                <target>Hauptvertrag</target>
+            </trans-unit>
+            <trans-unit id="profile.room.label">
+                <source>Room:</source>
+                <target>Raum:</target>
+            </trans-unit>
+            <trans-unit id="profile.address.label">
+                <source>Address(es):</source>
+                <target>Anschrift(en):</target>
+            </trans-unit>
+            <trans-unit id="profile.website.label">
+                <source>Website:</source>
+                <target>Website:</target>
+            </trans-unit>
+            <trans-unit id="profile.other_contracts.label">
+                <source>Other Contracts</source>
+                <target>Andere Verträge</target>
+            </trans-unit>
+            <trans-unit id="profile.additional_info.label">
+                <source>Additional Information</source>
+                <target>Zusätzliche Informationen</target>
+            </trans-unit>
+            <trans-unit id="profile.publications.label">
+                <source>Link to publications:</source>
+                <target>Link zu Veröffentlichungen:</target>
+            </trans-unit>
         </body>
     </file>
 </xliff>

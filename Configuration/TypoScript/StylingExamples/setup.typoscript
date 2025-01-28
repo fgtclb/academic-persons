@@ -1,0 +1,13 @@
+plugin.tx_academicpersons {
+  view {
+    templateRootPaths {
+      1737538831 = EXT:academic_persons/Resources/Private/StylingExamples/Templates/
+    }
+    partialRootPaths {
+      1737538831 = EXT:academic_persons/Resources/Private/StylingExamples/Partials/
+    }
+    layoutRootPaths {
+      1737538831 = EXT:academic_persons/Resources/Private/StylingExamples/Layouts/
+    }
+  }
+}

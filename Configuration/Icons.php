@@ -48,4 +48,20 @@ return [
         'provider' => \TYPO3\CMS\Core\Imaging\IconProvider\SvgIconProvider::class,
         'source' => 'EXT:academic_persons/Resources/Public/Icons/persons_icon.svg',
     ],
+    'envelope_icon' => [
+        'provider' => \TYPO3\CMS\Core\Imaging\IconProvider\SvgIconProvider::class,
+        'source' => 'EXT:academic_persons/Resources/Public/Icons/envelope_icon.svg',
+    ],
+    'telephone_icon' => [
+        'provider' => \TYPO3\CMS\Core\Imaging\IconProvider\SvgIconProvider::class,
+        'source' => 'EXT:academic_persons/Resources/Public/Icons/telephone_icon.svg',
+    ],
+    'position_icon' => [
+        'provider' => \TYPO3\CMS\Core\Imaging\IconProvider\SvgIconProvider::class,
+        'source' => 'EXT:academic_persons/Resources/Public/Icons/position_icon.svg',
+    ],
+    'profile_icon' => [
+        'provider' => \TYPO3\CMS\Core\Imaging\IconProvider\SvgIconProvider::class,
+        'source' => 'EXT:academic_persons/Resources/Public/Icons/profile_icon.svg',
+    ],
 ];

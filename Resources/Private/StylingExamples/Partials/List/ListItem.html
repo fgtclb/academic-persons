@@ -1,0 +1,90 @@
+<html data-namespace-typo3-fluid="true"
+      xmlns:f="http://typo3.org/ns/TYPO3/CMS/Fluid/ViewHelpers"
+>
+
+<f:variable name="targetPlugin" value="{f:if(condition: '{settings.detailPid} > 0 && {settings.detailPid} != {data.pid}', then: 'Detail', else: 'ListAndDetail')}" />
+
+<li class="academic-persons">
+    <f:link.action class="academic-persons-image-wrapper" pageUid="{settings.detailPid}" action="detail" pluginName="{targetPlugin}" arguments="{profile: profile}">
+		<f:if condition="{profile.image}">
+			<f:then>
+				<f:image
+					image="{profile.image}"
+					maxHeight="300"
+					alt="{profile.firstName} {profile.lastName}"
+					loading="lazy"
+					fileExtension="webp"
+				/>
+			</f:then>
+			<f:else>
+				<core:icon identifier="profile_icon" alternativeMarkupIdentifier="inline" />
+			</f:else>
+		</f:if>
+	</f:link.action>
+
+	<ul class="academic-persons-info">
+		<li class="academic-persons-info-item name">
+			<f:link.action class="academic-persons-link" pageUid="{settings.detailPid}" action="detail" pluginName="{targetPlugin}" arguments="{profile: profile}">
+				<f:if condition="{profile.gender}">{profile.gender}</f:if>
+				<f:if condition="{profile.title}">{profile.title}</f:if>
+				{profile.firstName}
+				<f:if condition="{profile.middleName}">{profile.middleName}</f:if>
+				{profile.lastName}
+			</f:link.action>
+		</li>
+
+		<f:if condition="{profile.contracts}">
+			<f:for each="{profile.contracts}" as="contract" iteration="contractIteration">
+				<f:if condition="{contractIteration.isFirst}">
+					<f:if condition="contract.position">
+						<li class="academic-persons-info-item">
+							<core:icon identifier="position_icon" alternativeMarkupIdentifier="inline" />
+							<span class="visually-hidden">
+								<f:translate key="profile.position.label" extensionName="academic_persons"/>
+							</span>
+							<span>{contract.position}</span>
+						</li>
+					</f:if>
+
+					<f:if condition="{contract.emailAddresses}">
+						<li class="academic-persons-info-item">
+							<core:icon identifier="envelope_icon" alternativeMarkupIdentifier="inline" />
+							<span class="visually-hidden">
+								<f:translate key="profile.email_address.label" extensionName="academic_persons"/>
+							</span>
+							<div class="academic-persons-info-list">
+								<f:for each="{contract.emailAddresses}" as="email">
+									<f:link.email class="academic-persons-link"
+												  email="{email.email}"
+												  title="{f:translate(key: 'profile.email_address.title', arguments: {0: '{profile.firstName}', 1: '{profile.lastName}', extensionName: 'academic_persons'})}"
+									/>
+								</f:for>
+							</div>
+						</li>
+					</f:if>
+
+					<f:if condition="{contract.phoneNumbers}">
+						<li class="academic-persons-info-item">
+							<core:icon identifier="telephone_icon" alternativeMarkupIdentifier="inline" />
+							<span class="visually-hidden">
+								<f:translate key="profile.phone_number.label" extensionName="academic_persons"/>
+							</span>
+							<div class="academic-persons-info-list">
+								<f:for each="{contract.phoneNumbers}" as="phone">
+									<a href="tel:{phone.phoneNumber}"
+									   class="academic-persons-link"
+									   title="{f:translate(key: 'profile.phone_number.title', arguments: {0: '{profile.firstName}', 1: '{profile.lastName}', extensionName: 'academic_persons'})}"
+									>
+										{phone.phoneNumber}
+									</a>
+								</f:for>
+							</div>
+						</li>
+					</f:if>
+				</f:if>
+			</f:for>
+		</f:if>
+	</ul>
+</li>
+
+</html>

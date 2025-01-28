@@ -1,0 +1,250 @@
+/**
+ * Academic Persons Example Styles
+**/
+
+/* Common */
+.academic-persons-link {
+    text-decoration-color: transparent;
+    color: #212121;
+    transition: color 0.1s, text-decoration-color 0.2s;
+}
+
+.academic-persons-link:hover,
+.academic-persons-link:focus {
+    color: #577760;
+    text-decoration-color: #577760;
+}
+
+.academic-persons-sr-only {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border: 0;
+}
+
+.academic-persons-image-wrapper {
+    background-color: #DDD;
+    color: #FFF;
+}
+
+.academic-persons-image-wrapper img {
+    object-fit: cover;
+    width: 100%;
+}
+
+.academic-persons-image-wrapper svg {
+    width: 100%;
+}
+
+.academic-persons-description-list dt {
+    border-top: 1px solid #DDD;
+    padding-top: 0.5rem;
+}
+
+.academic-persons-description-list dd {
+    margin-left: 1rem;
+}
+
+/* Headings */
+.academic-persons-h1 {
+    font-size: 2.25rem;
+    font-weight: 400;
+    margin-bottom: 0;
+}
+.academic-persons-h2 {
+    font-size: 1.9rem;
+    font-weight: 600;
+    margin-bottom: 1rem;
+}
+
+.academic-persons-h3 {
+    font-size: 1.75rem;
+    font-weight: 500;
+}
+
+.academic-persons-group-heading {
+    font-size: 2.5rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    margin: 3rem auto 1rem auto;
+}
+
+.academic-persons-group-heading:first-of-type {
+    margin-top: 0;
+}
+
+/* Font sizes */
+.academic-persons-font-lg {
+    font-size: 1.5rem;
+}
+
+/* List Page */
+.academic-persons-grid {
+    display: grid;
+    grid-template-columns: repeat(1, minmax(0, 1fr));
+    gap: 2rem;
+    padding: 0;
+}
+
+.academic-persons {
+    display: flex;
+    flex-direction: column;
+    row-gap: .75rem;
+}
+
+.academic-persons-info {
+    padding: 0;
+    flex: 1;
+}
+
+.academic-persons-info-item {
+    display: flex;
+    column-gap: .5rem;
+}
+
+.academic-persons-info-item.name {
+    font-size: 1.25rem;
+    font-weight: 600;
+    margin-bottom: .5rem;
+    color: #577760;
+}
+
+.academic-persons-info-item.additional {
+    position: relative;
+    width: 100%;
+}
+
+.academic-persons-info-list {
+    display: flex;
+    flex-direction: column;
+    word-break: break-word;
+}
+
+/* Detail Page */
+.academic-persons-detail-summary {
+    display: flex;
+    justify-content: flex-start;
+    column-gap: 4rem;
+    row-gap: 1rem;
+    flex-wrap: wrap;
+    font-size: 1.1rem;
+    margin: 0.75rem 0 1.25rem 0;
+}
+
+.academic-persons-detail-summary .academic-persons-info {
+    order: 2;
+}
+
+.academic-persons-detail-summary .academic-persons-image-wrapper {
+    max-height: fit-content;
+}
+
+.academic-persons-detail-table td {
+    padding: .25rem 0;
+}
+
+.academic-persons-detail-table td:nth-child(2) {
+    padding-left: 1rem;
+}
+
+.academic-persons-detail-table-row {
+    vertical-align: top;
+}
+
+.academic-persons-detail-table-cell.position {
+    font-size: 1.5rem;
+    padding-bottom: 0;
+}
+
+.academic-persons-detail-columns {
+    display: flex;
+    flex-direction: column;
+    column-gap: 2rem;
+    row-gap: .5rem;
+}
+
+.academic-persons-detail-contracts {
+    font-size: 1.1rem;
+    margin-bottom: -1rem;
+}
+
+.academic-persons-detail-contracts .academic-persons-h3 {
+    margin-bottom: 0;
+}
+
+.academic-persons-detail-additional {
+    font-size: 1.1rem;
+    border-top: 1px solid #DDD;
+    margin-top: 2rem;
+    padding-top: 1rem;
+}
+
+.academic-persons-detail-subsection {
+    margin-bottom: 2rem;
+}
+
+/*  Media queries */
+@media (max-width: 575px) {
+    .academic-persons-grid {
+        max-width: fit-content;
+        justify-self: center;
+    }
+
+    .academic-persons-group-heading {
+        max-width: 300px;
+    }
+}
+@media (min-width: 576px) {
+    .academic-persons-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .academic-persons-h1 {
+        font-size: 2.5rem;
+        font-weight: 400;
+        margin-bottom: 0;
+    }
+
+    .academic-persons-h2 {
+        font-size: 2.1rem;
+        font-weight: 600;
+        margin-bottom: 1rem;
+    }
+
+    .academic-persons-h3 {
+        font-size: 1.9rem;
+        font-weight: 500;
+    }
+}
+
+@media (min-width: 992px) {
+    .academic-persons-grid {
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+
+    .academic-persons-detail-table td:nth-child(2) {
+        padding-left: 1.5rem;
+    }
+
+    .academic-persons-description-list {
+        display: grid;
+        grid-template-columns: 25% 75%;
+    }
+
+    .academic-persons-description-list dd {
+        border-top: 1px solid #DDD;
+        padding-top: 0.5rem;
+        margin-left: 0rem;
+    }
+}
+
+@media (min-width: 1200px) {
+    .academic-persons-grid {
+        grid-template-columns: repeat(4, minmax(0, 1fr));
+    }
+}
