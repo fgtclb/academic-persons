@@ -87,6 +87,48 @@
             <trans-unit id="card.noProfileSelected" resname="card.noProfileSelected">
                 <source>No profile was selected.</source>
             </trans-unit>
+
+            <!-- Styling Example translations -->
+
+            <trans-unit id="profile.position.label">
+                <source>Position:</source>
+            </trans-unit>
+            <trans-unit id="profile.email_address.label">
+                <source>Email address(es):</source>
+            </trans-unit>
+            <trans-unit id="profile.email_address.title">
+                <source>Send %s %s an email</source>
+            </trans-unit>
+            <trans-unit id="profile.phone_number.label">
+                <source>Phone number(s):</source>
+            </trans-unit>
+            <trans-unit id="profile.phone_number.title">
+                <source>Call %s %s</source>
+            </trans-unit>
+            <trans-unit id="profile.contracts.label">
+                <source>Contracts</source>
+            </trans-unit>
+            <trans-unit id="profile.main_contract.label">
+                <source>Main Contract</source>
+            </trans-unit>
+            <trans-unit id="profile.room.label">
+                <source>Room:</source>
+            </trans-unit>
+            <trans-unit id="profile.address.label">
+                <source>Address(es):</source>
+            </trans-unit>
+            <trans-unit id="profile.website.label">
+                <source>Website:</source>
+            </trans-unit>
+            <trans-unit id="profile.other_contracts.label">
+                <source>Other Contracts</source>
+            </trans-unit>
+            <trans-unit id="profile.additional_info.label">
+                <source>Additional Information</source>
+            </trans-unit>
+            <trans-unit id="profile.publications.label">
+                <source>Link to publications:</source>
+            </trans-unit>
         </body>
     </file>
 </xliff>
