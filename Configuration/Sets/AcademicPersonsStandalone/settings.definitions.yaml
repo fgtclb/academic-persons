@@ -1,0 +1,38 @@
+categories:
+  academic:
+    label: 'Academic'
+  academic.persons:
+    label: 'Persons'
+    parent: academic
+
+settings:
+  plugin.tx_academicpersons.detailPid:
+    label: 'Detail page'
+    category: academic.persons
+    type: int
+    default: 0
+  plugin.tx_academicpersons.demand.groupBy:
+    label: 'Group by'
+    category: academic.persons
+    type: string
+    default: lastNameAlpha
+  plugin.tx_academicpersons.demand.sortBy:
+    label: 'Sort by'
+    category: academic.persons
+    type: string
+    default: title
+  plugin.tx_academicpersons.demand.sortByDirection:
+    label: 'Sort by direction'
+    category: academic.persons
+    type: string
+    default: asc
+  plugin.tx_academicpersons.pagination.resultsPerPage:
+    label: 'Pagination | Results per page'
+    category: academic.persons
+    type: int
+    default: 1
+  plugin.tx_academicpersons.pagination.numberOfLinks:
+    label: 'Pagination | Number of links'
+    category: academic.persons
+    type: int
+    default: 5
