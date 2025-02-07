@@ -2,12 +2,11 @@
 
 /.Build
 /var
+/.cache/
 
-/.php-cs-fixer.cache
 /composer.lock
-
 /Documentation-GENERATED-temp
 
-/.cache/
-/Build/testing-docker/.env
-/config/system/settings.php
+Build/testing-docker/.env
+Build/php-cs-fixer/.php-cs-fixer.cache
+config/system/settings.php
