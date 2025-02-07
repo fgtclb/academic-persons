@@ -80,7 +80,10 @@ return [
         ],
         'profile' => [
             'config' => [
-                'type' => 'passthrough',
+                'type' => 'select',
+                'renderType' => 'selectSingle',
+                'foreign_table' => 'tx_academicpersons_domain_model_profile',
+                'maxitems' => 1,
             ],
         ],
         'publish' => [
