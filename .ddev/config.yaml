@@ -14,7 +14,6 @@ database:
 use_dns_when_possible: true
 composer_version: "2"
 web_environment:
-    - TYPO3_CONTEXT=Development
     - TYPO3_INSTALL_DB_DRIVER=mysqli
     - TYPO3_INSTALL_DB_USER=db
     - TYPO3_INSTALL_DB_PASSWORD=db
