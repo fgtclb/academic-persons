@@ -2,12 +2,11 @@
 
 /.Build
 /var
+/.cache/
 
-/.php-cs-fixer.cache
 /composer.json.original
 /composer.json.testing
 /composer.lock
-
 /Documentation-GENERATED-temp
 
 /.cache/
@@ -17,4 +16,7 @@
 /tailor-version-artefact/
 
 /config/system/settings.php
+
+Build/php-cs-fixer/.php-cs-fixer.cache
+config/system/settings.php
 
