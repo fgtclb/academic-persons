@@ -1,0 +1,6 @@
+services:
+  web:
+    # This also overwrites the environment in file ".env".
+    environment:
+      - TYPO3_CONTEXT=Development/ddev
+      - PHP_IDE_CONFIG=serverName=academic-persons.ddev.site
