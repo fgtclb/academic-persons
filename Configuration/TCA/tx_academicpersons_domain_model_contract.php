@@ -137,26 +137,6 @@ return [
                 'minitems' => 1,
             ],
         ],
-        'valid_from' => [
-            'label' => $ll('columns.valid_from.label'),
-            'l10n_mode' => 'exclude',
-            'l10n_display' => 'defaultAsReadonly',
-            'config' => [
-                'type' => 'input',
-                'renderType' => 'inputDateTime',
-                'eval' => 'date',
-            ],
-        ],
-        'valid_to' => [
-            'label' => $ll('columns.valid_to.label'),
-            'l10n_mode' => 'exclude',
-            'l10n_display' => 'defaultAsReadonly',
-            'config' => [
-                'type' => 'input',
-                'renderType' => 'inputDateTime',
-                'eval' => 'date',
-            ],
-        ],
         'employee_type' => [
             'label' => $ll('columns.employee_type.label'),
             'l10n_mode' => 'exclude',
@@ -335,9 +315,6 @@ return [
                 '--linebreak--',
                 'organisational_unit',
                 'function_type',
-                '--linebreak--',
-                'valid_from',
-                'valid_to',
             ]),
         ],
         'contactInformation' => [

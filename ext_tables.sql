@@ -18,9 +18,6 @@ CREATE TABLE tx_academicpersons_domain_model_contract (
 
 	organisational_unit int(11) unsigned DEFAULT NULL,
 	function_type int(11) unsigned DEFAULT NULL,
-	valid_from int(11) DEFAULT NULL,
-	valid_to int(11) DEFAULT NULL,
-	his_id int(11) DEFAULT '0' NOT NULL,
 
 	employee_type int(11) unsigned DEFAULT '0' NOT NULL,
 	position varchar(255) DEFAULT '' NOT NULL,
@@ -50,7 +47,6 @@ CREATE TABLE tx_academicpersons_domain_model_function_type (
 	function_name varchar(255) DEFAULT '' NOT NULL,
 	function_name_male varchar(255) DEFAULT '' NOT NULL,
 	function_name_female varchar(255) DEFAULT '' NOT NULL,
-	his_id int(11) DEFAULT '0' NOT NULL,
 );
 
 CREATE TABLE tx_academicpersons_domain_model_location (
@@ -63,10 +59,6 @@ CREATE TABLE tx_academicpersons_domain_model_organisational_unit (
 	unique_name varchar(255) DEFAULT '' NOT NULL,
 	display_text text,
 	long_text text,
-	valid_from int(11) unsigned DEFAULT '0' NOT NULL,
-	valid_to int(11) unsigned DEFAULT '0' NOT NULL,
-	his_id int(11) DEFAULT '0' NOT NULL,
-	his_parent_id int(11) DEFAULT '0' NOT NULL,
 	contracts int(11) unsigned DEFAULT '0' NOT NULL,
 );
 

@@ -75,11 +75,6 @@ return [
                 'type' => 'passthrough',
             ],
         ],
-        'his_id' => [
-            'config' => [
-                'type' => 'passthrough',
-            ],
-        ],
         'parent' => [
             'label' => $ll('columns.parent.label'),
             'l10n_mode' => 'exclude',
@@ -119,32 +114,6 @@ return [
             'label' => $ll('columns.long_text.label'),
             'config' => [
                 'type' => 'text',
-            ],
-        ],
-        'valid_from' => [
-            'label' => $ll('columns.valid_from.label'),
-            'l10n_mode' => 'exclude',
-            'l10n_display' => 'defaultAsReadonly',
-            'config' => [
-                'type' => 'input',
-                'renderType' => 'inputDateTime',
-                'eval' => implode(',', [
-                    'date',
-                    'int',
-                ]),
-            ],
-        ],
-        'valid_to' => [
-            'label' => $ll('columns.valid_to.label'),
-            'l10n_mode' => 'exclude',
-            'l10n_display' => 'defaultAsReadonly',
-            'config' => [
-                'type' => 'input',
-                'renderType' => 'inputDateTime',
-                'eval' => implode(',', [
-                    'date',
-                    'int',
-                ]),
             ],
         ],
         'contracts' => [
@@ -202,8 +171,6 @@ return [
                     'unique_name',
                     'display_text',
                     'long_text',
-                    'valid_from',
-                    'valid_to',
                     'contracts',
                 '--div--;LLL:EXT:core/Resources/Private/Language/Form/locallang_tabs.xlf:language',
                     '--palette--;;language',
