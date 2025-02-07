@@ -80,7 +80,10 @@ return [
         ],
         'contract' => [
             'config' => [
-                'type' => 'passthrough',
+                'type' => 'select',
+                'renderType' => 'selectSingle',
+                'foreign_table' => 'tx_academicpersons_domain_model_contract',
+                'maxitems' => 1,
             ],
         ],
         'phone_number' => [
