@@ -75,11 +75,6 @@ return [
                 'type' => 'passthrough',
             ],
         ],
-        'his_id' => [
-            'config' => [
-                'type' => 'passthrough',
-            ],
-        ],
         'parent' => [
             'label' => $ll('columns.parent.label'),
             'l10n_mode' => 'exclude',
