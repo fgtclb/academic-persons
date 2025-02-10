@@ -35,7 +35,7 @@ use TYPO3\TestingFramework\Core\Functional\Framework\Frontend\InternalRequest;
 trait SiteBasedTestTrait
 {
     /**
-     * @param array $items
+     * @param string[] $items
      */
     protected static function failIfArrayIsNotEmpty(array $items): void
     {
@@ -51,9 +51,9 @@ trait SiteBasedTestTrait
 
     /**
      * @param string $identifier
-     * @param array $site
-     * @param array $languages
-     * @param array $errorHandling
+     * @param array<string, mixed> $site
+     * @param list<array<string, mixed>> $languages
+     * @param array<string, mixed> $errorHandling
      */
     protected function writeSiteConfiguration(
         string $identifier,
@@ -84,7 +84,7 @@ trait SiteBasedTestTrait
 
     /**
      * @param string $identifier
-     * @param array $overrides
+     * @param array<string, mixed> $overrides
      */
     protected function mergeSiteConfiguration(
         string $identifier,
@@ -106,7 +106,7 @@ trait SiteBasedTestTrait
     /**
      * @param int $rootPageId
      * @param string $base
-     * @return array
+     * @return array<string, mixed>
      */
     protected function buildSiteConfiguration(
         int $rootPageId,
@@ -121,7 +121,7 @@ trait SiteBasedTestTrait
     /**
      * @param string $identifier
      * @param string $base
-     * @return array
+     * @return array<string, mixed>
      */
     protected function buildDefaultLanguageConfiguration(
         string $identifier,
@@ -137,9 +137,9 @@ trait SiteBasedTestTrait
     /**
      * @param string $identifier
      * @param string $base
-     * @param array $fallbackIdentifiers
+     * @param array<int, string> $fallbackIdentifiers
      * @param string $fallbackType
-     * @return array
+     * @return array<string, mixed>
      */
     protected function buildLanguageConfiguration(
         string $identifier,
@@ -180,8 +180,8 @@ trait SiteBasedTestTrait
 
     /**
      * @param string $handler
-     * @param array $codes
-     * @return array
+     * @param int[] $codes
+     * @return array<string, mixed>
      */
     protected function buildErrorHandlingConfiguration(
         string $handler,
@@ -257,11 +257,9 @@ trait SiteBasedTestTrait
 
         foreach ($instructions as $instruction) {
             $identifier = $instruction->getIdentifier();
-            if (isset($modifiedInstructions[$identifier]) || $request->getInstruction($identifier) !== null) {
-                $modifiedInstructions[$identifier] = $this->mergeInstruction(
-                    $modifiedInstructions[$identifier] ?? $request->getInstruction($identifier),
-                    $instruction
-                );
+            $useModifier = $modifiedInstructions[$identifier] ?? $request->getInstruction($identifier);
+            if ($useModifier !== null) {
+                $modifiedInstructions[$identifier] = $this->mergeInstruction($useModifier, $instruction);
             } else {
                 $modifiedInstructions[$identifier] = $instruction;
             }

@@ -1,16 +1,4 @@
-@import 'EXT:academic_persons/Configuration/TypoScript/constants.typoscript'
-
 plugin.tx_academicpersons {
-  detailPid =
-  demand {
-    groupBy =
-    sortBy =
-    sortByDirection = asc
-  }
-  pagination {
-    resultsPerPage = 1
-    numberOfLinks = 5
-  }
   view {
     templateRootPath = EXT:test_plugin_templates/Resources/Private/Templates/
     partialRootPath = EXT:test_plugin_templates/Resources/Private/Partials/
