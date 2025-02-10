@@ -1,0 +1,6 @@
+<html data-namespace-typo3-fluid="true"
+      xmlns:f="http://typo3.org/ns/TYPO3/CMS/Fluid/ViewHelpers"
+>
+<f:variable name="targetPlugin" value="{f:if(condition: '{settings.detailPid} > 0 && {settings.detailPid} != {data.pid}', then: 'Detail', else: 'ListAndDetail')}" />
+#{itemIterator.index}({profile.uid}): {profile.firstName}{f:if(condition: profile.middleName, then: ' {profile.middleName}')} {profile.lastName} LINK: "<f:uri.action pageUid="{settings.detailPid}" action="detail" pluginName="{targetPlugin}" arguments="{profile: profile}" />"
+</html>

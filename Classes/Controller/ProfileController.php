@@ -52,9 +52,10 @@ final class ProfileController extends ActionController
             $querySettings->setRespectStoragePage(false);
         }
 
-        if (isset($this->settings['fallbackForNonTranslated'])
-            && (int)$this->settings['fallbackForNonTranslated'] === 1
-        ) {
+        // Introduced with https://github.com/fgtclb/academic-persons/pull/30 to have the option to display profiles in
+        // fallback mode even when site language (non-default) is configured to be in strict mode.
+        // See: AcademicPersonsListPluginTest::fullyLocalizedPagesAndTtContentListDisplaysOnlyLocalizedProfilesForRequestedLanguageWithNotAllProfilesLocalizedInStrictModeWithFallbackForNonTranslatedSet()
+        if ((int)($this->settings['fallbackForNonTranslated'] ?? 0) === 1) {
             $querySettings->setLanguageOverlayMode(true);
         }
 

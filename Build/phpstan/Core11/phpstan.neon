@@ -9,7 +9,8 @@ parameters:
 	level: 8
 
 	paths:
-		- ../../../
+		- ../../../Classes
+		- ../../../Tests/
 
 	excludePaths:
 		# ext_emconf.php get the $_EXTKEY set from outsite. We'll ignore all of them
