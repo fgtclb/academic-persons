@@ -133,7 +133,7 @@ use TYPO3\CMS\Extbase\Utility\ExtensionUtility;
 
         \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addPiFlexFormValue(
             '*',
-            'FILE:EXT:academic_persons/Configuration/FlexForms/flexform_profile_list.xml',
+            'FILE:EXT:academic_persons/Configuration/FlexForms/Profile.xml',
             $contentIdentifier
         );
     })();
