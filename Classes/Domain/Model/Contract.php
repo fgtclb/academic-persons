@@ -263,18 +263,18 @@ class Contract extends AbstractEntity
         $firstName = '-';
         $lastName = '-';
         if ($this->profile !== null) {
-            $firstName = $this->profile->getLastName() ?? '-';
-            $lastName = $this->profile->getFirstName() ?? '-';
+            $firstName = $this->profile->getLastName() ?: '-';
+            $lastName = $this->profile->getFirstName() ?: '-';
         }
 
         $functionType = '-';
         if ($this->functionType !== null) {
-            $functionType = $this->functionType->getFunctionName() ?? '-';
+            $functionType = $this->functionType->getFunctionName() ?: '-';
         }
 
         $organisationalUnit = '-';
         if ($this->organisationalUnit !== null) {
-            $organisationalUnit = $this->organisationalUnit->getUnitName() ?? '-';
+            $organisationalUnit = $this->organisationalUnit->getUnitName() ?: '-';
         }
 
         $validFrom = $this->validFrom ? $this->validFrom->format('Y-m-d') : '-';
