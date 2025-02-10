@@ -105,10 +105,9 @@ Options:
             - mysql: use mysql
             - postgres: use postgres
 
-    -p <7.4|8.0|8.1|8.2>
+    -p <|8.0|8.1|8.2>
         Specifies the PHP minor version to be used
-            - 7.4 (default): use PHP 7.4
-            - 8.0: use PHP 8.0
+            - 8.0: use PHP 8.0 (default)
             - 8.1: use PHP 8.1
             - 8.2: use PHP 8.2
 
@@ -147,7 +146,7 @@ Options:
         Show this help.
 
 Examples:
-    # Run unit tests using PHP 7.4
+    # Run unit tests using PHP 8.0
     ./Build/Scripts/runTests.sh -s unit
 EOF
 
@@ -191,7 +190,7 @@ else
 fi
 TEST_SUITE=""
 DBMS="sqlite"
-PHP_VERSION="7.4"
+PHP_VERSION="8.0"
 TYPO3_VERSION="11"
 PHP_XDEBUG_ON=0
 EXTRA_TEST_OPTIONS=""
@@ -219,7 +218,7 @@ while getopts ":s:a:d:p:t:e:xnhuv" OPT; do
             ;;
         p)
             PHP_VERSION=${OPTARG}
-            if ! [[ ${PHP_VERSION} =~ ^(7.4|8.0|8.1|8.2)$ ]]; then
+            if ! [[ ${PHP_VERSION} =~ ^(8.0|8.1|8.2)$ ]]; then
                 INVALID_OPTIONS+=("p ${OPTARG}")
             fi
             ;;
