@@ -1,0 +1,22 @@
+{
+    "name": "tests/plugin-templates",
+    "description": "Plugin template overrides for tests",
+    "type": "typo3-cms-extension",
+    "license": "GPL-2.0-or-later",
+    "authors": [
+        {
+            "name": "Stefan Bürk",
+            "email": "stefan@buerk.tech",
+            "role": "Maintainer"
+        }
+    ],
+    "require": {
+        "typo3/cms-core": "*",
+		"fgtclb/academic-persons": "*"
+    },
+    "extra": {
+        "typo3/cms": {
+            "extension-key": "test_plugin_templates"
+        }
+    }
+}

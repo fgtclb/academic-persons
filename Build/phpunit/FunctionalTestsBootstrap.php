@@ -27,4 +27,16 @@
     $testbase->defineOriginalRootPath();
     $testbase->createDirectory(ORIGINAL_ROOT . 'typo3temp/var/tests');
     $testbase->createDirectory(ORIGINAL_ROOT . 'typo3temp/var/transient');
+
+    // Iterate over all fixture extensions and register them to allow the composer
+    // package name to be used in functional tests as `$testExtensionToLoad`.
+    $composerPackageManager = (new \TYPO3\TestingFramework\Composer\ComposerPackageManager());
+    $iterator = new \DirectoryIterator($composerPackageManager->getRootPath() . '/Tests/Functional/Fixtures/Extensions');
+    /** @var \SplFileInfo $info */
+    foreach ($iterator as $info) {
+        if ($info->isDot() || !$info->isDir()) {
+            continue;
+        }
+        $composerPackageManager->getPackageInfoWithFallback($info->getPathname());
+    }
 })();
