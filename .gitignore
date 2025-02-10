@@ -4,6 +4,8 @@
 /var
 
 /.php-cs-fixer.cache
+/composer.json.original
+/composer.json.testing
 /composer.lock
 
 /Documentation-GENERATED-temp
