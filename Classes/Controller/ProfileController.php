@@ -36,32 +36,6 @@ final class ProfileController extends ActionController
         $this->profileRepository = $profileRepository;
     }
 
-    public function initializeAction(): void
-    {
-        $context = GeneralUtility::makeInstance(Context::class);
-        $querySettings = new Typo3QuerySettings($context, $this->configurationManager);
-
-        $contentObjectData = $this->configurationManager->getContentObject()?->data;
-        if (is_array($contentObjectData)
-            && !empty($contentObjectData['pages'])
-        ) {
-            $querySettings->setStoragePageIds(
-                GeneralUtility::intExplode(',', $contentObjectData['pages'])
-            );
-        } else {
-            $querySettings->setRespectStoragePage(false);
-        }
-
-        // Introduced with https://github.com/fgtclb/academic-persons/pull/30 to have the option to display profiles in
-        // fallback mode even when site language (non-default) is configured to be in strict mode.
-        // See: AcademicPersonsListPluginTest::fullyLocalizedPagesAndTtContentListDisplaysOnlyLocalizedProfilesForRequestedLanguageWithNotAllProfilesLocalizedInStrictModeWithFallbackForNonTranslatedSet()
-        if ((int)($this->settings['fallbackForNonTranslated'] ?? 0) === 1) {
-            $querySettings->setLanguageOverlayMode(true);
-        }
-
-        $this->profileRepository->setDefaultQuerySettings($querySettings);
-    }
-
     public function initializeListAction(): void
     {
         $demandArray = [];
@@ -83,6 +57,7 @@ final class ProfileController extends ActionController
 
     public function listAction(DemandInterface $demand): ResponseInterface
     {
+        $this->adoptSettings($demand);
         $profiles = $this->profileRepository->findByDemand($demand);
 
         /** @var ModifyListProfilesEvent $event */
@@ -137,12 +112,11 @@ final class ProfileController extends ActionController
     public function detailAction(Profile $profile = null): ResponseInterface
     {
         if ($profile === null) {
-            GeneralUtility::makeInstance(ErrorController::class)->pageNotFoundAction(
+            return GeneralUtility::makeInstance(ErrorController::class)->pageNotFoundAction(
                 $this->request,
                 'The requested profile does not exist',
                 ['code' => PageAccessFailureReasons::PAGE_NOT_FOUND]
             );
-            die();
         }
 
         /** @var ModifyDetailProfileEvent $event */
@@ -157,5 +131,35 @@ final class ProfileController extends ActionController
         ]);
 
         return $this->htmlResponse();
+    }
+
+    /**
+     * Adopt plugin settings and `tt_content.pages`.
+     *
+     * @param DemandInterface $demand
+     */
+    private function adoptSettings(DemandInterface $demand): void
+    {
+        $context = GeneralUtility::makeInstance(Context::class);
+        $querySettings = new Typo3QuerySettings($context, $this->configurationManager);
+        $contentObjectData = $this->configurationManager->getContentObject()?->data;
+        if (is_array($contentObjectData)
+            && !empty($contentObjectData['pages'])
+        ) {
+            $querySettings->setStoragePageIds(
+                GeneralUtility::intExplode(',', $contentObjectData['pages'])
+            );
+        } else {
+            $querySettings->setRespectStoragePage(false);
+        }
+
+        // Introduced with https://github.com/fgtclb/academic-persons/pull/30 to have the option to display profiles in
+        // fallback mode even when site language (non-default) is configured to be in strict mode.
+        // See: AcademicPersonsListPluginTest::fullyLocalizedPagesAndTtContentListDisplaysOnlyLocalizedProfilesForRequestedLanguageWithNotAllProfilesLocalizedInStrictModeWithFallbackForNonTranslatedSet()
+        if ((int)($this->settings['fallbackForNonTranslated'] ?? 0) === 1) {
+            $querySettings->setLanguageOverlayMode(true);
+        }
+
+        $this->profileRepository->setDefaultQuerySettings($querySettings);
     }
 }
