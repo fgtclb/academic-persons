@@ -41,13 +41,8 @@ class ProfileRepository extends Repository
     public function findByDemand(DemandInterface $demand): QueryResultInterface
     {
         $query = $this->createQuery();
-
-        /** @var ModifyProfileDemandEvent $event */
-        $event = $this->eventDispatcher->dispatch(new ModifyProfileDemandEvent($demand));
-        $demand = $event->getDemand();
-
+        $demand = $this->eventDispatcher->dispatch(new ModifyProfileDemandEvent($demand))->getDemand();
         $this->applyDemandForQuery($query, $demand);
-
         return $query->execute();
     }
 
@@ -56,14 +51,18 @@ class ProfileRepository extends Repository
      */
     private function applyDemandForQuery(QueryInterface $query, DemandInterface $demand): void
     {
+        // Direct selected profiles make all other filters and orderings obsolete and is handled first.
+        if ($demand->getProfileList() !== '') {
+            $profileUidArray = GeneralUtility::intExplode(',', $demand->getProfileList(), true);
+            $query->matching($query->in('uid', $profileUidArray));
+            return;
+        }
+
         $filters = $this->setFilters($query, $demand);
         if ($filters !== null) {
             $query->matching($filters);
         }
-
-        if (empty($demand->getProfileList())) {
-            $query->setOrderings($this->getOrderingsFromDemand($demand));
-        }
+        $query->setOrderings($this->getOrderingsFromDemand($demand));
     }
 
     /**
@@ -72,21 +71,12 @@ class ProfileRepository extends Repository
     private function setFilters(QueryInterface $query, DemandInterface $demand): ?ConstraintInterface
     {
         $filters = [];
-
-        if (!empty($demand->getProfileList())) {
-            $profileUidArray = GeneralUtility::intExplode(',', $demand->getProfileList(), true);
-            $filters[] = $query->in('uid', $profileUidArray);
-        }
-
         if ($demand->getAlphabetFilter() != '') {
             $filters[] = $query->like('last_name', $demand->getAlphabetFilter() . '%');
         }
-
-        if (empty($filters)) {
-            return null;
-        }
-
-        return $query->logicalAnd(...$filters);
+        return ($filters === [])
+            ? null
+            : $query->logicalAnd(...$filters);
     }
 
     /**
@@ -98,18 +88,14 @@ class ProfileRepository extends Repository
         $allowedGroupingValues = array_keys(GeneralUtility::makeInstance(GroupByValues::class)->getAll());
         $allowedSortByValues = array_keys(GeneralUtility::makeInstance(SortByValues::class)->getAll());
         $allowedSortByDirectionValues = ['asc', 'desc'];
-
         if (in_array($demand->getGroupBy(), $allowedGroupingValues, true)) {
             $orderings[$demand->getGroupBy()] = QueryInterface::ORDER_ASCENDING;
         }
-
-        if (
-            in_array($demand->getSortBy(), $allowedSortByValues, true) &&
-            in_array($demand->getSortByDirection(), $allowedSortByDirectionValues, true)
+        if (in_array($demand->getSortBy(), $allowedSortByValues, true)
+            && in_array($demand->getSortByDirection(), $allowedSortByDirectionValues, true)
         ) {
             $orderings[$demand->getSortBy()] = strtoupper($demand->getSortByDirection());
         }
-
         return $orderings;
     }
 }
