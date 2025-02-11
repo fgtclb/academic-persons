@@ -42,8 +42,66 @@ class ProfileRepository extends Repository
     {
         $query = $this->createQuery();
         $demand = $this->eventDispatcher->dispatch(new ModifyProfileDemandEvent($demand))->getDemand();
+        $this->applyDemandSettings($query, $demand);
         $this->applyDemandForQuery($query, $demand);
         return $query->execute();
+    }
+
+    /**
+     * @param QueryInterface<Profile> $query
+     */
+    private function applyDemandSettings(QueryInterface $query, DemandInterface $demand): void
+    {
+        // @todo Remove method_exists() level (unnesting block) with next major, when added breaking to DemandInterface
+        //       and deprecation layer in ProfileController::adoptSettings().
+        if (method_exists($demand, 'getStoragePages')) {
+            if ($demand->getStoragePages() !== '') {
+                $query->getQuerySettings()->setStoragePageIds(
+                    GeneralUtility::intExplode(',', $demand->getStoragePages(), true)
+                );
+            } else {
+                $query->getQuerySettings()->setRespectStoragePage(false);
+            }
+        } else {
+            trigger_error(
+                sprintf(
+                    'Class "%s" does not implement methods "%s" and "%s", which is deprecated, and will be added '
+                    . 'breaking with 1.x to interface "%s". Interface already includes commented method signature.',
+                    $demand::class,
+                    'setStoragePages',
+                    'getStoragePages',
+                    DemandInterface::class,
+                ),
+                E_USER_DEPRECATED
+            );
+        }
+        /**
+         * Introduced with https://github.com/fgtclb/academic-persons/pull/30 to have the option to display profiles in
+         * fallback mode even when site language (non-default) is configured to be in strict mode.
+         *
+         * {@see AcademicPersonsListAndDetailPluginTest::fullyLocalizedListDisplaysLocalizedSelectedProfilesForRequestedLanguageInSelectedOrder()}
+         * {@see AcademicPersonsListPluginTest::fullyLocalizedListDisplaysLocalizedSelectedProfilesForRequestedLanguageInSelectedOrder()}
+         *
+         * @todo    Remove `method_exists()' check with next major, when added breaking to DemandInterface and deprecation
+         *          layer in ProfileController::adoptSettings().
+         */
+        if (method_exists($demand, 'getFallbackForNonTranslated')) {
+            if ($demand->getFallbackForNonTranslated() === 1) {
+                $query->getQuerySettings()->setLanguageOverlayMode(true);
+            }
+        } else {
+            trigger_error(
+                sprintf(
+                    'Class "%s" does not implement methods "%s" and "%s", which is deprecated, and will be added '
+                    . 'breaking with 1.x to interface "%s". Interface already includes commented method signature.',
+                    $demand::class,
+                    'setFallbackForNonTranslated',
+                    'getFallbackForNonTranslated',
+                    DemandInterface::class,
+                ),
+                E_USER_DEPRECATED
+            );
+        }
     }
 
     /**

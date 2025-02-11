@@ -143,23 +143,70 @@ final class ProfileController extends ActionController
         $context = GeneralUtility::makeInstance(Context::class);
         $querySettings = new Typo3QuerySettings($context, $this->configurationManager);
         $contentObjectData = $this->configurationManager->getContentObject()?->data;
-        if (is_array($contentObjectData)
+        $setDefaultQuerySettings = false;
+        $hasStoragePids = (
+            is_array($contentObjectData)
             && !empty($contentObjectData['pages'])
-        ) {
-            $querySettings->setStoragePageIds(
-                GeneralUtility::intExplode(',', $contentObjectData['pages'])
-            );
+            && is_string($contentObjectData['data'])
+        );
+        if (method_exists($demand, 'setStoragePages')) {
+            if ($hasStoragePids) {
+                // @todo See ProfileRepository::applyDemandSettings().
+                $demand->setStoragePages($contentObjectData['data']);
+            }
         } else {
-            $querySettings->setRespectStoragePage(false);
+            trigger_error(
+                sprintf(
+                    'Class "%s" does not implement methods "%s" and "%s", which is deprecated, and will be added '
+                    . 'breaking with 1.x to interface "%s". Interface already includes commented method signature.',
+                    $demand::class,
+                    'setStoragePages',
+                    'getStoragePages',
+                    DemandInterface::class,
+                ),
+                E_USER_DEPRECATED
+            );
+            $setDefaultQuerySettings = true;
+            if ($hasStoragePids) {
+                $querySettings->setStoragePageIds(
+                    GeneralUtility::intExplode(',', $contentObjectData['pages'])
+                );
+            } else {
+                $querySettings->setRespectStoragePage(false);
+            }
+        }
+        /**
+         * Introduced with https://github.com/fgtclb/academic-persons/pull/30 to have the option to display profiles in
+         * fallback mode even when site language (non-default) is configured to be in strict mode.
+         *
+         * {@see AcademicPersonsListAndDetailPluginTest::fullyLocalizedListDisplaysLocalizedSelectedProfilesForRequestedLanguageInSelectedOrder()}
+         * {@see AcademicPersonsListPluginTest::fullyLocalizedListDisplaysLocalizedSelectedProfilesForRequestedLanguageInSelectedOrder()}
+         */
+        $fallbackForNonTranslated = (int)($this->settings['fallbackForNonTranslated'] ?? 0);
+        if ($fallbackForNonTranslated === 1) {
+            if (method_exists($demand, 'setFallbackForNonTranslated')) {
+                // @todo See ProfileRepository::applyDemandSettings().
+                $demand->setFallbackForNonTranslated($fallbackForNonTranslated);
+            } else {
+                trigger_error(
+                    sprintf(
+                        'Class "%s" does not implement methods "%s" and "%s", which is deprecated, and will be added '
+                        . 'breaking with 1.x to interface "%s". Interface already includes commented method signature.',
+                        $demand::class,
+                        'setFallbackForNonTranslated',
+                        'getFallbackForNonTranslated',
+                        DemandInterface::class,
+                    ),
+                    E_USER_DEPRECATED
+                );
+                $setDefaultQuerySettings = true;
+                $querySettings->setLanguageOverlayMode(true);
+            }
         }
 
-        // Introduced with https://github.com/fgtclb/academic-persons/pull/30 to have the option to display profiles in
-        // fallback mode even when site language (non-default) is configured to be in strict mode.
-        // See: AcademicPersonsListPluginTest::fullyLocalizedPagesAndTtContentListDisplaysOnlyLocalizedProfilesForRequestedLanguageWithNotAllProfilesLocalizedInStrictModeWithFallbackForNonTranslatedSet()
-        if ((int)($this->settings['fallbackForNonTranslated'] ?? 0) === 1) {
-            $querySettings->setLanguageOverlayMode(true);
+        // @todo Remove this when direct set code is removed with next major version, and Demand is fully source-of-truth.
+        if ($setDefaultQuerySettings) {
+            $this->profileRepository->setDefaultQuerySettings($querySettings);
         }
-
-        $this->profileRepository->setDefaultQuerySettings($querySettings);
     }
 }
