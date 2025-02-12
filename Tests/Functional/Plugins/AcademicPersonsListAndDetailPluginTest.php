@@ -408,126 +408,117 @@ final class AcademicPersonsListAndDetailPluginTest extends FunctionalTestCase
 
     /**
      * @test
-     * @todo This is expected to work. Remove skipping test when fixing it.
      */
     public function fullyLocalizedListDisplaysLocalizedSelectedProfilesForRequestedLanguageInSelectedOrder(): void
     {
-        static::markTestSkipped('Expected to work, but does not. Skipped until fixed.');
-        //$this->importCSVDataSet(__DIR__ . '/Fixtures/AcademicPersonsListAndDetailPlugin/fullyLocalized_selectedProfiles.csv');
-        //$this->setUpFrontendRootPageForTestCase();
-        //$this->writeSiteConfiguration(
-        //    'acme',
-        //    $this->buildSiteConfiguration(1, 'https://www.acme.com/'),
-        //    [
-        //        $this->buildDefaultLanguageConfiguration('EN', '/'),
-        //        $this->buildLanguageConfiguration('DE', '/de/'),
-        //    ]
-        //);
-        //
-        //$requestContext = new InternalRequestContext();
-        //$request = new InternalRequest('https://www.acme.com/de/home');
-        //$response = $this->executeFrontendSubRequest($request, $requestContext);
-        //self::assertSame(200, $response->getStatusCode());
-        //
-        //$content = (string)$response->getBody();
-        //static::assertStringContainsString('<h2>Profilelist</h2>', $content);
-        //static::assertStringContainsString('#0(3): [DE] Horst Huber', $content);
-        //static::assertStringContainsString('#1(1): [DE] Max Müllermann', $content);
-        //static::assertStringNotContainsString('[EN] Horst Huber', $content);
-        //static::assertStringNotContainsString('[EN] Max Müllermann', $content);
-    }
+        $this->importCSVDataSet(__DIR__ . '/Fixtures/AcademicPersonsListAndDetailPlugin/fullyLocalized_selectedProfiles.csv');
+        $this->setUpFrontendRootPageForTestCase();
+        $this->writeSiteConfiguration(
+            'acme',
+            $this->buildSiteConfiguration(1, 'https://www.acme.com/'),
+            [
+                $this->buildDefaultLanguageConfiguration('EN', '/'),
+                $this->buildLanguageConfiguration('DE', '/de/'),
+            ]
+        );
 
+        $requestContext = new InternalRequestContext();
+        $request = new InternalRequest('https://www.acme.com/de/home');
+        $response = $this->executeFrontendSubRequest($request, $requestContext);
+        static::assertSame(200, $response->getStatusCode());
+
+        $content = (string)$response->getBody();
+        static::assertStringContainsString('<h2>Profilelist</h2>', $content);
+        static::assertStringContainsString('#0(3): [DE] Horst Huber', $content);
+        static::assertStringContainsString('#1(1): [DE] Max Müllermann', $content);
+        static::assertStringNotContainsString('[EN] Horst Huber', $content);
+        static::assertStringNotContainsString('[EN] Max Müllermann', $content);
+    }
 
     /**
      * @test
-     * @todo This is expected to work. Remove skipping test when fixing it.
      */
     public function fullyLocalizedListDisplaysLocalizedSelectedProfilesForRequestedLanguageInSelectedOrderWithFallbackTypeStrictWhenNotAllProfilesAreLocalized(): void
     {
-        static::markTestSkipped('Expected to work, but does not. Skipped until fixed.');
-        //$this->importCSVDataSet(__DIR__ . '/Fixtures/AcademicPersonsListAndDetailPlugin/fullyLocalized_selectedProfiles_notAllProfilesLocalized.csv');
-        //$this->setUpFrontendRootPageForTestCase();
-        //$this->writeSiteConfiguration(
-        //    'acme',
-        //    $this->buildSiteConfiguration(1, 'https://www.acme.com/'),
-        //    [
-        //        $this->buildDefaultLanguageConfiguration('EN', '/'),
-        //        $this->buildLanguageConfiguration('DE', '/de/', [], 'strict'),
-        //    ]
-        //);
-        //
-        //$requestContext = new InternalRequestContext();
-        //$request = new InternalRequest('https://www.acme.com/de/home');
-        //$response = $this->executeFrontendSubRequest($request, $requestContext);
-        //self::assertSame(200, $response->getStatusCode());
-        //
-        //$content = (string)$response->getBody();
-        //static::assertStringContainsString('<h2>Profilelist</h2>', $content);
-        //static::assertStringContainsString('#0(1): [DE] Max Müllermann', $content);
-        //static::assertStringNotContainsString('[EN] Horst Huber', $content);
-        //static::assertStringNotContainsString('[DE] Horst Huber', $content);
-        //static::assertStringNotContainsString('[EN] Max Müllermann', $content);
+        $this->importCSVDataSet(__DIR__ . '/Fixtures/AcademicPersonsListAndDetailPlugin/fullyLocalized_selectedProfiles_notAllProfilesLocalized.csv');
+        $this->setUpFrontendRootPageForTestCase();
+        $this->writeSiteConfiguration(
+            'acme',
+            $this->buildSiteConfiguration(1, 'https://www.acme.com/'),
+            [
+                $this->buildDefaultLanguageConfiguration('EN', '/'),
+                $this->buildLanguageConfiguration('DE', '/de/', [], 'strict'),
+            ]
+        );
+
+        $requestContext = new InternalRequestContext();
+        $request = new InternalRequest('https://www.acme.com/de/home');
+        $response = $this->executeFrontendSubRequest($request, $requestContext);
+        static::assertSame(200, $response->getStatusCode());
+
+        $content = (string)$response->getBody();
+        static::assertStringContainsString('<h2>Profilelist</h2>', $content);
+        static::assertStringContainsString('#0(1): [DE] Max Müllermann', $content);
+        static::assertStringNotContainsString('[EN] Horst Huber', $content);
+        static::assertStringNotContainsString('[DE] Horst Huber', $content);
+        static::assertStringNotContainsString('[EN] Max Müllermann', $content);
     }
 
     /**
      * @test
-     * @todo This is expected to work. Remove skipping test when fixing it.
      */
     public function fullyLocalizedListDisplaysLocalizedSelectedProfilesForRequestedLanguageInSelectedOrderWithFallbackTypeStrictWhenNotAllProfilesAreLocalizedButPluginFallbackSet(): void
     {
-        static::markTestSkipped('Expected to work, but does not. Skipped until fixed.');
-        //$this->importCSVDataSet(__DIR__ . '/Fixtures/AcademicPersonsListAndDetailPlugin/fullyLocalized_selectedProfiles_notAllProfilesLocalized_fallbackForNonTranslatedSet.csv');
-        //$this->setUpFrontendRootPageForTestCase();
-        //$this->writeSiteConfiguration(
-        //    'acme',
-        //    $this->buildSiteConfiguration(1, 'https://www.acme.com/'),
-        //    [
-        //        $this->buildDefaultLanguageConfiguration('EN', '/'),
-        //        $this->buildLanguageConfiguration('DE', '/de/'),
-        //    ]
-        //);
-        //
-        //$requestContext = new InternalRequestContext();
-        //$request = new InternalRequest('https://www.acme.com/de/home');
-        //$response = $this->executeFrontendSubRequest($request, $requestContext);
-        //self::assertSame(200, $response->getStatusCode());
-        //
-        //$content = (string)$response->getBody();
-        //static::assertStringContainsString('<h2>Profilelist</h2>', $content);
-        //static::assertStringContainsString('#0(3): [EN] Horst Huber', $content);
-        //static::assertStringContainsString('#1(1): [DE] Max Müllermann', $content);
-        //static::assertStringNotContainsString('[DE] Horst Huber', $content);
-        //static::assertStringNotContainsString('[EN] Max Müllermann', $content);
+        $this->importCSVDataSet(__DIR__ . '/Fixtures/AcademicPersonsListAndDetailPlugin/fullyLocalized_selectedProfiles_notAllProfilesLocalized_fallbackForNonTranslatedSet.csv');
+        $this->setUpFrontendRootPageForTestCase();
+        $this->writeSiteConfiguration(
+            'acme',
+            $this->buildSiteConfiguration(1, 'https://www.acme.com/'),
+            [
+                $this->buildDefaultLanguageConfiguration('EN', '/'),
+                $this->buildLanguageConfiguration('DE', '/de/'),
+            ]
+        );
+
+        $requestContext = new InternalRequestContext();
+        $request = new InternalRequest('https://www.acme.com/de/home');
+        $response = $this->executeFrontendSubRequest($request, $requestContext);
+        static::assertSame(200, $response->getStatusCode());
+
+        $content = (string)$response->getBody();
+        static::assertStringContainsString('<h2>Profilelist</h2>', $content);
+        static::assertStringContainsString('#0(3): [EN] Horst Huber', $content);
+        static::assertStringContainsString('#1(1): [DE] Max Müllermann', $content);
+        static::assertStringNotContainsString('[DE] Horst Huber', $content);
+        static::assertStringNotContainsString('[EN] Max Müllermann', $content);
     }
 
     /**
      * @test
-     * @todo This is expected to work. Remove skipping test when fixing it.
      */
     public function fullyLocalizedListDisplaysLocalizedSelectedProfilesForRequestedLanguageInSelectedOrderWithFallbackTypeFallbackWhenNotAllProfilesAreLocalized(): void
     {
-        static::markTestSkipped('Expected to work, but does not. Skipped until fixed.');
-        //$this->importCSVDataSet(__DIR__ . '/Fixtures/AcademicPersonsListAndDetailPlugin/fullyLocalized_selectedProfiles_notAllProfilesLocalized.csv');
-        //$this->setUpFrontendRootPageForTestCase();
-        //$this->writeSiteConfiguration(
-        //    'acme',
-        //    $this->buildSiteConfiguration(1, 'https://www.acme.com/'),
-        //    [
-        //        $this->buildDefaultLanguageConfiguration('EN', '/'),
-        //        $this->buildLanguageConfiguration('DE', '/de/', ['EN'], 'fallback'),
-        //    ]
-        //);
-        //
-        //$requestContext = new InternalRequestContext();
-        //$request = new InternalRequest('https://www.acme.com/de/home');
-        //$response = $this->executeFrontendSubRequest($request, $requestContext);
-        //self::assertSame(200, $response->getStatusCode());
-        //
-        //$content = (string)$response->getBody();
-        //static::assertStringContainsString('<h2>Profilelist</h2>', $content);
-        //static::assertStringContainsString('#0(3): [EN] Horst Huber', $content);
-        //static::assertStringContainsString('#1(1): [DE] Max Müllermann', $content);
-        //static::assertStringNotContainsString('[DE] Horst Huber', $content);
-        //static::assertStringNotContainsString('[EN] Max Müllermann', $content);
+        $this->importCSVDataSet(__DIR__ . '/Fixtures/AcademicPersonsListAndDetailPlugin/fullyLocalized_selectedProfiles_notAllProfilesLocalized.csv');
+        $this->setUpFrontendRootPageForTestCase();
+        $this->writeSiteConfiguration(
+            'acme',
+            $this->buildSiteConfiguration(1, 'https://www.acme.com/'),
+            [
+                $this->buildDefaultLanguageConfiguration('EN', '/'),
+                $this->buildLanguageConfiguration('DE', '/de/', ['EN'], 'fallback'),
+            ]
+        );
+
+        $requestContext = new InternalRequestContext();
+        $request = new InternalRequest('https://www.acme.com/de/home');
+        $response = $this->executeFrontendSubRequest($request, $requestContext);
+        static::assertSame(200, $response->getStatusCode());
+
+        $content = (string)$response->getBody();
+        static::assertStringContainsString('<h2>Profilelist</h2>', $content);
+        static::assertStringContainsString('#0(3): [EN] Horst Huber', $content);
+        static::assertStringContainsString('#1(1): [DE] Max Müllermann', $content);
+        static::assertStringNotContainsString('[DE] Horst Huber', $content);
+        static::assertStringNotContainsString('[EN] Max Müllermann', $content);
     }
 }

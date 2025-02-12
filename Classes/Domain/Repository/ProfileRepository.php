@@ -112,6 +112,12 @@ class ProfileRepository extends Repository
         // Direct selected profiles make all other filters and orderings obsolete and is handled first.
         if ($demand->getProfileList() !== '') {
             $profileUidArray = GeneralUtility::intExplode(',', $demand->getProfileList(), true);
+            /**
+             * Selected profile uid's are default language id's and fails to retrieve the profiles for non default
+             * language's. Disable respecting sys_language helps, using defined overlay mode based on siteLanguage
+             * configuration OR custom `fallbackForNonTranslated` handling {@see self::applyDemandSettings()}.
+             */
+            $query->getQuerySettings()->setRespectSysLanguage(false);
             $query->matching($query->in('uid', $profileUidArray));
             return;
         }
