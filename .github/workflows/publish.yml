@@ -37,14 +37,14 @@ jobs:
           if [[ -n "${releaseCommentPrependBody// }" ]]; then
             {
               echo 'releaseCommentPrependBody<<EOF'
-              echo "releaseCommentPrependBody"
+              echo "$releaseCommentPrependBody"
               echo EOF
             } >> "$GITHUB_ENV"
           fi
           {
             echo 'terReleaseNotes<<EOF'
             echo "[RELEASE] ${{ env.version }}"
-            echo "For notes see https://github.com/fgtclb/academic-persons/releases/tag/${{ env.version }}"
+            echo "Notes: https://github.com/fgtclb/academic-persons/releases/tag/${{ env.version }}"
             echo EOF
           } >> "$GITHUB_ENV"
 
@@ -80,10 +80,9 @@ jobs:
       # @todo Currently an issue exists with the TYPO3 Extension Repository (TER) tailor based uploads, which seems to
       #       be WAF related and the T3O TER Team working on. Allow this step to fail (continue on error) for now until
       #       issues has been sorted out.
+      #       https://github.com/TYPO3/tailor/issues/82
       - name: Publish to TER
-        # @todo Remove `continue-on-error` after
-        #       a) new access token has been created and set and
-        #       b) upload with tailor has been fixed.
+        # @todo Remove `continue-on-error` after upload with tailor has been fixed.
         continue-on-error: true
         run: |
           php ~/.composer/vendor/bin/tailor ter:publish --comment "${{ env.terReleaseNotes }}" ${{ env.version }} \
