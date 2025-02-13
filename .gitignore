@@ -12,3 +12,5 @@
 
 /.cache/
 /Build/testing-docker/.env
+
+/tailor-version-artefact/
