@@ -35,9 +35,9 @@ echo '>> Prepare release pull-request' ; \
   git checkout ${RELEASE_BRANCH} && \
   git pull --rebase && \
   git checkout -b prepare-release-${RELEASE_VERSION} && \
-  composer require --dev "typo3/tailer" && \
-  ./Build/bin/tailor set-version ${RELEASE_VERSION} && \
-  compser remove --dev "typo3/tailor" && \
+  composer require --dev "typo3/tailor" && \
+  ./.Build/bin/tailor set-version ${RELEASE_VERSION} && \
+  composer remove --dev "typo3/tailor" && \
   git add . && \
   git commit -m "[TASK] Prepare release ${RELEASE_VERSION}" && \
   git push --set-upstream origin prepare-release-${RELEASE_VERSION} && \
