@@ -32,7 +32,7 @@
                 <source>List and detail view of profiles</source>
             </trans-unit>
             <trans-unit id="content.ctype.group.label">
-                <source>Academic Person</source>
+                <source>Academic</source>
             </trans-unit>
 
             <trans-unit id="newContentElement.wizardItems.academic">

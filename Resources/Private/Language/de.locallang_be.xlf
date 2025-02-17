@@ -41,8 +41,8 @@
                 <target>Liste und Detailansicht von Profilen</target>
             </trans-unit>
             <trans-unit id="content.ctype.group.label">
-                <source>Academic Person</source>
-                <target>Academic Person</target>
+                <source>Academic</source>
+                <target>Academic</target>
             </trans-unit>
 
             <trans-unit id="newContentElement.wizardItems.academic">

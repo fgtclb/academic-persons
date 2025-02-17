@@ -16,7 +16,7 @@ use TYPO3\CMS\Extbase\Utility\ExtensionUtility;
     ExtensionManagementUtility::addTcaSelectItemGroup(
         'tt_content',
         'CType',
-        'academicpersons',
+        'academic',
         'LLL:EXT:academic_persons/Resources/Private/Language/locallang_be.xlf:content.ctype.group.label',
     );
 
@@ -29,7 +29,7 @@ use TYPO3\CMS\Extbase\Utility\ExtensionUtility;
                 ((new \TYPO3\CMS\Core\Information\Typo3Version())->getMajorVersion() >= 12 ? 'label' : 0) => 'LLL:EXT:academic_persons/Resources/Private/Language/locallang_be.xlf:plugin.list.label',
                 ((new \TYPO3\CMS\Core\Information\Typo3Version())->getMajorVersion() >= 12 ? 'value' : 1) => $contentIdentifier,
                 ((new \TYPO3\CMS\Core\Information\Typo3Version())->getMajorVersion() >= 12 ? 'icon' : 2) => 'persons_icon',
-                ((new \TYPO3\CMS\Core\Information\Typo3Version())->getMajorVersion() >= 12 ? 'group' : 3) => 'academicpersons',
+                ((new \TYPO3\CMS\Core\Information\Typo3Version())->getMajorVersion() >= 12 ? 'group' : 3) => 'academic',
             ],
             ExtensionUtility::PLUGIN_TYPE_CONTENT_ELEMENT,
             'academic_persons'
@@ -64,7 +64,7 @@ use TYPO3\CMS\Extbase\Utility\ExtensionUtility;
                 ((new \TYPO3\CMS\Core\Information\Typo3Version())->getMajorVersion() >= 12 ? 'label' : 0) => 'LLL:EXT:academic_persons/Resources/Private/Language/locallang_be.xlf:plugin.detail.label',
                 ((new \TYPO3\CMS\Core\Information\Typo3Version())->getMajorVersion() >= 12 ? 'value' : 1) => $contentIdentifier,
                 ((new \TYPO3\CMS\Core\Information\Typo3Version())->getMajorVersion() >= 12 ? 'icon' : 2) => 'persons_icon',
-                ((new \TYPO3\CMS\Core\Information\Typo3Version())->getMajorVersion() >= 12 ? 'group' : 3) => 'academicpersons',
+                ((new \TYPO3\CMS\Core\Information\Typo3Version())->getMajorVersion() >= 12 ? 'group' : 3) => 'academic',
             ],
             ExtensionUtility::PLUGIN_TYPE_CONTENT_ELEMENT,
             'academic_persons'
@@ -80,7 +80,7 @@ use TYPO3\CMS\Extbase\Utility\ExtensionUtility;
                 ((new \TYPO3\CMS\Core\Information\Typo3Version())->getMajorVersion() >= 12 ? 'label' : 0) => 'LLL:EXT:academic_persons/Resources/Private/Language/locallang_be.xlf:plugin.listAndDetail.label',
                 ((new \TYPO3\CMS\Core\Information\Typo3Version())->getMajorVersion() >= 12 ? 'value' : 1) => $contentIdentifier,
                 ((new \TYPO3\CMS\Core\Information\Typo3Version())->getMajorVersion() >= 12 ? 'icon' : 2) => 'persons_icon',
-                ((new \TYPO3\CMS\Core\Information\Typo3Version())->getMajorVersion() >= 12 ? 'group' : 3) => 'academicpersons',
+                ((new \TYPO3\CMS\Core\Information\Typo3Version())->getMajorVersion() >= 12 ? 'group' : 3) => 'academic',
             ],
             ExtensionUtility::PLUGIN_TYPE_CONTENT_ELEMENT,
             'academic_persons'
@@ -115,7 +115,7 @@ use TYPO3\CMS\Extbase\Utility\ExtensionUtility;
                 ((new \TYPO3\CMS\Core\Information\Typo3Version())->getMajorVersion() >= 12 ? 'label' : 0) => 'LLL:EXT:academic_persons/Resources/Private/Language/locallang_be.xlf:newContentElement.wizardItems.academic.card.title',
                 ((new \TYPO3\CMS\Core\Information\Typo3Version())->getMajorVersion() >= 12 ? 'value' : 1) => $contentIdentifier,
                 ((new \TYPO3\CMS\Core\Information\Typo3Version())->getMajorVersion() >= 12 ? 'icon' : 2) => 'persons_icon',
-                ((new \TYPO3\CMS\Core\Information\Typo3Version())->getMajorVersion() >= 12 ? 'group' : 3) => 'academicpersons',
+                ((new \TYPO3\CMS\Core\Information\Typo3Version())->getMajorVersion() >= 12 ? 'group' : 3) => 'academic',
             ],
             ExtensionUtility::PLUGIN_TYPE_CONTENT_ELEMENT,
             'academic_persons'
