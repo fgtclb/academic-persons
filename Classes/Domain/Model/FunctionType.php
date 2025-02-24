@@ -25,8 +25,6 @@ class FunctionType extends AbstractEntity
 
     protected string $functionNameFemale = '';
 
-    protected int $hisId = 0;
-
     public function setFunctionName(string $functionName): void
     {
         $this->functionName = $functionName;
@@ -55,15 +53,5 @@ class FunctionType extends AbstractEntity
     public function getFunctionNameFemale(): string
     {
         return $this->functionNameFemale;
-    }
-
-    public function setHisId(int $hisId): void
-    {
-        $this->hisId = $hisId;
-    }
-
-    public function getHisId(): int
-    {
-        return $this->hisId;
     }
 }
