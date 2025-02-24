@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<xliff version="1.0">
+    <file source-language="en" datatype="plaintext" original="messages" date="2025-02-24T11:41:07Z" product-name="academic_persons">
+        <header/>
+        <body>
+            <trans-unit id="contracts.room">
+                <source>Room</source>
+            </trans-unit>
+            <trans-unit id="contracts.officeHours">
+                <source>Office Hours</source>
+            </trans-unit>
+            <trans-unit id="contracts.email">
+                <source>E-Mail</source>
+            </trans-unit>
+            <trans-unit id="contracts.phone">
+                <source>Phone</source>
+            </trans-unit>
+            <trans-unit id="contracts.zip">
+                <source>Addresses</source>
+            </trans-unit>
+        </body>
+    </file>
+</xliff>
