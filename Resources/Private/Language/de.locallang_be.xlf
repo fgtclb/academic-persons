@@ -102,6 +102,26 @@
                 <source>Sort By (sorting of activated grouping has priority)</source>
                 <target>Sortieren nach (wird nachrangig bei aktivierter Gruppierung berücksichtigt)</target>
             </trans-unit>
+            <trans-unit id="flexform.el.selectedContracts.label">
+                <source>Selected Contracts</source>
+                <target>Ausgewählte Verträge</target>
+            </trans-unit>
+            <trans-unit id="flexform.el.selectedProfiles.label">
+                <source>Selected Profiles</source>
+                <target>Ausgewählte Profile</target>
+            </trans-unit>
+            <trans-unit id="flexform.el.showFields.label">
+                <source>Show only selected Fields</source>
+                <target>Nur ausgewählte Felder anzeigen</target>
+            </trans-unit>
+            <trans-unit id="flexform.el.showFields.groups.profile">
+                <source>Profile</source>
+                <target>Profil</target>
+            </trans-unit>
+            <trans-unit id="flexform.el.showFields.groups.contracts">
+                <source>Contracts</source>
+                <target>Verträge</target>
+            </trans-unit>
             <trans-unit id="flexform.el.sortBy.items.none">
                 <source>No sorting</source>
                 <target>Keine Sortierung</target>

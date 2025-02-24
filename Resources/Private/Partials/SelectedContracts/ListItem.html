@@ -11,45 +11,37 @@
         else: 'ListAndDetail'
     )}"
 />
-
 <li>
     <f:link.action
         pageUid="{settings.detailPid}"
         action="detail"
         pluginName="{targetPlugin}"
-        arguments="{profile: profile}"
+        arguments="{profile: contract.profile}"
     >
-        {profile.firstName}
-        {f:if(condition: profile.middleName, then: ' {profile.middleName}')}
-        {profile.lastName}
+        {contract.profile.firstName}
+        {f:if(condition: contract.profile.middleName, then: ' {contract.profile.middleName}')}
+        {contract.profile.lastName}
     </f:link.action>
     <br>
-    <f:if condition="{profile.contracts}">
-        <f:for
-            each="{profile.contracts}"
-            as="contract"
-        >
-            <f:if condition="{settings.showFields}">
-                <f:then>
-                    <f:render
-                        section="ContractSelected"
-                        arguments="{
-                            contract: contract,
-                            settings: settings
-                        }"
-                    />
-                </f:then>
-                <f:else>
-                    <f:render
-                        section="ContractFull"
-                        arguments="{
-                            contract: contract,
-                            settings: settings
-                        }"
-                    />
-                </f:else>
-            </f:if>
-        </f:for>
+    <f:if condition="{settings.showFields}">
+        <f:then>
+            <f:render
+                section="ContractSelected"
+                arguments="{
+                    contract: contract,
+                    settings: settings
+                }"
+            />
+        </f:then>
+        <f:else>
+            <f:render
+                section="ContractFull"
+                arguments="{
+                    contract: contract,
+                    settings: settings
+                }"
+            />
+        </f:else>
     </f:if>
 </li>
 

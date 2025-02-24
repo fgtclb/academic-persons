@@ -1,0 +1,36 @@
+<html data-namespace-typo3-fluid="true"
+      xmlns:f="http://typo3.org/ns/TYPO3/CMS/Fluid/ViewHelpers"
+>
+
+<f:if condition="{profiles}">
+    <f:variable name="profilesToList" value="{profiles}" />
+    <f:if condition="{settings.paginationEnabled}">
+        <f:variable name="profilesToList" value="{pagination.paginator.paginatedItems}" />
+    </f:if>
+
+    <f:if condition="{demand.groupBy}">
+        <f:then>
+            <f:groupedFor as="groupedProfiles" groupBy="{demand.groupBy}" each="{profilesToList}">
+                <h3>{groupKey}</h3>
+                <ul>
+                    <f:for each="{groupedProfiles}" as="profile">
+                        <f:render partial="List/ListItem" arguments="{profile: profile, demand: demand, settings: settings}" />
+                    </f:for>
+                </ul>
+            </f:groupedFor>
+        </f:then>
+        <f:else>
+            <ul>
+                <f:for each="{profilesToList}" as="profile">
+                    <f:render partial="List/ListItem" arguments="{profile: profile, demand: demand, settings: settings}" />
+                </f:for>
+            </ul>
+        </f:else>
+    </f:if>
+
+    <f:if condition="{settings.paginationEnabled}">
+        <f:render partial="List/Pagination" arguments="{paginator: paginator, pagination: pagination}" />
+    </f:if>
+</f:if>
+
+</html>

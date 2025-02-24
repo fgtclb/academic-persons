@@ -31,6 +31,12 @@
             <trans-unit id="plugin.listAndDetail.label">
                 <source>Profiles: List and detail view of profiles</source>
             </trans-unit>
+            <trans-unit id="plugin.selectedprofiles.label">
+                <source>Profiles: Selected Profiles</source>
+            </trans-unit>
+            <trans-unit id="plugin.selectedcontracts.label">
+                <source>Profiles: Selected Contracts</source>
+            </trans-unit>
 
             <trans-unit id="newContentElement.wizardItems.academic">
                 <source>Academic</source>
@@ -74,6 +80,21 @@
             </trans-unit>
             <trans-unit id="flexform.el.groupBy.items.last_name">
                 <source>First Letter of Last Name</source>
+            </trans-unit>
+            <trans-unit id="flexform.el.selectedContracts.label">
+                <source>Selected Contracts</source>
+            </trans-unit>
+            <trans-unit id="flexform.el.selectedProfiles.label">
+                <source>Selected Profiles</source>
+            </trans-unit>
+            <trans-unit id="flexform.el.showFields.label">
+                <source>Show only selected Fields</source>
+            </trans-unit>
+            <trans-unit id="flexform.el.showFields.groups.profile">
+                <source>Profile</source>
+            </trans-unit>
+            <trans-unit id="flexform.el.showFields.groups.contracts">
+                <source>Contracts</source>
             </trans-unit>
             <trans-unit id="flexform.el.sortBy.label">
                 <source>Sort By (sorting of activated grouping has priority)</source>
