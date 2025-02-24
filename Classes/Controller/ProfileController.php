@@ -13,6 +13,7 @@ namespace Fgtclb\AcademicPersons\Controller;
 
 use Fgtclb\AcademicPersons\Domain\Model\Dto\DemandInterface;
 use Fgtclb\AcademicPersons\Domain\Model\Profile;
+use Fgtclb\AcademicPersons\Domain\Repository\ContractRepository;
 use Fgtclb\AcademicPersons\Domain\Repository\ProfileRepository;
 use Fgtclb\AcademicPersons\Event\ModifyDetailProfileEvent;
 use Fgtclb\AcademicPersons\Event\ModifyListProfilesEvent;
@@ -36,6 +37,13 @@ final class ProfileController extends ActionController
         $this->profileRepository = $profileRepository;
     }
 
+    private ContractRepository $contractRepository;
+
+    public function injectContractRepository(ContractRepository $contractRepository): void
+    {
+        $this->contractRepository = $contractRepository;
+    }
+
     public function initializeListAction(): void
     {
         $demandArray = [];
@@ -53,6 +61,8 @@ final class ProfileController extends ActionController
         $propertyMappingConfiguration->skipUnknownProperties();
 
         $this->request = $this->request->withArgument('demand', $demandArray);
+
+        $this->settings['showFields'] = !empty($this->settings['showFields']) ? GeneralUtility::trimExplode(',', $this->settings['showFields']) : null;
     }
 
     public function listAction(DemandInterface $demand): ResponseInterface
@@ -109,12 +119,12 @@ final class ProfileController extends ActionController
     /**
      * @IgnoreValidation("profile")
      */
-    public function detailAction(Profile $profile = null): ResponseInterface
+    public function detailAction(?Profile $profile = null): ResponseInterface
     {
         if ($profile === null) {
             return GeneralUtility::makeInstance(ErrorController::class)->pageNotFoundAction(
                 $this->request,
-                'The requested profile does not exist',
+                'The requested profile does not exist.',
                 ['code' => PageAccessFailureReasons::PAGE_NOT_FOUND]
             );
         }
@@ -128,6 +138,74 @@ final class ProfileController extends ActionController
         $this->configurationManager->getContentObject()?->getTypoScriptFrontendController()?->addCacheTags([
             'profile_detail_view',
             sprintf('profile_detail_view_%d', $profile->getUid()),
+        ]);
+
+        return $this->htmlResponse();
+    }
+
+    public function initializeSelectedProfilesAction(): void
+    {
+        $this->settings['showFields'] = !empty($this->settings['showFields']) ? GeneralUtility::trimExplode(',', $this->settings['showFields']) : null;
+    }
+
+    public function selectedProfilesAction(): ResponseInterface
+    {
+        if (empty($this->settings['selectedProfiles'])) {
+            return $this->htmlResponse();
+        }
+
+        $profileUids = GeneralUtility::intExplode(',', $this->settings['selectedProfiles'], true);
+        $profiles = $this->profileRepository->findByUids($profileUids);
+
+        /** @var ModifyListProfilesEvent $event */
+        $event = $this->eventDispatcher->dispatch(new ModifyListProfilesEvent($profiles, $this->view));
+        $profiles = $event->getProfiles();
+
+        // Sort profiles by order in selection
+        $sortedProfiles = [];
+        foreach ($profileUids as $uid) {
+            foreach ($profiles as $profile) {
+                if ($profile->getUid() === $uid) {
+                    $sortedProfiles[] = $profile;
+                }
+            }
+        }
+
+        $this->view->assignMultiple([
+            'data' => $this->configurationManager->getContentObject()?->data,
+            'profiles' => $sortedProfiles,
+        ]);
+
+        return $this->htmlResponse();
+    }
+
+    public function initializeSelectedContractsAction(): void
+    {
+        $this->settings['showFields'] = !empty($this->settings['showFields']) ? GeneralUtility::trimExplode(',', $this->settings['showFields']) : null;
+    }
+
+    public function selectedContractsAction(): ResponseInterface
+    {
+        if (empty($this->settings['selectedContracts'])) {
+            return $this->htmlResponse();
+        }
+
+        $contractUids = GeneralUtility::intExplode(',', $this->settings['selectedContracts'], true);
+        $contracts = $this->contractRepository->findByUids($contractUids);
+
+        // Sort profiles by order in selection
+        $sortedContracts = [];
+        foreach ($contractUids as $uid) {
+            foreach ($contracts as $contract) {
+                if ($contract->getUid() === $uid) {
+                    $sortedContracts[] = $contract;
+                }
+            }
+        }
+
+        $this->view->assignMultiple([
+            'data' => $this->configurationManager->getContentObject()?->data,
+            'contracts' => $sortedContracts,
         ]);
 
         return $this->htmlResponse();

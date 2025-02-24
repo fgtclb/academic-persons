@@ -155,6 +155,22 @@
                             </config>
                         </TCEforms>
                     </settings.fallbackForNonTranslated>
+                    <settings.showFields>
+                        <TCEforms>
+                            <label>LLL:EXT:academic_persons/Resources/Private/Language/locallang_be.xlf:flexform.el.showFields.label</label>
+                            <config>
+                                <type>select</type>
+                                <renderType>selectMultipleSideBySide</renderType>
+                                <itemsProcFunc>Fgtclb\AcademicPersons\Backend\Form\ProfileShowFieldsItemProcFunc->showFields</itemsProcFunc>
+                                <itemGroups>
+                                    <profile>LLL:EXT:academic_persons/Resources/Private/Language/locallang_be.xlf:flexform.el.showFields.groups.profile</profile>
+                                    <contracts>LLL:EXT:academic_persons/Resources/Private/Language/locallang_be.xlf:flexform.el.showFields.groups.contracts</contracts>
+                                </itemGroups>
+                                <maxitems>99</maxitems>
+                                <size>3</size>
+                            </config>
+                        </TCEforms>
+                    </settings.showFields>
                 </el>
             </ROOT>
         </sDEF>

@@ -40,6 +40,22 @@ ExtensionUtility::configurePlugin(
     ]
 );
 
+ExtensionUtility::configurePlugin(
+    'AcademicPersons',
+    'SelectedProfiles',
+    [
+        ProfileController::class => 'selectedProfiles',
+    ]
+);
+
+ExtensionUtility::configurePlugin(
+    'AcademicPersons',
+    'SelectedContracts',
+    [
+        ProfileController::class => 'selectedContracts',
+    ]
+);
+
 $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['t3lib/class.t3lib_tcemain.php']['processDatamapClass']['academicPersons']
     = \Fgtclb\AcademicPersons\Hook\DataHandlerHooks::class;
 

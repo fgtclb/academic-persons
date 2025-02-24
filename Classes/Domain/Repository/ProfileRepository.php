@@ -75,6 +75,7 @@ class ProfileRepository extends Repository
                 E_USER_DEPRECATED
             );
         }
+
         /**
          * Introduced with https://github.com/fgtclb/academic-persons/pull/30 to have the option to display profiles in
          * fallback mode even when site language (non-default) is configured to be in strict mode.
@@ -161,5 +162,24 @@ class ProfileRepository extends Repository
             $orderings[$demand->getSortBy()] = strtoupper($demand->getSortByDirection());
         }
         return $orderings;
+    }
+
+    /**
+     * @param int[] $uids
+     * @return QueryResultInterface<Profile>
+     */
+    public function findByUids(array $uids): QueryResultInterface
+    {
+        $query = $this->createQuery();
+        // Selected uid's are default language and we need to configure extbase in away to
+        // proberly handle the overlay. This is adopted from the generic extbase backend
+        // implementation.
+        // @todo Needs adoption for TYPO3 v12+ which respects the language aspect.
+        $query->getQuerySettings()->setRespectStoragePage(false);
+        $query->getQuerySettings()->setRespectSysLanguage(false);
+        $query->getQuerySettings()->setLanguageOverlayMode(true);
+        $query->matching($query->in('uid', $uids));
+
+        return $query->execute();
     }
 }

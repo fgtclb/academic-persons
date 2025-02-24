@@ -1,0 +1,18 @@
+<html
+    data-namespace-typo3-fluid="true"
+    xmlns:f="http://typo3.org/ns/TYPO3/CMS/Fluid/ViewHelpers"
+>
+<f:if condition="{contracts}">
+    <ul>
+        <f:for each="{contracts}" as="contract">
+            <f:render
+                partial="SelectedContracts/ListItem"
+                arguments="{
+                    contract: contract,
+                    settings: settings
+                }"
+            />
+        </f:for>
+    </ul>
+</f:if>
+</html>
