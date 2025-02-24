@@ -75,11 +75,6 @@ return [
                 'type' => 'passthrough',
             ],
         ],
-        'his_id' => [
-            'config' => [
-                'type' => 'passthrough',
-            ],
-        ],
         'function_name' => [
             'label' => $ll('columns.function_name.label'),
             'config' => [

@@ -37,10 +37,6 @@ class OrganisationalUnit extends AbstractEntity
 
     protected ?DateTime $validTo = null;
 
-    protected int $hisId = 0;
-
-    protected int $hisParentId = 0;
-
     /**
      * @var ObjectStorage<Contract>
      * @Lazy
@@ -121,26 +117,6 @@ class OrganisationalUnit extends AbstractEntity
     public function getValidTo(): ?DateTime
     {
         return $this->validTo;
-    }
-
-    public function setHisId(int $hisId): void
-    {
-        $this->hisId = $hisId;
-    }
-
-    public function getHisId(): int
-    {
-        return $this->hisId;
-    }
-
-    public function setHisParentId(int $hisParentId): void
-    {
-        $this->hisParentId = $hisParentId;
-    }
-
-    public function getHisParentId(): int
-    {
-        return $this->hisParentId;
     }
 
     /**
