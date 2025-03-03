@@ -147,12 +147,12 @@ final class ProfileController extends ActionController
         $hasStoragePids = (
             is_array($contentObjectData)
             && !empty($contentObjectData['pages'])
-            && is_string($contentObjectData['data'])
+            && is_string($contentObjectData['pages'])
         );
         if (method_exists($demand, 'setStoragePages')) {
             if ($hasStoragePids) {
                 // @todo See ProfileRepository::applyDemandSettings().
-                $demand->setStoragePages($contentObjectData['data']);
+                $demand->setStoragePages($contentObjectData['pages']);
             }
         } else {
             trigger_error(
