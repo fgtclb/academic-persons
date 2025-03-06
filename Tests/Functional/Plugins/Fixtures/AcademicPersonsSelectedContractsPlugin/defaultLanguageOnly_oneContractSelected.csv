@@ -1,0 +1,16 @@
+"pages",
+,"uid","pid","doktype","deleted","hidden","sys_language_uid","l10n_parent","l18n_cfg","slug","title"
+,1,0,1,0,0,0,0,0,"/","Site Root"
+,2,1,1,0,0,0,0,0,"/home","Home (EN)"
+,100,1,254,0,0,0,0,0,"/sysfolder-records","Recordcollection"
+"tt_content",
+,"uid","pid","deleted","hidden","sys_language_uid","l18n_parent","CType","list_type","header","pi_flexform"
+,1,2,0,0,0,0,"list","academicpersons_selectedcontracts","Contracts","<?xml version=""1.0"" encoding=""utf-8"" standalone=""yes"" ?><T3FlexForms><data><sheet index=""sDEF""><language index=""lDEF""><field index=""settings.selectedContracts""><value index=""vDEF"">2</value></field><field index=""settings.fallbackForNonTranslated""><value index=""vDEF"">0</value></field></language></sheet></data></T3FlexForms>"
+"tx_academicpersons_domain_model_profile",
+,"uid","pid","deleted","hidden","sys_language_uid","l10n_parent","first_name","last_name","slug"
+,1,100,0,0,0,0,"Max","Müllermann","max-muellermann"
+,2,100,0,0,0,0,"Horst","Huber","horst-huber"
+"tx_academicpersons_domain_model_contract",
+,"uid","pid","deleted","hidden","sys_language_uid","l10n_parent","profile","position","location"
+,1,100,0,0,0,0,1,"Worker",0
+,2,100,0,0,0,0,2,"Manager",0
