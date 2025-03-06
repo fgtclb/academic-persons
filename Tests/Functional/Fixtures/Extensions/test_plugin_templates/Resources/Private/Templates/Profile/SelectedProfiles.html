@@ -1,0 +1,29 @@
+<html
+    data-namespace-typo3-fluid="true"
+    xmlns:f="http://typo3.org/ns/TYPO3/CMS/Fluid/ViewHelpers"
+>
+    <h2>Selected Profiles</h2>
+    <f:if condition="{profiles}">
+        <f:then>
+            <ul>
+                <f:for
+                    each="{profiles}"
+                    as="profile"
+                    iteration="itemIterator"
+                >
+                    <f:render
+                        partial="List/ListItem"
+                        arguments="{
+                            profile: profile,
+                            settings: settings,
+                            itemIterator: itemIterator
+                        }"
+                    />
+                </f:for>
+            </ul>
+        </f:then>
+        <f:else>
+            <p>No profiles found.</p>
+        </f:else>
+    </f:if>
+</html>
