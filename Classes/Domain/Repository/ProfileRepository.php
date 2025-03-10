@@ -17,6 +17,8 @@ use Fgtclb\AcademicPersons\Domain\Model\Dto\DemandInterface;
 use Fgtclb\AcademicPersons\Domain\Model\Profile;
 use Fgtclb\AcademicPersons\Event\ModifyProfileDemandEvent;
 use Psr\EventDispatcher\EventDispatcherInterface;
+use TYPO3\CMS\Core\Context\LanguageAspect;
+use TYPO3\CMS\Core\Information\Typo3Version;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Extbase\Persistence\Generic\Qom\ConstraintInterface;
 use TYPO3\CMS\Extbase\Persistence\QueryInterface;
@@ -88,7 +90,23 @@ class ProfileRepository extends Repository
          */
         if (method_exists($demand, 'getFallbackForNonTranslated')) {
             if ($demand->getFallbackForNonTranslated() === 1) {
-                $query->getQuerySettings()->setLanguageOverlayMode(true);
+                if ((new Typo3Version())->getMajorVersion() >= 12) {
+                    $currentLanguageAspect = $query->getQuerySettings()->getLanguageAspect();
+                    // @todo Check if this must not be more like
+                    //       `$languageAspect->getOverlayType() === LanguageAspect::OVERLAYS_OFF ? LanguageAspect::OVERLAYS_ON_WITH_FLOATING : $languageAspect->getOverlayType()`
+                    //       for the 3rd (overlayType) argument.
+                    // @see self::findByUids().
+                    $changedLanguageAspect = new LanguageAspect(
+                        $currentLanguageAspect->getId(),
+                        $currentLanguageAspect->getContentId(),
+                        LanguageAspect::OVERLAYS_ON,
+                        $currentLanguageAspect->getFallbackChain()
+                    );
+                    $query->getQuerySettings()->setLanguageAspect($changedLanguageAspect);
+                } else {
+                    // @todo Remove this when TYPO3 v11 support is dropped with 2.x.x.
+                    $query->getQuerySettings()->setLanguageOverlayMode(true);
+                }
             }
         } else {
             trigger_error(
@@ -172,14 +190,24 @@ class ProfileRepository extends Repository
     {
         $query = $this->createQuery();
         // Selected uid's are default language and we need to configure extbase in away to
-        // proberly handle the overlay. This is adopted from the generic extbase backend
+        // properly handle the overlay. This is adopted from the generic extbase backend
         // implementation.
-        // @todo Needs adoption for TYPO3 v12+ which respects the language aspect.
+        if ((new Typo3Version())->getMajorVersion() >= 12) {
+            $currentLanguageAspect = $query->getQuerySettings()->getLanguageAspect();
+            $changedLanguageAspect = new LanguageAspect(
+                $currentLanguageAspect->getId(),
+                $currentLanguageAspect->getContentId(),
+                $currentLanguageAspect->getOverlayType() === LanguageAspect::OVERLAYS_OFF ? LanguageAspect::OVERLAYS_ON_WITH_FLOATING : $currentLanguageAspect->getOverlayType()
+            );
+            $query->getQuerySettings()->setLanguageAspect($changedLanguageAspect);
+        } else {
+            // @todo Remove this when TYPO3 v11 support is dropped with 2.x.x.
+            $query->getQuerySettings()->setLanguageOverlayMode(true);
+        }
         $query->getQuerySettings()->setRespectStoragePage(false);
         $query->getQuerySettings()->setRespectSysLanguage(false);
-        $query->getQuerySettings()->setLanguageOverlayMode(true);
-        $query->matching($query->in('uid', $uids));
 
+        $query->matching($query->in('uid', $uids));
         return $query->execute();
     }
 }
