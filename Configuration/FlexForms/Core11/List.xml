@@ -1,0 +1,178 @@
+<T3DataStructure>
+    <sheets>
+        <sDEF>
+            <ROOT>
+                <TCEforms>
+                    <sheetTitle>LLL:EXT:academic_persons/Resources/Private/Language/locallang_be.xlf:flexform.tab.settings</sheetTitle>
+                </TCEforms>
+                <type>array</type>
+                <el>
+                    <settings.detailPid>
+                        <TCEforms>
+                            <label>LLL:EXT:academic_persons/Resources/Private/Language/locallang_be.xlf:flexform.el.detailPid.label</label>
+                            <config>
+                                <type>group</type>
+                                <allowed>pages</allowed>
+                                <maxitems>1</maxitems>
+                                <minitems>0</minitems>
+                                <size>1</size>
+                            </config>
+                        </TCEforms>
+                    </settings.detailPid>
+                    <settings.demand.groupBy>
+                        <TCEforms>
+                            <label>LLL:EXT:academic_persons/Resources/Private/Language/locallang_be.xlf:flexform.el.groupBy.label</label>
+                            <config>
+                                <type>select</type>
+                                <renderType>selectSingle</renderType>
+                                <items>
+                                    <numIndex index="0" type="array">
+                                        <numIndex index="0">LLL:EXT:academic_persons/Resources/Private/Language/locallang_be.xlf:flexform.el.groupBy.items.none</numIndex>
+                                        <numIndex index="1"></numIndex>
+                                    </numIndex>
+                                </items>
+                                <itemsProcFunc>Fgtclb\AcademicPersons\Tca\DemandValues->getGroupByValues</itemsProcFunc>
+                            </config>
+                        </TCEforms>
+                    </settings.demand.groupBy>
+                    <settings.demand.sortBy>
+                        <TCEforms>
+                            <label>LLL:EXT:academic_persons/Resources/Private/Language/locallang_be.xlf:flexform.el.sortBy.label</label>
+                            <config>
+                                <type>select</type>
+                                <renderType>selectSingle</renderType>
+                                <items>
+                                    <numIndex index="0" type="array">
+                                        <numIndex index="0">LLL:EXT:academic_persons/Resources/Private/Language/locallang_be.xlf:flexform.el.sortBy.items.none</numIndex>
+                                        <numIndex index="1"></numIndex>
+                                    </numIndex>
+                                </items>
+                                <itemsProcFunc>Fgtclb\AcademicPersons\Tca\DemandValues->getSortByValues</itemsProcFunc>
+                            </config>
+                        </TCEforms>
+                    </settings.demand.sortBy>
+                    <settings.demand.sortByDirection>
+                        <TCEforms>
+                            <label>LLL:EXT:academic_persons/Resources/Private/Language/locallang_be.xlf:flexform.el.sortByDirection.label</label>
+                            <config>
+                                <type>select</type>
+                                <renderType>selectSingle</renderType>
+                                <items>
+                                    <numIndex index="0" type="array">
+                                        <numIndex index="0">LLL:EXT:academic_persons/Resources/Private/Language/locallang_be.xlf:flexform.el.sortByDirection.items.asc</numIndex>
+                                        <numIndex index="1">asc</numIndex>
+                                    </numIndex>
+                                    <numIndex index="1" type="array">
+                                        <numIndex index="0">LLL:EXT:academic_persons/Resources/Private/Language/locallang_be.xlf:flexform.el.sortByDirection.items.desc</numIndex>
+                                        <numIndex index="1">desc</numIndex>
+                                    </numIndex>
+                                </items>
+                                <default>asc</default>
+                            </config>
+                        </TCEforms>
+                    </settings.demand.sortByDirection>
+                    <settings.paginationEnabled>
+                        <TCEforms>
+                            <label>LLL:EXT:academic_persons/Resources/Private/Language/locallang_be.xlf:flexform.el.paginationEnabled.label</label>
+                            <config>
+                                <type>check</type>
+                                <renderType>checkboxToggle</renderType>
+                                <items>
+                                    <numIndex index="0" type="array">
+                                        <numIndex index="0">LLL:EXT:academic_persons/Resources/Private/Language/locallang_be.xlf:flexform.el.paginationEnabled.items.0.label</numIndex>
+                                        <labelChecked>Enabled</labelChecked>
+                                        <labelUnchecked>Disabled</labelUnchecked>
+                                    </numIndex>
+                                </items>
+                            </config>
+                        </TCEforms>
+                    </settings.paginationEnabled>
+                    <settings.alphabetPaginationEnabled>
+                        <TCEforms>
+                            <label>LLL:EXT:academic_persons/Resources/Private/Language/locallang_be.xlf:flexform.el.alphabetPaginationEnabled.label</label>
+                            <config>
+                                <type>check</type>
+                                <renderType>checkboxToggle</renderType>
+                                <items>
+                                    <numIndex index="0" type="array">
+                                        <numIndex index="0">LLL:EXT:academic_persons/Resources/Private/Language/locallang_be.xlf:flexform.el.alphabetPaginationEnabled.items.0.label</numIndex>
+                                        <labelChecked>Enabled</labelChecked>
+                                        <labelUnchecked>Disabled</labelUnchecked>
+                                    </numIndex>
+                                </items>
+                            </config>
+                        </TCEforms>
+                    </settings.alphabetPaginationEnabled>
+                    <settings.pagination.resultsPerPage>
+                        <TCEforms>
+                            <label>LLL:EXT:academic_persons/Resources/Private/Language/locallang_be.xlf:flexform.el.resultsPerPage.label</label>
+                            <config>
+                                <type>input</type>
+                                <size>2</size>
+                            </config>
+                        </TCEforms>
+                    </settings.pagination.resultsPerPage>
+                    <settings.pagination.numberOfLinks>
+                        <TCEforms>
+                            <label>LLL:EXT:academic_persons/Resources/Private/Language/locallang_be.xlf:flexform.el.numberOfLinks.label</label>
+                            <config>
+                                <type>input</type>
+                                <size>2</size>
+                            </config>
+                        </TCEforms>
+                    </settings.pagination.numberOfLinks>
+                    <settings.demand.profileList>
+                        <TCEforms>
+                            <label>LLL:EXT:academic_persons/Resources/Private/Language/locallang_be.xlf:flexform.el.profileList.label</label>
+                            <config>
+                                <type>group</type>
+                                <allowed>tx_academicpersons_domain_model_profile</allowed>
+                                <foreign_table>tx_academicpersons_domain_model_profile</foreign_table>
+                                <size>5</size>
+                                <suggestOptions>
+                                    <default>
+                                        <additionalSearchFields>first_name,middle_name,last_name</additionalSearchFields>
+                                        <addWhere>sys_language_uid IN (-1,0)</addWhere>
+                                    </default>
+                                </suggestOptions>
+                            </config>
+                        </TCEforms>
+                    </settings.demand.profileList>
+                    <settings.fallbackForNonTranslated>
+                        <TCEforms>
+                            <label>LLL:EXT:academic_persons/Resources/Private/Language/locallang_be.xlf:flexform.el.fallbackForNonTranslated.label</label>
+                            <config>
+                                <type>check</type>
+                                <renderType>checkboxToggle</renderType>
+                                <items>
+                                    <numIndex index="0" type="array">
+                                        <numIndex index="0">LLL:EXT:academic_persons/Resources/Private/Language/locallang_be.xlf:flexform.el.fallbackForNonTranslated.items.0.label</numIndex>
+                                        <labelChecked>Enabled</labelChecked>
+                                        <labelUnchecked>Disabled</labelUnchecked>
+                                    </numIndex>
+                                </items>
+                                <default>1</default>
+                            </config>
+                        </TCEforms>
+                    </settings.fallbackForNonTranslated>
+                    <settings.showFields>
+                        <TCEforms>
+                            <label>LLL:EXT:academic_persons/Resources/Private/Language/locallang_be.xlf:flexform.el.showFields.label</label>
+                            <config>
+                                <type>select</type>
+                                <renderType>selectMultipleSideBySide</renderType>
+                                <itemsProcFunc>Fgtclb\AcademicPersons\Backend\Form\ProfileShowFieldsItemProcFunc->showFields</itemsProcFunc>
+                                <itemGroups>
+                                    <profile>LLL:EXT:academic_persons/Resources/Private/Language/locallang_be.xlf:flexform.el.showFields.groups.profile</profile>
+                                    <contracts>LLL:EXT:academic_persons/Resources/Private/Language/locallang_be.xlf:flexform.el.showFields.groups.contracts</contracts>
+                                </itemGroups>
+                                <maxitems>99</maxitems>
+                                <size>3</size>
+                            </config>
+                        </TCEforms>
+                    </settings.showFields>
+                </el>
+            </ROOT>
+        </sDEF>
+    </sheets>
+</T3DataStructure>
