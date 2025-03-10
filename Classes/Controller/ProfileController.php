@@ -20,6 +20,7 @@ use Fgtclb\AcademicPersons\Event\ModifyDetailProfileEvent;
 use Fgtclb\AcademicPersons\Event\ModifyListProfilesEvent;
 use GeorgRinger\NumberedPagination\NumberedPagination;
 use Psr\Http\Message\ResponseInterface;
+use TYPO3\CMS\Core\Cache\CacheTag;
 use TYPO3\CMS\Core\Information\Typo3Version;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Extbase\Annotation\IgnoreValidation;
@@ -109,10 +110,7 @@ final class ProfileController extends ActionController
             'profiles' => $profiles,
             'demand' => $demand,
         ]);
-
-        $this->getContentObject()?->getTypoScriptFrontendController()?->addCacheTags([
-            'profile_list_view',
-        ]);
+        $this->addCacheTags('profile_list_view');
 
         return $this->htmlResponse();
     }
@@ -135,11 +133,10 @@ final class ProfileController extends ActionController
         $profile = $event->getProfile();
 
         $this->view->assign('profile', $profile);
-
-        $this->getContentObject()?->getTypoScriptFrontendController()?->addCacheTags([
+        $this->addCacheTags(
             'profile_detail_view',
             sprintf('profile_detail_view_%d', $profile->getUid()),
-        ]);
+        );
 
         return $this->htmlResponse();
     }
@@ -238,6 +235,31 @@ final class ProfileController extends ActionController
         $fallbackForNonTranslated = (int)($this->settings['fallbackForNonTranslated'] ?? 0);
         if ($fallbackForNonTranslated === 1) {
             $demand->setFallbackForNonTranslated($fallbackForNonTranslated);
+        }
+    }
+
+    /**
+     * Add cache tags to the current page.
+     *
+     * This method adds provided $tags to the current page,
+     * using the correct API based on the current TYPO3
+     * version.
+     *
+     * @see https://docs.typo3.org/c/typo3/cms-core/main/en-us/Changelog/13.3/Deprecation-102422-TypoScriptFrontendController-addCacheTags.html
+     *
+     * @param string ...$tags
+     * @return void
+     */
+    private function addCacheTags(string ...$tags): void
+    {
+        if ((new Typo3Version())->getMajorVersion() < 13) {
+            // @todo Drop this when removing TYPO3 v12 support.
+            $this->getContentObject()?->getTypoScriptFrontendController()?->addCacheTags($tags);
+            return;
+        }
+        $cacheCollector = $this->request->getAttribute('frontend.cache.collector');
+        foreach ($tags as $tag) {
+            $cacheCollector?->addCacheTags(new CacheTag($tag));
         }
     }
 
