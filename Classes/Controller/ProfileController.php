@@ -22,6 +22,8 @@ use GeorgRinger\NumberedPagination\NumberedPagination;
 use Psr\Http\Message\ResponseInterface;
 use TYPO3\CMS\Core\Cache\CacheTag;
 use TYPO3\CMS\Core\Information\Typo3Version;
+use TYPO3\CMS\Core\Pagination\SimplePagination;
+use TYPO3\CMS\Core\Utility\ExtensionManagementUtility;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Extbase\Annotation\IgnoreValidation;
 use TYPO3\CMS\Extbase\Mvc\Controller\ActionController;
@@ -84,7 +86,13 @@ final class ProfileController extends ActionController
             $resultsPerPage = (int)($this->settings['pagination']['resultsPerPage'] ?? 10);
             $numberOfPaginationLinks = (int)($this->settings['pagination']['numberOfLinks'] ?? 5);
             $paginator = new QueryResultPaginator($profiles, $demand->getCurrentPage(), $resultsPerPage);
-            $pagination = new NumberedPagination($paginator, $numberOfPaginationLinks);
+            if (ExtensionManagementUtility::isLoaded('numbered_pagination')
+                && class_exists(NumberedPagination::class)
+            ) {
+                $pagination = new NumberedPagination($paginator, $numberOfPaginationLinks);
+            } else {
+                $pagination =new SimplePagination($paginator);
+            }
             $this->view->assignMultiple([
                 'paginator' => $paginator,
                 'pagination' => $pagination,
