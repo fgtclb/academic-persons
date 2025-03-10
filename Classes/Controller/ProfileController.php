@@ -20,10 +20,12 @@ use Fgtclb\AcademicPersons\Event\ModifyDetailProfileEvent;
 use Fgtclb\AcademicPersons\Event\ModifyListProfilesEvent;
 use GeorgRinger\NumberedPagination\NumberedPagination;
 use Psr\Http\Message\ResponseInterface;
+use TYPO3\CMS\Core\Information\Typo3Version;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Extbase\Annotation\IgnoreValidation;
 use TYPO3\CMS\Extbase\Mvc\Controller\ActionController;
 use TYPO3\CMS\Extbase\Pagination\QueryResultPaginator;
+use TYPO3\CMS\Frontend\ContentObject\ContentObjectRenderer;
 use TYPO3\CMS\Frontend\Controller\ErrorController;
 use TYPO3\CMS\Frontend\Page\PageAccessFailureReasons;
 
@@ -103,12 +105,12 @@ final class ProfileController extends ActionController
         }
 
         $this->view->assignMultiple([
-            'data' => $this->configurationManager->getContentObject()?->data,
+            'data' => $this->getContentObject()?->data,
             'profiles' => $profiles,
             'demand' => $demand,
         ]);
 
-        $this->configurationManager->getContentObject()?->getTypoScriptFrontendController()?->addCacheTags([
+        $this->getContentObject()?->getTypoScriptFrontendController()?->addCacheTags([
             'profile_list_view',
         ]);
 
@@ -134,7 +136,7 @@ final class ProfileController extends ActionController
 
         $this->view->assign('profile', $profile);
 
-        $this->configurationManager->getContentObject()?->getTypoScriptFrontendController()?->addCacheTags([
+        $this->getContentObject()?->getTypoScriptFrontendController()?->addCacheTags([
             'profile_detail_view',
             sprintf('profile_detail_view_%d', $profile->getUid()),
         ]);
@@ -171,7 +173,7 @@ final class ProfileController extends ActionController
         }
 
         $this->view->assignMultiple([
-            'data' => $this->configurationManager->getContentObject()?->data,
+            'data' => $this->getContentObject()?->data,
             'profiles' => $sortedProfiles,
         ]);
 
@@ -203,7 +205,7 @@ final class ProfileController extends ActionController
         }
 
         $this->view->assignMultiple([
-            'data' => $this->configurationManager->getContentObject()?->data,
+            'data' => $this->getContentObject()?->data,
             'contracts' => $sortedContracts,
         ]);
 
@@ -217,7 +219,7 @@ final class ProfileController extends ActionController
      */
     private function adoptSettings(ProfileDemand $demand): void
     {
-        $contentObjectData = $this->configurationManager->getContentObject()?->data;
+        $contentObjectData = $this->getContentObject()?->data;
         $hasStoragePids = (
             is_array($contentObjectData)
             && !empty($contentObjectData['pages'])
@@ -237,5 +239,15 @@ final class ProfileController extends ActionController
         if ($fallbackForNonTranslated === 1) {
             $demand->setFallbackForNonTranslated($fallbackForNonTranslated);
         }
+    }
+
+    private function getContentObject(): ?ContentObjectRenderer
+    {
+        // @todo Simply return the attribute when TYPO3 v11 support is removed with 2.x.x.
+        // @see https://docs.typo3.org/c/typo3/cms-core/main/en-us/Changelog/12.4/Deprecation-100662-ConfigurationManager-getContentObject.html
+        return match((new Typo3Version())->getMajorVersion()) {
+            11 => $this->configurationManager->getContentObject(),
+            default => $this->request->getAttribute('currentContentObject'),
+        };
     }
 }
