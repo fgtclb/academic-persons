@@ -105,7 +105,7 @@ Options:
             - mysql: use mysql
             - postgres: use postgres
 
-    -p <|8.0|8.1|8.2>
+    -p <|8.0|8.1|8.2|8.3>
         Specifies the PHP minor version to be used
             - 8.0: use PHP 8.0 (default)
             - 8.1: use PHP 8.1
@@ -218,7 +218,7 @@ while getopts ":s:a:d:p:t:e:xnhuv" OPT; do
             ;;
         p)
             PHP_VERSION=${OPTARG}
-            if ! [[ ${PHP_VERSION} =~ ^(8.0|8.1|8.2)$ ]]; then
+            if ! [[ ${PHP_VERSION} =~ ^(8.0|8.1|8.2|8.3)$ ]]; then
                 INVALID_OPTIONS+=("p ${OPTARG}")
             fi
             ;;
