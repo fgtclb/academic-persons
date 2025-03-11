@@ -18,5 +18,6 @@ if ((new \TYPO3\CMS\Core\Information\Typo3Version())->getMajorVersion() < 12) {
             unset($column['config']['required']);
         }
     }
+    unset($column);
 }
 
