@@ -2,14 +2,12 @@
 
 declare(strict_types=1);
 
-/*
+/**
  * This file is part of the "academic_persons" Extension for TYPO3 CMS.
  *
  * For the full copyright and license information, please read the
  * LICENSE file that was distributed with this source code.
  */
-
-$lPath = 'LLL:EXT:academic_persons/Resources/Private/Language/locallang_tca.xlf:tx_academicpersons_domain_model_profile_information.';
 
 return [
     'ctrl' => [
@@ -20,7 +18,7 @@ return [
         'default_sortby' => 'sorting',
         'crdate' => 'crdate',
         'tstamp' => 'tstamp',
-        'title' => $lPath . 'ctrl.label',
+        'title' => 'LLL:EXT:academic_persons/Resources/Private/Language/locallang_tca.xlf:tx_academicpersons_domain_model_profile_information.ctrl.label',
         'delete' => 'deleted',
         'origUid' => 't3_origuid',
         'transOrigPointerField' => 'l10n_parent',
@@ -81,7 +79,7 @@ return [
             ],
         ],
         'profile' => [
-            'label' => $lPath . 'columns.profile.label',
+            'label' => 'LLL:EXT:academic_persons/Resources/Private/Language/locallang_tca.xlf:tx_academicpersons_domain_model_profile_information.columns.profile.label',
             'config' => [
                 'type' => 'select',
                 'renderType' => 'selectSingle',
@@ -95,16 +93,16 @@ return [
             ],
         ],
         'title' => [
-            'label' => $lPath . 'columns.title.label',
+            'label' => 'LLL:EXT:academic_persons/Resources/Private/Language/locallang_tca.xlf:tx_academicpersons_domain_model_profile_information.columns.title.label',
             'config' => [
                 'type' => 'input',
                 'size' => 50,
                 'max' => 255,
-                'eval' => 'required',
+                'required' => true,
             ],
         ],
         'bodytext' => [
-            'label' => $lPath . 'columns.bodytext.label',
+            'label' => 'LLL:EXT:academic_persons/Resources/Private/Language/locallang_tca.xlf:tx_academicpersons_domain_model_profile_information.columns.bodytext.label',
             'config' => [
                 'type' => 'text',
                 'cols' => 80,
@@ -112,7 +110,7 @@ return [
             ],
         ],
         'link' => [
-            'label' => $lPath . 'columns.link.label',
+            'label' => 'LLL:EXT:academic_persons/Resources/Private/Language/locallang_tca.xlf:tx_academicpersons_domain_model_profile_information.columns.link.label',
             'config' => [
                 'type' => 'input',
                 'size' => 50,
@@ -120,7 +118,7 @@ return [
             ],
         ],
         'year' => [
-            'label' => $lPath . 'columns.year.label',
+            'label' => 'LLL:EXT:academic_persons/Resources/Private/Language/locallang_tca.xlf:tx_academicpersons_domain_model_profile_information.columns.year.label',
             'l10n_mode' => 'exclude',
             'l10n_display' => 'defaultAsReadonly',
             'config' => [
@@ -132,7 +130,7 @@ return [
             ],
         ],
         'year_start' => [
-            'label' => $lPath . 'columns.year_start.label',
+            'label' => 'LLL:EXT:academic_persons/Resources/Private/Language/locallang_tca.xlf:tx_academicpersons_domain_model_profile_information.columns.year_start.label',
             'l10n_mode' => 'exclude',
             'l10n_display' => 'defaultAsReadonly',
             'config' => [
@@ -144,7 +142,7 @@ return [
             ],
         ],
         'year_end' => [
-            'label' => $lPath . 'columns.year_end.label',
+            'label' => 'LLL:EXT:academic_persons/Resources/Private/Language/locallang_tca.xlf:tx_academicpersons_domain_model_profile_information.columns.year_end.label',
             'l10n_mode' => 'exclude',
             'l10n_display' => 'defaultAsReadonly',
             'config' => [
@@ -158,7 +156,7 @@ return [
     ],
     'palettes' => [
         'date' => [
-            'label' => $lPath . 'palette.date',
+            'label' => 'LLL:EXT:academic_persons/Resources/Private/Language/locallang_tca.xlf:tx_academicpersons_domain_model_profile_information.palette.date',
             'showitem' => implode(',', [
                 'year',
                 '--linebreak--',

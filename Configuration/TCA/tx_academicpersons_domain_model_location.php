@@ -8,7 +8,6 @@ declare(strict_types=1);
  * For the full copyright and license information, please read the
  * LICENSE file that was distributed with this source code.
  */
-$ll = fn (string $langKey): string => 'LLL:EXT:academic_persons/Resources/Private/Language/locallang_tca.xlf:tx_academicpersons_domain_model_location.' . $langKey;
 
 return [
     'ctrl' => [
@@ -16,7 +15,7 @@ return [
         'default_sortby' => 'title asc',
         'crdate' => 'crdate',
         'tstamp' => 'tstamp',
-        'title' => $ll('ctrl.label'),
+        'title' => 'LLL:EXT:academic_persons/Resources/Private/Language/locallang_tca.xlf:tx_academicpersons_domain_model_location.ctrl.label',
         'delete' => 'deleted',
         'origUid' => 't3_origuid',
         'transOrigPointerField' => 'l10n_parent',
@@ -76,12 +75,12 @@ return [
             ],
         ],
         'title' => [
-            'label' => $ll('columns.title.label'),
+            'label' => 'LLL:EXT:academic_persons/Resources/Private/Language/locallang_tca.xlf:tx_academicpersons_domain_model_location.columns.title.label',
             'config' => [
                 'type' => 'input',
                 'size' => 50,
                 'max' => 255,
-                'eval' => 'required',
+                'required' => true,
             ],
         ],
     ],
