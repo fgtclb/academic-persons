@@ -120,12 +120,8 @@ return [
             'l10n_mode' => 'exclude',
             'l10n_display' => 'defaultAsReadonly',
             'config' => [
-                'type' => 'input',
-                'renderType' => 'inputDateTime',
-                'eval' => implode(',', [
-                    'date',
-                    'int',
-                ]),
+                'type' => 'datetime',
+                'format' => 'date',
             ],
         ],
         'valid_to' => [
@@ -133,12 +129,8 @@ return [
             'l10n_mode' => 'exclude',
             'l10n_display' => 'defaultAsReadonly',
             'config' => [
-                'type' => 'input',
-                'renderType' => 'inputDateTime',
-                'eval' => implode(',', [
-                    'date',
-                    'int',
-                ]),
+                'type' => 'datetime',
+                'format' => 'date',
             ],
         ],
         'contracts' => [
