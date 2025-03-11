@@ -1,3 +1,3 @@
 # @deprecated and will be removed in 2.x.x in favour of Configuration/TypoScript/Default/setup.typoscript
 # Please use Configuration/TypoScript/Default/setup.typoscript directly.
-@import 'EXT:academic_persons/Configuration/TypoScript/Default/setup.tsconfig'
+@import 'EXT:academic_persons/Configuration/TypoScript/Default/setup.typoscript'

@@ -1,3 +1,5 @@
+@import 'EXT:academic_persons/Configuration/TypoScript/constants.typoscript'
+
 plugin.tx_academicpersons {
   view {
     templateRootPath = EXT:test_plugin_templates/Resources/Private/Templates/
