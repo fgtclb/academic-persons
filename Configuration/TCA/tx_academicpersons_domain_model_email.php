@@ -8,7 +8,6 @@ declare(strict_types=1);
  * For the full copyright and license information, please read the
  * LICENSE file that was distributed with this source code.
  */
-$ll = fn (string $langKey): string => 'LLL:EXT:academic_persons/Resources/Private/Language/locallang_tca.xlf:tx_academicpersons_domain_model_email.' . $langKey;
 
 return [
     'ctrl' => [
@@ -16,7 +15,7 @@ return [
         'default_sortby' => 'sorting',
         'crdate' => 'crdate',
         'tstamp' => 'tstamp',
-        'title' => $ll('ctrl.label'),
+        'title' => 'LLL:EXT:academic_persons/Resources/Private/Language/locallang_tca.xlf:tx_academicpersons_domain_model_email.ctrl.label',
         'delete' => 'deleted',
         'hideTable' => true,
         'origUid' => 't3_origuid',
@@ -85,16 +84,16 @@ return [
             ],
         ],
         'email' => [
-            'label' => $ll('columns.email.label'),
+            'label' => 'LLL:EXT:academic_persons/Resources/Private/Language/locallang_tca.xlf:tx_academicpersons_domain_model_email.columns.email.label',
             'config' => [
                 'type' => 'input',
                 'size' => 50,
                 'max' => 255,
-                'eval' => 'required',
+                'required' => true,
             ],
         ],
         'type' => [
-            'label' => $ll('columns.type.label'),
+            'label' => 'LLL:EXT:academic_persons/Resources/Private/Language/locallang_tca.xlf:tx_academicpersons_domain_model_email.columns.type.label',
             'l10n_mode' => 'exclude',
             'l10n_display' => 'defaultAsReadonly',
             'config' => [
@@ -102,7 +101,7 @@ return [
                 'renderType' => 'selectSingle',
                 'items' => [
                     [
-                        $ll('columns.type.items.undefined.label'),
+                        'LLL:EXT:academic_persons/Resources/Private/Language/locallang_tca.xlf:tx_academicpersons_domain_model_email.columns.type.items.undefined.label',
                         '',
                     ],
                 ],

@@ -8,11 +8,10 @@ declare(strict_types=1);
  * For the full copyright and license information, please read the
  * LICENSE file that was distributed with this source code.
  */
-$ll = fn (string $langKey): string => 'LLL:EXT:academic_persons/Resources/Private/Language/locallang_tca.xlf:tx_academicpersons_domain_model_contract.' . $langKey;
 
 return [
     'ctrl' => [
-        'title' => $ll('ctrl.label'),
+        'title' => 'LLL:EXT:academic_persons/Resources/Private/Language/locallang_tca.xlf:tx_academicpersons_domain_model_contract.ctrl.label',
         'label' => 'profile',
         'label_userFunc' => \Fgtclb\AcademicPersons\Tca\ContractLabels::class . '->getTitle',
         'default_sortby' => 'sorting',
@@ -87,7 +86,7 @@ return [
             ],
         ],
         'publish' => [
-            'label' => $ll('columns.publish.label'),
+            'label' => 'LLL:EXT:academic_persons/Resources/Private/Language/locallang_tca.xlf:tx_academicpersons_domain_model_contract.columns.publish.label',
             'exclude' => true,
             'config' => [
                 'type' => 'check',
@@ -102,7 +101,7 @@ return [
             ],
         ],
         'organisational_unit' => [
-            'label' => $ll('columns.organisational_unit.label'),
+            'label' => 'LLL:EXT:academic_persons/Resources/Private/Language/locallang_tca.xlf:tx_academicpersons_domain_model_contract.columns.organisational_unit.label',
             'l10n_mode' => 'exclude',
             'l10n_display' => 'defaultAsReadonly',
             'config' => [
@@ -110,7 +109,7 @@ return [
                 'renderType' => 'selectSingle',
                 'items' => [
                     [
-                        $ll('please_select'),
+                        'LLL:EXT:academic_persons/Resources/Private/Language/locallang_tca.xlf:tx_academicpersons_domain_model_contract.please_select',
                         '',
                     ],
                 ],
@@ -120,7 +119,7 @@ return [
             ],
         ],
         'function_type' => [
-            'label' => $ll('columns.function_type.label'),
+            'label' => 'LLL:EXT:academic_persons/Resources/Private/Language/locallang_tca.xlf:tx_academicpersons_domain_model_contract.columns.function_type.label',
             'l10n_mode' => 'exclude',
             'l10n_display' => 'defaultAsReadonly',
             'config' => [
@@ -128,7 +127,7 @@ return [
                 'renderType' => 'selectSingle',
                 'items' => [
                     [
-                        $ll('please_select'),
+                        'LLL:EXT:academic_persons/Resources/Private/Language/locallang_tca.xlf:tx_academicpersons_domain_model_contract.please_select',
                         '',
                     ],
                 ],
@@ -138,7 +137,7 @@ return [
             ],
         ],
         'valid_from' => [
-            'label' => $ll('columns.valid_from.label'),
+            'label' => 'LLL:EXT:academic_persons/Resources/Private/Language/locallang_tca.xlf:tx_academicpersons_domain_model_contract.columns.valid_from.label',
             'l10n_mode' => 'exclude',
             'l10n_display' => 'defaultAsReadonly',
             'config' => [
@@ -148,7 +147,7 @@ return [
             ],
         ],
         'valid_to' => [
-            'label' => $ll('columns.valid_to.label'),
+            'label' => 'LLL:EXT:academic_persons/Resources/Private/Language/locallang_tca.xlf:tx_academicpersons_domain_model_contract.columns.valid_to.label',
             'l10n_mode' => 'exclude',
             'l10n_display' => 'defaultAsReadonly',
             'config' => [
@@ -158,7 +157,7 @@ return [
             ],
         ],
         'employee_type' => [
-            'label' => $ll('columns.employee_type.label'),
+            'label' => 'LLL:EXT:academic_persons/Resources/Private/Language/locallang_tca.xlf:tx_academicpersons_domain_model_contract.columns.employee_type.label',
             'l10n_mode' => 'exclude',
             'l10n_display' => 'defaultAsReadonly',
             'config' => [
@@ -170,7 +169,7 @@ return [
             ],
         ],
         'physical_addresses' => [
-            'label' => $ll('columns.physical_addresses.label'),
+            'label' => 'LLL:EXT:academic_persons/Resources/Private/Language/locallang_tca.xlf:tx_academicpersons_domain_model_contract.columns.physical_addresses.label',
             'exclude' => true,
             'config' => [
                 'type' => 'inline',
@@ -207,7 +206,7 @@ return [
             ],
         ],
         'email_addresses' => [
-            'label' => $ll('columns.email_addresses.label'),
+            'label' => 'LLL:EXT:academic_persons/Resources/Private/Language/locallang_tca.xlf:tx_academicpersons_domain_model_contract.columns.email_addresses.label',
             'exclude' => true,
             'config' => [
                 'type' => 'inline',
@@ -244,7 +243,7 @@ return [
             ],
         ],
         'phone_numbers' => [
-            'label' => $ll('columns.phone_numbers.label'),
+            'label' => 'LLL:EXT:academic_persons/Resources/Private/Language/locallang_tca.xlf:tx_academicpersons_domain_model_contract.columns.phone_numbers.label',
             'exclude' => true,
             'config' => [
                 'type' => 'inline',
@@ -281,7 +280,7 @@ return [
             ],
         ],
         'position' => [
-            'label' => $ll('columns.position.label'),
+            'label' => 'LLL:EXT:academic_persons/Resources/Private/Language/locallang_tca.xlf:tx_academicpersons_domain_model_contract.columns.position.label',
             'exclude' => true,
             'config' => [
                 'type' => 'input',
@@ -290,7 +289,7 @@ return [
             ],
         ],
         'location' => [
-            'label' => $ll('columns.location.label'),
+            'label' => 'LLL:EXT:academic_persons/Resources/Private/Language/locallang_tca.xlf:tx_academicpersons_domain_model_contract.columns.location.label',
             'exclude' => true,
             'config' => [
                 'type' => 'select',
@@ -307,7 +306,7 @@ return [
             ],
         ],
         'room' => [
-            'label' => $ll('columns.room.label'),
+            'label' => 'LLL:EXT:academic_persons/Resources/Private/Language/locallang_tca.xlf:tx_academicpersons_domain_model_contract.columns.room.label',
             'exclude' => true,
             'config' => [
                 'type' => 'input',
@@ -316,7 +315,7 @@ return [
             ],
         ],
         'office_hours' => [
-            'label' => $ll('columns.office_hours.label'),
+            'label' => 'LLL:EXT:academic_persons/Resources/Private/Language/locallang_tca.xlf:tx_academicpersons_domain_model_contract.columns.office_hours.label',
             'exclude' => true,
             'config' => [
                 'type' => 'text',
@@ -352,14 +351,14 @@ return [
     'types' => [
         '0' => [
             'showitem' => implode(',', [
-                '--div--;' . $ll('div.general.label'),
+                '--div--;' . 'LLL:EXT:academic_persons/Resources/Private/Language/locallang_tca.xlf:tx_academicpersons_domain_model_contract.div.general.label',
                     '--palette--;;general',
                     '--palette--;;contactInformation',
-                    '--div--;' . $ll('div.addresses.label'),
+                    '--div--;' . 'LLL:EXT:academic_persons/Resources/Private/Language/locallang_tca.xlf:tx_academicpersons_domain_model_contract.div.addresses.label',
                     'physical_addresses',
                     'email_addresses',
                     'phone_numbers',
-                    '--div--;' . $ll('div.employeeType.label'),
+                    '--div--;' . 'LLL:EXT:academic_persons/Resources/Private/Language/locallang_tca.xlf:tx_academicpersons_domain_model_contract.div.employeeType.label',
                     'employee_type',
             ]),
         ],
