@@ -17,5 +17,29 @@ if ((new \TYPO3\CMS\Core\Information\Typo3Version())->getMajorVersion() < 12) {
             unset($column['config']['required']);
         }
     }
+
+    // Revert to TYPO3 v11 b/c compat configuration for new TCA type=number
+    // https://docs.typo3.org/c/typo3/cms-core/main/en-us/Changelog/12.0/Feature-97232-NewTCATypeDatetime.html
+    $GLOBALS['TCA']['tx_academicpersons_domain_model_profile_information']['columns']['year']['config'] = [
+        'type' => 'input',
+        'size' => 10,
+        'min' => 0,
+        'max' => 9999,
+        'eval' => 'int',
+    ];
+    $GLOBALS['TCA']['tx_academicpersons_domain_model_profile_information']['columns']['year_start']['config'] = [
+        'type' => 'input',
+        'size' => 10,
+        'min' => 0,
+        'max' => 9999,
+        'eval' => 'int',
+    ];
+    $GLOBALS['TCA']['tx_academicpersons_domain_model_profile_information']['columns']['year_end']['config'] = [
+        'type' => 'input',
+        'size' => 10,
+        'min' => 0,
+        'max' => 9999,
+        'eval' => 'int',
+    ];
 }
 
