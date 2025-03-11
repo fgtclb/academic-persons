@@ -17,6 +17,7 @@ if ((new \TYPO3\CMS\Core\Information\Typo3Version())->getMajorVersion() < 12) {
             unset($column['config']['required']);
         }
     }
+    unset($column);
 
     // Revert to TYPO3 v11 b/c compat configuration for new TCA type=number
     // https://docs.typo3.org/c/typo3/cms-core/main/en-us/Changelog/12.0/Feature-97232-NewTCATypeDatetime.html

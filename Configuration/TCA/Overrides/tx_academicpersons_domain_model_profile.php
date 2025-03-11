@@ -17,6 +17,7 @@ if ((new \TYPO3\CMS\Core\Information\Typo3Version())->getMajorVersion() < 12) {
             unset($column['config']['required']);
         }
     }
+    unset($column);
 
     // The getFileFieldTCAConfig() method has been replaced with the new field type File in TYPO3 v12.0.
     // @see https://docs.typo3.org/m/typo3/reference-coreapi/12.4/en-us/ApiOverview/Fal/UsingFal/Tca.html
@@ -67,4 +68,21 @@ if ((new \TYPO3\CMS\Core\Information\Typo3Version())->getMajorVersion() < 12) {
             'upper' => mktime(0, 0, 0, 1, 1, 2038),
         ],
     ];
+
+    // Add removed TCA type=inline fal related apperance configuration again to hide them, only for TYPO3 v11 b/c.
+    // https://docs.typo3.org/c/typo3/cms-core/main/en-us/Changelog/12.0/Breaking-98479-RemovedFileReferenceRelatedFunctionality.html#breaking-98479-removed-file-reference-related-functionality
+    $relatedColumnsForRemovedFalRelatedInlineApperanceFields = [
+        'cooperation', 'lecture', 'membership', 'press_media',
+        'publication', 'scientific_research', 'curriculum_vitae',
+        'profile',
+    ];
+    foreach ($relatedColumnsForRemovedFalRelatedInlineApperanceFields as $column) {
+        if (!isset($GLOBALS['TCA']['tx_academicpersons_domain_model_profile']['columns'][$column]['config']['type'])
+            || $GLOBALS['TCA']['tx_academicpersons_domain_model_profile']['columns'][$column]['config']['type'] !== 'inline'
+        ) {
+            continue;
+        }
+        $GLOBALS['TCA']['tx_academicpersons_domain_model_profile']['columns'][$column]['config']['appearance']['fileUploadAllowed'] = false;
+        $GLOBALS['TCA']['tx_academicpersons_domain_model_profile']['columns'][$column]['config']['appearance']['fileByUrlAllowed'] = false;
+    }
 }

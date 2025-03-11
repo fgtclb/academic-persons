@@ -162,8 +162,6 @@ return [
                         'localize' => true,
                     ],
                     'showPossibleRecordsSelector' => false,
-                    'fileUploadAllowed' => false,
-                    'fileByUrlAllowed' => false,
                     'elementBrowserEnabled' => false,
                 ],
                 'enableCascadingDelete' => true,
