@@ -30,7 +30,7 @@ final class ModifyDetailProfileEvent
 
     /**
      * @param Profile $profile
-     * @param ViewInterface|DeprecatedExtbaseViewInterface
+     * @param ViewInterface|DeprecatedExtbaseViewInterface $view
      * @todo Add ViewInterface as type for $view when TYPO3 v11 support is dropped.
      */
     public function __construct(Profile $profile, $view)
@@ -49,7 +49,10 @@ final class ModifyDetailProfileEvent
         $this->profile = $profile;
     }
 
-    public function getView(): ViewInterface
+    /**
+     * @return DeprecatedExtbaseViewInterface|ViewInterface
+     */
+    public function getView()
     {
         return $this->view;
     }

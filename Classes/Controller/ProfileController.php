@@ -139,7 +139,7 @@ final class ProfileController extends ActionController
             && $this->settings['demand']['profileList'] !== ''
         ) {
             $profileDemand = new ProfileDemand();
-            $profileDemand->setProfileList($this->settings['demand']['profileList'] ?? '');
+            $profileDemand->setProfileList($this->settings['demand']['profileList']);
             /**
              * Introduced with https://github.com/fgtclb/academic-persons/pull/30 to have the option to display profiles in
              * fallback mode even when site language (non-default) is configured to be in strict mode.
@@ -260,8 +260,6 @@ final class ProfileController extends ActionController
 
     /**
      * Adopt plugin settings and `tt_content.pages`.
-     *
-     * @param DemandInterface $demand
      */
     private function adoptSettings(ProfileDemand $demand): void
     {
@@ -304,12 +302,13 @@ final class ProfileController extends ActionController
         if ((new Typo3Version())->getMajorVersion() < 13) {
             // @todo Drop this when removing TYPO3 v12 support.
             $this->getContentObject()?->getTypoScriptFrontendController()?->addCacheTags($tags);
-            return;
+            // return;
         }
-        $cacheCollector = $this->request->getAttribute('frontend.cache.collector');
-        foreach ($tags as $tag) {
-            $cacheCollector?->addCacheTags(new CacheTag($tag));
-        }
+// @todo Enable when TYPO3 v13 support is added with 2.x.x
+//        $cacheCollector = $this->request->getAttribute('frontend.cache.collector');
+//        foreach ($tags as $tag) {
+//            $cacheCollector?->addCacheTags(new CacheTag($tag));
+//        }
     }
 
     private function getContentObject(): ?ContentObjectRenderer
