@@ -49,4 +49,22 @@ if ((new \TYPO3\CMS\Core\Information\Typo3Version())->getMajorVersion() < 12) {
         ],
         $GLOBALS['TYPO3_CONF_VARS']['GFX']['imagefile_ext']
     );
+
+    // TYPO3 v11 backward compatibility for new TCA type datetime.
+    // https://docs.typo3.org/c/typo3/cms-core/main/en-us/Changelog/12.0/Feature-97232-NewTCATypeDatetime.html
+    $GLOBALS['TCA']['tx_academicpersons_domain_model_contract']['columns']['starttime']['config'] = [
+        'type' => 'input',
+        'renderType' => 'inputDateTime',
+        'eval' => 'datetime,int',
+        'default' => 0,
+    ];
+    $GLOBALS['TCA']['tx_academicpersons_domain_model_contract']['columns']['endtime']['config'] = [
+        'type' => 'input',
+        'renderType' => 'inputDateTime',
+        'eval' => 'datetime,int',
+        'default' => 0,
+        'range' => [
+            'upper' => mktime(0, 0, 0, 1, 1, 2038),
+        ],
+    ];
 }
