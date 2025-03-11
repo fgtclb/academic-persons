@@ -90,7 +90,9 @@ class ProfileRepository extends Repository
          */
         if (method_exists($demand, 'getFallbackForNonTranslated')) {
             if ($demand->getFallbackForNonTranslated() === 1) {
-                if ((new Typo3Version())->getMajorVersion() >= 12) {
+                if (method_exists($query->getQuerySettings(), 'getLanguageAspect')
+                    && method_exists($query->getQuerySettings(), 'setLanguageAspect')
+                ) {
                     $currentLanguageAspect = $query->getQuerySettings()->getLanguageAspect();
                     // @todo Check if this must not be more like
                     //       `$languageAspect->getOverlayType() === LanguageAspect::OVERLAYS_OFF ? LanguageAspect::OVERLAYS_ON_WITH_FLOATING : $languageAspect->getOverlayType()`
@@ -105,7 +107,9 @@ class ProfileRepository extends Repository
                     $query->getQuerySettings()->setLanguageAspect($changedLanguageAspect);
                 } else {
                     // @todo Remove this when TYPO3 v11 support is dropped with 2.x.x.
-                    $query->getQuerySettings()->setLanguageOverlayMode(true);
+                    if (method_exists($query->getQuerySettings(), 'setLanguageOverlayMode')) {
+                        $query->getQuerySettings()->setLanguageOverlayMode(true);
+                    }
                 }
             }
         } else {
@@ -192,7 +196,9 @@ class ProfileRepository extends Repository
         // Selected uid's are default language and we need to configure extbase in away to
         // properly handle the overlay. This is adopted from the generic extbase backend
         // implementation.
-        if ((new Typo3Version())->getMajorVersion() >= 12) {
+        if (method_exists($query->getQuerySettings(), 'getLanguageAspect')
+            && method_exists($query->getQuerySettings(), 'setLanguageAspect')
+        ) {
             $currentLanguageAspect = $query->getQuerySettings()->getLanguageAspect();
             $changedLanguageAspect = new LanguageAspect(
                 $currentLanguageAspect->getId(),
@@ -202,7 +208,9 @@ class ProfileRepository extends Repository
             $query->getQuerySettings()->setLanguageAspect($changedLanguageAspect);
         } else {
             // @todo Remove this when TYPO3 v11 support is dropped with 2.x.x.
-            $query->getQuerySettings()->setLanguageOverlayMode(true);
+            if (method_exists($query->getQuerySettings(), 'setLanguageOverlayMode')) {
+                $query->getQuerySettings()->setLanguageOverlayMode(true);
+            }
         }
         $query->getQuerySettings()->setRespectStoragePage(false);
         $query->getQuerySettings()->setRespectSysLanguage(false);
