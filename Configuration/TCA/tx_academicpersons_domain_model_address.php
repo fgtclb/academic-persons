@@ -9,6 +9,10 @@ declare(strict_types=1);
  * LICENSE file that was distributed with this source code.
  */
 
+$typo3MajorVersion = (new \TYPO3\CMS\Core\Information\Typo3Version())->getMajorVersion();
+$selectLabelKey = ($typo3MajorVersion >= 12) ? 'label' : 0;
+$selectValueKey = ($typo3MajorVersion >= 12) ? 'value' : 1;
+
 return [
     'ctrl' => [
         'label' => 'type',
@@ -54,7 +58,7 @@ return [
                 'renderType' => 'checkboxToggle',
                 'items' => [
                     [
-                        0 => '',
+                        $selectLabelKey => '',
                         'invertStateDisplay' => true,
                     ],
                 ],
@@ -75,8 +79,8 @@ return [
                 'renderType' => 'selectSingle',
                 'items' => [
                     [
-                        '',
-                        0,
+                        $selectLabelKey => '',
+                        $selectValueKey => 0,
                     ],
                 ],
                 'foreign_table' => 'tx_academicpersons_domain_model_address',
@@ -166,8 +170,8 @@ return [
                 'renderType' => 'selectSingle',
                 'items' => [
                     [
-                        'LLL:EXT:academic_persons/Resources/Private/Language/locallang_tca.xlf:tx_academicpersons_domain_model_address.columns.type.items.undefined.label',
-                        '',
+                        $selectLabelKey => 'LLL:EXT:academic_persons/Resources/Private/Language/locallang_tca.xlf:tx_academicpersons_domain_model_address.columns.type.items.undefined.label',
+                        $selectValueKey => '',
                     ],
                 ],
                 'itemsProcFunc' => \Fgtclb\AcademicPersons\Tca\RecordTypes::class . '->getPhysicalAddressTypes',

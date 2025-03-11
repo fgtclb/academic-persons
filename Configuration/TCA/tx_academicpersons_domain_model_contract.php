@@ -9,6 +9,10 @@ declare(strict_types=1);
  * LICENSE file that was distributed with this source code.
  */
 
+$typo3MajorVersion = (new \TYPO3\CMS\Core\Information\Typo3Version())->getMajorVersion();
+$selectLabelKey = ($typo3MajorVersion >= 12) ? 'label' : 0;
+$selectValueKey = ($typo3MajorVersion >= 12) ? 'value' : 1;
+
 return [
     'ctrl' => [
         'title' => 'LLL:EXT:academic_persons/Resources/Private/Language/locallang_tca.xlf:tx_academicpersons_domain_model_contract.ctrl.label',
@@ -42,7 +46,7 @@ return [
                 'renderType' => 'checkboxToggle',
                 'items' => [
                     [
-                        0 => '',
+                        $selectLabelKey =>  '',
                         'invertStateDisplay' => true,
                     ],
                 ],
@@ -63,8 +67,8 @@ return [
                 'renderType' => 'selectSingle',
                 'items' => [
                     [
-                        '',
-                        0,
+                        $selectLabelKey => '',
+                        $selectValueKey => 0,
                     ],
                 ],
                 'foreign_table' => 'tx_academicpersons_domain_model_contract',
@@ -93,7 +97,7 @@ return [
                 'renderType' => 'checkboxToggle',
                 'items' => [
                     [
-                        0 => '',
+                        $selectLabelKey => '',
                         'labelChecked' => 'Enabled',
                         'labelUnchecked' => 'Disabled',
                     ],
@@ -109,8 +113,8 @@ return [
                 'renderType' => 'selectSingle',
                 'items' => [
                     [
-                        'LLL:EXT:academic_persons/Resources/Private/Language/locallang_tca.xlf:tx_academicpersons_domain_model_contract.please_select',
-                        '',
+                        $selectLabelKey => 'LLL:EXT:academic_persons/Resources/Private/Language/locallang_tca.xlf:tx_academicpersons_domain_model_contract.please_select',
+                        $selectValueKey => '',
                     ],
                 ],
                 'foreign_table' => 'tx_academicpersons_domain_model_organisational_unit',
@@ -127,8 +131,8 @@ return [
                 'renderType' => 'selectSingle',
                 'items' => [
                     [
-                        'LLL:EXT:academic_persons/Resources/Private/Language/locallang_tca.xlf:tx_academicpersons_domain_model_contract.please_select',
-                        '',
+                        $selectLabelKey => 'LLL:EXT:academic_persons/Resources/Private/Language/locallang_tca.xlf:tx_academicpersons_domain_model_contract.please_select',
+                        $selectValueKey => '',
                     ],
                 ],
                 'foreign_table' => 'tx_academicpersons_domain_model_function_type',
@@ -294,8 +298,8 @@ return [
                 'renderType' => 'selectSingle',
                 'items' => [
                     [
-                        '',
-                        '',
+                        $selectLabelKey => '',
+                        $selectValueKey => '',
                     ],
                 ],
                 'foreign_table' => 'tx_academicpersons_domain_model_location',
