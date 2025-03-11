@@ -11,8 +11,6 @@ class ProfileShowFieldsItemProcFunc
 {
     /**
      * @param array<string, mixed> $params
-     *
-     * @return void
      */
     public function showFields(&$params): void
     {

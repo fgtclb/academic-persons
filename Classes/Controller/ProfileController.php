@@ -11,7 +11,6 @@ declare(strict_types=1);
 
 namespace Fgtclb\AcademicPersons\Controller;
 
-use Fgtclb\AcademicPersons\Domain\Model\Dto\DemandInterface;
 use Fgtclb\AcademicPersons\Domain\Model\Dto\ProfileDemand;
 use Fgtclb\AcademicPersons\Domain\Model\Profile;
 use Fgtclb\AcademicPersons\Domain\Repository\ContractRepository;
@@ -295,7 +294,6 @@ final class ProfileController extends ActionController
      * @see https://docs.typo3.org/c/typo3/cms-core/main/en-us/Changelog/13.3/Deprecation-102422-TypoScriptFrontendController-addCacheTags.html
      *
      * @param string ...$tags
-     * @return void
      */
     private function addCacheTags(string ...$tags): void
     {
@@ -304,11 +302,11 @@ final class ProfileController extends ActionController
             $this->getContentObject()?->getTypoScriptFrontendController()?->addCacheTags($tags);
             // return;
         }
-// @todo Enable when TYPO3 v13 support is added with 2.x.x
-//        $cacheCollector = $this->request->getAttribute('frontend.cache.collector');
-//        foreach ($tags as $tag) {
-//            $cacheCollector?->addCacheTags(new CacheTag($tag));
-//        }
+        // @todo Enable when TYPO3 v13 support is added with 2.x.x
+        //        $cacheCollector = $this->request->getAttribute('frontend.cache.collector');
+        //        foreach ($tags as $tag) {
+        //            $cacheCollector?->addCacheTags(new CacheTag($tag));
+        //        }
     }
 
     private function getContentObject(): ?ContentObjectRenderer
