@@ -26,6 +26,7 @@
     "require-dev": {
         "bk2k/bootstrap-package": "^14.0",
         "friendsofphp/php-cs-fixer": "^3.14",
+        "georgringer/numbered-pagination": "^1.0",
         "helhum/typo3-console": "^7.1 || ^8.0",
         "saschaegerer/phpstan-typo3": "^1.8",
         "typo3/cms-backend": "^11.5 || ^12.4",
@@ -70,6 +71,6 @@
         "cs:fix": ".Build/bin/php-cs-fixer fix --config Build/php-cs-fixer/php-cs-rules.php --ansi"
     },
     "suggest": {
-        "numbered_pagination": "^1.0"
+        "georgringer/numbered-pagination": "Install to use numbered pagination. (~1.x)"
     }
 }
