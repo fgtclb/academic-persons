@@ -122,11 +122,9 @@ return [
             'l10n_mode' => 'exclude',
             'l10n_display' => 'defaultAsReadonly',
             'config' => [
-                'type' => 'input',
-                'size' => 10,
+                'type' => 'number',
                 'min' => 0,
                 'max' => 9999,
-                'eval' => 'int',
             ],
         ],
         'year_start' => [
@@ -134,11 +132,9 @@ return [
             'l10n_mode' => 'exclude',
             'l10n_display' => 'defaultAsReadonly',
             'config' => [
-                'type' => 'input',
-                'size' => 10,
+                'type' => 'number',
                 'min' => 0,
                 'max' => 9999,
-                'eval' => 'int',
             ],
         ],
         'year_end' => [
@@ -146,11 +142,9 @@ return [
             'l10n_mode' => 'exclude',
             'l10n_display' => 'defaultAsReadonly',
             'config' => [
-                'type' => 'input',
-                'size' => 10,
+                'type' => 'number',
                 'min' => 0,
                 'max' => 9999,
-                'eval' => 'int',
             ],
         ],
     ],
