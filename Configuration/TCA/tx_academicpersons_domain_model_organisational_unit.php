@@ -8,7 +8,9 @@ declare(strict_types=1);
  * For the full copyright and license information, please read the
  * LICENSE file that was distributed with this source code.
  */
-
+$typo3MajorVersion = (new \TYPO3\CMS\Core\Information\Typo3Version())->getMajorVersion();
+$selectLabelKey = ($typo3MajorVersion >= 12) ? 'label' : 0;
+$selectValueKey = ($typo3MajorVersion >= 12) ? 'value' : 1;
 return [
     'ctrl' => [
         'label' => 'unit_name',
@@ -39,7 +41,7 @@ return [
                 'renderType' => 'checkboxToggle',
                 'items' => [
                     [
-                        0 => '',
+                        $selectLabelKey => '',
                         'invertStateDisplay' => true,
                     ],
                 ],
@@ -60,8 +62,8 @@ return [
                 'renderType' => 'selectSingle',
                 'items' => [
                     [
-                        '',
-                        0,
+                        $selectLabelKey => '',
+                        $selectValueKey => 0,
                     ],
                 ],
                 'foreign_table' => 'tx_academicpersons_domain_model_organisational_unit',
