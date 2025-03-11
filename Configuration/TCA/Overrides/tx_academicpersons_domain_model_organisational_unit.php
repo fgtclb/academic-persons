@@ -17,6 +17,7 @@ if ((new \TYPO3\CMS\Core\Information\Typo3Version())->getMajorVersion() < 12) {
             unset($column['config']['required']);
         }
     }
+    unset($column);
 
     // TYPO3 v11 backward compatibility for new TCA type datetime.
     // https://docs.typo3.org/c/typo3/cms-core/main/en-us/Changelog/12.0/Feature-97232-NewTCATypeDatetime.html
@@ -30,5 +31,20 @@ if ((new \TYPO3\CMS\Core\Information\Typo3Version())->getMajorVersion() < 12) {
         'renderType' => 'inputDateTime',
         'eval' => 'date,int',
     ];
+
+    // Add removed TCA type=inline fal related apperance configuration again to hide them, only for TYPO3 v11 b/c.
+    // https://docs.typo3.org/c/typo3/cms-core/main/en-us/Changelog/12.0/Breaking-98479-RemovedFileReferenceRelatedFunctionality.html#breaking-98479-removed-file-reference-related-functionality
+    $relatedColumnsForRemovedFalRelatedInlineApperanceFields = [
+        'contracts',
+    ];
+    foreach ($relatedColumnsForRemovedFalRelatedInlineApperanceFields as $column) {
+        if (!isset($GLOBALS['TCA']['tx_academicpersons_domain_model_profile']['columns'][$column]['config']['type'])
+            || $GLOBALS['TCA']['tx_academicpersons_domain_model_profile']['columns'][$column]['config']['type'] !== 'inline'
+        ) {
+            continue;
+        }
+        $GLOBALS['TCA']['tx_academicpersons_domain_model_profile']['columns'][$column]['config']['appearance']['fileUploadAllowed'] = false;
+        $GLOBALS['TCA']['tx_academicpersons_domain_model_profile']['columns'][$column]['config']['appearance']['fileByUrlAllowed'] = false;
+    }
 }
 

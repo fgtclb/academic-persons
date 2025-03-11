@@ -13,54 +13,6 @@ $typo3MajorVersion = (new \TYPO3\CMS\Core\Information\Typo3Version())->getMajorV
 $selectLabelKey = ($typo3MajorVersion >= 12) ? 'label' : 0;
 $selectValueKey = ($typo3MajorVersion >= 12) ? 'value' : 1;
 
-$profileInformationConfig = function (string $type): array {
-    return [
-        'type' => 'inline',
-        'appearance' => [
-            'collapseAll' => true,
-            'expandSingle' => false,
-            'showNewRecordLink' => true,
-            'newRecordLinkAddTitle' => true,
-            'levelLinksPosition' => 'top',
-            'useCombination' => false,
-            'suppressCombinationWarning' => false,
-            'useSortable' => true,
-            'showPossibleLocalizationRecords' => true,
-            'showAllLocalizationLink' => true,
-            'showSynchronizationLink' => true,
-            'enabledControls' => [
-                'info' => true,
-                'new' => true,
-                'dragdrop' => true,
-                'sort' => false,
-                'hide' => true,
-                'delete' => true,
-                'localize' => true,
-            ],
-            'showPossibleRecordsSelector' => false,
-            'fileUploadAllowed' => false,
-            'fileByUrlAllowed' => false,
-            'elementBrowserEnabled' => false,
-        ],
-        'enableCascadingDelete' => true,
-        'foreign_field' => 'profile',
-        'foreign_sortby' => 'sorting',
-        'foreign_table' => 'tx_academicpersons_domain_model_profile_information',
-        'foreign_match_fields' => [
-            'type' => $type,
-        ],
-        'overrideChildTca' => [
-            'columns' => [
-                'type' => [
-                    'config' => [
-                        'default' => $type,
-                    ],
-                ],
-            ],
-        ],
-    ];
-};
-
 return [
     'ctrl' => [
         'label' => 'last_name',
@@ -337,8 +289,6 @@ return [
                         'localize' => true,
                     ],
                     'showPossibleRecordsSelector' => false,
-                    'fileUploadAllowed' => false,
-                    'fileByUrlAllowed' => false,
                     'elementBrowserEnabled' => false,
                 ],
                 'enableCascadingDelete' => true,
@@ -433,37 +383,331 @@ return [
         'cooperation' => [
             'label' => 'LLL:EXT:academic_persons/Resources/Private/Language/locallang_tca.xlf:tx_academicpersons_domain_model_profile.columns.cooperation.label',
             'exclude' => true,
-            'config' => $profileInformationConfig('cooperation'),
+            'config' => [
+                'type' => 'inline',
+                'appearance' => [
+                    'collapseAll' => true,
+                    'expandSingle' => false,
+                    'showNewRecordLink' => true,
+                    'newRecordLinkAddTitle' => true,
+                    'levelLinksPosition' => 'top',
+                    'useCombination' => false,
+                    'suppressCombinationWarning' => false,
+                    'useSortable' => true,
+                    'showPossibleLocalizationRecords' => true,
+                    'showAllLocalizationLink' => true,
+                    'showSynchronizationLink' => true,
+                    'enabledControls' => [
+                        'info' => true,
+                        'new' => true,
+                        'dragdrop' => true,
+                        'sort' => false,
+                        'hide' => true,
+                        'delete' => true,
+                        'localize' => true,
+                    ],
+                    'showPossibleRecordsSelector' => false,
+                    'elementBrowserEnabled' => false,
+                ],
+                'enableCascadingDelete' => true,
+                'foreign_field' => 'profile',
+                'foreign_sortby' => 'sorting',
+                'foreign_table' => 'tx_academicpersons_domain_model_profile_information',
+                'foreign_match_fields' => [
+                    'type' => 'cooperation',
+                ],
+                'overrideChildTca' => [
+                    'columns' => [
+                        'type' => [
+                            'config' => [
+                                'default' => 'cooperation',
+                            ],
+                        ],
+                    ],
+                ],
+            ],
         ],
         'lectures' => [
             'label' => 'LLL:EXT:academic_persons/Resources/Private/Language/locallang_tca.xlf:tx_academicpersons_domain_model_profile.columns.lectures.label',
             'exclude' => true,
-            'config' => $profileInformationConfig('lecture'),
+            'config' => [
+                'type' => 'inline',
+                'appearance' => [
+                    'collapseAll' => true,
+                    'expandSingle' => false,
+                    'showNewRecordLink' => true,
+                    'newRecordLinkAddTitle' => true,
+                    'levelLinksPosition' => 'top',
+                    'useCombination' => false,
+                    'suppressCombinationWarning' => false,
+                    'useSortable' => true,
+                    'showPossibleLocalizationRecords' => true,
+                    'showAllLocalizationLink' => true,
+                    'showSynchronizationLink' => true,
+                    'enabledControls' => [
+                        'info' => true,
+                        'new' => true,
+                        'dragdrop' => true,
+                        'sort' => false,
+                        'hide' => true,
+                        'delete' => true,
+                        'localize' => true,
+                    ],
+                    'showPossibleRecordsSelector' => false,
+                    'elementBrowserEnabled' => false,
+                ],
+                'enableCascadingDelete' => true,
+                'foreign_field' => 'profile',
+                'foreign_sortby' => 'sorting',
+                'foreign_table' => 'tx_academicpersons_domain_model_profile_information',
+                'foreign_match_fields' => [
+                    'type' => 'lecture',
+                ],
+                'overrideChildTca' => [
+                    'columns' => [
+                        'type' => [
+                            'config' => [
+                                'default' => 'lecture',
+                            ],
+                        ],
+                    ],
+                ],
+            ],
         ],
         'memberships' => [
             'label' => 'LLL:EXT:academic_persons/Resources/Private/Language/locallang_tca.xlf:tx_academicpersons_domain_model_profile.columns.memberships.label',
             'exclude' => true,
-            'config' => $profileInformationConfig('membership'),
+            'config' => [
+                'type' => 'inline',
+                'appearance' => [
+                    'collapseAll' => true,
+                    'expandSingle' => false,
+                    'showNewRecordLink' => true,
+                    'newRecordLinkAddTitle' => true,
+                    'levelLinksPosition' => 'top',
+                    'useCombination' => false,
+                    'suppressCombinationWarning' => false,
+                    'useSortable' => true,
+                    'showPossibleLocalizationRecords' => true,
+                    'showAllLocalizationLink' => true,
+                    'showSynchronizationLink' => true,
+                    'enabledControls' => [
+                        'info' => true,
+                        'new' => true,
+                        'dragdrop' => true,
+                        'sort' => false,
+                        'hide' => true,
+                        'delete' => true,
+                        'localize' => true,
+                    ],
+                    'showPossibleRecordsSelector' => false,
+                    'elementBrowserEnabled' => false,
+                ],
+                'enableCascadingDelete' => true,
+                'foreign_field' => 'profile',
+                'foreign_sortby' => 'sorting',
+                'foreign_table' => 'tx_academicpersons_domain_model_profile_information',
+                'foreign_match_fields' => [
+                    'type' => 'membership',
+                ],
+                'overrideChildTca' => [
+                    'columns' => [
+                        'type' => [
+                            'config' => [
+                                'default' => 'membership',
+                            ],
+                        ],
+                    ],
+                ],
+            ],
         ],
         'press_media' => [
             'label' => 'LLL:EXT:academic_persons/Resources/Private/Language/locallang_tca.xlf:tx_academicpersons_domain_model_profile.columns.press_media.label',
             'exclude' => true,
-            'config' => $profileInformationConfig('press_media'),
+            'config' => [
+                'type' => 'inline',
+                'appearance' => [
+                    'collapseAll' => true,
+                    'expandSingle' => false,
+                    'showNewRecordLink' => true,
+                    'newRecordLinkAddTitle' => true,
+                    'levelLinksPosition' => 'top',
+                    'useCombination' => false,
+                    'suppressCombinationWarning' => false,
+                    'useSortable' => true,
+                    'showPossibleLocalizationRecords' => true,
+                    'showAllLocalizationLink' => true,
+                    'showSynchronizationLink' => true,
+                    'enabledControls' => [
+                        'info' => true,
+                        'new' => true,
+                        'dragdrop' => true,
+                        'sort' => false,
+                        'hide' => true,
+                        'delete' => true,
+                        'localize' => true,
+                    ],
+                    'showPossibleRecordsSelector' => false,
+                    'elementBrowserEnabled' => false,
+                ],
+                'enableCascadingDelete' => true,
+                'foreign_field' => 'profile',
+                'foreign_sortby' => 'sorting',
+                'foreign_table' => 'tx_academicpersons_domain_model_profile_information',
+                'foreign_match_fields' => [
+                    'type' => 'press_media',
+                ],
+                'overrideChildTca' => [
+                    'columns' => [
+                        'type' => [
+                            'config' => [
+                                'default' => 'press_media',
+                            ],
+                        ],
+                    ],
+                ],
+            ],
         ],
         'publications' => [
             'label' => 'LLL:EXT:academic_persons/Resources/Private/Language/locallang_tca.xlf:tx_academicpersons_domain_model_profile.columns.publications.label',
             'exclude' => true,
-                'config' => $profileInformationConfig('publication'),
+                'config' => [
+                    'type' => 'inline',
+                    'appearance' => [
+                        'collapseAll' => true,
+                        'expandSingle' => false,
+                        'showNewRecordLink' => true,
+                        'newRecordLinkAddTitle' => true,
+                        'levelLinksPosition' => 'top',
+                        'useCombination' => false,
+                        'suppressCombinationWarning' => false,
+                        'useSortable' => true,
+                        'showPossibleLocalizationRecords' => true,
+                        'showAllLocalizationLink' => true,
+                        'showSynchronizationLink' => true,
+                        'enabledControls' => [
+                            'info' => true,
+                            'new' => true,
+                            'dragdrop' => true,
+                            'sort' => false,
+                            'hide' => true,
+                            'delete' => true,
+                            'localize' => true,
+                        ],
+                        'showPossibleRecordsSelector' => false,
+                        'elementBrowserEnabled' => false,
+                    ],
+                    'enableCascadingDelete' => true,
+                    'foreign_field' => 'profile',
+                    'foreign_sortby' => 'sorting',
+                    'foreign_table' => 'tx_academicpersons_domain_model_profile_information',
+                    'foreign_match_fields' => [
+                        'type' => 'publication',
+                    ],
+                    'overrideChildTca' => [
+                        'columns' => [
+                            'type' => [
+                                'config' => [
+                                    'default' => 'publication',
+                                ],
+                            ],
+                        ],
+                    ],
+                ],
         ],
         'scientific_research' => [
             'label' => 'LLL:EXT:academic_persons/Resources/Private/Language/locallang_tca.xlf:tx_academicpersons_domain_model_profile.columns.scientific_research.label',
             'exclude' => true,
-            'config' => $profileInformationConfig('scientific_research'),
+            'config' => [
+                'type' => 'inline',
+                'appearance' => [
+                    'collapseAll' => true,
+                    'expandSingle' => false,
+                    'showNewRecordLink' => true,
+                    'newRecordLinkAddTitle' => true,
+                    'levelLinksPosition' => 'top',
+                    'useCombination' => false,
+                    'suppressCombinationWarning' => false,
+                    'useSortable' => true,
+                    'showPossibleLocalizationRecords' => true,
+                    'showAllLocalizationLink' => true,
+                    'showSynchronizationLink' => true,
+                    'enabledControls' => [
+                        'info' => true,
+                        'new' => true,
+                        'dragdrop' => true,
+                        'sort' => false,
+                        'hide' => true,
+                        'delete' => true,
+                        'localize' => true,
+                    ],
+                    'showPossibleRecordsSelector' => false,
+                    'elementBrowserEnabled' => false,
+                ],
+                'enableCascadingDelete' => true,
+                'foreign_field' => 'profile',
+                'foreign_sortby' => 'sorting',
+                'foreign_table' => 'tx_academicpersons_domain_model_profile_information',
+                'foreign_match_fields' => [
+                    'type' => 'scientific_research',
+                ],
+                'overrideChildTca' => [
+                    'columns' => [
+                        'type' => [
+                            'config' => [
+                                'default' => 'scientific_research',
+                            ],
+                        ],
+                    ],
+                ],
+            ],
         ],
         'vita' => [
             'label' => 'LLL:EXT:academic_persons/Resources/Private/Language/locallang_tca.xlf:tx_academicpersons_domain_model_profile.columns.vita.label',
             'exclude' => true,
-            'config' => $profileInformationConfig('curriculum_vitae'),
+            'config' => [
+                'type' => 'inline',
+                'appearance' => [
+                    'collapseAll' => true,
+                    'expandSingle' => false,
+                    'showNewRecordLink' => true,
+                    'newRecordLinkAddTitle' => true,
+                    'levelLinksPosition' => 'top',
+                    'useCombination' => false,
+                    'suppressCombinationWarning' => false,
+                    'useSortable' => true,
+                    'showPossibleLocalizationRecords' => true,
+                    'showAllLocalizationLink' => true,
+                    'showSynchronizationLink' => true,
+                    'enabledControls' => [
+                        'info' => true,
+                        'new' => true,
+                        'dragdrop' => true,
+                        'sort' => false,
+                        'hide' => true,
+                        'delete' => true,
+                        'localize' => true,
+                    ],
+                    'showPossibleRecordsSelector' => false,
+                    'elementBrowserEnabled' => false,
+                ],
+                'enableCascadingDelete' => true,
+                'foreign_field' => 'profile',
+                'foreign_sortby' => 'sorting',
+                'foreign_table' => 'tx_academicpersons_domain_model_profile_information',
+                'foreign_match_fields' => [
+                    'type' => 'curriculum_vitae',
+                ],
+                'overrideChildTca' => [
+                    'columns' => [
+                        'type' => [
+                            'config' => [
+                                'default' => 'curriculum_vitae',
+                            ],
+                        ],
+                    ],
+                ],
+            ],
         ],
     ],
     'palettes' => [
