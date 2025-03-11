@@ -13,7 +13,6 @@ namespace Fgtclb\AcademicPersons\Domain\Repository;
 
 use Fgtclb\AcademicPersons\Domain\Model\Contract;
 use TYPO3\CMS\Core\Context\LanguageAspect;
-use TYPO3\CMS\Core\Information\Typo3Version;
 use TYPO3\CMS\Extbase\Persistence\QueryResultInterface;
 use TYPO3\CMS\Extbase\Persistence\Repository;
 
