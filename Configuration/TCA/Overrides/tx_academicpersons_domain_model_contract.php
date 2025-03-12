@@ -40,12 +40,12 @@ if ((new \TYPO3\CMS\Core\Information\Typo3Version())->getMajorVersion() < 12) {
         'phone_numbers',
     ];
     foreach ($relatedColumnsForRemovedFalRelatedInlineApperanceFields as $column) {
-        if (!isset($GLOBALS['TCA']['tx_academicpersons_domain_model_profile']['columns'][$column]['config']['type'])
-            || $GLOBALS['TCA']['tx_academicpersons_domain_model_profile']['columns'][$column]['config']['type'] !== 'inline'
+        if (!isset($GLOBALS['TCA']['tx_academicpersons_domain_model_contract']['columns'][$column]['config']['type'])
+            || $GLOBALS['TCA']['tx_academicpersons_domain_model_contract']['columns'][$column]['config']['type'] !== 'inline'
         ) {
             continue;
         }
-        $GLOBALS['TCA']['tx_academicpersons_domain_model_profile']['columns'][$column]['config']['appearance']['fileUploadAllowed'] = false;
-        $GLOBALS['TCA']['tx_academicpersons_domain_model_profile']['columns'][$column]['config']['appearance']['fileByUrlAllowed'] = false;
+        $GLOBALS['TCA']['tx_academicpersons_domain_model_contract']['columns'][$column]['config']['appearance']['fileUploadAllowed'] = false;
+        $GLOBALS['TCA']['tx_academicpersons_domain_model_contract']['columns'][$column]['config']['appearance']['fileByUrlAllowed'] = false;
     }
 }
