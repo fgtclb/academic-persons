@@ -23,13 +23,13 @@ composer_update() {
 update_v12() {
     echo -e "💪 Enforce TYPO3 v12"
     composer require --no-update \
-        "typo3/cms-core":"^12.4"
+        "typo3/minimal":"^12.4"
 }
 
 update_v13() {
     echo -e "💪 Enforce TYPO3 v13"
     composer require --no-update \
-        "typo3/cms-core":"^13.3"
+        "typo3/minimal":"^13.4"
 }
 
 case "$1" in

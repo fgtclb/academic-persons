@@ -29,3 +29,28 @@ parameters:
 			message: "#^Property Fgtclb\\\\AcademicPersons\\\\Event\\\\ModifyListProfilesEvent\\:\\:\\$view has unknown class TYPO3\\\\CMS\\\\Extbase\\\\Mvc\\\\View\\\\ViewInterface as its type\\.$#"
 			count: 1
 			path: ../../../Classes/Event/ModifyListProfilesEvent.php
+
+		-
+			message: "#^Class TYPO3\\\\CMS\\\\Core\\\\Site\\\\Set\\\\SetRegistry not found\\.$#"
+			count: 1
+			path: ../../../Tests/Functional/Plugins/AcademicPersonsDetailPluginTest.php
+
+		-
+			message: "#^Class TYPO3\\\\CMS\\\\Core\\\\Site\\\\Set\\\\SetRegistry not found\\.$#"
+			count: 1
+			path: ../../../Tests/Functional/Plugins/AcademicPersonsListAndDetailPluginTest.php
+
+		-
+			message: "#^Class TYPO3\\\\CMS\\\\Core\\\\Site\\\\Set\\\\SetRegistry not found\\.$#"
+			count: 1
+			path: ../../../Tests/Functional/Plugins/AcademicPersonsListPluginTest.php
+
+		-
+			message: "#^Class TYPO3\\\\CMS\\\\Core\\\\Site\\\\Set\\\\SetRegistry not found\\.$#"
+			count: 1
+			path: ../../../Tests/Functional/Plugins/AcademicPersonsSelectedContractsPluginTest.php
+
+		-
+			message: "#^Class TYPO3\\\\CMS\\\\Core\\\\Site\\\\Set\\\\SetRegistry not found\\.$#"
+			count: 1
+			path: ../../../Tests/Functional/Plugins/AcademicPersonsSelectedProfilesPluginTest.php

@@ -1,2 +1,46 @@
 parameters:
 	ignoreErrors:
+		-
+			message: "#^Call to an undefined method TYPO3\\\\CMS\\\\Extbase\\\\Configuration\\\\ConfigurationManagerInterface\\:\\:getContentObject\\(\\)\\.$#"
+			count: 1
+			path: ../../../Classes/Controller/ProfileController.php
+
+		-
+			message: "#^Parameter \\#2 \\$view of class Fgtclb\\\\AcademicPersons\\\\Event\\\\ModifyDetailProfileEvent constructor expects TYPO3\\\\CMS\\\\Extbase\\\\Mvc\\\\View\\\\ViewInterface\\|TYPO3Fluid\\\\Fluid\\\\View\\\\ViewInterface, TYPO3\\\\CMS\\\\Core\\\\View\\\\ViewInterface\\|TYPO3Fluid\\\\Fluid\\\\View\\\\ViewInterface given\\.$#"
+			count: 1
+			path: ../../../Classes/Controller/ProfileController.php
+
+		-
+			message: "#^Parameter \\#2 \\$view of class Fgtclb\\\\AcademicPersons\\\\Event\\\\ModifyListProfilesEvent constructor expects TYPO3\\\\CMS\\\\Extbase\\\\Mvc\\\\View\\\\ViewInterface\\|TYPO3Fluid\\\\Fluid\\\\View\\\\ViewInterface, TYPO3\\\\CMS\\\\Core\\\\View\\\\ViewInterface\\|TYPO3Fluid\\\\Fluid\\\\View\\\\ViewInterface given\\.$#"
+			count: 2
+			path: ../../../Classes/Controller/ProfileController.php
+
+		-
+			message: "#^Method Fgtclb\\\\AcademicPersons\\\\Event\\\\ModifyDetailProfileEvent\\:\\:getView\\(\\) has invalid return type TYPO3\\\\CMS\\\\Extbase\\\\Mvc\\\\View\\\\ViewInterface\\.$#"
+			count: 1
+			path: ../../../Classes/Event/ModifyDetailProfileEvent.php
+
+		-
+			message: "#^Parameter \\$view of method Fgtclb\\\\AcademicPersons\\\\Event\\\\ModifyDetailProfileEvent\\:\\:__construct\\(\\) has invalid type TYPO3\\\\CMS\\\\Extbase\\\\Mvc\\\\View\\\\ViewInterface\\.$#"
+			count: 1
+			path: ../../../Classes/Event/ModifyDetailProfileEvent.php
+
+		-
+			message: "#^Property Fgtclb\\\\AcademicPersons\\\\Event\\\\ModifyDetailProfileEvent\\:\\:\\$view has unknown class TYPO3\\\\CMS\\\\Extbase\\\\Mvc\\\\View\\\\ViewInterface as its type\\.$#"
+			count: 1
+			path: ../../../Classes/Event/ModifyDetailProfileEvent.php
+
+		-
+			message: "#^Method Fgtclb\\\\AcademicPersons\\\\Event\\\\ModifyListProfilesEvent\\:\\:getView\\(\\) has invalid return type TYPO3\\\\CMS\\\\Extbase\\\\Mvc\\\\View\\\\ViewInterface\\.$#"
+			count: 1
+			path: ../../../Classes/Event/ModifyListProfilesEvent.php
+
+		-
+			message: "#^Parameter \\$view of method Fgtclb\\\\AcademicPersons\\\\Event\\\\ModifyListProfilesEvent\\:\\:__construct\\(\\) has invalid type TYPO3\\\\CMS\\\\Extbase\\\\Mvc\\\\View\\\\ViewInterface\\.$#"
+			count: 1
+			path: ../../../Classes/Event/ModifyListProfilesEvent.php
+
+		-
+			message: "#^Property Fgtclb\\\\AcademicPersons\\\\Event\\\\ModifyListProfilesEvent\\:\\:\\$view has unknown class TYPO3\\\\CMS\\\\Extbase\\\\Mvc\\\\View\\\\ViewInterface as its type\\.$#"
+			count: 1
+			path: ../../../Classes/Event/ModifyListProfilesEvent.php
