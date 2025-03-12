@@ -12,7 +12,9 @@ declare(strict_types=1);
 namespace Fgtclb\AcademicPersons\Tests\Functional\Hook;
 
 use TYPO3\CMS\Core\DataHandling\DataHandler;
+use TYPO3\CMS\Core\Information\Typo3Version;
 use TYPO3\CMS\Core\Localization\LanguageService;
+use TYPO3\CMS\Core\Localization\LanguageServiceFactory;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\TestingFramework\Core\Functional\FunctionalTestCase;
 
@@ -36,8 +38,13 @@ class DataHandlerHooksTest extends FunctionalTestCase
 
         $this->setUpBackendUser(1);
 
-        $GLOBALS['LANG'] = GeneralUtility::makeInstance(LanguageService::class);
-        $GLOBALS['LANG']->init('en');
+        if ((new Typo3Version())->getMajorVersion() >= 12) {
+            $GLOBALS['LANG'] = $this->get(LanguageServiceFactory::class)->create('default');
+        } else {
+            // @todo Drop this branch when dropping TYPO3 v11 suport in 2.x.x
+            $GLOBALS['LANG'] = GeneralUtility::makeInstance(LanguageService::class);
+            $GLOBALS['LANG']->init('en');
+        }
 
         $this->dataHandler = GeneralUtility::makeInstance(DataHandler::class);
     }
