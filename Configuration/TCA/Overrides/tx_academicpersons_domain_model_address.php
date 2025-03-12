@@ -1,6 +1,5 @@
 <?php
 
-
 if ((new \TYPO3\CMS\Core\Information\Typo3Version())->getMajorVersion() < 12) {
     foreach ($GLOBALS['TCA']['tx_academicpersons_domain_model_address']['columns'] as $field => &$column) {
         // Migrate TYPO3 v12 required to v11 eval required to keep backward compatibility.
