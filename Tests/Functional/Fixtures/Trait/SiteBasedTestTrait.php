@@ -18,8 +18,12 @@ declare(strict_types=1);
 namespace Fgtclb\AcademicPersons\Tests\Functional\Fixtures\Trait;
 
 use Psr\EventDispatcher\EventDispatcherInterface;
+use TYPO3\CMS\Core\Configuration\Loader\YamlFileLoader;
 use TYPO3\CMS\Core\Configuration\SiteConfiguration;
+use TYPO3\CMS\Core\Configuration\SiteWriter;
 use TYPO3\CMS\Core\Information\Typo3Version;
+use TYPO3\CMS\Core\Site\Set\SetRegistry;
+use TYPO3\CMS\Core\Site\SiteSettingsFactory;
 use TYPO3\CMS\Core\Tests\Functional\Fixtures\Frontend\PhpError;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\TestingFramework\Core\Functional\Framework\Frontend\Internal\AbstractInstruction;
@@ -70,14 +74,19 @@ trait SiteBasedTestTrait
         if (!empty($errorHandling)) {
             $configuration['errorHandling'] = $errorHandling;
         }
-        $siteConfiguration = $this->createSiteConfiguration($this->instancePath . '/typo3conf/sites/');
 
         try {
             // ensure no previous site configuration influences the test
             GeneralUtility::rmdir($this->instancePath . '/typo3conf/sites/' . $identifier, true);
-            $siteConfiguration->write($identifier, $configuration);
+            if (!class_exists(SiteWriter::class)) {
+                // @phpstan-ignore-next-line PHPStan has issues detecting this correctly
+                $this->createSiteConfiguration($this->instancePath . '/typo3conf/sites/')->write($identifier, $configuration);
+            } else {
+                // @phpstan-ignore-next-line PHPStan has issues detecting this correctly
+                $this->get(SiteWriter::class)->write($identifier, $configuration);
+            }
         } catch (\Exception $exception) {
-            $this->markTestSkipped($exception->getMessage());
+            self::fail($exception->getMessage());
         }
     }
 
@@ -93,9 +102,15 @@ trait SiteBasedTestTrait
         $configuration = $siteConfiguration->load($identifier);
         $configuration = array_merge($configuration, $overrides);
         try {
-            $siteConfiguration->write($identifier, $configuration);
+            if (!class_exists(SiteWriter::class)) {
+                // @phpstan-ignore-next-line PHPStan has issues detecting this correctly
+                $this->createSiteConfiguration($this->instancePath . '/typo3conf/sites/')->write($identifier, $configuration);
+            } else {
+                // @phpstan-ignore-next-line PHPStan has issues detecting this correctly
+                $this->get(SiteWriter::class)->write($identifier, $configuration);
+            }
         } catch (\Exception $exception) {
-            $this->markTestSkipped($exception->getMessage());
+            self::fail($exception->getMessage());
         }
     }
 
@@ -118,20 +133,31 @@ trait SiteBasedTestTrait
 
     protected function createSiteConfiguration(string $path): SiteConfiguration
     {
-        if ((new Typo3Version())->getMajorVersion() < 12) {
+        if (!class_exists(SiteSettingsFactory::class)) {
+            // @phpstan-ignore arguments.count
             return new SiteConfiguration(
                 $path,
-                // @phpstan-ignore-next-line PHPStan has issues detecting this correctly
+                // @phpstan-ignore argument.type
+                $this->get(EventDispatcherInterface::class),
+                // @phpstan-ignore argument.type
                 $this->get('cache.core')
             );
         }
-        // @phpstan-ignore-next-line PHPStan has issues detecting this correctly
+        // @phpstan-ignore arguments.count,argument.type
         return new SiteConfiguration(
             $path,
-            // @phpstan-ignore-next-line PHPStan has issues detecting this correctly
+            // @phpstan-ignore argument.type
+            $this->get(SiteSettingsFactory::class),
+            // @phpstan-ignore argument.type
+            $this->get(SetRegistry::class),
+            // @phpstan-ignore argument.type
             $this->get(EventDispatcherInterface::class),
-            // @phpstan-ignore-next-line PHPStan has issues detecting this correctly
-            $this->get('cache.core')
+            // @phpstan-ignore argument.type
+            $this->get('cache.core'),
+            // @phpstan-ignore argument.type
+            $this->get(YamlFileLoader::class),
+            // @phpstan-ignore argument.type
+            $this->get('cache.runtime')
         );
     }
 
@@ -174,24 +200,6 @@ trait SiteBasedTestTrait
             'flag' => $preset['flag'] ?? $preset['iso'] ?? '',
             'fallbackType' => $fallbackType ?? (empty($fallbackIdentifiers) ? 'strict' : 'fallback'),
         ];
-        if ((new Typo3Version())->getMajorVersion() < 12) {
-            // TYPO3 v12 changed locale api, and therefore removed some language configurations from the
-            // siteConfiguration. As we are using this trait for v12 AND v11 in parallel, we add the pre
-            // v12 values only for versions before v12 to be in line with core behaviour.
-            // See: https://review.typo3.org/c/Packages/TYPO3.CMS/+/77807 [TASK] Remove "hreflang" from site configuration
-            //      https://review.typo3.org/c/Packages/TYPO3.CMS/+/77597 [TASK] Remove "ISO 639-1" option from site configuration
-            //      https://review.typo3.org/c/Packages/TYPO3.CMS/+/77726 [TASK] Remove "typo3Language" configuration option
-            //      https://review.typo3.org/c/Packages/TYPO3.CMS/+/77814 [TASK] Remove "direction" from site configuration
-            $configuration = array_replace(
-                $configuration,
-                [
-                    'hreflang' => $preset['hrefLang'] ?? '',
-                    'typo3Language' => $preset['iso'] ?? '',
-                    'iso-639-1' => $preset['iso'] ?? '',
-                    'direction' => $preset['direction'] ?? '',
-                ]
-            );
-        }
         if (isset($preset['custom'])) {
             $configuration = array_replace(
                 $configuration,
@@ -295,12 +303,13 @@ trait SiteBasedTestTrait
             $identifier = $instruction->getIdentifier();
             $useModifier = $modifiedInstructions[$identifier] ?? $request->getInstruction($identifier);
             if ($useModifier !== null) {
+                // @phpstan-ignore-next-line
                 $modifiedInstructions[$identifier] = $this->mergeInstruction($useModifier, $instruction);
             } else {
                 $modifiedInstructions[$identifier] = $instruction;
             }
         }
-
+        // @phpstan-ignore-next-line
         return $request->withInstructions($modifiedInstructions);
     }
 

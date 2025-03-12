@@ -12,16 +12,16 @@ $EM_CONF[$_EXTKEY] = [
     'clearCacheOnLoad' => true,
     'constraints' => [
         'depends' => [
-            'typo3' => '11.5.0-12.4.99',
-            'extbase' => '11.5.0-12.4.99',
-            'fluid' => '11.5.0-12.4.99',
-            'frontend' => '11.5.0-12.4.99',
-            'rte_ckeditor' => '11.5.0-12.4.99',
+            'typo3' => '12.4.0-13.4.99',
+            'extbase' => '12.4.0-13.4.99',
+            'fluid' => '12.4.0-13.4.99',
+            'frontend' => '12.4.0-13.4.99',
+            'rte_ckeditor' => '12.4.0-13.4.99',
         ],
         'conflicts' => [
         ],
         'suggests' => [
-            'numbered_pagination' => '1.0.0-1.99.99',
+            'numbered_pagination' => '2.1.0-2.99.99',
         ],
     ],
 ];

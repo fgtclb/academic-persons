@@ -16,6 +16,7 @@ final class AcademicPersonsSelectedContractsPluginTest extends FunctionalTestCas
 
     protected array $coreExtensionsToLoad = [
         'typo3/cms-fluid-styled-content',
+        'typo3/cms-rte-ckeditor',
     ];
 
     protected array $testExtensionsToLoad = [
@@ -38,13 +39,6 @@ final class AcademicPersonsSelectedContractsPluginTest extends FunctionalTestCas
                 'enforceValidation' => true,
             ],
             'debug' => false,
-        ],
-        'SC_OPTIONS' => [
-            'Core/TypoScript/TemplateService' => [
-                'runThroughTemplatesPostProcessing' => [
-                    'FunctionalTest' => \TYPO3\TestingFramework\Core\Functional\Framework\Frontend\Hook\TypoScriptInstructionModifier::class . '->apply',
-                ],
-            ],
         ],
     ];
 

@@ -22,11 +22,15 @@ class DataHandlerHooksTest extends FunctionalTestCase
 {
     private DataHandler $dataHandler;
 
+    protected array $coreExtensionsToLoad = [
+        'typo3/cms-rte-ckeditor',
+    ];
+
     /**
      * @var list<non-empty-string>
      */
     protected array $testExtensionsToLoad = [
-        'typo3conf/ext/academic_persons',
+        'fgtclb/academic-persons',
     ];
 
     protected function setUp(): void

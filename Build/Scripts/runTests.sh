@@ -105,17 +105,17 @@ Options:
             - mysql: use mysql
             - postgres: use postgres
 
-    -p <|8.0|8.1|8.2|8.3>
+    -p <8.1|8.2|8.3>
         Specifies the PHP minor version to be used
-            - 8.0: use PHP 8.0 (default)
-            - 8.1: use PHP 8.1
+            - 8.1: use PHP 8.1 (default)
             - 8.2: use PHP 8.2
+            - 8.3: use PHP 8.3
 
-    -t <11|12>
+    -t <12|13>
         Only with -s composerUpdate
         Specifies the TYPO3 core major version to be used
-            - 11 (default): use TYPO3 core v11
-            - 12: use TYPO3 core v12
+            - 12: use TYPO3 core v12 (default)
+            - 13: use TYPO3 core v13
 
     -e "<phpunit or codeception options>"
         Only with -s acceptance|functional|unit
@@ -190,8 +190,8 @@ else
 fi
 TEST_SUITE=""
 DBMS="sqlite"
-PHP_VERSION="8.0"
-TYPO3_VERSION="11"
+PHP_VERSION="8.1"
+TYPO3_VERSION="12"
 PHP_XDEBUG_ON=0
 EXTRA_TEST_OPTIONS=""
 SCRIPT_VERBOSE=0
@@ -218,13 +218,13 @@ while getopts ":s:a:d:p:t:e:xnhuv" OPT; do
             ;;
         p)
             PHP_VERSION=${OPTARG}
-            if ! [[ ${PHP_VERSION} =~ ^(8.0|8.1|8.2|8.3)$ ]]; then
+            if ! [[ ${PHP_VERSION} =~ ^(8.1|8.2|8.3)$ ]]; then
                 INVALID_OPTIONS+=("p ${OPTARG}")
             fi
             ;;
         t)
             TYPO3_VERSION=${OPTARG}
-            if ! [[ ${TYPO3_VERSION} =~ ^(11|12)$ ]]; then
+            if ! [[ ${TYPO3_VERSION} =~ ^(12|13)$ ]]; then
                 INVALID_OPTIONS+=("p ${OPTARG}")
             fi
             ;;
