@@ -23,7 +23,7 @@ if ((new \TYPO3\CMS\Core\Information\Typo3Version())->getMajorVersion() < 12) {
     // The getFileFieldTCAConfig() method has been replaced with the new field type File in TYPO3 v12.0.
     // @see https://docs.typo3.org/m/typo3/reference-coreapi/12.4/en-us/ApiOverview/Fal/UsingFal/Tca.html
     // @see https://docs.typo3.org/m/typo3/reference-tca/12.4/en-us/ColumnsConfig/Type/File/Index.html#columns-file-migration
-    $GLOBALS['TCA']['tx_academicpersons_domain_model_profile']['columns']['images']['config'] = \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::getFileFieldTCAConfig(
+    $GLOBALS['TCA']['tx_academicpersons_domain_model_profile']['columns']['image']['config'] = \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::getFileFieldTCAConfig(
         'image',
         [
             'maxitems' => 1,
@@ -54,13 +54,13 @@ if ((new \TYPO3\CMS\Core\Information\Typo3Version())->getMajorVersion() < 12) {
 
     // TYPO3 v11 backward compatibility for new TCA type datetime.
     // https://docs.typo3.org/c/typo3/cms-core/main/en-us/Changelog/12.0/Feature-97232-NewTCATypeDatetime.html
-    $GLOBALS['TCA']['tx_academicpersons_domain_model_contract']['columns']['starttime']['config'] = [
+    $GLOBALS['TCA']['tx_academicpersons_domain_model_profile']['columns']['starttime']['config'] = [
         'type' => 'input',
         'renderType' => 'inputDateTime',
         'eval' => 'datetime,int',
         'default' => 0,
     ];
-    $GLOBALS['TCA']['tx_academicpersons_domain_model_contract']['columns']['endtime']['config'] = [
+    $GLOBALS['TCA']['tx_academicpersons_domain_model_profile']['columns']['endtime']['config'] = [
         'type' => 'input',
         'renderType' => 'inputDateTime',
         'eval' => 'datetime,int',
@@ -86,4 +86,5 @@ if ((new \TYPO3\CMS\Core\Information\Typo3Version())->getMajorVersion() < 12) {
         $GLOBALS['TCA']['tx_academicpersons_domain_model_profile']['columns'][$column]['config']['appearance']['fileUploadAllowed'] = false;
         $GLOBALS['TCA']['tx_academicpersons_domain_model_profile']['columns'][$column]['config']['appearance']['fileByUrlAllowed'] = false;
     }
+    $b = 1;
 }
