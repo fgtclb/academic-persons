@@ -1,4 +1,5 @@
 <?php
+
 // tx_academicpersons_domain_model_profile
 if ((new \TYPO3\CMS\Core\Information\Typo3Version())->getMajorVersion() < 12) {
     foreach ($GLOBALS['TCA']['tx_academicpersons_domain_model_profile']['columns'] as $field => &$column) {
