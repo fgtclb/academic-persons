@@ -36,6 +36,9 @@ use TYPO3\TestingFramework\Core\Functional\Framework\Frontend\InternalRequest;
  */
 trait SiteBasedTestTrait
 {
+    /**
+     * @param string[] $items
+     */
     protected static function failIfArrayIsNotEmpty(array $items): void
     {
         if (empty($items)) {
@@ -48,6 +51,12 @@ trait SiteBasedTestTrait
         );
     }
 
+    /**
+     * @param string $identifier
+     * @param array<string, mixed> $site
+     * @param list<array<string, mixed>> $languages
+     * @param array<string, mixed> $errorHandling
+     */
     protected function writeSiteConfiguration(
         string $identifier,
         array $site = [],
@@ -72,6 +81,10 @@ trait SiteBasedTestTrait
         }
     }
 
+    /**
+     * @param string $identifier
+     * @param array<string, mixed> $overrides
+     */
     protected function mergeSiteConfiguration(
         string $identifier,
         array $overrides
@@ -108,17 +121,25 @@ trait SiteBasedTestTrait
         if ((new Typo3Version())->getMajorVersion() < 12) {
             return new SiteConfiguration(
                 $path,
+                // @phpstan-ignore-next-line PHPStan has issues detecting this correctly
                 $this->get('cache.core')
             );
         }
-
+        // @phpstan-ignore-next-line PHPStan has issues detecting this correctly
         return new SiteConfiguration(
             $path,
+            // @phpstan-ignore-next-line PHPStan has issues detecting this correctly
             $this->get(EventDispatcherInterface::class),
+            // @phpstan-ignore-next-line PHPStan has issues detecting this correctly
             $this->get('cache.core')
         );
     }
 
+    /**
+     * @param string $identifier
+     * @param string $base
+     * @return array<string, mixed>
+     */
     protected function buildDefaultLanguageConfiguration(
         string $identifier,
         string $base
@@ -129,6 +150,13 @@ trait SiteBasedTestTrait
         return $configuration;
     }
 
+    /**
+     * @param string $identifier
+     * @param string $base
+     * @param array<int, string> $fallbackIdentifiers
+     * @param string $fallbackType
+     * @return array<string, mixed>
+     */
     protected function buildLanguageConfiguration(
         string $identifier,
         string $base,
@@ -186,6 +214,11 @@ trait SiteBasedTestTrait
         return $configuration;
     }
 
+    /**
+     * @param string $handler
+     * @param int[] $codes
+     * @return array<string, mixed>
+     */
     protected function buildErrorHandlingConfiguration(
         string $handler,
         array $codes
@@ -233,6 +266,7 @@ trait SiteBasedTestTrait
     }
 
     /**
+     * @param string $identifier
      * @return mixed
      */
     protected function resolveLanguagePreset(string $identifier)
@@ -247,6 +281,10 @@ trait SiteBasedTestTrait
     }
 
     /**
+     * @param InternalRequest $request
+     * @param AbstractInstruction ...$instructions
+     * @return InternalRequest
+     *
      * @todo Instruction handling should be part of Testing Framework (multiple instructions per identifier, merge in interface)
      */
     protected function applyInstructions(InternalRequest $request, AbstractInstruction ...$instructions): InternalRequest
@@ -255,11 +293,9 @@ trait SiteBasedTestTrait
 
         foreach ($instructions as $instruction) {
             $identifier = $instruction->getIdentifier();
-            if (isset($modifiedInstructions[$identifier]) || $request->getInstruction($identifier) !== null) {
-                $modifiedInstructions[$identifier] = $this->mergeInstruction(
-                    $modifiedInstructions[$identifier] ?? $request->getInstruction($identifier),
-                    $instruction
-                );
+            $useModifier = $modifiedInstructions[$identifier] ?? $request->getInstruction($identifier);
+            if ($useModifier !== null) {
+                $modifiedInstructions[$identifier] = $this->mergeInstruction($useModifier, $instruction);
             } else {
                 $modifiedInstructions[$identifier] = $instruction;
             }
@@ -268,6 +304,11 @@ trait SiteBasedTestTrait
         return $request->withInstructions($modifiedInstructions);
     }
 
+    /**
+     * @param AbstractInstruction $current
+     * @param AbstractInstruction $other
+     * @return AbstractInstruction
+     */
     protected function mergeInstruction(AbstractInstruction $current, AbstractInstruction $other): AbstractInstruction
     {
         if (get_class($current) !== get_class($other)) {
