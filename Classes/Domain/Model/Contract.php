@@ -11,7 +11,6 @@ declare(strict_types=1);
 
 namespace Fgtclb\AcademicPersons\Domain\Model;
 
-use DateTime;
 use TYPO3\CMS\Extbase\Annotation\ORM\Cascade;
 use TYPO3\CMS\Extbase\Annotation\ORM\Lazy;
 use TYPO3\CMS\Extbase\Domain\Model\Category;
@@ -26,9 +25,9 @@ class Contract extends AbstractEntity
 
     protected ?FunctionType $functionType = null;
 
-    protected ?DateTime $validFrom = null;
+    protected ?\DateTime $validFrom = null;
 
-    protected ?DateTime $validTo = null;
+    protected ?\DateTime $validTo = null;
 
     protected ?Category $employeeType = null;
 
@@ -100,22 +99,22 @@ class Contract extends AbstractEntity
         return $this->functionType;
     }
 
-    public function setValidFrom(?DateTime $validFrom): void
+    public function setValidFrom(?\DateTime $validFrom): void
     {
         $this->validFrom = $validFrom;
     }
 
-    public function getValidFrom(): ?DateTime
+    public function getValidFrom(): ?\DateTime
     {
         return $this->validFrom;
     }
 
-    public function setValidTo(?DateTime $validTo): void
+    public function setValidTo(?\DateTime $validTo): void
     {
         $this->validTo = $validTo;
     }
 
-    public function getValidTo(): ?DateTime
+    public function getValidTo(): ?\DateTime
     {
         return $this->validTo;
     }

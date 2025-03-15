@@ -56,7 +56,7 @@ class DataHandlerHooksTest extends FunctionalTestCase
     {
         $dataMap = [
             'tx_academicpersons_domain_model_profile' => [
-                'NEW1690182935' =>[
+                'NEW1690182935' => [
                     'pid' => 2,
                     'first_name' => 'John',
                     'last_name' => 'Doe',
@@ -69,9 +69,9 @@ class DataHandlerHooksTest extends FunctionalTestCase
 
         $records = $this->getAllRecords('tx_academicpersons_domain_model_profile', true);
 
-        static::assertCount(1, $records);
-        static::assertSame('j', $records[1]['first_name_alpha']);
-        static::assertSame('d', $records[1]['last_name_alpha']);
+        $this->assertCount(1, $records);
+        $this->assertSame('j', $records[1]['first_name_alpha']);
+        $this->assertSame('d', $records[1]['last_name_alpha']);
     }
 
     /**
@@ -83,7 +83,7 @@ class DataHandlerHooksTest extends FunctionalTestCase
 
         $dataMap = [
             'tx_academicpersons_domain_model_profile' => [
-                '1' =>[
+                '1' => [
                     'pid' => 2,
                     'first_name' => 'Johnny',
                     'last_name' => 'English',
@@ -96,8 +96,8 @@ class DataHandlerHooksTest extends FunctionalTestCase
 
         $records = $this->getAllRecords('tx_academicpersons_domain_model_profile', true);
 
-        static::assertCount(1, $records);
-        static::assertSame('j', $records[1]['first_name_alpha']);
-        static::assertSame('e', $records[1]['last_name_alpha']);
+        $this->assertCount(1, $records);
+        $this->assertSame('j', $records[1]['first_name_alpha']);
+        $this->assertSame('e', $records[1]['last_name_alpha']);
     }
 }

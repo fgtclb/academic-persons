@@ -17,6 +17,4 @@ use TYPO3\CMS\Extbase\Persistence\Repository;
 /**
  * @extends Repository<FunctionType>
  */
-class FunctionTypeRepository extends Repository
-{
-}
+class FunctionTypeRepository extends Repository {}

@@ -90,7 +90,7 @@ final class ProfileController extends ActionController
             ) {
                 $pagination = new NumberedPagination($paginator, $numberOfPaginationLinks);
             } else {
-                $pagination =new SimplePagination($paginator);
+                $pagination = new SimplePagination($paginator);
             }
             $this->view->assignMultiple([
                 'paginator' => $paginator,
@@ -313,7 +313,7 @@ final class ProfileController extends ActionController
     {
         // @todo Simply return the attribute when TYPO3 v11 support is removed with 2.x.x.
         // @see https://docs.typo3.org/c/typo3/cms-core/main/en-us/Changelog/12.4/Deprecation-100662-ConfigurationManager-getContentObject.html
-        return match((new Typo3Version())->getMajorVersion()) {
+        return match ((new Typo3Version())->getMajorVersion()) {
             11 => $this->configurationManager->getContentObject(),
             default => $this->request->getAttribute('currentContentObject'),
         };

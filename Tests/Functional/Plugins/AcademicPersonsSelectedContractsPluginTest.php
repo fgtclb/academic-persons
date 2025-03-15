@@ -104,12 +104,12 @@ final class AcademicPersonsSelectedContractsPluginTest extends FunctionalTestCas
         $requestContext = new InternalRequestContext();
         $request = new InternalRequest('https://www.acme.com/home');
         $response = $this->executeFrontendSubRequest($request, $requestContext);
-        static::assertSame(200, $response->getStatusCode());
+        $this->assertSame(200, $response->getStatusCode());
 
         $content = (string)$response->getBody();
-        static::assertStringContainsString('<h2>Selected Contracts</h2>', $content);
-        static::assertStringContainsString('#0(2): Manager', $content);
-        static::assertStringContainsString('#1(1): Worker', $content);
+        $this->assertStringContainsString('<h2>Selected Contracts</h2>', $content);
+        $this->assertStringContainsString('#0(2): Manager', $content);
+        $this->assertStringContainsString('#1(1): Worker', $content);
     }
 
     /**
@@ -130,12 +130,12 @@ final class AcademicPersonsSelectedContractsPluginTest extends FunctionalTestCas
         $requestContext = new InternalRequestContext();
         $request = new InternalRequest('https://www.acme.com/home');
         $response = $this->executeFrontendSubRequest($request, $requestContext);
-        static::assertSame(200, $response->getStatusCode());
+        $this->assertSame(200, $response->getStatusCode());
 
         $content = (string)$response->getBody();
-        static::assertStringContainsString('<h2>Selected Contracts</h2>', $content);
-        static::assertStringContainsString('#0(2): Manager', $content);
-        static::assertStringNotContainsString('Worker', $content);
+        $this->assertStringContainsString('<h2>Selected Contracts</h2>', $content);
+        $this->assertStringContainsString('#0(2): Manager', $content);
+        $this->assertStringNotContainsString('Worker', $content);
     }
 
     /**
@@ -158,14 +158,14 @@ final class AcademicPersonsSelectedContractsPluginTest extends FunctionalTestCas
         $requestContext = new InternalRequestContext();
         $request = new InternalRequest('https://www.acme.com/de/home');
         $response = $this->executeFrontendSubRequest($request, $requestContext);
-        static::assertSame(200, $response->getStatusCode());
+        $this->assertSame(200, $response->getStatusCode());
 
         $content = (string)$response->getBody();
-        static::assertStringContainsString('<h2>Selected Contracts</h2>', $content);
-        static::assertStringContainsString('#0(3): [DE] Manager', $content);
-        static::assertStringContainsString('#1(1): [DE] Arbeiter', $content);
-        static::assertStringNotContainsString('[EN] Manager', $content);
-        static::assertStringNotContainsString('[EN] Worker', $content);
+        $this->assertStringContainsString('<h2>Selected Contracts</h2>', $content);
+        $this->assertStringContainsString('#0(3): [DE] Manager', $content);
+        $this->assertStringContainsString('#1(1): [DE] Arbeiter', $content);
+        $this->assertStringNotContainsString('[EN] Manager', $content);
+        $this->assertStringNotContainsString('[EN] Worker', $content);
     }
 
     /**
@@ -187,14 +187,14 @@ final class AcademicPersonsSelectedContractsPluginTest extends FunctionalTestCas
         $requestContext = new InternalRequestContext();
         $request = new InternalRequest('https://www.acme.com/de/home');
         $response = $this->executeFrontendSubRequest($request, $requestContext);
-        static::assertSame(200, $response->getStatusCode());
+        $this->assertSame(200, $response->getStatusCode());
 
         $content = (string)$response->getBody();
-        static::assertStringContainsString('<h2>Selected Contracts</h2>', $content);
-        static::assertStringContainsString('#0(3): [EN] Manager', $content);
-        static::assertStringContainsString('#1(1): [DE] Arbeiter', $content);
-        static::assertStringNotContainsString('[DE] Manager', $content);
-        static::assertStringNotContainsString('[EN] Worker', $content);
+        $this->assertStringContainsString('<h2>Selected Contracts</h2>', $content);
+        $this->assertStringContainsString('#0(3): [EN] Manager', $content);
+        $this->assertStringContainsString('#1(1): [DE] Arbeiter', $content);
+        $this->assertStringNotContainsString('[DE] Manager', $content);
+        $this->assertStringNotContainsString('[EN] Worker', $content);
     }
 
     /**
@@ -216,13 +216,13 @@ final class AcademicPersonsSelectedContractsPluginTest extends FunctionalTestCas
         $requestContext = new InternalRequestContext();
         $request = new InternalRequest('https://www.acme.com/de/home');
         $response = $this->executeFrontendSubRequest($request, $requestContext);
-        static::assertSame(200, $response->getStatusCode());
+        $this->assertSame(200, $response->getStatusCode());
 
         $content = (string)$response->getBody();
-        static::assertStringContainsString('<h2>Selected Contracts</h2>', $content);
-        static::assertStringContainsString('#0(3): [EN] Manager', $content);
-        static::assertStringContainsString('#1(1): [DE] Arbeiter', $content);
-        static::assertStringNotContainsString('[DE] Manager', $content);
-        static::assertStringNotContainsString('[EN] Worker', $content);
+        $this->assertStringContainsString('<h2>Selected Contracts</h2>', $content);
+        $this->assertStringContainsString('#0(3): [EN] Manager', $content);
+        $this->assertStringContainsString('#1(1): [DE] Arbeiter', $content);
+        $this->assertStringNotContainsString('[DE] Manager', $content);
+        $this->assertStringNotContainsString('[EN] Worker', $content);
     }
 }

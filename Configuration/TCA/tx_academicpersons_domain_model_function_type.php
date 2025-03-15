@@ -115,11 +115,11 @@ return [
         '1' => [
             'showitem' => implode(',', [
                 '--div--;LLL:EXT:core/Resources/Private/Language/Form/locallang_tabs.xlf:general',
-                    'function_name',
-                    'function_name_female',
-                    'function_name_male',
+                'function_name',
+                'function_name_female',
+                'function_name_male',
                 '--div--;LLL:EXT:core/Resources/Private/Language/Form/locallang_tabs.xlf:language',
-                    '--palette--;;language',
+                '--palette--;;language',
                 '--div--;LLL:EXT:core/Resources/Private/Language/Form/locallang_tabs.xlf:extended',
             ]),
         ],

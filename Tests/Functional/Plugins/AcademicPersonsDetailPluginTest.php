@@ -113,10 +113,10 @@ final class AcademicPersonsDetailPluginTest extends FunctionalTestCase
             ])
         );
         $response = $this->executeFrontendSubRequest($request, $requestContext);
-        static::assertSame(200, $response->getStatusCode());
+        $this->assertSame(200, $response->getStatusCode());
 
         $content = (string)$response->getBody();
-        static::assertStringContainsString('#1: [EN] Max Müllermann', $content);
+        $this->assertStringContainsString('#1: [EN] Max Müllermann', $content);
     }
 
     /**
@@ -147,10 +147,10 @@ final class AcademicPersonsDetailPluginTest extends FunctionalTestCase
             ])
         );
         $response = $this->executeFrontendSubRequest($request, $requestContext);
-        static::assertSame(200, $response->getStatusCode());
+        $this->assertSame(200, $response->getStatusCode());
 
         $content = (string)$response->getBody();
-        static::assertStringContainsString('#1: [DE] Max Müllermann', $content);
+        $this->assertStringContainsString('#1: [DE] Max Müllermann', $content);
     }
 
     /**
@@ -181,11 +181,11 @@ final class AcademicPersonsDetailPluginTest extends FunctionalTestCase
             ])
         );
         $response = $this->executeFrontendSubRequest($request, $requestContext);
-        static::assertSame(200, $response->getStatusCode());
+        $this->assertSame(200, $response->getStatusCode());
 
         $content = (string)$response->getBody();
-        static::assertStringContainsString('<h2>Profiledetailpage</h2>', $content);
-        static::assertStringContainsString('#1: [EN] Max Müllermann', $content);
+        $this->assertStringContainsString('<h2>Profiledetailpage</h2>', $content);
+        $this->assertStringContainsString('#1: [EN] Max Müllermann', $content);
     }
 
     /**
@@ -217,10 +217,10 @@ final class AcademicPersonsDetailPluginTest extends FunctionalTestCase
             ])
         );
         $response = $this->executeFrontendSubRequest($request, $requestContext);
-        static::assertSame(200, $response->getStatusCode());
+        $this->assertSame(200, $response->getStatusCode());
 
         $content = (string)$response->getBody();
-        static::assertStringContainsString('<h2>Profiledetailpage</h2>', $content);
-        static::assertStringContainsString('#1: [EN] Max Müllermann', $content);
+        $this->assertStringContainsString('<h2>Profiledetailpage</h2>', $content);
+        $this->assertStringContainsString('#1: [EN] Max Müllermann', $content);
     }
 }

@@ -106,7 +106,7 @@ trait SiteBasedTestTrait
     protected function buildSiteConfiguration(
         int $rootPageId,
         string $base = '',
-        string $websiteTitle='',
+        string $websiteTitle = '',
         array $additionalRootConfiguration = []
     ): array {
         return array_merge([

@@ -35,7 +35,7 @@ class ContractItemsProcFunc
 
         uasort(
             $items,
-            fn ($a, $b): int =>
+            fn($a, $b): int =>
                 [$a['lastName'], $a['firstName']]
                 <=>
                 [$b['lastName'], $b['firstName']]

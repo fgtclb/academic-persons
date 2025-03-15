@@ -105,12 +105,12 @@ final class AcademicPersonsListAndDetailPluginTest extends FunctionalTestCase
         $requestContext = new InternalRequestContext();
         $request = new InternalRequest('https://www.acme.com/home');
         $response = $this->executeFrontendSubRequest($request, $requestContext);
-        static::assertSame(200, $response->getStatusCode());
+        $this->assertSame(200, $response->getStatusCode());
 
         $content = (string)$response->getBody();
-        static::assertStringContainsString('<h2>Profilelist</h2>', $content);
-        static::assertStringContainsString('#0(1): [EN] Max Müllermann', $content);
-        static::assertStringContainsString('#1(2): [EN] Horst Huber', $content);
+        $this->assertStringContainsString('<h2>Profilelist</h2>', $content);
+        $this->assertStringContainsString('#0(1): [EN] Max Müllermann', $content);
+        $this->assertStringContainsString('#1(2): [EN] Horst Huber', $content);
     }
 
     /**
@@ -140,11 +140,11 @@ final class AcademicPersonsListAndDetailPluginTest extends FunctionalTestCase
             ])
         );
         $response = $this->executeFrontendSubRequest($request, $requestContext);
-        static::assertSame(200, $response->getStatusCode());
+        $this->assertSame(200, $response->getStatusCode());
 
         $content = (string)$response->getBody();
-        static::assertStringContainsString('<h2>Profiledetailpage</h2>', $content);
-        static::assertStringContainsString('#1: [EN] Max Müllermann', $content);
+        $this->assertStringContainsString('<h2>Profiledetailpage</h2>', $content);
+        $this->assertStringContainsString('#1: [EN] Max Müllermann', $content);
     }
 
     /**
@@ -165,12 +165,12 @@ final class AcademicPersonsListAndDetailPluginTest extends FunctionalTestCase
         $requestContext = new InternalRequestContext();
         $request = new InternalRequest('https://www.acme.com/home');
         $response = $this->executeFrontendSubRequest($request, $requestContext);
-        static::assertSame(200, $response->getStatusCode());
+        $this->assertSame(200, $response->getStatusCode());
 
         $content = (string)$response->getBody();
-        static::assertStringContainsString('<h2>Profilelist</h2>', $content);
-        static::assertStringContainsString('#0(2): Horst Huber', $content);
-        static::assertStringNotContainsString('Max Müllermann', $content);
+        $this->assertStringContainsString('<h2>Profilelist</h2>', $content);
+        $this->assertStringContainsString('#0(2): Horst Huber', $content);
+        $this->assertStringNotContainsString('Max Müllermann', $content);
     }
 
     /**
@@ -191,12 +191,12 @@ final class AcademicPersonsListAndDetailPluginTest extends FunctionalTestCase
         $requestContext = new InternalRequestContext();
         $request = new InternalRequest('https://www.acme.com/home');
         $response = $this->executeFrontendSubRequest($request, $requestContext);
-        static::assertSame(200, $response->getStatusCode());
+        $this->assertSame(200, $response->getStatusCode());
 
         $content = (string)$response->getBody();
-        static::assertStringContainsString('<h2>Profilelist</h2>', $content);
-        static::assertStringContainsString('#0(2): Horst Huber', $content);
-        static::assertStringContainsString('#1(1): Max Müllermann', $content);
+        $this->assertStringContainsString('<h2>Profilelist</h2>', $content);
+        $this->assertStringContainsString('#0(2): Horst Huber', $content);
+        $this->assertStringContainsString('#1(1): Max Müllermann', $content);
     }
 
     /**
@@ -227,11 +227,11 @@ final class AcademicPersonsListAndDetailPluginTest extends FunctionalTestCase
             ])
         );
         $response = $this->executeFrontendSubRequest($request, $requestContext);
-        static::assertSame(200, $response->getStatusCode());
+        $this->assertSame(200, $response->getStatusCode());
 
         $content = (string)$response->getBody();
-        static::assertStringContainsString('<h2>Profiledetailpage</h2>', $content);
-        static::assertStringContainsString('#1: [DE] Max Müllermann', $content);
+        $this->assertStringContainsString('<h2>Profiledetailpage</h2>', $content);
+        $this->assertStringContainsString('#1: [DE] Max Müllermann', $content);
     }
 
     /**
@@ -262,11 +262,11 @@ final class AcademicPersonsListAndDetailPluginTest extends FunctionalTestCase
             ])
         );
         $response = $this->executeFrontendSubRequest($request, $requestContext);
-        static::assertSame(200, $response->getStatusCode());
+        $this->assertSame(200, $response->getStatusCode());
 
         $content = (string)$response->getBody();
-        static::assertStringContainsString('<h2>Profiledetailpage</h2>', $content);
-        static::assertStringContainsString('#1: [EN] Max Müllermann', $content);
+        $this->assertStringContainsString('<h2>Profiledetailpage</h2>', $content);
+        $this->assertStringContainsString('#1: [EN] Max Müllermann', $content);
     }
 
     /**
@@ -288,12 +288,12 @@ final class AcademicPersonsListAndDetailPluginTest extends FunctionalTestCase
         $requestContext = new InternalRequestContext();
         $request = new InternalRequest('https://www.acme.com/home');
         $response = $this->executeFrontendSubRequest($request, $requestContext);
-        static::assertSame(200, $response->getStatusCode());
+        $this->assertSame(200, $response->getStatusCode());
 
         $content = (string)$response->getBody();
-        static::assertStringContainsString('<h2>Profilelist</h2>', $content);
-        static::assertStringContainsString('#0(1): [EN] Max Müllermann', $content);
-        static::assertStringContainsString('#1(3): [EN] Horst Huber', $content);
+        $this->assertStringContainsString('<h2>Profilelist</h2>', $content);
+        $this->assertStringContainsString('#0(1): [EN] Max Müllermann', $content);
+        $this->assertStringContainsString('#1(3): [EN] Horst Huber', $content);
     }
 
     /**
@@ -315,12 +315,12 @@ final class AcademicPersonsListAndDetailPluginTest extends FunctionalTestCase
         $requestContext = new InternalRequestContext();
         $request = new InternalRequest('https://www.acme.com/de/home');
         $response = $this->executeFrontendSubRequest($request, $requestContext);
-        static::assertSame(200, $response->getStatusCode());
+        $this->assertSame(200, $response->getStatusCode());
 
         $content = (string)$response->getBody();
-        static::assertStringContainsString('<h2>Profilelist</h2>', $content);
-        static::assertStringContainsString('#0(1): [DE] Max Müllermann', $content);
-        static::assertStringContainsString('#1(3): [DE] Horst Huber', $content);
+        $this->assertStringContainsString('<h2>Profilelist</h2>', $content);
+        $this->assertStringContainsString('#0(1): [DE] Max Müllermann', $content);
+        $this->assertStringContainsString('#1(3): [DE] Horst Huber', $content);
     }
 
     /**
@@ -342,12 +342,12 @@ final class AcademicPersonsListAndDetailPluginTest extends FunctionalTestCase
         $requestContext = new InternalRequestContext();
         $request = new InternalRequest('https://www.acme.com/de/home');
         $response = $this->executeFrontendSubRequest($request, $requestContext);
-        static::assertSame(200, $response->getStatusCode());
+        $this->assertSame(200, $response->getStatusCode());
 
         $content = (string)$response->getBody();
-        static::assertStringContainsString('<h2>Profilelist</h2>', $content);
-        static::assertStringContainsString('#0(1): [DE] Max Müllermann', $content);
-        static::assertStringNotContainsString('Horst Huber', $content);
+        $this->assertStringContainsString('<h2>Profilelist</h2>', $content);
+        $this->assertStringContainsString('#0(1): [DE] Max Müllermann', $content);
+        $this->assertStringNotContainsString('Horst Huber', $content);
     }
 
     /**
@@ -372,12 +372,12 @@ final class AcademicPersonsListAndDetailPluginTest extends FunctionalTestCase
         $requestContext = new InternalRequestContext();
         $request = new InternalRequest('https://www.acme.com/de/home');
         $response = $this->executeFrontendSubRequest($request, $requestContext);
-        static::assertSame(200, $response->getStatusCode());
+        $this->assertSame(200, $response->getStatusCode());
 
         $content = (string)$response->getBody();
-        static::assertStringContainsString('<h2>Profilelist</h2>', $content);
-        static::assertStringContainsString('#0(1): [DE] Max Müllermann', $content);
-        static::assertStringContainsString('#1(3): [EN] Horst Huber', $content);
+        $this->assertStringContainsString('<h2>Profilelist</h2>', $content);
+        $this->assertStringContainsString('#0(1): [DE] Max Müllermann', $content);
+        $this->assertStringContainsString('#1(3): [EN] Horst Huber', $content);
     }
 
     /**
@@ -399,12 +399,12 @@ final class AcademicPersonsListAndDetailPluginTest extends FunctionalTestCase
         $requestContext = new InternalRequestContext();
         $request = new InternalRequest('https://www.acme.com/de/home');
         $response = $this->executeFrontendSubRequest($request, $requestContext);
-        static::assertSame(200, $response->getStatusCode());
+        $this->assertSame(200, $response->getStatusCode());
 
         $content = (string)$response->getBody();
-        static::assertStringContainsString('<h2>Profilelist</h2>', $content);
-        static::assertStringContainsString('#0(1): [DE] Max Müllermann', $content);
-        static::assertStringContainsString('#1(3): [EN] Horst Huber', $content);
+        $this->assertStringContainsString('<h2>Profilelist</h2>', $content);
+        $this->assertStringContainsString('#0(1): [DE] Max Müllermann', $content);
+        $this->assertStringContainsString('#1(3): [EN] Horst Huber', $content);
     }
 
     /**
@@ -426,14 +426,14 @@ final class AcademicPersonsListAndDetailPluginTest extends FunctionalTestCase
         $requestContext = new InternalRequestContext();
         $request = new InternalRequest('https://www.acme.com/de/home');
         $response = $this->executeFrontendSubRequest($request, $requestContext);
-        static::assertSame(200, $response->getStatusCode());
+        $this->assertSame(200, $response->getStatusCode());
 
         $content = (string)$response->getBody();
-        static::assertStringContainsString('<h2>Profilelist</h2>', $content);
-        static::assertStringContainsString('#0(3): [DE] Horst Huber', $content);
-        static::assertStringContainsString('#1(1): [DE] Max Müllermann', $content);
-        static::assertStringNotContainsString('[EN] Horst Huber', $content);
-        static::assertStringNotContainsString('[EN] Max Müllermann', $content);
+        $this->assertStringContainsString('<h2>Profilelist</h2>', $content);
+        $this->assertStringContainsString('#0(3): [DE] Horst Huber', $content);
+        $this->assertStringContainsString('#1(1): [DE] Max Müllermann', $content);
+        $this->assertStringNotContainsString('[EN] Horst Huber', $content);
+        $this->assertStringNotContainsString('[EN] Max Müllermann', $content);
     }
 
     /**
@@ -444,7 +444,7 @@ final class AcademicPersonsListAndDetailPluginTest extends FunctionalTestCase
     public function fullyLocalizedListDisplaysLocalizedSelectedProfilesForRequestedLanguageInSelectedOrderWithFallbackTypeStrictWhenNotAllProfilesAreLocalized(): void
     {
         if ((new Typo3Version())->getMajorVersion() >= 12) {
-            static::markTestSkipped('Different behaviour since TYPO3 v12 - needs investigation in core first if this was intended.');
+            $this->markTestSkipped('Different behaviour since TYPO3 v12 - needs investigation in core first if this was intended.');
         }
         $this->importCSVDataSet(__DIR__ . '/Fixtures/AcademicPersonsListAndDetailPlugin/fullyLocalized_selectedProfiles_notAllProfilesLocalized.csv');
         $this->setUpFrontendRootPageForTestCase();
@@ -460,14 +460,14 @@ final class AcademicPersonsListAndDetailPluginTest extends FunctionalTestCase
         $requestContext = new InternalRequestContext();
         $request = new InternalRequest('https://www.acme.com/de/home');
         $response = $this->executeFrontendSubRequest($request, $requestContext);
-        static::assertSame(200, $response->getStatusCode());
+        $this->assertSame(200, $response->getStatusCode());
 
         $content = (string)$response->getBody();
-        static::assertStringContainsString('<h2>Profilelist</h2>', $content);
-        static::assertStringContainsString('#0(1): [DE] Max Müllermann', $content);
-        static::assertStringNotContainsString('[EN] Horst Huber', $content);
-        static::assertStringNotContainsString('[DE] Horst Huber', $content);
-        static::assertStringNotContainsString('[EN] Max Müllermann', $content);
+        $this->assertStringContainsString('<h2>Profilelist</h2>', $content);
+        $this->assertStringContainsString('#0(1): [DE] Max Müllermann', $content);
+        $this->assertStringNotContainsString('[EN] Horst Huber', $content);
+        $this->assertStringNotContainsString('[DE] Horst Huber', $content);
+        $this->assertStringNotContainsString('[EN] Max Müllermann', $content);
     }
 
     /**
@@ -489,14 +489,14 @@ final class AcademicPersonsListAndDetailPluginTest extends FunctionalTestCase
         $requestContext = new InternalRequestContext();
         $request = new InternalRequest('https://www.acme.com/de/home');
         $response = $this->executeFrontendSubRequest($request, $requestContext);
-        static::assertSame(200, $response->getStatusCode());
+        $this->assertSame(200, $response->getStatusCode());
 
         $content = (string)$response->getBody();
-        static::assertStringContainsString('<h2>Profilelist</h2>', $content);
-        static::assertStringContainsString('#0(3): [EN] Horst Huber', $content);
-        static::assertStringContainsString('#1(1): [DE] Max Müllermann', $content);
-        static::assertStringNotContainsString('[DE] Horst Huber', $content);
-        static::assertStringNotContainsString('[EN] Max Müllermann', $content);
+        $this->assertStringContainsString('<h2>Profilelist</h2>', $content);
+        $this->assertStringContainsString('#0(3): [EN] Horst Huber', $content);
+        $this->assertStringContainsString('#1(1): [DE] Max Müllermann', $content);
+        $this->assertStringNotContainsString('[DE] Horst Huber', $content);
+        $this->assertStringNotContainsString('[EN] Max Müllermann', $content);
     }
 
     /**
@@ -518,13 +518,13 @@ final class AcademicPersonsListAndDetailPluginTest extends FunctionalTestCase
         $requestContext = new InternalRequestContext();
         $request = new InternalRequest('https://www.acme.com/de/home');
         $response = $this->executeFrontendSubRequest($request, $requestContext);
-        static::assertSame(200, $response->getStatusCode());
+        $this->assertSame(200, $response->getStatusCode());
 
         $content = (string)$response->getBody();
-        static::assertStringContainsString('<h2>Profilelist</h2>', $content);
-        static::assertStringContainsString('#0(3): [EN] Horst Huber', $content);
-        static::assertStringContainsString('#1(1): [DE] Max Müllermann', $content);
-        static::assertStringNotContainsString('[DE] Horst Huber', $content);
-        static::assertStringNotContainsString('[EN] Max Müllermann', $content);
+        $this->assertStringContainsString('<h2>Profilelist</h2>', $content);
+        $this->assertStringContainsString('#0(3): [EN] Horst Huber', $content);
+        $this->assertStringContainsString('#1(1): [DE] Max Müllermann', $content);
+        $this->assertStringNotContainsString('[DE] Horst Huber', $content);
+        $this->assertStringNotContainsString('[EN] Max Müllermann', $content);
     }
 }
