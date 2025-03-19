@@ -5,16 +5,16 @@
     "license": "GPL-2.0-or-later",
     "authors": [
         {
-            "name": "Tim Schreiner",
-            "email": "tim.schreiner@km2.de",
-            "role": "Developer"
+            "name": "FGTCLB GmbH",
+            "email": "hello@fgtclb.com"
         }
     ],
     "support": {
-        "issues": "https://github.com/fgtclb/academic-persons/issues",
-        "source": "https://github.com/fgtclb/academic-persons"
+        "issues": "https://github.com/fgtclb/academic-extensions/issues",
+        "source": "https://github.com/fgtclb/academic-extensions",
+        "email": "hello@fgtclb.com"
     },
-    "homepage": "https://github.com/fgtclb/academic-persons",
+    "homepage": "https://www.fgtclb.com/",
     "require": {
         "php": "^8.1 || ^8.2 || ^8.3 || ^8.4",
         "typo3/cms-core": "^11.5 || ^12.4",
@@ -40,7 +40,7 @@
         "sort-packages": true
     },
     "extra": {
-		"typo3/cms": {
+        "typo3/cms": {
             "web-dir": ".Build/Web",
             "app-dir": ".Build",
             "extension-key": "academic_persons"
