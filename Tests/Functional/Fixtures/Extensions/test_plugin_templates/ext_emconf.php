@@ -8,12 +8,12 @@ $EM_CONF[$_EXTKEY] = [
     'author_email' => 'stefan@buerk.tech',
     'author_company' => 'web-vision GmbH',
     'state' => 'beta',
-    'version' => '0.3.1',
+    'version' => '1.1.5',
     'clearCacheOnLoad' => true,
     'constraints' => [
         'depends' => [
-            'typo3' => '*',
-            'academic_persons' => '*',
+            'typo3' => '11.5.0-12.4.99',
+            'academic_persons' => '1.1.5',
         ],
         'conflicts' => [
         ],
