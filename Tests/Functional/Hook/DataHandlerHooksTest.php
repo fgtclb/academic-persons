@@ -26,7 +26,7 @@ class DataHandlerHooksTest extends FunctionalTestCase
      * @var list<non-empty-string>
      */
     protected array $testExtensionsToLoad = [
-        'typo3conf/ext/academic_persons',
+        'fgtclb/academic-persons',
     ];
 
     protected function setUp(): void
