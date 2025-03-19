@@ -40,14 +40,13 @@
         "sort-packages": true
     },
     "extra": {
-		"branch-alias": {
-            "dev-main": "1.x.x-dev",
-            "dev-compatibility": "2.x.x-dev"
-        },
-        "typo3/cms": {
+		"typo3/cms": {
             "web-dir": ".Build/Web",
             "app-dir": ".Build",
             "extension-key": "academic_persons"
+        },
+        "branch-alias": {
+            "dev-main": "1.2.x-dev"
         }
     },
     "suggest": {
