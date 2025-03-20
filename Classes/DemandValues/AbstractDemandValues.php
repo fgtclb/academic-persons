@@ -16,16 +16,13 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 abstract class AbstractDemandValues implements DemandValuesInterface
 {
-    private ExtensionConfiguration $extensionConfiguration;
-
     /**
      * @var array<string, string>
      */
     protected array $values;
 
-    public function __construct(ExtensionConfiguration $extensionConfiguration)
+    public function __construct(private readonly ExtensionConfiguration $extensionConfiguration)
     {
-        $this->extensionConfiguration = $extensionConfiguration;
         $this->values = [];
         $this->initialize();
     }

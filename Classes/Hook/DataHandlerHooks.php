@@ -57,7 +57,7 @@ final class DataHandlerHooks
                     continue;
                 }
 
-                $data[$alphaColumnName] = strtolower(mb_substr($data[$correspondingFieldName], 0, 1));
+                $data[$alphaColumnName] = strtolower(mb_substr((string)$data[$correspondingFieldName], 0, 1));
             }
         }
     }

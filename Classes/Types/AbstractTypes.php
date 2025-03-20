@@ -16,16 +16,13 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 abstract class AbstractTypes implements TypesInterface
 {
-    private ExtensionConfiguration $extensionConfiguration;
-
     /**
      * @var array<string, string>
      */
     protected array $types;
 
-    public function __construct(ExtensionConfiguration $extensionConfiguration)
+    public function __construct(private readonly ExtensionConfiguration $extensionConfiguration)
     {
-        $this->extensionConfiguration = $extensionConfiguration;
         $this->types = [];
         $this->initialize();
     }

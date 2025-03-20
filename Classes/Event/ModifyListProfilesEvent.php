@@ -19,29 +19,20 @@ use TYPO3Fluid\Fluid\View\ViewInterface;
 final class ModifyListProfilesEvent
 {
     /**
-     * @var QueryResultInterface<Profile>
-     */
-    private QueryResultInterface $profiles;
-
-    /**
-     * The Extbase ViewInterface has been deprecated in TYPO3 v11.5 and has to be replaced with the TYPO3Fluid ViewInterface.
-     * @see https://docs.typo3.org/c/typo3/cms-core/main/en-us/Changelog/11.5/Deprecation-95222-ExtbaseViewInterface.html
-     *
-     * @var ViewInterface|DeprecatedExtbaseViewInterface
-     * @todo Add native type when v11 support is dropped.
-     */
-    private $view;
-
-    /**
      * @param QueryResultInterface<Profile> $profiles
      * @param ViewInterface|DeprecatedExtbaseViewInterface $view
      * @todo Add ViewInterface as type for $view when TYPO3 v11 support is dropped.
      */
-    public function __construct(QueryResultInterface $profiles, $view)
-    {
-        $this->profiles = $profiles;
-        $this->view = $view;
-    }
+    public function __construct(
+        private QueryResultInterface $profiles,
+        /**
+         * The Extbase ViewInterface has been deprecated in TYPO3 v11.5 and has to be replaced with the TYPO3Fluid ViewInterface.
+         * @see https://docs.typo3.org/c/typo3/cms-core/main/en-us/Changelog/11.5/Deprecation-95222-ExtbaseViewInterface.html
+         *
+         * @todo Add native type when v11 support is dropped.
+         */
+        private $view
+    ) {}
 
     /**
      * @return QueryResultInterface<Profile>

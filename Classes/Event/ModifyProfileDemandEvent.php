@@ -15,12 +15,7 @@ use Fgtclb\AcademicPersons\Domain\Model\Dto\DemandInterface;
 
 final class ModifyProfileDemandEvent
 {
-    private DemandInterface $demand;
-
-    public function __construct(DemandInterface $demand)
-    {
-        $this->demand = $demand;
-    }
+    public function __construct(private DemandInterface $demand) {}
 
     public function setDemand(DemandInterface $demand): void
     {
