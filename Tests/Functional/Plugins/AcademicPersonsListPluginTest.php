@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace Fgtclb\AcademicPersons\Tests\Functional\Plugins;
 
-use Fgtclb\AcademicPersons\Tests\Functional\Fixtures\Trait\SiteBasedTestTrait;
 use TYPO3\CMS\Core\Information\Typo3Version;
+use TYPO3\CMS\Core\Tests\Functional\SiteHandling\SiteBasedTestTrait;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\TestingFramework\Core\Functional\Framework\Frontend\InternalRequest;
 use TYPO3\TestingFramework\Core\Functional\Framework\Frontend\InternalRequestContext;
