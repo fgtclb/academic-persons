@@ -16,6 +16,7 @@ final class AcademicPersonsListAndDetailPluginTest extends FunctionalTestCase
     use SiteBasedTestTrait;
 
     protected array $coreExtensionsToLoad = [
+        'typo3/cms-rte-ckeditor',
         'typo3/cms-fluid-styled-content',
     ];
 

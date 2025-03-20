@@ -25,6 +25,13 @@ class DataHandlerHooksTest extends FunctionalTestCase
     /**
      * @var list<non-empty-string>
      */
+    protected array $coreExtensionsToLoad = [
+        'typo3/cms-rte-ckeditor',
+    ];
+
+    /**
+     * @var list<non-empty-string>
+     */
     protected array $testExtensionsToLoad = [
         'fgtclb/academic-persons',
     ];
