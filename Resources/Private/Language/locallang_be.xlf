@@ -23,19 +23,28 @@
             </trans-unit>
 
             <trans-unit id="plugin.list.label">
-                <source>Profiles: List of profiles</source>
+                <source>List of profiles</source>
             </trans-unit>
             <trans-unit id="plugin.detail.label">
-                <source>Profiles: Detail view of one profile</source>
+                <source>Detail view of one profile</source>
             </trans-unit>
             <trans-unit id="plugin.listAndDetail.label">
-                <source>Profiles: List and detail view of profiles</source>
+                <source>List and detail view of profiles</source>
+            </trans-unit>
+            <trans-unit id="content.ctype.group.label">
+                <source>Academic</source>
             </trans-unit>
             <trans-unit id="plugin.selectedprofiles.label">
                 <source>Profiles: Selected Profiles</source>
             </trans-unit>
+            <trans-unit id="plugin.selectedprofiles.description">
+                <source>Plugin to list only selected profiles</source>
+            </trans-unit>
             <trans-unit id="plugin.selectedcontracts.label">
                 <source>Profiles: Selected Contracts</source>
+            </trans-unit>
+            <trans-unit id="plugin.selectedcontracts.description">
+                <source>Plugin to list only selected contracts</source>
             </trans-unit>
 
             <trans-unit id="newContentElement.wizardItems.academic">
@@ -66,6 +75,9 @@
                 <source>Adds one or more contacts</source>
             </trans-unit>
 
+            <trans-unit id="element.tab.configuration">
+                <source>Configuration</source>
+            </trans-unit>
             <trans-unit id="flexform.tab.settings">
                 <source>Settings</source>
             </trans-unit>

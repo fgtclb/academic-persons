@@ -5,7 +5,7 @@
 ,100,1,254,0,0,0,0,0,"/sysfolder-records","Recordcollection"
 "tt_content",
 ,"uid","pid","deleted","hidden","sys_language_uid","l18n_parent","CType","list_type","header","pi_flexform"
-,1,2,0,0,0,0,"list","academicpersons_list","Profiles","<?xml version=""1.0"" encoding=""utf-8"" standalone=""yes"" ?><T3FlexForms><data><sheet index=""sDEF""><language index=""lDEF""><field index=""settings.demand.profileList""><value index=""vDEF"">2,1</value></field><field index=""settings.fallbackForNonTranslated""><value index=""vDEF"">0</value></field></language></sheet></data></T3FlexForms>"
+,1,2,0,0,0,0,"academicpersons_list","","Profiles","<?xml version=""1.0"" encoding=""utf-8"" standalone=""yes"" ?><T3FlexForms><data><sheet index=""sDEF""><language index=""lDEF""><field index=""settings.demand.profileList""><value index=""vDEF"">2,1</value></field><field index=""settings.fallbackForNonTranslated""><value index=""vDEF"">0</value></field></language></sheet></data></T3FlexForms>"
 "tx_academicpersons_domain_model_profile",
 ,"uid","pid","deleted","hidden","sys_language_uid","l10n_parent","first_name","last_name","slug"
 ,1,100,0,0,0,0,"Max","Müllermann","max-muellermann"
