@@ -21,14 +21,6 @@ final class PluginContentUpgrade implements UpgradeWizardInterface
         'academicpersons_selectedcontracts',
     ];
 
-    /**
-     * @deprecated with v11 and remove with v12, remove after drop support for v11
-     */
-    public function getIdentifier(): string
-    {
-        return 'academicPerson_pluginContent';
-    }
-
     public function getTitle(): string
     {
         return 'Migrate plugin list element form academic_persons to normal content elements';

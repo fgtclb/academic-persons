@@ -19,8 +19,8 @@ use Fgtclb\AcademicPersons\Event\ModifyDetailProfileEvent;
 use Fgtclb\AcademicPersons\Event\ModifyListProfilesEvent;
 use GeorgRinger\NumberedPagination\NumberedPagination;
 use Psr\Http\Message\ResponseInterface;
+use TYPO3\CMS\Core\Cache\CacheDataCollector;
 use TYPO3\CMS\Core\Cache\CacheTag;
-use TYPO3\CMS\Core\Information\Typo3Version;
 use TYPO3\CMS\Core\Pagination\SimplePagination;
 use TYPO3\CMS\Core\Utility\ExtensionManagementUtility;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
@@ -297,25 +297,20 @@ final class ProfileController extends ActionController
      */
     private function addCacheTags(string ...$tags): void
     {
-        if ((new Typo3Version())->getMajorVersion() < 13) {
-            // @todo Drop this when removing TYPO3 v12 support.
+        // @todo Remove if-block when dropping `typo3/cms-*` v12 support
+        if (!class_exists(CacheDataCollector::class)) {
             $this->getContentObject()?->getTypoScriptFrontendController()?->addCacheTags($tags);
-            // return;
+            return;
         }
-        // @todo Enable when TYPO3 v13 support is added with 2.x.x
-        //        $cacheCollector = $this->request->getAttribute('frontend.cache.collector');
-        //        foreach ($tags as $tag) {
-        //            $cacheCollector?->addCacheTags(new CacheTag($tag));
-        //        }
+        // TYPO3 v13+
+        $cacheCollector = $this->request->getAttribute('frontend.cache.collector');
+        foreach ($tags as $tag) {
+            $cacheCollector?->addCacheTags(new CacheTag($tag));
+        }
     }
 
     private function getContentObject(): ?ContentObjectRenderer
     {
-        // @todo Simply return the attribute when TYPO3 v11 support is removed with 2.x.x.
-        // @see https://docs.typo3.org/c/typo3/cms-core/main/en-us/Changelog/12.4/Deprecation-100662-ConfigurationManager-getContentObject.html
-        return match ((new Typo3Version())->getMajorVersion()) {
-            11 => $this->configurationManager->getContentObject(),
-            default => $this->request->getAttribute('currentContentObject'),
-        };
+        return $this->request->getAttribute('currentContentObject');
     }
 }
