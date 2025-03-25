@@ -9,14 +9,20 @@ declare(strict_types=1);
  * LICENSE file that was distributed with this source code.
  */
 
-\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addStaticFile(
-    'academic_persons',
-    'Configuration/TypoScript/Default',
-    'Academic Persons Settings'
-);
+use TYPO3\CMS\Core\Utility\ExtensionManagementUtility;
 
-\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addStaticFile(
-    'academic_persons',
-    'Configuration/TypoScript/Standalone',
-    'Academic Persons Standalone'
-);
+(static function (): void {
+
+    ExtensionManagementUtility::addStaticFile(
+        'academic_persons',
+        'Configuration/TypoScript/Default',
+        'Academic Persons Settings'
+    );
+
+    ExtensionManagementUtility::addStaticFile(
+        'academic_persons',
+        'Configuration/TypoScript/Standalone',
+        'Academic Persons Standalone'
+    );
+
+})();

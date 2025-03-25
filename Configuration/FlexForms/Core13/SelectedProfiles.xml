@@ -41,6 +41,38 @@
                     <size>3</size>
                 </config>
             </settings.showFields>
+<settings.viewMode.enabled>
+                <label>LLL:EXT:academic_persons/Resources/Private/Language/locallang_be.xlf:flexform.el.viewMode.enabled.label</label>
+                <config>
+                    <type>check</type>
+                    <renderType>checkboxToggle</renderType>
+                    <items>
+                        <numIndex index="0" type="array">
+                            <label>LLL:EXT:academic_persons/Resources/Private/Language/locallang_be.xlf:flexform.el.viewMode.enabled.items.0.label</label>
+                            <labelChecked>Enabled</labelChecked>
+                            <labelUnchecked>Disabled</labelUnchecked>
+                        </numIndex>
+                    </items>
+                </config>
+            </settings.viewMode.enabled>
+            <settings.viewMode.default>
+                <label>LLL:EXT:academic_persons/Resources/Private/Language/locallang_be.xlf:flexform.el.viewMode.default.label</label>
+                <config>
+                    <type>select</type>
+                    <renderType>selectSingle</renderType>
+                    <items>
+                        <numIndex index="1" type="array">
+                            <label>LLL:EXT:academic_persons/Resources/Private/Language/locallang_be.xlf:flexform.el.viewMode.default.I.list</label>
+                            <value>list</value>
+                        </numIndex>
+                        <numIndex index="0" type="array">
+                            <label>LLL:EXT:academic_persons/Resources/Private/Language/locallang_be.xlf:flexform.el.viewMode.default.I.table</label>
+                            <value>table</value>
+                        </numIndex>
+                    </items>
+                    <default>asc</default>
+                </config>
+            </settings.viewMode.default>
         </el>
     </ROOT>
 </T3DataStructure>

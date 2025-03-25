@@ -1,0 +1,78 @@
+<T3DataStructure>
+    <ROOT>
+        <TCEforms>
+            <sheetTitle>LLL:EXT:academic_persons/Resources/Private/Language/locallang_be.xlf:flexform.tab.settings</sheetTitle>
+        </TCEforms>
+        <type>array</type>
+        <el>
+            <settings.detailPid>
+                <label>LLL:EXT:academic_persons/Resources/Private/Language/locallang_be.xlf:flexform.el.detailPid.label</label>
+                <config>
+                    <type>group</type>
+                    <allowed>pages</allowed>
+                    <maxitems>1</maxitems>
+                    <minitems>0</minitems>
+                    <size>1</size>
+                </config>
+            </settings.detailPid>
+            <settings.selectedProfiles>
+                <label>LLL:EXT:academic_persons/Resources/Private/Language/locallang_be.xlf:flexform.el.selectedProfiles.label</label>
+                <config>
+                    <type>select</type>
+                    <renderType>selectMultipleSideBySide</renderType>
+                    <foreign_table>tx_academicpersons_domain_model_profile</foreign_table>
+                    <foreign_table_where>AND tx_academicpersons_domain_model_profile.sys_language_uid IN (-1, 0) ORDER BY tx_academicpersons_domain_model_profile.last_name, tx_academicpersons_domain_model_profile.first_name</foreign_table_where>
+                    <size>5</size>
+                    <autoSizeMax>10</autoSizeMax>
+                    <maxitems>99</maxitems>
+                </config>
+            </settings.selectedProfiles>
+            <settings.showFields>
+                <label>LLL:EXT:academic_persons/Resources/Private/Language/locallang_be.xlf:flexform.el.showFields.label</label>
+                <config>
+                    <type>select</type>
+                    <renderType>selectMultipleSideBySide</renderType>
+                    <itemsProcFunc>Fgtclb\AcademicPersons\Backend\Form\ProfileShowFieldsItemProcFunc->showFields</itemsProcFunc>
+                    <itemGroups>
+                        <profile>LLL:EXT:academic_persons/Resources/Private/Language/locallang_be.xlf:flexform.el.showFields.groups.profile</profile>
+                        <contracts>LLL:EXT:academic_persons/Resources/Private/Language/locallang_be.xlf:flexform.el.showFields.groups.contracts</contracts>
+                    </itemGroups>
+                    <maxitems>99</maxitems>
+                    <size>3</size>
+                </config>
+            </settings.showFields>
+<settings.viewMode.enabled>
+                <label>LLL:EXT:academic_persons/Resources/Private/Language/locallang_be.xlf:flexform.el.viewMode.enabled.label</label>
+                <config>
+                    <type>check</type>
+                    <renderType>checkboxToggle</renderType>
+                    <items>
+                        <numIndex index="0" type="array">
+                            <numIndex index="0">LLL:EXT:academic_persons/Resources/Private/Language/locallang_be.xlf:flexform.el.viewMode.enabled.items.0.label</numIndex>
+                            <labelChecked>Enabled</labelChecked>
+                            <labelUnchecked>Disabled</labelUnchecked>
+                        </numIndex>
+                    </items>
+                </config>
+            </settings.viewMode.enabled>
+            <settings.viewMode.default>
+                <label>LLL:EXT:academic_persons/Resources/Private/Language/locallang_be.xlf:flexform.el.viewMode.default.label</label>
+                <config>
+                    <type>select</type>
+                    <renderType>selectSingle</renderType>
+                    <items>
+                        <numIndex index="1" type="array">
+                            <numIndex index="0">LLL:EXT:academic_persons/Resources/Private/Language/locallang_be.xlf:flexform.el.viewMode.default.I.list</numIndex>
+                            <numIndex index="1">list</numIndex>
+                        </numIndex>
+                        <numIndex index="0" type="array">
+                            <numIndex index="0">LLL:EXT:academic_persons/Resources/Private/Language/locallang_be.xlf:flexform.el.viewMode.default.I.table</numIndex>
+                            <numIndex index="1">table</numIndex>
+                        </numIndex>
+                    </items>
+                    <default>asc</default>
+                </config>
+            </settings.viewMode.default>
+        </el>
+    </ROOT>
+</T3DataStructure>

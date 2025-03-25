@@ -9,179 +9,186 @@ declare(strict_types=1);
  * LICENSE file that was distributed with this source code.
  */
 
+use TYPO3\CMS\Core\Information\Typo3Version;
 use TYPO3\CMS\Core\Utility\ExtensionManagementUtility;
 use TYPO3\CMS\Extbase\Utility\ExtensionUtility;
 
-//======================================================================================================================
-// Add custom content element group `academicpersons`
-//======================================================================================================================
-ExtensionManagementUtility::addTcaSelectItemGroup(
-    'tt_content',
-    'CType',
-    'academic',
-    'LLL:EXT:academic_persons/Resources/Private/Language/locallang_be.xlf:content.ctype.group.label',
-);
+(static function (): void {
 
-//======================================================================================================================
-// Plugin: academicpersons_list
-//======================================================================================================================
-ExtensionManagementUtility::addPlugin(
-    [
-        'label' => 'LLL:EXT:academic_persons/Resources/Private/Language/locallang_be.xlf:plugin.list.label',
-        'value' => 'academicpersons_list',
-        'icon' => 'persons_icon',
-        'group' => 'academic',
-    ],
-    ExtensionUtility::PLUGIN_TYPE_CONTENT_ELEMENT,
-    'academic_persons'
-);
-ExtensionManagementUtility::addToAllTCAtypes(
-    'tt_content',
-    implode(',', [
-        '--div--;LLL:EXT:academic_persons/Resources/Private/Language/locallang_be.xlf:element.tab.configuration',
-        'pi_flexform',
-    ]),
-    'academicpersons_list',
-    'after:header'
-);
-$GLOBALS['TCA']['tt_content']['types']['list']['subtypes_excludelist']['academicpersons_list'] = 'recursive,select_key';
-$GLOBALS['TCA']['tt_content']['types']['list']['subtypes_addlist']['academicpersons_list'] = 'pi_flexform';
-ExtensionManagementUtility::addPiFlexFormValue(
-    '*',
-    'FILE:EXT:academic_persons/Configuration/FlexForms/List.xml',
-    'academicpersons_list'
-);
+    $typo3MajorVersion = (new Typo3Version())->getMajorVersion();
 
-//======================================================================================================================
-// Plugin: academicpersons_listanddetail
-//======================================================================================================================
-ExtensionManagementUtility::addPlugin(
-    [
-        'label' => 'LLL:EXT:academic_persons/Resources/Private/Language/locallang_be.xlf:plugin.listAndDetail.label',
-        'value' => 'academicpersons_listanddetail',
-        'icon' => 'persons_icon',
-        'group' => 'academic',
-    ],
-    ExtensionUtility::PLUGIN_TYPE_CONTENT_ELEMENT,
-    'academic_persons'
-);
-ExtensionManagementUtility::addToAllTCAtypes(
-    'tt_content',
-    implode(',', [
-        '--div--;LLL:EXT:academic_persons/Resources/Private/Language/locallang_be.xlf:element.tab.configuration',
-        'pi_flexform',
-    ]),
-    'academicpersons_listanddetail',
-    'after:header'
-);
-$GLOBALS['TCA']['tt_content']['types']['list']['subtypes_excludelist']['academicpersons_listanddetail'] = 'recursive,select_key';
-$GLOBALS['TCA']['tt_content']['types']['list']['subtypes_addlist']['academicpersons_listanddetail'] = 'pi_flexform';
-ExtensionManagementUtility::addPiFlexFormValue(
-    '*',
-    'FILE:EXT:academic_persons/Configuration/FlexForms/List.xml',
-    'academicpersons_listanddetail'
-);
+    //==================================================================================================================
+    // Add custom content element group `academicpersons`
+    //==================================================================================================================
+    ExtensionManagementUtility::addTcaSelectItemGroup(
+        'tt_content',
+        'CType',
+        'academic',
+        'LLL:EXT:academic_persons/Resources/Private/Language/locallang_be.xlf:content.ctype.group.label',
+    );
 
-//======================================================================================================================
-// Plugin: academicpersons_detail
-//======================================================================================================================
-ExtensionManagementUtility::addPlugin(
-    [
-        'label' => 'LLL:EXT:academic_persons/Resources/Private/Language/locallang_be.xlf:plugin.detail.label',
-        'value' => 'academicpersons_detail',
-        'icon' => 'persons_icon',
-        'group' => 'academic',
-    ],
-    ExtensionUtility::PLUGIN_TYPE_CONTENT_ELEMENT,
-    'academic_persons'
-);
+    //==================================================================================================================
+    // Plugin: academicpersons_list
+    //==================================================================================================================
+    ExtensionManagementUtility::addPlugin(
+        [
+            'label' => 'LLL:EXT:academic_persons/Resources/Private/Language/locallang_be.xlf:plugin.list.label',
+            'value' => 'academicpersons_list',
+            'icon' => 'persons_icon',
+            'group' => 'academic',
+        ],
+        ExtensionUtility::PLUGIN_TYPE_CONTENT_ELEMENT,
+        'academic_persons'
+    );
+    ExtensionManagementUtility::addToAllTCAtypes(
+        'tt_content',
+        implode(',', [
+            '--div--;LLL:EXT:academic_persons/Resources/Private/Language/locallang_be.xlf:element.tab.configuration',
+            'pi_flexform',
+        ]),
+        'academicpersons_list',
+        'after:header'
+    );
+    $GLOBALS['TCA']['tt_content']['types']['list']['subtypes_excludelist']['academicpersons_list'] = 'recursive,select_key';
+    $GLOBALS['TCA']['tt_content']['types']['list']['subtypes_addlist']['academicpersons_list'] = 'pi_flexform';
+    ExtensionManagementUtility::addPiFlexFormValue(
+        '*',
+        sprintf('FILE:EXT:academic_persons/Configuration/FlexForms/Core%s/List.xml', $typo3MajorVersion),
+        'academicpersons_list'
+    );
 
-//======================================================================================================================
-// Plugin: academicpersons_card
-//======================================================================================================================
-ExtensionManagementUtility::addPlugin(
-    [
-        'label' => 'LLL:EXT:academic_persons/Resources/Private/Language/locallang_be.xlf:newContentElement.wizardItems.academic.card.title',
-        'value' => 'academicpersons_card',
-        'icon' => '',
-        'group' => 'academic',
-    ],
-    ExtensionUtility::PLUGIN_TYPE_CONTENT_ELEMENT,
-    'academic_persons'
-);
-ExtensionManagementUtility::addToAllTCAtypes(
-    'tt_content',
-    implode(',', [
-        '--div--;LLL:EXT:academic_persons/Resources/Private/Language/locallang_be.xlf:element.tab.configuration',
-        'pi_flexform',
-    ]),
-    'academicpersons_card',
-    'after:header'
-);
-$GLOBALS['TCA']['tt_content']['types']['list']['subtypes_excludelist']['academicpersons_card'] = 'recursive,select_key';
-$GLOBALS['TCA']['tt_content']['types']['list']['subtypes_addlist']['academicpersons_card'] = 'pi_flexform';
-ExtensionManagementUtility::addPiFlexFormValue(
-    '*',
-    'FILE:EXT:academic_persons/Configuration/FlexForms/List.xml',
-    'academicpersons_card'
-);
+    //==================================================================================================================
+    // Plugin: academicpersons_listanddetail
+    //==================================================================================================================
+    ExtensionManagementUtility::addPlugin(
+        [
+            'label' => 'LLL:EXT:academic_persons/Resources/Private/Language/locallang_be.xlf:plugin.listAndDetail.label',
+            'value' => 'academicpersons_listanddetail',
+            'icon' => 'persons_icon',
+            'group' => 'academic',
+        ],
+        ExtensionUtility::PLUGIN_TYPE_CONTENT_ELEMENT,
+        'academic_persons'
+    );
+    ExtensionManagementUtility::addToAllTCAtypes(
+        'tt_content',
+        implode(',', [
+            '--div--;LLL:EXT:academic_persons/Resources/Private/Language/locallang_be.xlf:element.tab.configuration',
+            'pi_flexform',
+        ]),
+        'academicpersons_listanddetail',
+        'after:header'
+    );
+    $GLOBALS['TCA']['tt_content']['types']['list']['subtypes_excludelist']['academicpersons_listanddetail'] = 'recursive,select_key';
+    $GLOBALS['TCA']['tt_content']['types']['list']['subtypes_addlist']['academicpersons_listanddetail'] = 'pi_flexform';
+    ExtensionManagementUtility::addPiFlexFormValue(
+        '*',
+        sprintf('FILE:EXT:academic_persons/Configuration/FlexForms/Core%s/List.xml', $typo3MajorVersion),
+        'academicpersons_listanddetail'
+    );
 
-//======================================================================================================================
-// Plugin: academicpersons_selectedprofiles
-//======================================================================================================================
-ExtensionManagementUtility::addPlugin(
-    [
-        'label' => 'LLL:EXT:academic_persons/Resources/Private/Language/locallang_be.xlf:plugin.selectedprofiles.label',
-        'value' => 'academicpersons_selectedprofiles',
-        'icon' => '',
-        'group' => 'academic',
-    ],
-    ExtensionUtility::PLUGIN_TYPE_CONTENT_ELEMENT,
-    'academic_persons'
-);
-ExtensionManagementUtility::addToAllTCAtypes(
-    'tt_content',
-    implode(',', [
-        '--div--;LLL:EXT:academic_persons/Resources/Private/Language/locallang_be.xlf:element.tab.configuration',
-        'pi_flexform',
-    ]),
-    'academicpersons_selectedprofiles',
-    'after:header'
-);
-$GLOBALS['TCA']['tt_content']['types']['list']['subtypes_excludelist']['academicpersons_selectedprofiles'] = 'recursive,select_key';
-$GLOBALS['TCA']['tt_content']['types']['list']['subtypes_addlist']['academicpersons_selectedprofiles'] = 'pi_flexform';
-ExtensionManagementUtility::addPiFlexFormValue(
-    '*',
-    'FILE:EXT:academic_persons/Configuration/FlexForms/SelectedProfiles.xml',
-    'academicpersons_selectedprofiles'
-);
+    //==================================================================================================================
+    // Plugin: academicpersons_detail
+    //==================================================================================================================
+    ExtensionManagementUtility::addPlugin(
+        [
+            'label' => 'LLL:EXT:academic_persons/Resources/Private/Language/locallang_be.xlf:plugin.detail.label',
+            'value' => 'academicpersons_detail',
+            'icon' => 'persons_icon',
+            'group' => 'academic',
+        ],
+        ExtensionUtility::PLUGIN_TYPE_CONTENT_ELEMENT,
+        'academic_persons'
+    );
 
-//======================================================================================================================
-// Plugin: academicpersons_selectedcontracts
-//======================================================================================================================
-ExtensionManagementUtility::addPlugin(
-    [
-        'label' => 'LLL:EXT:academic_persons/Resources/Private/Language/locallang_be.xlf:plugin.selectedcontracts.label',
-        'value' => 'academicpersons_selectedcontracts',
-        'icon' => '',
-        'group' => 'academic',
-    ],
-    ExtensionUtility::PLUGIN_TYPE_CONTENT_ELEMENT,
-    'academic_persons'
-);
-ExtensionManagementUtility::addToAllTCAtypes(
-    'tt_content',
-    implode(',', [
-        '--div--;LLL:EXT:academic_persons/Resources/Private/Language/locallang_be.xlf:element.tab.configuration',
-        'pi_flexform',
-    ]),
-    'academicpersons_selectedcontracts',
-    'after:header'
-);
-$GLOBALS['TCA']['tt_content']['types']['list']['subtypes_excludelist']['academicpersons_selectedcontracts'] = 'recursive,select_key';
-$GLOBALS['TCA']['tt_content']['types']['list']['subtypes_addlist']['academicpersons_selectedcontracts'] = 'pi_flexform';
-ExtensionManagementUtility::addPiFlexFormValue(
-    '*',
-    'FILE:EXT:academic_persons/Configuration/FlexForms/SelectedContracts.xml',
-    'academicpersons_selectedcontracts'
-);
+    //==================================================================================================================
+    // Plugin: academicpersons_card
+    //==================================================================================================================
+    ExtensionManagementUtility::addPlugin(
+        [
+            'label' => 'LLL:EXT:academic_persons/Resources/Private/Language/locallang_be.xlf:newContentElement.wizardItems.academic.card.title',
+            'value' => 'academicpersons_card',
+            'icon' => '',
+            'group' => 'academic',
+        ],
+        ExtensionUtility::PLUGIN_TYPE_CONTENT_ELEMENT,
+        'academic_persons'
+    );
+    ExtensionManagementUtility::addToAllTCAtypes(
+        'tt_content',
+        implode(',', [
+            '--div--;LLL:EXT:academic_persons/Resources/Private/Language/locallang_be.xlf:element.tab.configuration',
+            'pi_flexform',
+        ]),
+        'academicpersons_card',
+        'after:header'
+    );
+    $GLOBALS['TCA']['tt_content']['types']['list']['subtypes_excludelist']['academicpersons_card'] = 'recursive,select_key';
+    $GLOBALS['TCA']['tt_content']['types']['list']['subtypes_addlist']['academicpersons_card'] = 'pi_flexform';
+    ExtensionManagementUtility::addPiFlexFormValue(
+        '*',
+        sprintf('FILE:EXT:academic_persons/Configuration/FlexForms/Core%s/List.xml', $typo3MajorVersion),
+        'academicpersons_card'
+    );
+
+    //==================================================================================================================
+    // Plugin: academicpersons_selectedprofiles
+    //==================================================================================================================
+    ExtensionManagementUtility::addPlugin(
+        [
+            'label' => 'LLL:EXT:academic_persons/Resources/Private/Language/locallang_be.xlf:plugin.selectedprofiles.label',
+            'value' => 'academicpersons_selectedprofiles',
+            'icon' => '',
+            'group' => 'academic',
+        ],
+        ExtensionUtility::PLUGIN_TYPE_CONTENT_ELEMENT,
+        'academic_persons'
+    );
+    ExtensionManagementUtility::addToAllTCAtypes(
+        'tt_content',
+        implode(',', [
+            '--div--;LLL:EXT:academic_persons/Resources/Private/Language/locallang_be.xlf:element.tab.configuration',
+            'pi_flexform',
+        ]),
+        'academicpersons_selectedprofiles',
+        'after:header'
+    );
+    $GLOBALS['TCA']['tt_content']['types']['list']['subtypes_excludelist']['academicpersons_selectedprofiles'] = 'recursive,select_key';
+    $GLOBALS['TCA']['tt_content']['types']['list']['subtypes_addlist']['academicpersons_selectedprofiles'] = 'pi_flexform';
+    ExtensionManagementUtility::addPiFlexFormValue(
+        '*',
+        sprintf('FILE:EXT:academic_persons/Configuration/FlexForms/Core%s/SelectedProfiles.xml', $typo3MajorVersion),
+        'academicpersons_selectedprofiles'
+    );
+
+    //==================================================================================================================
+    // Plugin: academicpersons_selectedcontracts
+    //==================================================================================================================
+    ExtensionManagementUtility::addPlugin(
+        [
+            'label' => 'LLL:EXT:academic_persons/Resources/Private/Language/locallang_be.xlf:plugin.selectedcontracts.label',
+            'value' => 'academicpersons_selectedcontracts',
+            'icon' => '',
+            'group' => 'academic',
+        ],
+        ExtensionUtility::PLUGIN_TYPE_CONTENT_ELEMENT,
+        'academic_persons'
+    );
+    ExtensionManagementUtility::addToAllTCAtypes(
+        'tt_content',
+        implode(',', [
+            '--div--;LLL:EXT:academic_persons/Resources/Private/Language/locallang_be.xlf:element.tab.configuration',
+            'pi_flexform',
+        ]),
+        'academicpersons_selectedcontracts',
+        'after:header'
+    );
+    $GLOBALS['TCA']['tt_content']['types']['list']['subtypes_excludelist']['academicpersons_selectedcontracts'] = 'recursive,select_key';
+    $GLOBALS['TCA']['tt_content']['types']['list']['subtypes_addlist']['academicpersons_selectedcontracts'] = 'pi_flexform';
+    ExtensionManagementUtility::addPiFlexFormValue(
+        '*',
+        sprintf('FILE:EXT:academic_persons/Configuration/FlexForms/Core%s/SelectedContracts.xml', $typo3MajorVersion),
+        'academicpersons_selectedcontracts'
+    );
+
+})();

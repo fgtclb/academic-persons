@@ -28,6 +28,10 @@
                 <target>Nach Werten sortieren: Kommagetrennte Liste von zulässigen Sortierwerten</target>
             </trans-unit>
 
+            <trans-unit id="content.ctype.group.label">
+                <source>Academic</source>
+                <target>Academic</target>
+            </trans-unit>
             <trans-unit id="plugin.list.label">
                 <source> List of profiles</source>
                 <target>Liste von Profilen</target>
@@ -114,6 +118,10 @@
                 <source>List Page</source>
                 <target>Listen Seite</target>
             </trans-unit>
+            <trans-unit id="flexform.el.functionTypes.label">
+                <source>Function Types</source>
+                <target>Funktionstypen</target>
+            </trans-unit>
             <trans-unit id="flexform.el.groupBy.label">
                 <source>Group By (is given priority in sorting if activ)</source>
                 <target>Gruppieren nach (wird vorrangig bei der Sortierung berücksichtigt)</target>
@@ -129,6 +137,10 @@
             <trans-unit id="flexform.el.groupBy.items.last_name">
                 <source>First Letter of Last Name</source>
                 <target>Erster Buchstabe des Nachnamens</target>
+            </trans-unit>
+            <trans-unit id="flexform.el.organisationalUnits.label">
+                <source>Organisational Units</source>
+                <target>Organisationseinheiten</target>
             </trans-unit>
             <trans-unit id="flexform.el.sortBy.label">
                 <source>Sort By (sorting of activated grouping has priority)</source>
@@ -213,6 +225,26 @@
             <trans-unit id="flexform.el.fallbackForNonTranslated.label">
                 <source>Fallback to default language for non translated profiles</source>
                 <target>Fallback auf die Standardsprache für nicht übersetzte Profile</target>
+            </trans-unit>
+            <trans-unit id="flexform.el.viewMode.enabled.label">
+                <source>View Mode Toggle</source>
+                <target>Ansichtsmodus-Umschalter</target>
+            </trans-unit>
+            <trans-unit id="flexform.el.viewMode.enabled.items.0.label">
+                <source>Enabled</source>
+                <target>Aktiviert</target>
+            </trans-unit>
+            <trans-unit id="flexform.el.viewMode.default.label">
+                <source>View Mode Default</source>
+                <target>Standard für Ansichtsmodus</target>
+            </trans-unit>
+            <trans-unit id="flexform.el.viewMode.default.I.list">
+                <source>List</source>
+                <target>Liste</target>
+            </trans-unit>
+            <trans-unit id="flexform.el.viewMode.default.I.table">
+                <source>Table</source>
+                <target>Tabelle</target>
             </trans-unit>
         </body>
     </file>

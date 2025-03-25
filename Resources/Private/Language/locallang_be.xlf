@@ -22,6 +22,9 @@
                 <source>Sort By Values: Comma-separated list of allowed sort by values</source>
             </trans-unit>
 
+            <trans-unit id="content.ctype.group.label">
+                <source>Academic</source>
+            </trans-unit>
             <trans-unit id="plugin.list.label">
                 <source>List of profiles</source>
             </trans-unit>
@@ -87,6 +90,9 @@
             <trans-unit id="flexform.el.listPid.label">
                 <source>List Page</source>
             </trans-unit>
+            <trans-unit id="flexform.el.functionTypes.label">
+                <source>Function Types</source>
+            </trans-unit>
             <trans-unit id="flexform.el.groupBy.label">
                 <source>Group By (is given priority in sorting if activ)</source>
             </trans-unit>
@@ -98,6 +104,9 @@
             </trans-unit>
             <trans-unit id="flexform.el.groupBy.items.last_name">
                 <source>First Letter of Last Name</source>
+            </trans-unit>
+            <trans-unit id="flexform.el.organisationalUnits.label">
+                <source>Organisational Units</source>
             </trans-unit>
             <trans-unit id="flexform.el.selectedContracts.label">
                 <source>Selected Contracts</source>
@@ -158,6 +167,21 @@
             </trans-unit>
             <trans-unit id="flexform.el.fallbackForNonTranslated.label">
                 <source>Fallback to default language for non translated profiles</source>
+            </trans-unit>
+            <trans-unit id="flexform.el.viewMode.enabled.label">
+                <source>View Mode Toggle</source>
+            </trans-unit>
+            <trans-unit id="flexform.el.viewMode.enabled.items.0.label">
+                <source>Enabled</source>
+            </trans-unit>
+            <trans-unit id="flexform.el.viewMode.default.label">
+                <source>View Mode Default</source>
+            </trans-unit>
+            <trans-unit id="flexform.el.viewMode.default.I.list">
+                <source>List</source>
+            </trans-unit>
+            <trans-unit id="flexform.el.viewMode.default.I.table">
+                <source>Table</source>
             </trans-unit>
         </body>
     </file>

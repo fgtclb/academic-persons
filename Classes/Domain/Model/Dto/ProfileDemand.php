@@ -11,8 +11,6 @@ declare(strict_types=1);
 
 namespace Fgtclb\AcademicPersons\Domain\Model\Dto;
 
-use Fgtclb\AcademicPersons\Domain\Repository\ProfileRepository;
-
 class ProfileDemand implements DemandInterface
 {
     protected string $groupBy = '';
@@ -23,6 +21,16 @@ class ProfileDemand implements DemandInterface
     protected string $profileList = '';
     private string $storagePages = '';
     private int $fallbackForNonTranslated = 0;
+
+    /**
+     * @var int[]
+     */
+    protected array $functionTypes = [];
+
+    /**
+     * @var int[]
+     */
+    protected array $organisationalUnits = [];
 
     /**
      * Does not have any effect when {@see self::getProfileList()} is not empty.
@@ -106,6 +114,42 @@ class ProfileDemand implements DemandInterface
     public function setAlphabetFilter(string $alphabetFilter): self
     {
         $this->alphabetFilter = $alphabetFilter;
+        return $this;
+    }
+
+    /**
+     * @return int[]
+     */
+    public function getFunctionTypes(): array
+    {
+        return $this->functionTypes;
+    }
+
+    /**
+     * @param int[] $functionTypes
+     * @return ProfileDemand
+     */
+    public function setFunctionTypes(array $functionTypes): ProfileDemand
+    {
+        $this->functionTypes = $functionTypes;
+        return $this;
+    }
+
+    /**
+     * @return int[]
+     */
+    public function getOrganisationalUnits(): array
+    {
+        return $this->organisationalUnits;
+    }
+
+    /**
+     * @param int[] $organisationalUnits
+     * @return ProfileDemand
+     */
+    public function setOrganisationalUnits(array $organisationalUnits): ProfileDemand
+    {
+        $this->organisationalUnits = $organisationalUnits;
         return $this;
     }
 
