@@ -262,6 +262,26 @@ final class ProfileController extends ActionController
      */
     private function adoptSettings(ProfileDemand $demand): void
     {
+        if (isset($this->settings['functionTypes'])
+            && is_string($this->settings['functionTypes'])
+            && $this->settings['functionTypes'] !== ''
+        ) {
+            $functionTypeUids = GeneralUtility::intExplode(',', $this->settings['functionTypes'], true);
+            if (!empty($functionTypeUids)) {
+                $demand->setFunctionTypes($functionTypeUids);
+            }
+        }
+
+        if (isset($this->settings['organisationalUnits'])
+            && is_string($this->settings['organisationalUnits'])
+            && $this->settings['organisationalUnits'] !== ''
+        ) {
+            $organisationalUnitUids = GeneralUtility::intExplode(',', $this->settings['organisationalUnits'], true);
+            if (!empty($organisationalUnitUids)) {
+                $demand->setOrganisationalUnits($organisationalUnitUids);
+            }
+        }
+
         $contentObjectData = $this->getContentObject()?->data;
         $hasStoragePids = (
             is_array($contentObjectData)
@@ -271,6 +291,7 @@ final class ProfileController extends ActionController
         if ($hasStoragePids) {
             $demand->setStoragePages($contentObjectData['pages']);
         }
+
         /**
          * Introduced with https://github.com/fgtclb/academic-persons/pull/30 to have the option to display profiles in
          * fallback mode even when site language (non-default) is configured to be in strict mode.

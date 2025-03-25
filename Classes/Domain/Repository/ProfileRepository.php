@@ -148,9 +148,21 @@ class ProfileRepository extends Repository
     private function setFilters(QueryInterface $query, DemandInterface $demand): ?ConstraintInterface
     {
         $filters = [];
+
+        if (method_exists($demand, 'getFunctionTypes')
+            && $demand->getFunctionTypes() !== []) {
+            $filters[] = $query->in('contracts.functionType', $demand->getFunctionTypes());
+        }
+
+        if (method_exists($demand, 'getOrganisationalUnits')
+            && $demand->getOrganisationalUnits() !== []) {
+            $filters[] = $query->in('contracts.organisationalUnit', $demand->getOrganisationalUnits());
+        }
+
         if ($demand->getAlphabetFilter() != '') {
             $filters[] = $query->like('last_name', $demand->getAlphabetFilter() . '%');
         }
+
         return ($filters === [])
             ? null
             : $query->logicalAnd(...$filters);

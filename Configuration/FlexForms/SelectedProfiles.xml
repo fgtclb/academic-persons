@@ -41,6 +41,38 @@
                     <size>3</size>
                 </config>
             </settings.showFields>
+<settings.viewMode.enabled>
+                <label>LLL:EXT:academic_persons/Resources/Private/Language/locallang_be.xlf:flexform.el.viewMode.enabled.label</label>
+                <config>
+                    <type>check</type>
+                    <renderType>checkboxToggle</renderType>
+                    <items>
+                        <numIndex index="0" type="array">
+                            <numIndex index="0">LLL:EXT:academic_persons/Resources/Private/Language/locallang_be.xlf:flexform.el.viewMode.enabled.items.0.label</numIndex>
+                            <labelChecked>Enabled</labelChecked>
+                            <labelUnchecked>Disabled</labelUnchecked>
+                        </numIndex>
+                    </items>
+                </config>
+            </settings.viewMode.enabled>
+            <settings.viewMode.default>
+                <label>LLL:EXT:academic_persons/Resources/Private/Language/locallang_be.xlf:flexform.el.viewMode.default.label</label>
+                <config>
+                    <type>select</type>
+                    <renderType>selectSingle</renderType>
+                    <items>
+                        <numIndex index="1" type="array">
+                            <numIndex index="0">LLL:EXT:academic_persons/Resources/Private/Language/locallang_be.xlf:flexform.el.viewMode.default.I.list</numIndex>
+                            <numIndex index="1">list</numIndex>
+                        </numIndex>
+                        <numIndex index="0" type="array">
+                            <numIndex index="0">LLL:EXT:academic_persons/Resources/Private/Language/locallang_be.xlf:flexform.el.viewMode.default.I.table</numIndex>
+                            <numIndex index="1">table</numIndex>
+                        </numIndex>
+                    </items>
+                    <default>asc</default>
+                </config>
+            </settings.viewMode.default>
         </el>
     </ROOT>
 </T3DataStructure>
