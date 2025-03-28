@@ -2,13 +2,16 @@
 
 declare(strict_types=1);
 
+use TYPO3\CMS\Core\Information\Typo3Version;
+use Fgtclb\AcademicPersons\Tca\RecordTypes;
+
 /**
  * This file is part of the "academic_persons" Extension for TYPO3 CMS.
  *
  * For the full copyright and license information, please read the
  * LICENSE file that was distributed with this source code.
  */
-$typo3MajorVersion = (new \TYPO3\CMS\Core\Information\Typo3Version())->getMajorVersion();
+$typo3MajorVersion = (new Typo3Version())->getMajorVersion();
 $selectLabelKey = ($typo3MajorVersion >= 12) ? 'label' : 0;
 $selectValueKey = ($typo3MajorVersion >= 12) ? 'value' : 1;
 return [
@@ -107,7 +110,7 @@ return [
                         $selectValueKey => '',
                     ],
                 ],
-                'itemsProcFunc' => \Fgtclb\AcademicPersons\Tca\RecordTypes::class . '->getEmailAddressTypes',
+                'itemsProcFunc' => RecordTypes::class . '->getEmailAddressTypes',
             ],
         ],
     ],

@@ -2,6 +2,16 @@
 
 declare(strict_types=1);
 
+use Fgtclb\AcademicPersons\Domain\Model\Address;
+use Fgtclb\AcademicPersons\Domain\Model\Contract;
+use Fgtclb\AcademicPersons\Domain\Model\Email;
+use Fgtclb\AcademicPersons\Domain\Model\FunctionType;
+use Fgtclb\AcademicPersons\Domain\Model\Location;
+use Fgtclb\AcademicPersons\Domain\Model\OrganisationalUnit;
+use Fgtclb\AcademicPersons\Domain\Model\PhoneNumber;
+use Fgtclb\AcademicPersons\Domain\Model\Profile;
+use Fgtclb\AcademicPersons\Domain\Model\ProfileInformation;
+
 /*
  * This file is part of the "academic_persons" Extension for TYPO3 CMS.
  *
@@ -10,56 +20,56 @@ declare(strict_types=1);
  */
 
 return [
-    \Fgtclb\AcademicPersons\Domain\Model\Address::class => [
+    Address::class => [
         'tableName' => 'tx_academicpersons_domain_model_address',
-        'recordType' => \Fgtclb\AcademicPersons\Domain\Model\Address::class,
+        'recordType' => Address::class,
         'properties' => [
             'employeeType' => [
                 'fieldName' => 'employee_type',
             ],
         ],
     ],
-    \Fgtclb\AcademicPersons\Domain\Model\Contract::class => [
+    Contract::class => [
         'tableName' => 'tx_academicpersons_domain_model_contract',
-        'recordType' => \Fgtclb\AcademicPersons\Domain\Model\Contract::class,
+        'recordType' => Contract::class,
         'properties' => [
             'employeeType' => [
                 'fieldName' => 'employee_type',
             ],
         ],
     ],
-    \Fgtclb\AcademicPersons\Domain\Model\Email::class => [
+    Email::class => [
         'tableName' => 'tx_academicpersons_domain_model_email',
-        'recordType' => \Fgtclb\AcademicPersons\Domain\Model\Email::class,
+        'recordType' => Email::class,
     ],
-    \Fgtclb\AcademicPersons\Domain\Model\FunctionType::class => [
+    FunctionType::class => [
         'tableName' => 'tx_academicpersons_domain_model_function_type',
-        'recordType' => \Fgtclb\AcademicPersons\Domain\Model\FunctionType::class,
+        'recordType' => FunctionType::class,
     ],
-    \Fgtclb\AcademicPersons\Domain\Model\Location::class => [
+    Location::class => [
         'tableName' => 'tx_academicpersons_domain_model_location',
-        'recordType' => \Fgtclb\AcademicPersons\Domain\Model\Location::class,
+        'recordType' => Location::class,
     ],
-    \Fgtclb\AcademicPersons\Domain\Model\OrganisationalUnit::class => [
+    OrganisationalUnit::class => [
         'tableName' => 'tx_academicpersons_domain_model_organisational_unit',
-        'recordType' => \Fgtclb\AcademicPersons\Domain\Model\OrganisationalUnit::class,
+        'recordType' => OrganisationalUnit::class,
     ],
-    \Fgtclb\AcademicPersons\Domain\Model\PhoneNumber::class => [
+    PhoneNumber::class => [
         'tableName' => 'tx_academicpersons_domain_model_phone_number',
-        'recordType' => \Fgtclb\AcademicPersons\Domain\Model\PhoneNumber::class,
+        'recordType' => PhoneNumber::class,
     ],
-    \Fgtclb\AcademicPersons\Domain\Model\Profile::class => [
+    Profile::class => [
         'tableName' => 'tx_academicpersons_domain_model_profile',
-        'recordType' => \Fgtclb\AcademicPersons\Domain\Model\Profile::class,
+        'recordType' => Profile::class,
     ],
-    \Fgtclb\AcademicPersons\Domain\Model\ProfileInformation::class => [
+    ProfileInformation::class => [
         'tableName' => 'tx_academicpersons_domain_model_profile_information',
         'subclasses' => [
-            'curriculum_vitae' => \Fgtclb\AcademicPersons\Domain\Model\ProfileInformation::class,
-            'membership' => \Fgtclb\AcademicPersons\Domain\Model\ProfileInformation::class,
-            'cooperation' => \Fgtclb\AcademicPersons\Domain\Model\ProfileInformation::class,
-            'publication' => \Fgtclb\AcademicPersons\Domain\Model\ProfileInformation::class,
-            'lecture' => \Fgtclb\AcademicPersons\Domain\Model\ProfileInformation::class,
+            'curriculum_vitae' => ProfileInformation::class,
+            'membership' => ProfileInformation::class,
+            'cooperation' => ProfileInformation::class,
+            'publication' => ProfileInformation::class,
+            'lecture' => ProfileInformation::class,
         ],
     ],
 ];

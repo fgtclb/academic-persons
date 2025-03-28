@@ -11,6 +11,7 @@ declare(strict_types=1);
 
 namespace Fgtclb\AcademicPersons\Tests\Functional\Hook;
 
+use PHPUnit\Framework\Attributes\Test;
 use TYPO3\CMS\Core\DataHandling\DataHandler;
 use TYPO3\CMS\Core\Localization\LanguageServiceFactory;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
@@ -46,7 +47,7 @@ class DataHandlerHooksTest extends FunctionalTestCase
         $this->dataHandler = GeneralUtility::makeInstance(DataHandler::class);
     }
 
-    #[\PHPUnit\Framework\Attributes\Test]
+    #[Test]
     public function insertingNewRecordWillGenerateAndSaveAlphaFieldValues(): void
     {
         $dataMap = [
@@ -69,7 +70,7 @@ class DataHandlerHooksTest extends FunctionalTestCase
         $this->assertSame('d', $records[1]['last_name_alpha']);
     }
 
-    #[\PHPUnit\Framework\Attributes\Test]
+    #[Test]
     public function updatingRecordWillGenerateAndSaveNewAlphaFieldValues(): void
     {
         $this->importCSVDataSet(__DIR__ . '/../Fixtures/MinimumProfile.csv');

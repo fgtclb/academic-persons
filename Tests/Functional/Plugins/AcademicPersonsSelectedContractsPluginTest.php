@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace Fgtclb\AcademicPersons\Tests\Functional\Plugins;
 
+use TYPO3\TestingFramework\Core\Functional\Framework\Frontend\Hook\TypoScriptInstructionModifier;
+use PHPUnit\Framework\Attributes\Test;
 use TYPO3\CMS\Core\Tests\Functional\SiteHandling\SiteBasedTestTrait;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\TestingFramework\Core\Functional\Framework\Frontend\InternalRequest;
@@ -43,7 +45,7 @@ final class AcademicPersonsSelectedContractsPluginTest extends FunctionalTestCas
         'SC_OPTIONS' => [
             'Core/TypoScript/TemplateService' => [
                 'runThroughTemplatesPostProcessing' => [
-                    'FunctionalTest' => \TYPO3\TestingFramework\Core\Functional\Framework\Frontend\Hook\TypoScriptInstructionModifier::class . '->apply',
+                    'FunctionalTest' => TypoScriptInstructionModifier::class . '->apply',
                 ],
             ],
         ],
@@ -87,7 +89,7 @@ final class AcademicPersonsSelectedContractsPluginTest extends FunctionalTestCas
         );
     }
 
-    #[\PHPUnit\Framework\Attributes\Test]
+    #[Test]
     public function defaultLanguageOnly_allContractsSelected(): void
     {
         $this->importCSVDataSet(__DIR__ . '/Fixtures/AcademicPersonsSelectedContractsPlugin/defaultLanguageOnly_allContractsSelected.csv');
@@ -111,7 +113,7 @@ final class AcademicPersonsSelectedContractsPluginTest extends FunctionalTestCas
         $this->assertStringContainsString('#1(1): Worker', $content);
     }
 
-    #[\PHPUnit\Framework\Attributes\Test]
+    #[Test]
     public function defaultLanguageOnly_oneContractSelected(): void
     {
         $this->importCSVDataSet(__DIR__ . '/Fixtures/AcademicPersonsSelectedContractsPlugin/defaultLanguageOnly_oneContractSelected.csv');
@@ -135,7 +137,7 @@ final class AcademicPersonsSelectedContractsPluginTest extends FunctionalTestCas
         $this->assertStringNotContainsString('Worker', $content);
     }
 
-    #[\PHPUnit\Framework\Attributes\Test]
+    #[Test]
     public function fullyLocalized_allContractsSelected_allContractsLocalized(): void
     {
         $this->importCSVDataSet(__DIR__ . '/Fixtures/AcademicPersonsSelectedContractsPlugin/fullyLocalized_allContractsSelected_allContractsLocalized.csv');
@@ -163,7 +165,7 @@ final class AcademicPersonsSelectedContractsPluginTest extends FunctionalTestCas
         $this->assertStringNotContainsString('[EN] Worker', $content);
     }
 
-    #[\PHPUnit\Framework\Attributes\Test]
+    #[Test]
     public function fullyLocalized_allContractsSelected_notAllContractsLocalized_strictMode(): void
     {
         $this->importCSVDataSet(__DIR__ . '/Fixtures/AcademicPersonsSelectedContractsPlugin/fullyLocalized_allContractsSelected_notAllContractsLocalized.csv');
@@ -190,7 +192,7 @@ final class AcademicPersonsSelectedContractsPluginTest extends FunctionalTestCas
         $this->assertStringNotContainsString('[EN] Worker', $content);
     }
 
-    #[\PHPUnit\Framework\Attributes\Test]
+    #[Test]
     public function fullyLocalized_SelectedContracts_notAllContractsLocalized_fallbackMode(): void
     {
         $this->importCSVDataSet(__DIR__ . '/Fixtures/AcademicPersonsSelectedContractsPlugin/fullyLocalized_allContractsSelected_notAllContractsLocalized.csv');

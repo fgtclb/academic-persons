@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace Fgtclb\AcademicPersons\Tests\Functional\Plugins;
 
+use TYPO3\TestingFramework\Core\Functional\Framework\Frontend\Hook\TypoScriptInstructionModifier;
+use PHPUnit\Framework\Attributes\Test;
 use TYPO3\CMS\Core\Information\Typo3Version;
 use TYPO3\CMS\Core\Tests\Functional\SiteHandling\SiteBasedTestTrait;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
@@ -44,7 +46,7 @@ final class AcademicPersonsListAndDetailPluginTest extends FunctionalTestCase
         'SC_OPTIONS' => [
             'Core/TypoScript/TemplateService' => [
                 'runThroughTemplatesPostProcessing' => [
-                    'FunctionalTest' => \TYPO3\TestingFramework\Core\Functional\Framework\Frontend\Hook\TypoScriptInstructionModifier::class . '->apply',
+                    'FunctionalTest' => TypoScriptInstructionModifier::class . '->apply',
                 ],
             ],
         ],
@@ -88,7 +90,7 @@ final class AcademicPersonsListAndDetailPluginTest extends FunctionalTestCase
         );
     }
 
-    #[\PHPUnit\Framework\Attributes\Test]
+    #[Test]
     public function defaultLanguageListDisplaysAllProfiles(): void
     {
         $this->importCSVDataSet(__DIR__ . '/Fixtures/AcademicPersonsListAndDetailPlugin/defaultLanguageOnly.csv');
@@ -112,7 +114,7 @@ final class AcademicPersonsListAndDetailPluginTest extends FunctionalTestCase
         $this->assertStringContainsString('#1(2): [EN] Horst Huber', $content);
     }
 
-    #[\PHPUnit\Framework\Attributes\Test]
+    #[Test]
     public function defaultLanguageDisplayProfile(): void
     {
         $this->importCSVDataSet(__DIR__ . '/Fixtures/AcademicPersonsListAndDetailPlugin/defaultLanguageOnly.csv');
@@ -144,7 +146,7 @@ final class AcademicPersonsListAndDetailPluginTest extends FunctionalTestCase
         $this->assertStringContainsString('#1: [EN] Max Müllermann', $content);
     }
 
-    #[\PHPUnit\Framework\Attributes\Test]
+    #[Test]
     public function defaultLanguageListDisplaySingleSelectedProfile(): void
     {
         $this->importCSVDataSet(__DIR__ . '/Fixtures/AcademicPersonsListAndDetailPlugin/defaultLanguageOnly_oneProfileSelected.csv');
@@ -168,7 +170,7 @@ final class AcademicPersonsListAndDetailPluginTest extends FunctionalTestCase
         $this->assertStringNotContainsString('Max Müllermann', $content);
     }
 
-    #[\PHPUnit\Framework\Attributes\Test]
+    #[Test]
     public function defaultLanguageListDisplaysSelectedProfilesInSelectedOrder(): void
     {
         $this->importCSVDataSet(__DIR__ . '/Fixtures/AcademicPersonsListAndDetailPlugin/defaultLanguageOnly_selectedProfiles.csv');
@@ -192,7 +194,7 @@ final class AcademicPersonsListAndDetailPluginTest extends FunctionalTestCase
         $this->assertStringContainsString('#1(1): Max Müllermann', $content);
     }
 
-    #[\PHPUnit\Framework\Attributes\Test]
+    #[Test]
     public function fullyLocalizedDisplaysLocalizedProfile(): void
     {
         $this->importCSVDataSet(__DIR__ . '/Fixtures/AcademicPersonsListAndDetailPlugin/fullyLocalized.csv');
@@ -225,7 +227,7 @@ final class AcademicPersonsListAndDetailPluginTest extends FunctionalTestCase
         $this->assertStringContainsString('#1: [DE] Max Müllermann', $content);
     }
 
-    #[\PHPUnit\Framework\Attributes\Test]
+    #[Test]
     public function localizedPagesAndTtContentWithNotLocalizedProfileDisplayDefaultLanguageWhenLanguageFallback(): void
     {
         $this->importCSVDataSet(__DIR__ . '/Fixtures/AcademicPersonsListAndDetailPlugin/localizedPagesAndTtContent_notLocalizedProfile.csv');
@@ -258,7 +260,7 @@ final class AcademicPersonsListAndDetailPluginTest extends FunctionalTestCase
         $this->assertStringContainsString('#1: [EN] Max Müllermann', $content);
     }
 
-    #[\PHPUnit\Framework\Attributes\Test]
+    #[Test]
     public function fullyLocalizedListDisplaysDefaultLanguageProfilesForRequestedDefaultLanguage(): void
     {
         $this->importCSVDataSet(__DIR__ . '/Fixtures/AcademicPersonsListAndDetailPlugin/fullyLocalized.csv');
@@ -283,7 +285,7 @@ final class AcademicPersonsListAndDetailPluginTest extends FunctionalTestCase
         $this->assertStringContainsString('#1(3): [EN] Horst Huber', $content);
     }
 
-    #[\PHPUnit\Framework\Attributes\Test]
+    #[Test]
     public function fullyLocalizedListDisplaysLocalizedProfilesForRequestedLanguage(): void
     {
         $this->importCSVDataSet(__DIR__ . '/Fixtures/AcademicPersonsListAndDetailPlugin/fullyLocalized.csv');
@@ -308,7 +310,7 @@ final class AcademicPersonsListAndDetailPluginTest extends FunctionalTestCase
         $this->assertStringContainsString('#1(3): [DE] Horst Huber', $content);
     }
 
-    #[\PHPUnit\Framework\Attributes\Test]
+    #[Test]
     public function fullyLocalizedPagesAndTtContentListDisplaysOnlyLocalizedProfilesForRequestedLanguageWithNotAllProfilesLocalizedInStrictMode(): void
     {
         $this->importCSVDataSet(__DIR__ . '/Fixtures/AcademicPersonsListAndDetailPlugin/fullyLocalizedPagesAndTtContent_notAllProfilesLocalized.csv');
@@ -333,7 +335,7 @@ final class AcademicPersonsListAndDetailPluginTest extends FunctionalTestCase
         $this->assertStringNotContainsString('Horst Huber', $content);
     }
 
-    #[\PHPUnit\Framework\Attributes\Test]
+    #[Test]
     public function fullyLocalizedPagesAndTtContentListDisplaysOnlyLocalizedProfilesForRequestedLanguageWithNotAllProfilesLocalizedInStrictModeWithFallbackForNonTranslatedSet(): void
     {
         $this->importCSVDataSet(__DIR__ . '/Fixtures/AcademicPersonsListAndDetailPlugin/fullyLocalizedPagesAndTtContent_notAllProfilesLocalized_fallbackForNonTranslatedSet.csv');
@@ -358,7 +360,7 @@ final class AcademicPersonsListAndDetailPluginTest extends FunctionalTestCase
         $this->assertStringContainsString('#1(3): [EN] Horst Huber', $content);
     }
 
-    #[\PHPUnit\Framework\Attributes\Test]
+    #[Test]
     public function fullyLocalizedPagesAndTtContentListDisplaysLocalizedProfileAndDefaultLanguageProfileForRequestedLanguageWithNotAllProfilesLocalizedInFallbackMode(): void
     {
         $this->importCSVDataSet(__DIR__ . '/Fixtures/AcademicPersonsListAndDetailPlugin/fullyLocalizedPagesAndTtContent_notAllProfilesLocalized.csv');
@@ -383,7 +385,7 @@ final class AcademicPersonsListAndDetailPluginTest extends FunctionalTestCase
         $this->assertStringContainsString('#1(3): [EN] Horst Huber', $content);
     }
 
-    #[\PHPUnit\Framework\Attributes\Test]
+    #[Test]
     public function fullyLocalizedListDisplaysLocalizedSelectedProfilesForRequestedLanguageInSelectedOrder(): void
     {
         $this->importCSVDataSet(__DIR__ . '/Fixtures/AcademicPersonsListAndDetailPlugin/fullyLocalized_selectedProfiles.csv');
@@ -414,7 +416,7 @@ final class AcademicPersonsListAndDetailPluginTest extends FunctionalTestCase
      * @todo Investgate change TYPO3 core/extbase behaviour since v12 in core and either fix implementation or adjust
      *       test for v12 when enabling it again.
      */
-    #[\PHPUnit\Framework\Attributes\Test]
+    #[Test]
     public function fullyLocalizedListDisplaysLocalizedSelectedProfilesForRequestedLanguageInSelectedOrderWithFallbackTypeStrictWhenNotAllProfilesAreLocalized(): void
     {
         if ((new Typo3Version())->getMajorVersion() >= 12) {
@@ -444,7 +446,7 @@ final class AcademicPersonsListAndDetailPluginTest extends FunctionalTestCase
         $this->assertStringNotContainsString('[EN] Max Müllermann', $content);
     }
 
-    #[\PHPUnit\Framework\Attributes\Test]
+    #[Test]
     public function fullyLocalizedListDisplaysLocalizedSelectedProfilesForRequestedLanguageInSelectedOrderWithFallbackTypeStrictWhenNotAllProfilesAreLocalizedButPluginFallbackSet(): void
     {
         $this->importCSVDataSet(__DIR__ . '/Fixtures/AcademicPersonsListAndDetailPlugin/fullyLocalized_selectedProfiles_notAllProfilesLocalized_fallbackForNonTranslatedSet.csv');
@@ -471,7 +473,7 @@ final class AcademicPersonsListAndDetailPluginTest extends FunctionalTestCase
         $this->assertStringNotContainsString('[EN] Max Müllermann', $content);
     }
 
-    #[\PHPUnit\Framework\Attributes\Test]
+    #[Test]
     public function fullyLocalizedListDisplaysLocalizedSelectedProfilesForRequestedLanguageInSelectedOrderWithFallbackTypeFallbackWhenNotAllProfilesAreLocalized(): void
     {
         $this->importCSVDataSet(__DIR__ . '/Fixtures/AcademicPersonsListAndDetailPlugin/fullyLocalized_selectedProfiles_notAllProfilesLocalized.csv');

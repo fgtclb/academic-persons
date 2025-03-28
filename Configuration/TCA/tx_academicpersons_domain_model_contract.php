@@ -2,13 +2,16 @@
 
 declare(strict_types=1);
 
+use TYPO3\CMS\Core\Information\Typo3Version;
+use Fgtclb\AcademicPersons\Tca\ContractLabels;
+
 /**
  * This file is part of the "academic_persons" Extension for TYPO3 CMS.
  *
  * For the full copyright and license information, please read the
  * LICENSE file that was distributed with this source code.
  */
-$typo3MajorVersion = (new \TYPO3\CMS\Core\Information\Typo3Version())->getMajorVersion();
+$typo3MajorVersion = (new Typo3Version())->getMajorVersion();
 $selectLabelKey = ($typo3MajorVersion >= 12) ? 'label' : 0;
 $selectValueKey = ($typo3MajorVersion >= 12) ? 'value' : 1;
 
@@ -16,7 +19,7 @@ return [
     'ctrl' => [
         'title' => 'LLL:EXT:academic_persons/Resources/Private/Language/locallang_tca.xlf:tx_academicpersons_domain_model_contract.ctrl.label',
         'label' => 'profile',
-        'label_userFunc' => \Fgtclb\AcademicPersons\Tca\ContractLabels::class . '->getTitle',
+        'label_userFunc' => ContractLabels::class . '->getTitle',
         'default_sortby' => 'sorting',
         'hideTable' => true,
         'origUid' => 't3_origuid',

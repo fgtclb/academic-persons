@@ -8,7 +8,7 @@ declare(strict_types=1);
  * For the full copyright and license information, please read the
  * LICENSE file that was distributed with this source code.
  */
-
+use Fgtclb\AcademicPersons\Hook\DataHandlerHooks;
 use Fgtclb\AcademicPersons\Controller\ProfileController;
 use TYPO3\CMS\Extbase\Utility\ExtensionUtility;
 
@@ -83,5 +83,5 @@ defined('TYPO3') or die;
     );
 
     $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['t3lib/class.t3lib_tcemain.php']['processDatamapClass']['academicPersons']
-        = \Fgtclb\AcademicPersons\Hook\DataHandlerHooks::class;
+        = DataHandlerHooks::class;
 })();

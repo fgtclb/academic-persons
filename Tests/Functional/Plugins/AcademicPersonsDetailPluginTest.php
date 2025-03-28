@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace Fgtclb\AcademicPersons\Tests\Functional\Plugins;
 
+use TYPO3\TestingFramework\Core\Functional\Framework\Frontend\Hook\TypoScriptInstructionModifier;
+use PHPUnit\Framework\Attributes\Test;
 use TYPO3\CMS\Core\Tests\Functional\SiteHandling\SiteBasedTestTrait;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\TestingFramework\Core\Functional\Framework\Frontend\InternalRequest;
@@ -43,7 +45,7 @@ final class AcademicPersonsDetailPluginTest extends FunctionalTestCase
         'SC_OPTIONS' => [
             'Core/TypoScript/TemplateService' => [
                 'runThroughTemplatesPostProcessing' => [
-                    'FunctionalTest' => \TYPO3\TestingFramework\Core\Functional\Framework\Frontend\Hook\TypoScriptInstructionModifier::class . '->apply',
+                    'FunctionalTest' => TypoScriptInstructionModifier::class . '->apply',
                 ],
             ],
         ],
@@ -87,7 +89,7 @@ final class AcademicPersonsDetailPluginTest extends FunctionalTestCase
         );
     }
 
-    #[\PHPUnit\Framework\Attributes\Test]
+    #[Test]
     public function defaultLanguageDisplayProfile(): void
     {
         $this->importCSVDataSet(__DIR__ . '/Fixtures/AcademicPersonsDetailPlugin/defaultLanguageOnly.csv');
@@ -118,7 +120,7 @@ final class AcademicPersonsDetailPluginTest extends FunctionalTestCase
         $this->assertStringContainsString('#1: [EN] Max Müllermann', $content);
     }
 
-    #[\PHPUnit\Framework\Attributes\Test]
+    #[Test]
     public function fullyLocalizedDisplaysLocalizedProfile(): void
     {
         $this->importCSVDataSet(__DIR__ . '/Fixtures/AcademicPersonsDetailPlugin/fullyLocalized.csv');
@@ -150,7 +152,7 @@ final class AcademicPersonsDetailPluginTest extends FunctionalTestCase
         $this->assertStringContainsString('#1: [DE] Max Müllermann', $content);
     }
 
-    #[\PHPUnit\Framework\Attributes\Test]
+    #[Test]
     public function localizedPagesAndTtContentWithNotLocalizedProfileDisplayDefaultLanguageWhenLanguageFallback(): void
     {
         $this->importCSVDataSet(__DIR__ . '/Fixtures/AcademicPersonsDetailPlugin/localizedPagesAndTtContent_notLocalizedProfile.csv');
@@ -186,7 +188,7 @@ final class AcademicPersonsDetailPluginTest extends FunctionalTestCase
     /**
      * @todo Really ?
      */
-    #[\PHPUnit\Framework\Attributes\Test]
+    #[Test]
     public function localizedPagesAndTtContentWithNotLocalizedProfileDisplayDefaultLanguageWhenLanguageStrict(): void
     {
         $this->importCSVDataSet(__DIR__ . '/Fixtures/AcademicPersonsDetailPlugin/localizedPagesAndTtContent_notLocalizedProfile.csv');
