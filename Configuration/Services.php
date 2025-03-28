@@ -16,7 +16,7 @@ use Fgtclb\AcademicPersons\Types\TypesInterface;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Loader\Configurator\ContainerConfigurator;
 
-return static function (ContainerConfigurator $container, ContainerBuilder $containerBuilder) {
+return static function (ContainerConfigurator $container, ContainerBuilder $containerBuilder): void {
     $containerBuilder->registerForAutoconfiguration(TypesInterface::class)->setPublic(true);
     $containerBuilder->registerForAutoconfiguration(DemandValuesInterface::class)->setPublic(true);
 };
