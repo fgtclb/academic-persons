@@ -46,9 +46,7 @@ class DataHandlerHooksTest extends FunctionalTestCase
         $this->dataHandler = GeneralUtility::makeInstance(DataHandler::class);
     }
 
-    /**
-     * @test
-     */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function insertingNewRecordWillGenerateAndSaveAlphaFieldValues(): void
     {
         $dataMap = [
@@ -71,9 +69,7 @@ class DataHandlerHooksTest extends FunctionalTestCase
         $this->assertSame('d', $records[1]['last_name_alpha']);
     }
 
-    /**
-     * @test
-     */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function updatingRecordWillGenerateAndSaveNewAlphaFieldValues(): void
     {
         $this->importCSVDataSet(__DIR__ . '/../Fixtures/MinimumProfile.csv');

@@ -87,9 +87,7 @@ final class AcademicPersonsSelectedContractsPluginTest extends FunctionalTestCas
         );
     }
 
-    /**
-     * @test
-     */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function defaultLanguageOnly_allContractsSelected(): void
     {
         $this->importCSVDataSet(__DIR__ . '/Fixtures/AcademicPersonsSelectedContractsPlugin/defaultLanguageOnly_allContractsSelected.csv');
@@ -113,9 +111,7 @@ final class AcademicPersonsSelectedContractsPluginTest extends FunctionalTestCas
         $this->assertStringContainsString('#1(1): Worker', $content);
     }
 
-    /**
-     * @test
-     */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function defaultLanguageOnly_oneContractSelected(): void
     {
         $this->importCSVDataSet(__DIR__ . '/Fixtures/AcademicPersonsSelectedContractsPlugin/defaultLanguageOnly_oneContractSelected.csv');
@@ -139,9 +135,7 @@ final class AcademicPersonsSelectedContractsPluginTest extends FunctionalTestCas
         $this->assertStringNotContainsString('Worker', $content);
     }
 
-    /**
-     * @test
-     */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function fullyLocalized_allContractsSelected_allContractsLocalized(): void
     {
         $this->importCSVDataSet(__DIR__ . '/Fixtures/AcademicPersonsSelectedContractsPlugin/fullyLocalized_allContractsSelected_allContractsLocalized.csv');
@@ -169,9 +163,7 @@ final class AcademicPersonsSelectedContractsPluginTest extends FunctionalTestCas
         $this->assertStringNotContainsString('[EN] Worker', $content);
     }
 
-    /**
-     * @test
-     */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function fullyLocalized_allContractsSelected_notAllContractsLocalized_strictMode(): void
     {
         $this->importCSVDataSet(__DIR__ . '/Fixtures/AcademicPersonsSelectedContractsPlugin/fullyLocalized_allContractsSelected_notAllContractsLocalized.csv');
@@ -198,9 +190,7 @@ final class AcademicPersonsSelectedContractsPluginTest extends FunctionalTestCas
         $this->assertStringNotContainsString('[EN] Worker', $content);
     }
 
-    /**
-     * @test
-     */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function fullyLocalized_SelectedContracts_notAllContractsLocalized_fallbackMode(): void
     {
         $this->importCSVDataSet(__DIR__ . '/Fixtures/AcademicPersonsSelectedContractsPlugin/fullyLocalized_allContractsSelected_notAllContractsLocalized.csv');

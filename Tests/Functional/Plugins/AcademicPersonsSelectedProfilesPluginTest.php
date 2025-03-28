@@ -87,9 +87,7 @@ final class AcademicPersonsSelectedProfilesPluginTest extends FunctionalTestCase
         );
     }
 
-    /**
-     * @test
-     */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function defaultLanguageOnly_allProfilesSelected(): void
     {
         $this->importCSVDataSet(__DIR__ . '/Fixtures/AcademicPersonsSelectedProfilesPlugin/defaultLanguageOnly_allProfilesSelected.csv');
@@ -113,9 +111,7 @@ final class AcademicPersonsSelectedProfilesPluginTest extends FunctionalTestCase
         $this->assertStringContainsString('#1(1): Max Müllermann', $content);
     }
 
-    /**
-     * @test
-     */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function defaultLanguageOnly_oneProfileSelected(): void
     {
         $this->importCSVDataSet(__DIR__ . '/Fixtures/AcademicPersonsSelectedProfilesPlugin/defaultLanguageOnly_oneProfileSelected.csv');
@@ -139,9 +135,7 @@ final class AcademicPersonsSelectedProfilesPluginTest extends FunctionalTestCase
         $this->assertStringNotContainsString('Max Müllermann', $content);
     }
 
-    /**
-     * @test
-     */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function fullyLocalized_allProfilesSelected_allProfilesLocalized(): void
     {
         $this->importCSVDataSet(__DIR__ . '/Fixtures/AcademicPersonsSelectedProfilesPlugin/fullyLocalized_allProfilesSelected_allProfilesLocalized.csv');
@@ -169,9 +163,7 @@ final class AcademicPersonsSelectedProfilesPluginTest extends FunctionalTestCase
         $this->assertStringNotContainsString('[EN] Max Müllermann', $content);
     }
 
-    /**
-     * @test
-     */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function fullyLocalized_allProfilesSelected_notAllProfilesLocalized_strictMode(): void
     {
         $this->importCSVDataSet(__DIR__ . '/Fixtures/AcademicPersonsSelectedProfilesPlugin/fullyLocalized_allProfilesSelected_notAllProfilesLocalized.csv');
@@ -198,9 +190,7 @@ final class AcademicPersonsSelectedProfilesPluginTest extends FunctionalTestCase
         $this->assertStringNotContainsString('[EN] Max Müllermann', $content);
     }
 
-    /**
-     * @test
-     */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function fullyLocalized_selectedProfiles_notAllProfilesLocalized_fallbackMode(): void
     {
         $this->importCSVDataSet(__DIR__ . '/Fixtures/AcademicPersonsSelectedProfilesPlugin/fullyLocalized_allProfilesSelected_notAllProfilesLocalized.csv');

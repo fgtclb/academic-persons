@@ -87,9 +87,7 @@ final class AcademicPersonsDetailPluginTest extends FunctionalTestCase
         );
     }
 
-    /**
-     * @test
-     */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function defaultLanguageDisplayProfile(): void
     {
         $this->importCSVDataSet(__DIR__ . '/Fixtures/AcademicPersonsDetailPlugin/defaultLanguageOnly.csv');
@@ -120,9 +118,7 @@ final class AcademicPersonsDetailPluginTest extends FunctionalTestCase
         $this->assertStringContainsString('#1: [EN] Max Müllermann', $content);
     }
 
-    /**
-     * @test
-     */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function fullyLocalizedDisplaysLocalizedProfile(): void
     {
         $this->importCSVDataSet(__DIR__ . '/Fixtures/AcademicPersonsDetailPlugin/fullyLocalized.csv');
@@ -154,9 +150,7 @@ final class AcademicPersonsDetailPluginTest extends FunctionalTestCase
         $this->assertStringContainsString('#1: [DE] Max Müllermann', $content);
     }
 
-    /**
-     * @test
-     */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function localizedPagesAndTtContentWithNotLocalizedProfileDisplayDefaultLanguageWhenLanguageFallback(): void
     {
         $this->importCSVDataSet(__DIR__ . '/Fixtures/AcademicPersonsDetailPlugin/localizedPagesAndTtContent_notLocalizedProfile.csv');
@@ -190,9 +184,9 @@ final class AcademicPersonsDetailPluginTest extends FunctionalTestCase
     }
 
     /**
-     * @test
      * @todo Really ?
      */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function localizedPagesAndTtContentWithNotLocalizedProfileDisplayDefaultLanguageWhenLanguageStrict(): void
     {
         $this->importCSVDataSet(__DIR__ . '/Fixtures/AcademicPersonsDetailPlugin/localizedPagesAndTtContent_notLocalizedProfile.csv');
