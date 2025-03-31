@@ -2,8 +2,8 @@
 
 declare(strict_types=1);
 
-use TYPO3\CMS\Core\Information\Typo3Version;
 use Fgtclb\AcademicPersons\Tca\ContractLabels;
+use TYPO3\CMS\Core\Information\Typo3Version;
 
 /**
  * This file is part of the "academic_persons" Extension for TYPO3 CMS.

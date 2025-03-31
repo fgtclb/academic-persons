@@ -8,8 +8,8 @@ declare(strict_types=1);
  * For the full copyright and license information, please read the
  * LICENSE file that was distributed with this source code.
  */
-use Fgtclb\AcademicPersons\Hook\DataHandlerHooks;
 use Fgtclb\AcademicPersons\Controller\ProfileController;
+use Fgtclb\AcademicPersons\Hook\DataHandlerHooks;
 use TYPO3\CMS\Extbase\Utility\ExtensionUtility;
 
 defined('TYPO3') or die;
