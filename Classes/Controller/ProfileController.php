@@ -113,7 +113,7 @@ final class ProfileController extends ActionController
         }
 
         $this->view->assignMultiple([
-            'data' => $this->getContentObject()?->data,
+            'data' => $this->getCurrentContentObjectRenderer()?->data,
             'profiles' => $profiles,
             'demand' => $demand,
         ]);
@@ -156,7 +156,7 @@ final class ProfileController extends ActionController
         // @todo Add enforced sorting based on selected uid's order, similar to listAction/selectedProfilesAction ?
 
         $this->view->assignMultiple([
-            'data' => $this->getContentObject()?->data,
+            'data' => $this->getCurrentContentObjectRenderer()?->data,
             'profiles' => $profiles,
         ]);
 
@@ -218,7 +218,7 @@ final class ProfileController extends ActionController
         }
 
         $this->view->assignMultiple([
-            'data' => $this->getContentObject()?->data,
+            'data' => $this->getCurrentContentObjectRenderer()?->data,
             'profiles' => $sortedProfiles,
         ]);
 
@@ -250,7 +250,7 @@ final class ProfileController extends ActionController
         }
 
         $this->view->assignMultiple([
-            'data' => $this->getContentObject()?->data,
+            'data' => $this->getCurrentContentObjectRenderer()?->data,
             'contracts' => $sortedContracts,
         ]);
 
@@ -282,7 +282,8 @@ final class ProfileController extends ActionController
             }
         }
 
-        $contentObjectData = $this->getContentObject()?->data;
+        /** @var array<string, mixed> $contentObjectData */
+        $contentObjectData = $this->getCurrentContentObjectRenderer()?->data;
         $hasStoragePids = (
             is_array($contentObjectData)
             && !empty($contentObjectData['pages'])
@@ -320,7 +321,7 @@ final class ProfileController extends ActionController
     {
         // @todo Remove if-block when dropping `typo3/cms-*` v12 support
         if (!class_exists(CacheDataCollector::class)) {
-            $this->getContentObject()?->getTypoScriptFrontendController()?->addCacheTags($tags);
+            $this->getCurrentContentObjectRenderer()?->getTypoScriptFrontendController()?->addCacheTags($tags);
             return;
         }
         // TYPO3 v13+
@@ -330,7 +331,7 @@ final class ProfileController extends ActionController
         }
     }
 
-    private function getContentObject(): ?ContentObjectRenderer
+    private function getCurrentContentObjectRenderer(): ?ContentObjectRenderer
     {
         return $this->request->getAttribute('currentContentObject');
     }
