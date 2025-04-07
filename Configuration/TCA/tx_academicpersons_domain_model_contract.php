@@ -84,6 +84,7 @@ return [
             ],
         ],
         'profile' => [
+            'label' => 'LLL:EXT:academic_persons/Resources/Private/Language/locallang_tca.xlf:tx_academicpersons_domain_model_profile.ctrl.label',
             'config' => [
                 'type' => 'select',
                 'renderType' => 'selectSingle',
