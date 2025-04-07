@@ -138,7 +138,7 @@ return [
             ],
         ],
         'contracts' => [
-            'label' => 'LLL:EXT:academic_persons/Resources/Private/Language/locallang_tca.xlf:tx_academicpersons_domain_model_organisational_unit.columns.contracts.label',
+            'label' => 'LLL:EXT:academic_persons/Resources/Private/Language/locallang_tca.xlf:tx_academicpersons_domain_model_profile.columns.contracts.label',
             'exclude' => true,
             'config' => [
                 'type' => 'inline',
