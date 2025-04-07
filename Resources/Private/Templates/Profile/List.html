@@ -1,61 +1,73 @@
-<html data-namespace-typo3-fluid="true"
-      xmlns:f="http://typo3.org/ns/TYPO3/CMS/Fluid/ViewHelpers"
+<html
+    data-namespace-typo3-fluid="true"
+    xmlns:f="http://typo3.org/ns/TYPO3/CMS/Fluid/ViewHelpers"
 >
-<div class="academic-persons-list">
-    <f:if condition="{settings.alphabetPaginationEnabled}">
-        <f:render partial="List/AlphabetPagination" arguments="{demand: demand}" />
+    <f:variable name="profilesToList" value="{profiles}" />
+    <f:if condition="{settings.paginationEnabled} && {paginator.paginatedItems}">
+        <f:variable name="profilesToList" value="{paginator.paginatedItems}" />
     </f:if>
-
-    <f:if condition="{profiles}">
-        <f:then>
-            <f:variable name="profilesToList" value="{profiles}" />
-
-            <f:if condition="{settings.paginationEnabled} && {pagination.paginator.paginatedItems}">
-                <f:variable name="profilesToList" value="{pagination.paginator.paginatedItems}" />
-            </f:if>
-
-            <f:if condition="{demand.groupBy}">
-                <f:then>
-                    <f:groupedFor as="groupedProfiles" groupBy="{demand.groupBy}" each="{profilesToList}">
-                        <h3>{groupKey -> f:format.case()}</h3>
-
+    <div class="academic-persons-list">
+        <f:if condition="{settings.alphabetPaginationEnabled}">
+            <f:render
+                partial="List/AlphabetPagination"
+                arguments="{demand: demand}"
+            />
+        </f:if>
+        <f:if condition="{profilesToList}">
+            <f:then>
+                <f:if condition="{demand.groupBy}">
+                    <f:then>
+                        <f:groupedFor
+                            as="groupedProfiles"
+                            groupBy="{demand.groupBy}"
+                            each="{profilesToList}"
+                        >
+                            <h3>{groupKey -> f:format.case()}</h3>
+                            <ul class="profile-list">
+                                <f:for each="{groupedProfiles}" as="profile">
+                                    <f:render
+                                        partial="List/ListItem"
+                                        arguments="{
+                                            profile: profile,
+                                            demand: demand,
+                                            settings: settings,
+                                            CType: data.CType
+                                        }"
+                                    />
+                                </f:for>
+                            </ul>
+                        </f:groupedFor>
+                    </f:then>
+                    <f:else>
                         <ul class="profile-list">
-                            <f:for each="{groupedProfiles}" as="profile">
+                            <f:for each="{profilesToList}" as="profile">
                                 <f:render
-									partial="List/ListItem"
-									arguments="{
-										profile: profile,
-										demand: demand,
-										settings: settings
-									}"
-								/>
+                                    partial="List/ListItem"
+                                    arguments="{
+                                        profile: profile,
+                                        demand: demand,
+                                        settings: settings,
+                                        CType: data.CType
+                                    }"
+                                />
                             </f:for>
                         </ul>
-                    </f:groupedFor>
-                </f:then>
-                <f:else>
-                    <ul class="profile-list">
-                        <f:for each="{profilesToList}" as="profile">
-                            <f:render
-								partial="List/ListItem"
-								arguments="{
-									profile: profile,
-									demand: demand,
-									settings: settings
-								}"
-							/>
-                        </f:for>
-                    </ul>
-                </f:else>
-            </f:if>
-
-            <f:if condition="{settings.paginationEnabled} && {pagination.paginator.paginatedItems}">
-                <f:render partial="List/Pagination" arguments="{paginator: paginator, pagination: pagination}" />
-            </f:if>
-        </f:then>
-        <f:else>
-            <p>{f:translate(key: 'list.noProfilesFound', extensionName: 'academic_persons')}</p>
-        </f:else>
-    </f:if>
-</div>
+                    </f:else>
+                </f:if>
+                <f:if condition="{settings.paginationEnabled} && {paginator.paginatedItems}">
+                    <f:render
+                        partial="List/Pagination"
+                        arguments="{
+                            demand: demand,
+                            paginator: paginator,
+                            pagination: pagination
+                        }"
+                    />
+                </f:if>
+            </f:then>
+            <f:else>
+                <p>{f:translate(key: 'list.noProfilesFound', extensionName: 'academic_persons')}</p>
+            </f:else>
+        </f:if>
+    </div>
 </html>

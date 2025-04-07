@@ -10,28 +10,26 @@
         <ul>
             <f:for each="{alphabets}" as="alphabet">
                 <li class="page-item">
-					<f:if condition="{demand.alphabetFilter} == {alphabet}">
-						<f:then>
-							<f:link.action
-								action="list"
-								arguments="{demand: '{alphabetFilter: \'{}\'}'}"
-								class="page-link active"
-								rel="nofollow"
-							>
-								<span>{alphabet -> f:format.case()}</span>
-							</f:link.action>
-						</f:then>
-						<f:else>
-							<f:link.action
-								action="list"
-								arguments="{demand: '{alphabetFilter: alphabet}'}"
-								class="page-link"
-								rel="nofollow"
-							>
-								<span>{alphabet -> f:format.case()}</span>
-							</f:link.action>
-						</f:else>
-					</f:if>
+                    <f:if condition="{demand.alphabetFilter} == {alphabet}">
+                        <f:then>
+                            <f:link.action
+                                arguments="{demand: '{alphabetFilter: \'{}\'}'}"
+                                class="page-link active"
+                                rel="nofollow"
+                            >
+                                <span>{alphabet -> f:format.case()}</span>
+                            </f:link.action>
+                        </f:then>
+                        <f:else>
+                            <f:link.action
+                                arguments="{demand: '{alphabetFilter: alphabet}'}"
+                                class="page-link"
+                                rel="nofollow"
+                            >
+                                <span>{alphabet -> f:format.case()}</span>
+                            </f:link.action>
+                        </f:else>
+                    </f:if>
                 </li>
             </f:for>
         </ul>
