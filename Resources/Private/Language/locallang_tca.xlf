@@ -172,6 +172,9 @@
             <trans-unit id="tx_academicpersons_domain_model_organisational_unit.ctrl.label">
                 <source>Organisational Unit</source>
             </trans-unit>
+            <trans-unit id="tx_academicpersons_domain_model_organisational_unit.columns.contracts.label">
+                <source>Employee Contracts</source>
+            </trans-unit>
 
             <!-- Phone Numbers -->
 
