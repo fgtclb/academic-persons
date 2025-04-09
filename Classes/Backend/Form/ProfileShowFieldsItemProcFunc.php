@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace Fgtclb\AcademicPersons\Backend\Form;
 
 use TYPO3\CMS\Backend\Utility\BackendUtility;
-use TYPO3\CMS\Core\Information\Typo3Version;
 
 class ProfileShowFieldsItemProcFunc
 {
@@ -26,60 +25,54 @@ class ProfileShowFieldsItemProcFunc
      */
     private function defaultFieldItemShowFields(): array
     {
-        $typo3MajorVersion = (new Typo3Version())->getMajorVersion();
-        $selectLabelKey = ($typo3MajorVersion >= 12) ? 'label' : 0;
-        $selectValueKey = ($typo3MajorVersion >= 12) ? 'value' : 1;
-        $selectIconKey = ($typo3MajorVersion >= 12) ? 'icon' : 1;
-        $selectGroupKey = ($typo3MajorVersion >= 12) ? 'group' : 3;
-
         return [
             [
-                $selectLabelKey => BackendUtility::getItemLabel('tx_academicpersons_domain_model_profile', 'image'),
-                $selectValueKey => 'profile.image',
-                $selectIconKey => null,
-                $selectGroupKey => 'profile',
+                'label' => BackendUtility::getItemLabel('tx_academicpersons_domain_model_profile', 'image'),
+                'value' => 'profile.image',
+                'icon' => null,
+                'group' => 'profile',
             ],
             [
-                $selectLabelKey => BackendUtility::getItemLabel('tx_academicpersons_domain_model_contract', 'position'),
-                $selectValueKey => 'contracts.position',
-                $selectIconKey => null,
-                $selectGroupKey => 'contracts',
+                'label' => BackendUtility::getItemLabel('tx_academicpersons_domain_model_contract', 'position'),
+                'value' => 'contracts.position',
+                'icon' => null,
+                'group' => 'contracts',
             ],
             [
-                $selectLabelKey => BackendUtility::getItemLabel('tx_academicpersons_domain_model_contract', 'organisational_unit'),
-                $selectValueKey => 'contracts.organisationalUnit',
-                $selectIconKey => null,
-                $selectGroupKey => 'contracts',
+                'label' => BackendUtility::getItemLabel('tx_academicpersons_domain_model_contract', 'organisational_unit'),
+                'value' => 'contracts.organisationalUnit',
+                'icon' => null,
+                'group' => 'contracts',
             ],
             [
-                $selectLabelKey =>  BackendUtility::getItemLabel('tx_academicpersons_domain_model_contract', 'room'),
-                $selectValueKey => 'contracts.room',
-                $selectIconKey => null,
-                $selectGroupKey => 'contracts',
+                'label' =>  BackendUtility::getItemLabel('tx_academicpersons_domain_model_contract', 'room'),
+                'value' => 'contracts.room',
+                'icon' => null,
+                'group' => 'contracts',
             ],
             [
-                $selectLabelKey => BackendUtility::getItemLabel('tx_academicpersons_domain_model_contract', 'office_hours'),
-                $selectValueKey => 'contracts.officeHours',
-                $selectIconKey => null,
-                $selectGroupKey => 'contracts',
+                'label' => BackendUtility::getItemLabel('tx_academicpersons_domain_model_contract', 'office_hours'),
+                'value' => 'contracts.officeHours',
+                'icon' => null,
+                'group' => 'contracts',
             ],
             [
-                $selectLabelKey =>  BackendUtility::getItemLabel('tx_academicpersons_domain_model_contract', 'physical_addresses'),
-                $selectValueKey => 'contracts.physicalAddresses',
-                $selectIconKey => null,
-                $selectGroupKey => 'contracts',
+                'label' =>  BackendUtility::getItemLabel('tx_academicpersons_domain_model_contract', 'physical_addresses'),
+                'value' => 'contracts.physicalAddresses',
+                'icon' => null,
+                'group' => 'contracts',
             ],
             [
-                $selectLabelKey =>  BackendUtility::getItemLabel('tx_academicpersons_domain_model_contract', 'email_addresses'),
-                $selectValueKey => 'contracts.emailAddresses',
-                $selectIconKey => null,
-                $selectGroupKey => 'contracts',
+                'label' =>  BackendUtility::getItemLabel('tx_academicpersons_domain_model_contract', 'email_addresses'),
+                'value' => 'contracts.emailAddresses',
+                'icon' => null,
+                'group' => 'contracts',
             ],
             [
-                $selectLabelKey => BackendUtility::getItemLabel('tx_academicpersons_domain_model_contract', 'phone_numbers'),
-                $selectValueKey => 'contracts.phoneNumbers',
-                $selectIconKey => null,
-                $selectGroupKey => 'contracts',
+                'label' => BackendUtility::getItemLabel('tx_academicpersons_domain_model_contract', 'phone_numbers'),
+                'value' => 'contracts.phoneNumbers',
+                'icon' => null,
+                'group' => 'contracts',
             ],
         ];
     }

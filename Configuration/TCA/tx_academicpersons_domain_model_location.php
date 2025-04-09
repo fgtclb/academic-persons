@@ -2,18 +2,12 @@
 
 declare(strict_types=1);
 
-use TYPO3\CMS\Core\Information\Typo3Version;
-
 /**
  * This file is part of the "academic_persons" Extension for TYPO3 CMS.
  *
  * For the full copyright and license information, please read the
  * LICENSE file that was distributed with this source code.
  */
-$typo3MajorVersion = (new Typo3Version())->getMajorVersion();
-$selectLabelKey = ($typo3MajorVersion >= 12) ? 'label' : 0;
-$selectValueKey = ($typo3MajorVersion >= 12) ? 'value' : 1;
-
 return [
     'ctrl' => [
         'label' => 'title',
@@ -44,7 +38,7 @@ return [
                 'renderType' => 'checkboxToggle',
                 'items' => [
                     [
-                        $selectLabelKey => '',
+                        'label' => '',
                         'invertStateDisplay' => true,
                     ],
                 ],
@@ -65,8 +59,8 @@ return [
                 'renderType' => 'selectSingle',
                 'items' => [
                     [
-                        $selectLabelKey => '',
-                        $selectValueKey => 0,
+                        'label' => '',
+                        'value' => 0,
                     ],
                 ],
                 'foreign_table' => 'tx_academicpersons_domain_model_location',

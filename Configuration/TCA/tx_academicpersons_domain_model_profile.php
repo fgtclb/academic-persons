@@ -2,18 +2,12 @@
 
 declare(strict_types=1);
 
-use TYPO3\CMS\Core\Information\Typo3Version;
-
 /**
  * This file is part of the "academic_persons" Extension for TYPO3 CMS.
  *
  * For the full copyright and license information, please read the
  * LICENSE file that was distributed with this source code.
  */
-$typo3MajorVersion = (new Typo3Version())->getMajorVersion();
-$selectLabelKey = ($typo3MajorVersion >= 12) ? 'label' : 0;
-$selectValueKey = ($typo3MajorVersion >= 12) ? 'value' : 1;
-
 return [
     'ctrl' => [
         'label' => 'last_name',
@@ -51,7 +45,7 @@ return [
                 'renderType' => 'checkboxToggle',
                 'items' => [
                     [
-                        $selectLabelKey => '',
+                        'label' => '',
                         'invertStateDisplay' => true,
                     ],
                 ],
@@ -94,16 +88,16 @@ return [
                 'maxitems' => 20,
                 'items' => [
                     [
-                        $selectLabelKey => 'LLL:EXT:core/Resources/Private/Language/locallang_general.xlf:LGL.hide_at_login',
-                        $selectValueKey => -1,
+                        'label' => 'LLL:EXT:core/Resources/Private/Language/locallang_general.xlf:LGL.hide_at_login',
+                        'value' => -1,
                     ],
                     [
-                        $selectLabelKey => 'LLL:EXT:core/Resources/Private/Language/locallang_general.xlf:LGL.any_login',
-                        $selectValueKey => -2,
+                        'label' => 'LLL:EXT:core/Resources/Private/Language/locallang_general.xlf:LGL.any_login',
+                        'value' => -2,
                     ],
                     [
-                        $selectLabelKey => 'LLL:EXT:core/Resources/Private/Language/locallang_general.xlf:LGL.usergroups',
-                        $selectValueKey => '--div--',
+                        'label' => 'LLL:EXT:core/Resources/Private/Language/locallang_general.xlf:LGL.usergroups',
+                        'value' => '--div--',
                     ],
                 ],
                 'exclusiveKeys' => '-1,-2',
@@ -125,8 +119,8 @@ return [
                 'renderType' => 'selectSingle',
                 'items' => [
                     [
-                        $selectLabelKey => '',
-                        $selectValueKey => 0,
+                        'label' => '',
+                        'value' => 0,
                     ],
                 ],
                 'foreign_table' => 'tx_academicpersons_domain_model_profile',
@@ -172,20 +166,20 @@ return [
                 'renderType' => 'selectSingle',
                 'items' => [
                     [
-                        $selectLabelKey => 'LLL:EXT:academic_persons/Resources/Private/Language/locallang_tca.xlf:tx_academicpersons_domain_model_profile.columns.gender.items.none',
-                        $selectValueKey => '',
+                        'label' => 'LLL:EXT:academic_persons/Resources/Private/Language/locallang_tca.xlf:tx_academicpersons_domain_model_profile.columns.gender.items.none',
+                        'value' => '',
                     ],
                     [
-                        $selectLabelKey => 'LLL:EXT:academic_persons/Resources/Private/Language/locallang_tca.xlf:tx_academicpersons_domain_model_profile.columns.gender.items.mr',
-                        $selectValueKey => 'mr',
+                        'label' => 'LLL:EXT:academic_persons/Resources/Private/Language/locallang_tca.xlf:tx_academicpersons_domain_model_profile.columns.gender.items.mr',
+                        'value' => 'mr',
                     ],
                     [
-                        $selectLabelKey => 'LLL:EXT:academic_persons/Resources/Private/Language/locallang_tca.xlf:tx_academicpersons_domain_model_profile.columns.gender.items.ms',
-                        $selectValueKey => 'ms',
+                        'label' => 'LLL:EXT:academic_persons/Resources/Private/Language/locallang_tca.xlf:tx_academicpersons_domain_model_profile.columns.gender.items.ms',
+                        'value' => 'ms',
                     ],
                     [
-                        $selectLabelKey => 'LLL:EXT:academic_persons/Resources/Private/Language/locallang_tca.xlf:tx_academicpersons_domain_model_profile.columns.gender.items.diverse',
-                        $selectValueKey => 'diverse',
+                        'label' => 'LLL:EXT:academic_persons/Resources/Private/Language/locallang_tca.xlf:tx_academicpersons_domain_model_profile.columns.gender.items.diverse',
+                        'value' => 'diverse',
                     ],
                 ],
                 'default' => '',

@@ -3,7 +3,6 @@
 declare(strict_types=1);
 
 use Fgtclb\AcademicPersons\Tca\RecordTypes;
-use TYPO3\CMS\Core\Information\Typo3Version;
 
 /**
  * This file is part of the "academic_persons" Extension for TYPO3 CMS.
@@ -11,10 +10,6 @@ use TYPO3\CMS\Core\Information\Typo3Version;
  * For the full copyright and license information, please read the
  * LICENSE file that was distributed with this source code.
  */
-$typo3MajorVersion = (new Typo3Version())->getMajorVersion();
-$selectLabelKey = ($typo3MajorVersion >= 12) ? 'label' : 0;
-$selectValueKey = ($typo3MajorVersion >= 12) ? 'value' : 1;
-
 return [
     'ctrl' => [
         'label' => 'phone_number',
@@ -48,7 +43,7 @@ return [
                 'renderType' => 'checkboxToggle',
                 'items' => [
                     [
-                        $selectLabelKey => '',
+                        'label' => '',
                         'invertStateDisplay' => true,
                     ],
                 ],
@@ -69,8 +64,8 @@ return [
                 'renderType' => 'selectSingle',
                 'items' => [
                     [
-                        $selectLabelKey => '',
-                        $selectValueKey => 0,
+                        'label' => '',
+                        'value' => 0,
                     ],
                 ],
                 'foreign_table' => 'tx_academicpersons_domain_model_phone_number',
@@ -109,8 +104,8 @@ return [
                 'renderType' => 'selectSingle',
                 'items' => [
                     [
-                        $selectLabelKey => 'LLL:EXT:academic_persons/Resources/Private/Language/locallang_tca.xlf:tx_academicpersons_domain_model_phone_number.columns.type.items.undefined.label',
-                        $selectValueKey => '',
+                        'label' => 'LLL:EXT:academic_persons/Resources/Private/Language/locallang_tca.xlf:tx_academicpersons_domain_model_phone_number.columns.type.items.undefined.label',
+                        'value' => '',
                     ],
                 ],
                 'itemsProcFunc' => RecordTypes::class . '->getPhoneNumberTypes',
