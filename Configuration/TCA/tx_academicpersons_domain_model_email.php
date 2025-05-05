@@ -2,7 +2,9 @@
 
 declare(strict_types=1);
 
-use Fgtclb\AcademicPersons\Tca\RecordTypes;
+use FGTCLB\AcademicPersons\Registry\AcademicPersonsSettingsRegistry;
+use FGTCLB\AcademicPersons\Tca\RecordTypes;
+use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
  * This file is part of the "academic_persons" Extension for TYPO3 CMS.
@@ -10,7 +12,7 @@ use Fgtclb\AcademicPersons\Tca\RecordTypes;
  * For the full copyright and license information, please read the
  * LICENSE file that was distributed with this source code.
  */
-return [
+$tcaConfiguration = [
     'ctrl' => [
         'label' => 'email',
         'default_sortby' => 'sorting',
@@ -76,6 +78,11 @@ return [
                 'type' => 'passthrough',
             ],
         ],
+        'sorting' => [
+            'config' => [
+                'type' => 'none',
+            ],
+        ],
         'contract' => [
             'config' => [
                 'type' => 'select',
@@ -90,7 +97,6 @@ return [
                 'type' => 'input',
                 'size' => 50,
                 'max' => 255,
-                'required' => true,
             ],
         ],
         'type' => [
@@ -137,3 +143,10 @@ return [
         ],
     ],
 ];
+
+// @todo MAIN TCA Files should be kept without dynamic calls, and following should be done in override files.
+$settingsRegistry = GeneralUtility::makeInstance(AcademicPersonsSettingsRegistry::class);
+$validations = $settingsRegistry->getValidationsForTca('emailAddress');
+$tcaConfiguration = array_replace_recursive($tcaConfiguration, $validations);
+
+return $tcaConfiguration;

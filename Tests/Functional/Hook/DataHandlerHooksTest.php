@@ -9,9 +9,9 @@ declare(strict_types=1);
  * LICENSE file that was distributed with this source code.
  */
 
-namespace Fgtclb\AcademicPersons\Tests\Functional\Hook;
+namespace FGTCLB\AcademicPersons\Tests\Functional\Hook;
 
-use Fgtclb\AcademicPersons\Tests\Functional\AbstractAcademicPersonsTestCase;
+use FGTCLB\AcademicPersons\Tests\Functional\AbstractAcademicPersonsTestCase;
 use PHPUnit\Framework\Attributes\Test;
 use TYPO3\CMS\Core\DataHandling\DataHandler;
 use TYPO3\CMS\Core\Localization\LanguageServiceFactory;

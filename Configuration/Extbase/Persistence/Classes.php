@@ -2,15 +2,16 @@
 
 declare(strict_types=1);
 
-use Fgtclb\AcademicPersons\Domain\Model\Address;
-use Fgtclb\AcademicPersons\Domain\Model\Contract;
-use Fgtclb\AcademicPersons\Domain\Model\Email;
-use Fgtclb\AcademicPersons\Domain\Model\FunctionType;
-use Fgtclb\AcademicPersons\Domain\Model\Location;
-use Fgtclb\AcademicPersons\Domain\Model\OrganisationalUnit;
-use Fgtclb\AcademicPersons\Domain\Model\PhoneNumber;
-use Fgtclb\AcademicPersons\Domain\Model\Profile;
-use Fgtclb\AcademicPersons\Domain\Model\ProfileInformation;
+use FGTCLB\AcademicPersons\Domain\Model\Address;
+use FGTCLB\AcademicPersons\Domain\Model\Contract;
+use FGTCLB\AcademicPersons\Domain\Model\Email;
+use FGTCLB\AcademicPersons\Domain\Model\FrontendUser;
+use FGTCLB\AcademicPersons\Domain\Model\FunctionType;
+use FGTCLB\AcademicPersons\Domain\Model\Location;
+use FGTCLB\AcademicPersons\Domain\Model\OrganisationalUnit;
+use FGTCLB\AcademicPersons\Domain\Model\PhoneNumber;
+use FGTCLB\AcademicPersons\Domain\Model\Profile;
+use FGTCLB\AcademicPersons\Domain\Model\ProfileInformation;
 
 /*
  * This file is part of the "academic_persons" Extension for TYPO3 CMS.
@@ -20,6 +21,9 @@ use Fgtclb\AcademicPersons\Domain\Model\ProfileInformation;
  */
 
 return [
+    FrontendUser::class => [
+        'tableName' => 'fe_users',
+    ],
     Address::class => [
         'tableName' => 'tx_academicpersons_domain_model_address',
         'recordType' => Address::class,
@@ -35,6 +39,9 @@ return [
         'properties' => [
             'employeeType' => [
                 'fieldName' => 'employee_type',
+            ],
+            'sorting' => [
+                'fieldName' => 'sorting',
             ],
         ],
     ],

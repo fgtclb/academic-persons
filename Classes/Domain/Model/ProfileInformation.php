@@ -9,19 +9,21 @@ declare(strict_types=1);
  * LICENSE file that was distributed with this source code.
  */
 
-namespace Fgtclb\AcademicPersons\Domain\Model;
+namespace FGTCLB\AcademicPersons\Domain\Model;
 
 use TYPO3\CMS\Extbase\DomainObject\AbstractEntity;
 
 class ProfileInformation extends AbstractEntity
 {
+    protected Profile $profile;
     protected string $type = '';
     protected string $title = '';
     protected string $bodytext = '';
     protected string $link = '';
-    protected int $year = 0;
-    protected int $yearStart = 0;
-    protected int $yearEnd = 0;
+    protected ?int $year = null;
+    protected ?int $yearStart = null;
+    protected ?int $yearEnd = null;
+    protected int $sorting = 0;
 
     public function __construct()
     {
@@ -33,14 +35,32 @@ class ProfileInformation extends AbstractEntity
      */
     public function initializeObject(): void {}
 
+    public function setProfile(Profile $profile): self
+    {
+        $this->profile = $profile;
+        return $this;
+    }
+
+    public function getProfile(): Profile
+    {
+        return $this->profile;
+    }
+
+    public function setType(string $type): self
+    {
+        $this->type = $type;
+        return $this;
+    }
+
     public function getType(): string
     {
         return $this->type;
     }
 
-    public function setType(string $type): void
+    public function setTitle(string $title): self
     {
-        $this->type = $type;
+        $this->title = $title;
+        return $this;
     }
 
     public function getTitle(): string
@@ -48,9 +68,10 @@ class ProfileInformation extends AbstractEntity
         return $this->title;
     }
 
-    public function setTitle(string $title): void
+    public function setBodytext(string $bodytext): self
     {
-        $this->title = $title;
+        $this->bodytext = $bodytext;
+        return $this;
     }
 
     public function getBodytext(): string
@@ -58,9 +79,10 @@ class ProfileInformation extends AbstractEntity
         return $this->bodytext;
     }
 
-    public function setBodytext(string $bodytext): void
+    public function setLink(string $link): self
     {
-        $this->bodytext = $bodytext;
+        $this->link = $link;
+        return $this;
     }
 
     public function getLink(): string
@@ -68,38 +90,47 @@ class ProfileInformation extends AbstractEntity
         return $this->link;
     }
 
-    public function setLink(string $link): void
+    public function setYear(?int $year): self
     {
-        $this->link = $link;
+        $this->year = $year;
+        return $this;
     }
 
-    public function getYear(): int
+    public function getYear(): ?int
     {
         return $this->year;
     }
 
-    public function setYear(int $year): void
+    public function setYearStart(?int $yearStart): self
     {
-        $this->year = $year;
+        $this->yearStart = $yearStart;
+        return $this;
     }
 
-    public function getYearStart(): int
+    public function getYearStart(): ?int
     {
         return $this->yearStart;
     }
 
-    public function setYearStart(int $yearStart): void
+    public function setYearEnd(?int $yearEnd): self
     {
-        $this->yearStart = $yearStart;
+        $this->yearEnd = $yearEnd;
+        return $this;
     }
 
-    public function getYearEnd(): int
+    public function getYearEnd(): ?int
     {
         return $this->yearEnd;
     }
 
-    public function setYearEnd(int $yearEnd): void
+    public function setSorting(int $sorting): self
     {
-        $this->yearEnd = $yearEnd;
+        $this->sorting = $sorting;
+        return $this;
+    }
+
+    public function getSorting(): int
+    {
+        return $this->sorting;
     }
 }

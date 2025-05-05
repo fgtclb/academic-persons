@@ -9,28 +9,24 @@ declare(strict_types=1);
  * LICENSE file that was distributed with this source code.
  */
 
-namespace Fgtclb\AcademicPersons\Domain\Model;
+namespace FGTCLB\AcademicPersons\Domain\Model;
 
+use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Extbase\Annotation\ORM\Cascade;
 use TYPO3\CMS\Extbase\Annotation\ORM\Lazy;
-use TYPO3\CMS\Extbase\Annotation\Validate;
 use TYPO3\CMS\Extbase\Domain\Model\FileReference;
 use TYPO3\CMS\Extbase\DomainObject\AbstractEntity;
 use TYPO3\CMS\Extbase\Persistence\ObjectStorage;
+use TYPO3\HtmlSanitizer\Builder\CommonBuilder;
+use TYPO3\HtmlSanitizer\Sanitizer;
 
 class Profile extends AbstractEntity
 {
     protected string $gender = '';
     protected string $title = '';
-    /**
-     * @Validate("TYPO3\CMS\Extbase\Validation\Validator\NotEmptyValidator")
-     */
     protected string $firstName = '';
     protected string $firstNameAlpha = '';
     protected string $middleName = '';
-    /**
-     * @Validate("TYPO3\CMS\Extbase\Validation\Validator\NotEmptyValidator")
-     */
     protected string $lastName = '';
     protected string $lastNameAlpha = '';
     /**
@@ -94,6 +90,10 @@ class Profile extends AbstractEntity
      * @Cascade("remove")
      */
     protected ObjectStorage $lectures;
+    /**
+     * @var ObjectStorage<FrontendUser>
+     */
+    protected ObjectStorage $frontendUsers;
 
     public function __construct()
     {
@@ -113,6 +113,13 @@ class Profile extends AbstractEntity
         $this->scientificResearch = new ObjectStorage();
         $this->cooperation = new ObjectStorage();
         $this->lectures = new ObjectStorage();
+        $this->frontendUsers = new ObjectStorage();
+    }
+
+    public function setGender(string $gender): self
+    {
+        $this->gender = $gender;
+        return $this;
     }
 
     public function getGender(): string
@@ -120,9 +127,10 @@ class Profile extends AbstractEntity
         return $this->gender;
     }
 
-    public function setGender(string $gender): void
+    public function setTitle(string $title): self
     {
-        $this->gender = $gender;
+        $this->title = $title;
+        return $this;
     }
 
     public function getTitle(): string
@@ -130,9 +138,10 @@ class Profile extends AbstractEntity
         return $this->title;
     }
 
-    public function setTitle(string $title): void
+    public function setFirstName(string $firstName): self
     {
-        $this->title = $title;
+        $this->firstName = $firstName;
+        return $this;
     }
 
     public function getFirstName(): string
@@ -140,9 +149,10 @@ class Profile extends AbstractEntity
         return $this->firstName;
     }
 
-    public function setFirstName(string $firstName): void
+    public function setFirstNameAlpha(string $firstNameAlpha): self
     {
-        $this->firstName = $firstName;
+        $this->firstNameAlpha = $firstNameAlpha;
+        return $this;
     }
 
     public function getFirstNameAlpha(): string
@@ -150,9 +160,10 @@ class Profile extends AbstractEntity
         return $this->firstNameAlpha;
     }
 
-    public function setFirstNameAlpha(string $firstNameAlpha): void
+    public function setMiddleName(string $middleName): self
     {
-        $this->firstNameAlpha = $firstNameAlpha;
+        $this->middleName = $middleName;
+        return $this;
     }
 
     public function getMiddleName(): string
@@ -160,9 +171,10 @@ class Profile extends AbstractEntity
         return $this->middleName;
     }
 
-    public function setMiddleName(string $middleName): void
+    public function setLastName(string $lastName): self
     {
-        $this->middleName = $middleName;
+        $this->lastName = $lastName;
+        return $this;
     }
 
     public function getLastName(): string
@@ -170,9 +182,10 @@ class Profile extends AbstractEntity
         return $this->lastName;
     }
 
-    public function setLastName(string $lastName): void
+    public function setLastNameAlpha(string $lastNameAlpha): self
     {
-        $this->lastName = $lastName;
+        $this->lastNameAlpha = $lastNameAlpha;
+        return $this;
     }
 
     public function getLastNameAlpha(): string
@@ -180,9 +193,10 @@ class Profile extends AbstractEntity
         return $this->lastNameAlpha;
     }
 
-    public function setLastNameAlpha(string $lastNameAlpha): void
+    public function setImage(?FileReference $image): self
     {
-        $this->lastNameAlpha = $lastNameAlpha;
+        $this->image = $image;
+        return $this;
     }
 
     public function getImage(): ?FileReference
@@ -190,9 +204,13 @@ class Profile extends AbstractEntity
         return $this->image;
     }
 
-    public function setImage(?FileReference $image): void
+    /**
+     * @param ObjectStorage<Contract> $contracts
+     */
+    public function setContracts(ObjectStorage $contracts): self
     {
-        $this->image = $image;
+        $this->contracts = $contracts;
+        return $this;
     }
 
     /**
@@ -204,151 +222,26 @@ class Profile extends AbstractEntity
     }
 
     /**
-     * @param ObjectStorage<Contract> $contracts
+     * @param ObjectStorage<FrontendUser> $frontendUsers
      */
-    public function setContracts(ObjectStorage $contracts): void
+    public function setFrontendUsers(ObjectStorage $frontendUsers): self
     {
-        $this->contracts = $contracts;
-    }
-
-    public function getWebsiteTitle(): string
-    {
-        return $this->websiteTitle;
-    }
-
-    public function setWebsiteTitle(string $websiteTitle): void
-    {
-        $this->websiteTitle = $websiteTitle;
-    }
-
-    public function getWebsite(): string
-    {
-        return $this->website;
-    }
-
-    public function setWebsite(string $website): void
-    {
-        $this->website = $website;
-    }
-
-    public function getTeachingArea(): string
-    {
-        return $this->teachingArea;
-    }
-
-    public function setTeachingArea(string $teachingArea): void
-    {
-        $this->teachingArea = $teachingArea;
-    }
-
-    public function getCoreCompetences(): string
-    {
-        return $this->coreCompetences;
-    }
-
-    public function setCoreCompetences(string $coreCompetences): void
-    {
-        $this->coreCompetences = $coreCompetences;
+        $this->frontendUsers = $frontendUsers;
+        return $this;
     }
 
     /**
-     * @return ObjectStorage<ProfileInformation>
+     * @return ObjectStorage<FrontendUser>
      */
-    public function getMemberships(): ObjectStorage
+    public function getFrontendUsers(): ObjectStorage
     {
-        return $this->memberships;
+        return $this->frontendUsers;
     }
 
-    /**
-     * @param ObjectStorage<ProfileInformation> $memberships
-     */
-    public function setMemberships(ObjectStorage $memberships): void
+    public function setPublicationsLink(string $publicationsLink): self
     {
-        $this->memberships = $memberships;
-    }
-
-    /**
-     * @return ObjectStorage<ProfileInformation>
-     */
-    public function getPressMedia(): ObjectStorage
-    {
-        return $this->pressMedia;
-    }
-
-    /**
-     * @param ObjectStorage<ProfileInformation> $pressMedia
-     */
-    public function setPressMedia(ObjectStorage $pressMedia): void
-    {
-        $this->pressMedia = $pressMedia;
-    }
-
-    public function getSupervisedThesis(): string
-    {
-        return $this->supervisedThesis;
-    }
-
-    public function setSupervisedThesis(string $supervisedThesis): void
-    {
-        $this->supervisedThesis = $supervisedThesis;
-    }
-
-    public function getSupervisedDoctoralThesis(): string
-    {
-        return $this->supervisedDoctoralThesis;
-    }
-
-    public function setSupervisedDoctoralThesis(string $supervisedDoctoralThesis): void
-    {
-        $this->supervisedDoctoralThesis = $supervisedDoctoralThesis;
-    }
-
-    /**
-     * @return ObjectStorage<ProfileInformation>
-     */
-    public function getVita(): ObjectStorage
-    {
-        return $this->vita;
-    }
-
-    /**
-     * @param ObjectStorage<ProfileInformation> $vita
-     */
-    public function setVita(ObjectStorage $vita): void
-    {
-        $this->vita = $vita;
-    }
-
-    /**
-     * @return ObjectStorage<ProfileInformation>
-     */
-    public function getPublications(): ObjectStorage
-    {
-        return $this->publications;
-    }
-
-    /**
-     * @param ObjectStorage<ProfileInformation> $publications
-     */
-    public function setPublications(ObjectStorage $publications): void
-    {
-        $this->publications = $publications;
-    }
-
-    /**
-     * @return ObjectStorage<ProfileInformation>
-     */
-    public function getScientificResearch(): ObjectStorage
-    {
-        return $this->scientificResearch;
-    }
-
-    /**
-     * @param ObjectStorage<ProfileInformation> $scientificResearch
-     */
-    public function setScientificResearch(ObjectStorage $scientificResearch): void
-    {
-        $this->scientificResearch = $scientificResearch;
+        $this->publicationsLink = $publicationsLink;
+        return $this;
     }
 
     public function getPublicationsLink(): string
@@ -356,9 +249,10 @@ class Profile extends AbstractEntity
         return $this->publicationsLink;
     }
 
-    public function setPublicationsLink(string $publicationsLink): void
+    public function setPublicationsLinkTitle(string $publicationsLinkTitle): self
     {
-        $this->publicationsLink = $publicationsLink;
+        $this->publicationsLinkTitle = $publicationsLinkTitle;
+        return $this;
     }
 
     public function getPublicationsLinkTitle(): string
@@ -366,9 +260,48 @@ class Profile extends AbstractEntity
         return $this->publicationsLinkTitle;
     }
 
-    public function setPublicationsLinkTitle(string $publicationsLinkTitle): void
+    public function setWebsite(string $website): self
     {
-        $this->publicationsLinkTitle = $publicationsLinkTitle;
+        $this->website = $website;
+        return $this;
+    }
+
+    public function getWebsite(): string
+    {
+        return $this->website;
+    }
+
+    public function setWebsiteTitle(string $websiteTitle): self
+    {
+        $this->websiteTitle = $websiteTitle;
+        return $this;
+    }
+
+    public function getWebsiteTitle(): string
+    {
+        return $this->websiteTitle;
+    }
+
+    /**
+     * -------------------------------------------------------------------------
+     * Text properties (sanitized)
+     * -------------------------------------------------------------------------
+     */
+    public function setCoreCompetences(string $coreCompetences): self
+    {
+        $this->coreCompetences = $this->getHtmlSanitizer()->sanitize($coreCompetences);
+        return $this;
+    }
+
+    public function getCoreCompetences(): string
+    {
+        return $this->coreCompetences;
+    }
+
+    public function setMiscellaneous(string $miscellaneous): self
+    {
+        $this->miscellaneous = $this->getHtmlSanitizer()->sanitize($miscellaneous);
+        return $this;
     }
 
     public function getMiscellaneous(): string
@@ -376,9 +309,57 @@ class Profile extends AbstractEntity
         return $this->miscellaneous;
     }
 
-    public function setMiscellaneous(string $miscellaneous): void
+    public function setSupervisedDoctoralThesis(string $supervisedDoctoralThesis): self
     {
-        $this->miscellaneous = $miscellaneous;
+        $this->supervisedDoctoralThesis = $this->getHtmlSanitizer()->sanitize($supervisedDoctoralThesis);
+        return $this;
+    }
+
+    public function getSupervisedDoctoralThesis(): string
+    {
+        return $this->supervisedDoctoralThesis;
+    }
+
+    public function setSupervisedThesis(string $supervisedThesis): self
+    {
+        $this->supervisedThesis = $this->getHtmlSanitizer()->sanitize($supervisedThesis);
+        return $this;
+    }
+
+    public function getSupervisedThesis(): string
+    {
+        return $this->supervisedThesis;
+    }
+
+    public function setTeachingArea(string $teachingArea): self
+    {
+        $this->teachingArea = $this->getHtmlSanitizer()->sanitize($teachingArea);
+        return $this;
+    }
+
+    public function getTeachingArea(): string
+    {
+        return $this->teachingArea;
+    }
+
+    /**
+     * -------------------------------------------------------------------------
+     * Profile information properties  (sanitized)
+     * -------------------------------------------------------------------------
+     */
+
+    /**
+     * @param ObjectStorage<ProfileInformation> $cooperation
+     */
+    public function setCooperation(ObjectStorage $cooperation): self
+    {
+        foreach ($cooperation as $singleCooperation) {
+            $singleCooperation->setTitle($this->getHtmlSanitizer()->sanitize($singleCooperation->getTitle()));
+            $singleCooperation->setBodytext($this->getHtmlSanitizer()->sanitize($singleCooperation->getBodytext()));
+            $singleCooperation->setLink($this->getHtmlSanitizer()->sanitize($singleCooperation->getLink()));
+        }
+        $this->cooperation = $cooperation;
+        return $this;
     }
 
     /**
@@ -390,11 +371,17 @@ class Profile extends AbstractEntity
     }
 
     /**
-     * @param ObjectStorage<ProfileInformation> $cooperation
+     * @param ObjectStorage<ProfileInformation> $lectures
      */
-    public function setCooperation(ObjectStorage $cooperation): void
+    public function setLectures(ObjectStorage $lectures): self
     {
-        $this->cooperation = $cooperation;
+        foreach ($lectures as $lecture) {
+            $lecture->setTitle($this->getHtmlSanitizer()->sanitize($lecture->getTitle()));
+            $lecture->setBodytext($this->getHtmlSanitizer()->sanitize($lecture->getBodytext()));
+            $lecture->setLink($this->getHtmlSanitizer()->sanitize($lecture->getLink()));
+        }
+        $this->lectures = $lectures;
+        return $this;
     }
 
     /**
@@ -406,10 +393,142 @@ class Profile extends AbstractEntity
     }
 
     /**
-     * @param ObjectStorage<ProfileInformation> $lectures
+     * @param ObjectStorage<ProfileInformation> $memberships
      */
-    public function setLectures(ObjectStorage $lectures): void
+    public function setMemberships(ObjectStorage $memberships): self
     {
-        $this->lectures = $lectures;
+        foreach ($memberships as $membership) {
+            $membership->setTitle($this->getHtmlSanitizer()->sanitize($membership->getTitle()));
+            $membership->setBodytext($this->getHtmlSanitizer()->sanitize($membership->getBodytext()));
+            $membership->setLink($this->getHtmlSanitizer()->sanitize($membership->getLink()));
+        }
+        $this->memberships = $memberships;
+        return $this;
+    }
+
+    /**
+     * @return ObjectStorage<ProfileInformation>
+     */
+    public function getMemberships(): ObjectStorage
+    {
+        return $this->memberships;
+    }
+
+    /**
+     * @param ObjectStorage<ProfileInformation> $pressMedia
+     */
+    public function setPressMedia(ObjectStorage $pressMedia): self
+    {
+        foreach ($pressMedia as $press) {
+            $press->setTitle($this->getHtmlSanitizer()->sanitize($press->getTitle()));
+            $press->setBodytext($this->getHtmlSanitizer()->sanitize($press->getBodytext()));
+            $press->setLink($this->getHtmlSanitizer()->sanitize($press->getLink()));
+        }
+        $this->pressMedia = $pressMedia;
+        return $this;
+    }
+
+    /**
+     * @return ObjectStorage<ProfileInformation>
+     */
+    public function getPressMedia(): ObjectStorage
+    {
+        return $this->pressMedia;
+    }
+
+    /**
+     * @param ObjectStorage<ProfileInformation> $publications
+     */
+    public function setPublications(ObjectStorage $publications): self
+    {
+        foreach ($publications as $publication) {
+            $publication->setTitle($this->getHtmlSanitizer()->sanitize($publication->getTitle()));
+            $publication->setBodytext($this->getHtmlSanitizer()->sanitize($publication->getBodytext()));
+            $publication->setLink($this->getHtmlSanitizer()->sanitize($publication->getLink()));
+        }
+        $this->publications = $publications;
+        return $this;
+    }
+
+    /**
+     * @return ObjectStorage<ProfileInformation>
+     */
+    public function getPublications(): ObjectStorage
+    {
+        return $this->publications;
+    }
+
+    /**
+     * @param ObjectStorage<ProfileInformation> $scientificResearch
+     */
+    public function setScientificResearch(ObjectStorage $scientificResearch): self
+    {
+        foreach ($scientificResearch as $research) {
+            $research->setTitle($this->getHtmlSanitizer()->sanitize($research->getTitle()));
+            $research->setBodytext($this->getHtmlSanitizer()->sanitize($research->getBodytext()));
+            $research->setLink($this->getHtmlSanitizer()->sanitize($research->getLink()));
+        }
+        $this->scientificResearch = $scientificResearch;
+        return $this;
+    }
+
+    /**
+     * @return ObjectStorage<ProfileInformation>
+     */
+    public function getScientificResearch(): ObjectStorage
+    {
+        return $this->scientificResearch;
+    }
+
+    /**
+     * @param ObjectStorage<ProfileInformation> $vita
+     */
+    public function setVita(ObjectStorage $vita): self
+    {
+        foreach ($vita as $singleVita) {
+            $singleVita->setTitle($this->getHtmlSanitizer()->sanitize($singleVita->getTitle()));
+            $singleVita->setBodytext($this->getHtmlSanitizer()->sanitize($singleVita->getBodytext()));
+            $singleVita->setLink($this->getHtmlSanitizer()->sanitize($singleVita->getLink()));
+        }
+        $this->vita = $vita;
+        return $this;
+    }
+
+    /**
+     * @return ObjectStorage<ProfileInformation>
+     */
+    public function getVita(): ObjectStorage
+    {
+        return $this->vita;
+    }
+
+    /**
+     * -------------------------------------------------------------------------
+     * Additional properties
+     * -------------------------------------------------------------------------
+     */
+    public function getLanguageUid(): int
+    {
+        // @toodo Property is planned to be made private in the future and will only be accessible via getter
+        return (int)$this->_languageUid;
+    }
+
+    public function getIsTranslation(): bool
+    {
+        return $this->_localizedUid !== $this->uid;
+    }
+
+    /**
+     * --------------------------------------------------------
+     * Helper functions
+     * --------------------------------------------------------
+     */
+    protected function getHtmlSanitizer(): Sanitizer
+    {
+        static $htmlSanitizer = null;
+        if ($htmlSanitizer === null) {
+            $htmlSanitizer = GeneralUtility::makeInstance(CommonBuilder::class)->build();
+        }
+        return $htmlSanitizer;
     }
 }

@@ -2,7 +2,9 @@
 
 declare(strict_types=1);
 
-use Fgtclb\AcademicPersons\Tca\ContractLabels;
+use FGTCLB\AcademicPersons\Registry\AcademicPersonsSettingsRegistry;
+use FGTCLB\AcademicPersons\Tca\ContractLabels;
+use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
  * This file is part of the "academic_persons" Extension for TYPO3 CMS.
@@ -10,7 +12,7 @@ use Fgtclb\AcademicPersons\Tca\ContractLabels;
  * For the full copyright and license information, please read the
  * LICENSE file that was distributed with this source code.
  */
-return [
+$tcaConfiguration = [
     'ctrl' => [
         'title' => 'LLL:EXT:academic_persons/Resources/Private/Language/locallang_tca.xlf:tx_academicpersons_domain_model_contract.ctrl.label',
         'label' => 'profile',
@@ -78,8 +80,14 @@ return [
                 'type' => 'passthrough',
             ],
         ],
+        'sorting' => [
+            'label' => 'LLL:EXT:academic_persons/Resources/Private/Language/locallang_tca.xlf:tx_academicpersons_domain_model_profile.sorting.label',
+            'config' => [
+                'type' => 'none',
+            ],
+        ],
         'profile' => [
-            'label' => 'LLL:EXT:academic_persons/Resources/Private/Language/locallang_tca.xlf:tx_academicpersons_domain_model_profile.ctrl.label',
+            'label' => 'LLL:EXT:academic_persons/Resources/Private/Language/locallang_tca.xlf:tx_academicpersons_domain_model_profile.profile.label',
             'config' => [
                 'type' => 'select',
                 'renderType' => 'selectSingle',
@@ -358,3 +366,10 @@ return [
         ],
     ],
 ];
+
+// @todo MAIN TCA Files should be kept without dynamic calls, and following should be done in override files.
+$settingsRegistry = GeneralUtility::makeInstance(AcademicPersonsSettingsRegistry::class);
+$validations = $settingsRegistry->getValidationsForTca('contract');
+$tcaConfiguration = array_replace_recursive($tcaConfiguration, $validations);
+
+return $tcaConfiguration;

@@ -9,7 +9,7 @@ declare(strict_types=1);
  * LICENSE file that was distributed with this source code.
  */
 
-namespace Fgtclb\AcademicPersons\Domain\Model;
+namespace FGTCLB\AcademicPersons\Domain\Model;
 
 use TYPO3\CMS\Extbase\Annotation\Validate;
 use TYPO3\CMS\Extbase\DomainObject\AbstractEntity;
@@ -33,9 +33,10 @@ class FunctionType extends AbstractEntity
      */
     public function initializeObject(): void {}
 
-    public function setFunctionName(string $functionName): void
+    public function setFunctionName(string $functionName): self
     {
         $this->functionName = $functionName;
+        return $this;
     }
 
     public function getFunctionName(): string
@@ -43,9 +44,10 @@ class FunctionType extends AbstractEntity
         return $this->functionName;
     }
 
-    public function setFunctionNameMale(string $functionNameMale): void
+    public function setFunctionNameMale(string $functionNameMale): self
     {
         $this->functionNameMale = $functionNameMale;
+        return $this;
     }
 
     public function getFunctionNameMale(): string
@@ -53,9 +55,10 @@ class FunctionType extends AbstractEntity
         return $this->functionNameMale;
     }
 
-    public function setFunctionNameFemale(string $functionNameFemale): void
+    public function setFunctionNameFemale(string $functionNameFemale): self
     {
         $this->functionNameFemale = $functionNameFemale;
+        return $this;
     }
 
     public function getFunctionNameFemale(): string

@@ -9,14 +9,14 @@ declare(strict_types=1);
  * LICENSE file that was distributed with this source code.
  */
 
-namespace Fgtclb\AcademicPersons\Controller;
+namespace FGTCLB\AcademicPersons\Controller;
 
-use Fgtclb\AcademicPersons\Domain\Model\Dto\ProfileDemand;
-use Fgtclb\AcademicPersons\Domain\Model\Profile;
-use Fgtclb\AcademicPersons\Domain\Repository\ContractRepository;
-use Fgtclb\AcademicPersons\Domain\Repository\ProfileRepository;
-use Fgtclb\AcademicPersons\Event\ModifyDetailProfileEvent;
-use Fgtclb\AcademicPersons\Event\ModifyListProfilesEvent;
+use FGTCLB\AcademicPersons\Domain\Model\Dto\ProfileDemand;
+use FGTCLB\AcademicPersons\Domain\Model\Profile;
+use FGTCLB\AcademicPersons\Domain\Repository\ContractRepository;
+use FGTCLB\AcademicPersons\Domain\Repository\ProfileRepository;
+use FGTCLB\AcademicPersons\Event\ModifyDetailProfileEvent;
+use FGTCLB\AcademicPersons\Event\ModifyListProfilesEvent;
 use GeorgRinger\NumberedPagination\NumberedPagination;
 use Psr\Http\Message\ResponseInterface;
 use TYPO3\CMS\Core\Cache\CacheDataCollector;

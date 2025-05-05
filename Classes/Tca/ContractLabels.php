@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace Fgtclb\AcademicPersons\Tca;
+namespace FGTCLB\AcademicPersons\Tca;
 
-use Fgtclb\AcademicPersons\Domain\Repository\ContractRepository;
+use FGTCLB\AcademicPersons\Domain\Repository\ContractRepository;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 class ContractLabels

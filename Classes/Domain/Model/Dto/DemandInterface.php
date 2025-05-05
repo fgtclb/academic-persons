@@ -9,7 +9,7 @@ declare(strict_types=1);
  * LICENSE file that was distributed with this source code.
  */
 
-namespace Fgtclb\AcademicPersons\Domain\Model\Dto;
+namespace FGTCLB\AcademicPersons\Domain\Model\Dto;
 
 interface DemandInterface
 {

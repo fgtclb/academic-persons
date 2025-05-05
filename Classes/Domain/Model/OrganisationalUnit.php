@@ -9,7 +9,7 @@ declare(strict_types=1);
  * LICENSE file that was distributed with this source code.
  */
 
-namespace Fgtclb\AcademicPersons\Domain\Model;
+namespace FGTCLB\AcademicPersons\Domain\Model;
 
 use TYPO3\CMS\Extbase\Annotation\ORM\Cascade;
 use TYPO3\CMS\Extbase\Annotation\ORM\Lazy;
@@ -50,9 +50,10 @@ class OrganisationalUnit extends AbstractEntity
         $this->contracts = new ObjectStorage();
     }
 
-    public function setParent(?OrganisationalUnit $parent): void
+    public function setParent(?OrganisationalUnit $parent): self
     {
         $this->parent = $parent;
+        return $this;
     }
 
     public function getParent(): ?OrganisationalUnit
@@ -60,9 +61,10 @@ class OrganisationalUnit extends AbstractEntity
         return $this->parent;
     }
 
-    public function setUnitName(string $unitName): void
+    public function setUnitName(string $unitName): self
     {
         $this->unitName = $unitName;
+        return $this;
     }
 
     public function getUnitName(): string
@@ -70,9 +72,10 @@ class OrganisationalUnit extends AbstractEntity
         return $this->unitName;
     }
 
-    public function setUniqueName(string $uniqueName): void
+    public function setUniqueName(string $uniqueName): self
     {
         $this->uniqueName = $uniqueName;
+        return $this;
     }
 
     public function getUniqueName(): string
@@ -80,9 +83,10 @@ class OrganisationalUnit extends AbstractEntity
         return $this->uniqueName;
     }
 
-    public function setDisplayText(string $displayText): void
+    public function setDisplayText(string $displayText): self
     {
         $this->displayText = $displayText;
+        return $this;
     }
 
     public function getDisplayText(): string
@@ -90,9 +94,10 @@ class OrganisationalUnit extends AbstractEntity
         return $this->displayText;
     }
 
-    public function setLongText(string $longText): void
+    public function setLongText(string $longText): self
     {
         $this->longText = $longText;
+        return $this;
     }
 
     public function getLongText(): string
@@ -100,9 +105,10 @@ class OrganisationalUnit extends AbstractEntity
         return $this->longText;
     }
 
-    public function setValidFrom(?\DateTime $validFrom): void
+    public function setValidFrom(?\DateTime $validFrom): self
     {
         $this->validFrom = $validFrom;
+        return $this;
     }
 
     public function getValidFrom(): ?\DateTime
@@ -110,9 +116,10 @@ class OrganisationalUnit extends AbstractEntity
         return $this->validFrom;
     }
 
-    public function setValidTo(?\DateTime $validTo): void
+    public function setValidTo(?\DateTime $validTo): self
     {
         $this->validTo = $validTo;
+        return $this;
     }
 
     public function getValidTo(): ?\DateTime
@@ -123,19 +130,22 @@ class OrganisationalUnit extends AbstractEntity
     /**
      * @param ObjectStorage<Contract> $contracts
      */
-    public function setContracts(ObjectStorage $contracts): void
+    public function setContracts(ObjectStorage $contracts): self
     {
         $this->contracts = $contracts;
+        return $this;
     }
 
-    public function addContract(Contract $contract): void
+    public function addContract(Contract $contract): self
     {
         $this->contracts->attach($contract);
+        return $this;
     }
 
-    public function removeContract(Contract $contract): void
+    public function removeContract(Contract $contract): self
     {
         $this->contracts->detach($contract);
+        return $this;
     }
 
     /**

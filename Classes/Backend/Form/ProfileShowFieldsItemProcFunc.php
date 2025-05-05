@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Fgtclb\AcademicPersons\Backend\Form;
+namespace FGTCLB\AcademicPersons\Backend\Form;
 
 use TYPO3\CMS\Backend\Utility\BackendUtility;
 

@@ -77,11 +77,17 @@
             <trans-unit id="tx_academicpersons_domain_model_contract.columns.position.label">
                 <source>Position</source>
             </trans-unit>
+            <trans-unit id="tx_academicpersons_domain_model_contract.columns.profile.label">
+                <source>Profile</source>
+            </trans-unit>
             <trans-unit id="tx_academicpersons_domain_model_contract.columns.publish.label">
                 <source>Show this contract online?</source>
             </trans-unit>
             <trans-unit id="tx_academicpersons_domain_model_contract.columns.room.label">
                 <source>Room</source>
+            </trans-unit>
+            <trans-unit id="tx_academicpersons_domain_model_contract.columns.sorting.label">
+                <source>Sorting</source>
             </trans-unit>
             <trans-unit id="tx_academicpersons_domain_model_contract.columns.valid_from.label">
                 <source>Valid From</source>

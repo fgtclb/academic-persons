@@ -9,9 +9,9 @@ declare(strict_types=1);
  * LICENSE file that was distributed with this source code.
  */
 
-namespace Fgtclb\AcademicPersons\Event;
+namespace FGTCLB\AcademicPersons\Event;
 
-use Fgtclb\AcademicPersons\Domain\Model\Profile;
+use FGTCLB\AcademicPersons\Domain\Model\Profile;
 use TYPO3\CMS\Extbase\Mvc\View\ViewInterface as DeprecatedExtbaseViewInterface;
 use TYPO3\CMS\Extbase\Persistence\QueryResultInterface;
 use TYPO3Fluid\Fluid\View\ViewInterface;

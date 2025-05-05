@@ -9,9 +9,9 @@ declare(strict_types=1);
  * LICENSE file that was distributed with this source code.
  */
 
-namespace Fgtclb\AcademicPersons\Domain\Repository;
+namespace FGTCLB\AcademicPersons\Domain\Repository;
 
-use Fgtclb\AcademicPersons\Domain\Model\Contract;
+use FGTCLB\AcademicPersons\Domain\Model\Contract;
 use TYPO3\CMS\Core\Context\LanguageAspect;
 use TYPO3\CMS\Extbase\Persistence\QueryResultInterface;
 use TYPO3\CMS\Extbase\Persistence\Repository;
@@ -23,7 +23,7 @@ class ContractRepository extends Repository
 {
     /**
      * @param int[] $uids
-     * @return QueryResultInterface<Contract>
+     * @return QueryResultInterface<int, Contract>
      */
     public function findByUids(array $uids): QueryResultInterface
     {

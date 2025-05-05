@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace Fgtclb\AcademicPersons\Tests\Functional\Plugins;
+namespace FGTCLB\AcademicPersons\Tests\Functional\Plugins;
 
-use Fgtclb\AcademicPersons\Tests\Functional\AbstractAcademicPersonsTestCase;
+use FGTCLB\AcademicPersons\Tests\Functional\AbstractAcademicPersonsTestCase;
 use PHPUnit\Framework\Attributes\Test;
 use SBUERK\TYPO3\Testing\SiteHandling\SiteBasedTestTrait;
 use TYPO3\CMS\Core\Utility\GeneralUtility;

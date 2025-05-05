@@ -9,22 +9,16 @@ declare(strict_types=1);
  * LICENSE file that was distributed with this source code.
  */
 
-namespace Fgtclb\AcademicPersons\Domain\Model;
+namespace FGTCLB\AcademicPersons\Domain\Model;
 
-use TYPO3\CMS\Extbase\Annotation\Validate;
 use TYPO3\CMS\Extbase\DomainObject\AbstractEntity;
 
 class PhoneNumber extends AbstractEntity
 {
-    /**
-     * @Validate("TYPO3\CMS\Extbase\Validation\Validator\NotEmptyValidator")
-     */
+    protected Contract $contract;
     protected string $phoneNumber = '';
-
-    /**
-     * @Validate("TYPO3\CMS\Extbase\Validation\Validator\NotEmptyValidator")
-     */
     protected string $type = '';
+    protected int $sorting = 0;
 
     public function __construct()
     {
@@ -36,14 +30,32 @@ class PhoneNumber extends AbstractEntity
      */
     public function initializeObject(): void {}
 
+    public function setContract(Contract $contract): self
+    {
+        $this->contract = $contract;
+        return $this;
+    }
+
+    public function getContract(): Contract
+    {
+        return $this->contract;
+    }
+
+    public function setPhoneNumber(string $phoneNumber): self
+    {
+        $this->phoneNumber = $phoneNumber;
+        return $this;
+    }
+
     public function getPhoneNumber(): string
     {
         return $this->phoneNumber;
     }
 
-    public function setPhoneNumber(string $phoneNumber): void
+    public function setType(string $type): self
     {
-        $this->phoneNumber = $phoneNumber;
+        $this->type = $type;
+        return $this;
     }
 
     public function getType(): string
@@ -51,8 +63,14 @@ class PhoneNumber extends AbstractEntity
         return $this->type;
     }
 
-    public function setType(string $type): void
+    public function setSorting(int $sorting): self
     {
-        $this->type = $type;
+        $this->sorting = $sorting;
+        return $this;
+    }
+
+    public function getSorting(): int
+    {
+        return $this->sorting;
     }
 }

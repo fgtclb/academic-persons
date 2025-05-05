@@ -1,0 +1,60 @@
+profileInformationsTypes:
+  cooperation:
+    label: 'LLL:EXT:academic_persons/Resources/Private/Language/locallang_tca.xlf:tx_academicpersons_domain_model_profile.columns.cooperation.label'
+    type: cooperation
+  lectures:
+    label: 'LLL:EXT:academic_persons/Resources/Private/Language/locallang_tca.xlf:tx_academicpersons_domain_model_profile.columns.lectures.label'
+    type: lecture
+  memberships:
+    label: 'LLL:EXT:academic_persons/Resources/Private/Language/locallang_tca.xlf:tx_academicpersons_domain_model_profile.columns.memberships.label'
+    type: membership
+  pressMedia:
+    label: 'LLL:EXT:academic_persons/Resources/Private/Language/locallang_tca.xlf:tx_academicpersons_domain_model_profile.columns.press_media.label'
+    type: press_media
+  publications:
+    label: 'LLL:EXT:academic_persons/Resources/Private/Language/locallang_tca.xlf:tx_academicpersons_domain_model_profile.columns.publications.label'
+    type: publication
+  scientificResearch:
+    label: 'LLL:EXT:academic_persons/Resources/Private/Language/locallang_tca.xlf:tx_academicpersons_domain_model_profile.columns.scientific_research.label'
+    type: scientific_research
+  vita:
+    label: 'LLL:EXT:academic_persons/Resources/Private/Language/locallang_tca.xlf:tx_academicpersons_domain_model_profile.columns.vita.label'
+    type: curriculum_vitae
+validations:
+  # @todo We either need a translation map (to TCA) or simply matching convention which resolves needs to be added.
+  contract:
+    position:
+      - required
+  emailAddress:
+    email:
+      - required
+      - email
+    type:
+      - required
+  phoneNumber:
+    phoneNumber:
+      - required
+    type:
+      - required
+  physicalAddress:
+    street:
+      - required
+    streetNumber:
+      - required
+    zip:
+      - required
+    city:
+      - required
+    country:
+      - required
+  profile:
+    firstName:
+      - required
+    lastName:
+      - required
+  profileInformation:
+    year:
+      - required
+    title:
+      - required
+

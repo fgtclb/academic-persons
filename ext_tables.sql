@@ -1,11 +1,10 @@
+CREATE TABLE fe_users (
+    tx_academicpersons_profiles int(11) unsigned DEFAULT 0 NOT NULL,
+);
+
 CREATE TABLE tx_academicpersons_domain_model_address (
     contract int(11) unsigned DEFAULT '0' NOT NULL,
     type varchar(40) DEFAULT '' NOT NULL,
-
-    employee_type int(11) unsigned DEFAULT '0' NOT NULL,
-    organisational_unit int(11) unsigned DEFAULT NULL,
-    function_type int(11) unsigned DEFAULT NULL,
-
     street varchar(255) DEFAULT '' NOT NULL,
     street_number varchar(255) DEFAULT '' NOT NULL,
     additional varchar(255) DEFAULT '' NOT NULL,
@@ -13,7 +12,6 @@ CREATE TABLE tx_academicpersons_domain_model_address (
     city varchar(255) DEFAULT '' NOT NULL,
     state varchar(255) DEFAULT '' NOT NULL,
     country varchar(255) DEFAULT '' NOT NULL,
-
     sorting int(11) unsigned DEFAULT '0' NOT NULL,
 );
 
@@ -27,7 +25,7 @@ CREATE TABLE tx_academicpersons_domain_model_contract (
 
     employee_type int(11) unsigned DEFAULT '0' NOT NULL,
     position varchar(255) DEFAULT '' NOT NULL,
-    location int(11) unsigned  DEFAULT NULL,
+    location int(11) unsigned DEFAULT NULL,
 
     room varchar(255) DEFAULT '' NOT NULL,
     office_hours text,
@@ -71,9 +69,7 @@ CREATE TABLE tx_academicpersons_domain_model_organisational_unit (
 CREATE TABLE tx_academicpersons_domain_model_phone_number (
     contract int(11) unsigned DEFAULT '0' NOT NULL,
     type varchar(40) DEFAULT '' NOT NULL,
-
     phone_number varchar(255) DEFAULT '' NOT NULL,
-
     sorting int(11) unsigned DEFAULT '0' NOT NULL,
 );
 
@@ -85,9 +81,9 @@ CREATE TABLE tx_academicpersons_domain_model_profile_information (
     title varchar(255) DEFAULT '' NOT NULL,
     bodytext text,
     link varchar(2048) DEFAULT '' NOT NULL,
-    year int(11) DEFAULT '0' NOT NULL,
-    year_start int(11) DEFAULT '0' NOT NULL,
-    year_end int(11) DEFAULT '0' NOT NULL,
+    year int(11)  DEFAULT NULL,
+    year_start int(11)  DEFAULT NULL,
+    year_end int(11)  DEFAULT NULL,
 
     sorting int(11) unsigned DEFAULT '0' NOT NULL,
 );
@@ -122,6 +118,8 @@ CREATE TABLE tx_academicpersons_domain_model_profile (
     publications int(11) unsigned DEFAULT '0' NOT NULL,
     scientific_research int(11) unsigned DEFAULT '0' NOT NULL,
     vita int(11) unsigned DEFAULT '0' NOT NULL,
+
+    frontend_users int(11) unsigned DEFAULT 0 NOT NULL,
 );
 
 CREATE TABLE tx_academicpersons_contract_address_mm (

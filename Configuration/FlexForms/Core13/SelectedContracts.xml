@@ -18,7 +18,7 @@
                 <config>
                     <type>select</type>
                     <renderType>selectMultipleSideBySide</renderType>
-                    <itemsProcFunc>Fgtclb\AcademicPersons\Backend\Form\ContractItemsProcFunc->itemsProcFunc</itemsProcFunc>
+                    <itemsProcFunc>FGTCLB\AcademicPersons\Backend\Form\ContractItemsProcFunc->itemsProcFunc</itemsProcFunc>
                     <size>5</size>
                     <autoSizeMax>10</autoSizeMax>
                     <maxitems>99</maxitems>
@@ -29,7 +29,7 @@
                 <config>
                     <type>select</type>
                     <renderType>selectMultipleSideBySide</renderType>
-                    <itemsProcFunc>Fgtclb\AcademicPersons\Backend\Form\ProfileShowFieldsItemProcFunc->showFields</itemsProcFunc>
+                    <itemsProcFunc>FGTCLB\AcademicPersons\Backend\Form\ProfileShowFieldsItemProcFunc->showFields</itemsProcFunc>
                     <itemGroups>
                         <profile>LLL:EXT:academic_persons/Resources/Private/Language/locallang_be.xlf:flexform.el.showFields.groups.profile</profile>
                         <contracts>LLL:EXT:academic_persons/Resources/Private/Language/locallang_be.xlf:flexform.el.showFields.groups.contracts</contracts>

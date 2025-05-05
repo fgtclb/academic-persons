@@ -9,7 +9,7 @@ declare(strict_types=1);
  * LICENSE file that was distributed with this source code.
  */
 
-namespace Fgtclb\AcademicPersons\Domain\Model;
+namespace FGTCLB\AcademicPersons\Domain\Model;
 
 use TYPO3\CMS\Extbase\Annotation\ORM\Cascade;
 use TYPO3\CMS\Extbase\Annotation\ORM\Lazy;
@@ -19,7 +19,7 @@ use TYPO3\CMS\Extbase\Persistence\ObjectStorage;
 
 class Contract extends AbstractEntity
 {
-    protected ?Profile $profile = null;
+    protected Profile $profile;
     protected ?OrganisationalUnit $organisationalUnit = null;
     protected ?FunctionType $functionType = null;
     protected ?\DateTime $validFrom = null;
@@ -30,6 +30,7 @@ class Contract extends AbstractEntity
     protected string $room = '';
     protected string $officeHours = '';
     protected bool $publish = false;
+    protected int $sorting = 0;
 
     /**
      * @var ObjectStorage<Address>
@@ -67,19 +68,21 @@ class Contract extends AbstractEntity
         $this->phoneNumbers = new ObjectStorage();
     }
 
-    public function setProfile(?Profile $profile): void
+    public function setProfile(Profile $profile): self
     {
         $this->profile = $profile;
+        return $this;
     }
 
-    public function getProfile(): ?Profile
+    public function getProfile(): Profile
     {
         return $this->profile;
     }
 
-    public function setOrganisationalUnit(?OrganisationalUnit $organisationalUnit): void
+    public function setOrganisationalUnit(?OrganisationalUnit $organisationalUnit): self
     {
         $this->organisationalUnit = $organisationalUnit;
+        return $this;
     }
 
     public function getOrganisationalUnit(): ?OrganisationalUnit
@@ -87,9 +90,10 @@ class Contract extends AbstractEntity
         return $this->organisationalUnit;
     }
 
-    public function setFunctionType(?FunctionType $functionType): void
+    public function setFunctionType(?FunctionType $functionType): self
     {
         $this->functionType = $functionType;
+        return $this;
     }
 
     public function getFunctionType(): ?FunctionType
@@ -97,9 +101,10 @@ class Contract extends AbstractEntity
         return $this->functionType;
     }
 
-    public function setValidFrom(?\DateTime $validFrom): void
+    public function setValidFrom(?\DateTime $validFrom): self
     {
         $this->validFrom = $validFrom;
+        return $this;
     }
 
     public function getValidFrom(): ?\DateTime
@@ -107,9 +112,10 @@ class Contract extends AbstractEntity
         return $this->validFrom;
     }
 
-    public function setValidTo(?\DateTime $validTo): void
+    public function setValidTo(?\DateTime $validTo): self
     {
         $this->validTo = $validTo;
+        return $this;
     }
 
     public function getValidTo(): ?\DateTime
@@ -117,9 +123,10 @@ class Contract extends AbstractEntity
         return $this->validTo;
     }
 
-    public function setEmployeeType(?Category $employeeType): void
+    public function setEmployeeType(?Category $employeeType): self
     {
         $this->employeeType = $employeeType;
+        return $this;
     }
 
     public function getEmployeeType(): ?Category
@@ -127,9 +134,10 @@ class Contract extends AbstractEntity
         return $this->employeeType;
     }
 
-    public function setPosition(string $position): void
+    public function setPosition(string $position): self
     {
         $this->position = $position;
+        return $this;
     }
 
     public function getPosition(): string
@@ -137,9 +145,10 @@ class Contract extends AbstractEntity
         return $this->position;
     }
 
-    public function setLocation(?Location $location): void
+    public function setLocation(?Location $location): self
     {
         $this->location = $location;
+        return $this;
     }
 
     public function getLocation(): ?Location
@@ -147,9 +156,10 @@ class Contract extends AbstractEntity
         return $this->location;
     }
 
-    public function setRoom(string $room): void
+    public function setRoom(string $room): self
     {
         $this->room = $room;
+        return $this;
     }
 
     public function getRoom(): string
@@ -157,9 +167,10 @@ class Contract extends AbstractEntity
         return $this->room;
     }
 
-    public function setOfficeHours(string $officeHours): void
+    public function setOfficeHours(string $officeHours): self
     {
         $this->officeHours = $officeHours;
+        return $this;
     }
 
     public function getOfficeHours(): string
@@ -167,9 +178,10 @@ class Contract extends AbstractEntity
         return $this->officeHours;
     }
 
-    public function setPublish(bool $publish): void
+    public function setPublish(bool $publish): self
     {
         $this->publish = $publish;
+        return $this;
     }
 
     public function isPublish(): bool
@@ -177,22 +189,36 @@ class Contract extends AbstractEntity
         return $this->publish;
     }
 
+    public function setSorting(int $sorting): self
+    {
+        $this->sorting = $sorting;
+        return $this;
+    }
+
+    public function getSorting(): int
+    {
+        return $this->sorting;
+    }
+
     /**
      * @param ObjectStorage<Address> $physicalAddresses
      */
-    public function setPhysicalAddresses(ObjectStorage $physicalAddresses): void
+    public function setPhysicalAddresses(ObjectStorage $physicalAddresses): self
     {
         $this->physicalAddresses = $physicalAddresses;
+        return $this;
     }
 
-    public function addPhysicalAddress(Address $physicalAddress): void
+    public function addPhysicalAddress(Address $physicalAddress): self
     {
         $this->physicalAddresses->attach($physicalAddress);
+        return $this;
     }
 
-    public function removePhysicalAddress(Address $physicalAddress): void
+    public function removePhysicalAddress(Address $physicalAddress): self
     {
         $this->physicalAddresses->detach($physicalAddress);
+        return $this;
     }
 
     /**
@@ -206,19 +232,22 @@ class Contract extends AbstractEntity
     /**
      * @param ObjectStorage<Email> $emailAddresses
      */
-    public function setEmailAddresses(ObjectStorage $emailAddresses): void
+    public function setEmailAddresses(ObjectStorage $emailAddresses): self
     {
         $this->emailAddresses = $emailAddresses;
+        return $this;
     }
 
-    public function addEmailAddress(Email $emailAddress): void
+    public function addEmailAddress(Email $emailAddress): self
     {
         $this->emailAddresses->attach($emailAddress);
+        return $this;
     }
 
-    public function removeEmailAddress(Email $emailAddress): void
+    public function removeEmailAddress(Email $emailAddress): self
     {
         $this->emailAddresses->detach($emailAddress);
+        return $this;
     }
 
     /**
@@ -232,19 +261,22 @@ class Contract extends AbstractEntity
     /**
      * @param ObjectStorage<PhoneNumber> $phoneNumbers
      */
-    public function setPhoneNumbers(ObjectStorage $phoneNumbers): void
+    public function setPhoneNumbers(ObjectStorage $phoneNumbers): self
     {
         $this->phoneNumbers = $phoneNumbers;
+        return $this;
     }
 
-    public function addPhoneNumber(PhoneNumber $phoneNumber): void
+    public function addPhoneNumber(PhoneNumber $phoneNumber): self
     {
         $this->phoneNumbers->attach($phoneNumber);
+        return $this;
     }
 
-    public function removePhoneNumber(PhoneNumber $phoneNumber): void
+    public function removePhoneNumber(PhoneNumber $phoneNumber): self
     {
         $this->phoneNumbers->detach($phoneNumber);
+        return $this;
     }
 
     /**

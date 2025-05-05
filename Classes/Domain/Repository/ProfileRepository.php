@@ -9,13 +9,13 @@ declare(strict_types=1);
  * LICENSE file that was distributed with this source code.
  */
 
-namespace Fgtclb\AcademicPersons\Domain\Repository;
+namespace FGTCLB\AcademicPersons\Domain\Repository;
 
-use Fgtclb\AcademicPersons\DemandValues\GroupByValues;
-use Fgtclb\AcademicPersons\DemandValues\SortByValues;
-use Fgtclb\AcademicPersons\Domain\Model\Dto\DemandInterface;
-use Fgtclb\AcademicPersons\Domain\Model\Profile;
-use Fgtclb\AcademicPersons\Event\ModifyProfileDemandEvent;
+use FGTCLB\AcademicPersons\DemandValues\GroupByValues;
+use FGTCLB\AcademicPersons\DemandValues\SortByValues;
+use FGTCLB\AcademicPersons\Domain\Model\Dto\DemandInterface;
+use FGTCLB\AcademicPersons\Domain\Model\Profile;
+use FGTCLB\AcademicPersons\Event\ModifyProfileDemandEvent;
 use Psr\EventDispatcher\EventDispatcherInterface;
 use TYPO3\CMS\Core\Context\LanguageAspect;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
@@ -37,7 +37,7 @@ class ProfileRepository extends Repository
     }
 
     /**
-     * @return QueryResultInterface<Profile>
+     * @return QueryResultInterface<int, Profile>
      */
     public function findByDemand(DemandInterface $demand): QueryResultInterface
     {
@@ -181,7 +181,7 @@ class ProfileRepository extends Repository
 
     /**
      * @param int[] $uids
-     * @return QueryResultInterface<Profile>
+     * @return QueryResultInterface<int, Profile>
      */
     public function findByUids(array $uids): QueryResultInterface
     {
@@ -201,5 +201,21 @@ class ProfileRepository extends Repository
 
         $query->matching($query->in('uid', $uids));
         return $query->execute();
+    }
+
+    /**
+     * @param int $frontendUserUid
+     * @return QueryResultInterface<int, Profile>
+     */
+    public function findByFrontendUser(int $frontendUserUid): QueryResultInterface
+    {
+        $query = $this->createQuery();
+        $query->getQuerySettings()->setRespectStoragePage(false);
+
+        return $query
+            ->matching(
+                $query->contains('frontendUsers', $frontendUserUid)
+            )
+            ->execute();
     }
 }

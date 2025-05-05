@@ -9,12 +9,24 @@ declare(strict_types=1);
  * LICENSE file that was distributed with this source code.
  */
 
-namespace Fgtclb\AcademicPersons\Domain\Repository;
+namespace FGTCLB\AcademicPersons\Domain\Repository;
 
-use Fgtclb\AcademicPersons\Domain\Model\OrganisationalUnit;
+use FGTCLB\AcademicPersons\Domain\Model\OrganisationalUnit;
+use TYPO3\CMS\Extbase\Persistence\QueryResultInterface;
 use TYPO3\CMS\Extbase\Persistence\Repository;
 
 /**
  * @extends Repository<OrganisationalUnit>
  */
-class OrganisationalUnitRepository extends Repository {}
+class OrganisationalUnitRepository extends Repository
+{
+    /**
+     * @return QueryResultInterface<int, OrganisationalUnit>
+     */
+    public function findAll(): QueryResultInterface
+    {
+        $query = $this->createQuery();
+        $query->getQuerySettings()->setRespectStoragePage(false);
+        return $query->execute();
+    }
+}

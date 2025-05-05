@@ -2,13 +2,16 @@
 
 declare(strict_types=1);
 
+use FGTCLB\AcademicPersons\Registry\AcademicPersonsSettingsRegistry;
+use TYPO3\CMS\Core\Utility\GeneralUtility;
+
 /**
  * This file is part of the "academic_persons" Extension for TYPO3 CMS.
  *
  * For the full copyright and license information, please read the
  * LICENSE file that was distributed with this source code.
  */
-return [
+$tcaConfiguration = [
     'ctrl' => [
         'label' => 'type',
         'label_alt' => 'title',
@@ -124,6 +127,7 @@ return [
                 'type' => 'number',
                 'min' => 0,
                 'max' => 9999,
+                'nullable' => true,
             ],
         ],
         'year_start' => [
@@ -134,6 +138,7 @@ return [
                 'type' => 'number',
                 'min' => 0,
                 'max' => 9999,
+                'nullable' => true,
             ],
         ],
         'year_end' => [
@@ -274,3 +279,11 @@ return [
         ],
     ],
 ];
+
+// @todo MAIN TCA Files should be kept without dynamic calls, and following should be done in override files.
+$settingsRegistry = GeneralUtility::makeInstance(AcademicPersonsSettingsRegistry::class);
+// @todo Why this not matching convention ? Can't we use a convention based approach here ?
+$validations = $settingsRegistry->getValidationsForTca('profileInformation');
+$tcaConfiguration = array_replace_recursive($tcaConfiguration, $validations);
+
+return $tcaConfiguration;

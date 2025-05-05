@@ -4,10 +4,22 @@ services:
     autoconfigure: true
     public: false
 
-  Fgtclb\AcademicPersons\:
+  FGTCLB\AcademicPersons\:
     resource: '../Classes/*'
     exclude: '../Classes/Domain/Model/*.php'
 
-  Fgtclb\AcademicPersons\Domain\Model\Dto\DemandInterface:
-    alias: Fgtclb\AcademicPersons\Domain\Model\Dto\ProfileDemand
+  FGTCLB\AcademicPersons\Domain\Model\Dto\DemandInterface:
+    alias: FGTCLB\AcademicPersons\Domain\Model\Dto\ProfileDemand
     public: true
+
+  FGTCLB\AcademicPersons\Registry\AcademicPersonsSettingsRegistry:
+    public: true
+    factory:
+      - '@FGTCLB\AcademicPersons\Loader\AcademicPersonsSettingsLoader'
+      - 'load'
+
+  FGTCLB\AcademicPersons\Command\CreateProfilesCommand:
+    tags:
+      - name: console.command
+        command: 'academic:createprofiles'
+        description: 'This command create profiles for all frontend users that do not have a profile yet but should have one.'

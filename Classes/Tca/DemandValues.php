@@ -9,10 +9,10 @@ declare(strict_types=1);
  * LICENSE file that was distributed with this source code.
  */
 
-namespace Fgtclb\AcademicPersons\Tca;
+namespace FGTCLB\AcademicPersons\Tca;
 
-use Fgtclb\AcademicPersons\DemandValues\GroupByValues;
-use Fgtclb\AcademicPersons\DemandValues\SortByValues;
+use FGTCLB\AcademicPersons\DemandValues\GroupByValues;
+use FGTCLB\AcademicPersons\DemandValues\SortByValues;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 class DemandValues
