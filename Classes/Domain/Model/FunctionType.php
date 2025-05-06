@@ -20,10 +20,18 @@ class FunctionType extends AbstractEntity
      * @Validate("TYPO3\CMS\Extbase\Validation\Validator\NotEmptyValidator")
      */
     protected string $functionName = '';
-
     protected string $functionNameMale = '';
-
     protected string $functionNameFemale = '';
+
+    public function __construct()
+    {
+        $this->initializeObject();
+    }
+
+    /**
+     * @link https://docs.typo3.org/m/typo3/reference-coreapi/main/en-us/ExtensionArchitecture/Extbase/Reference/Domain/Model/Index.html#good-use-initializeobject-for-setup
+     */
+    public function initializeObject(): void {}
 
     public function setFunctionName(string $functionName): void
     {

@@ -20,25 +20,15 @@ use TYPO3\CMS\Extbase\Persistence\ObjectStorage;
 class Contract extends AbstractEntity
 {
     protected ?Profile $profile = null;
-
     protected ?OrganisationalUnit $organisationalUnit = null;
-
     protected ?FunctionType $functionType = null;
-
     protected ?\DateTime $validFrom = null;
-
     protected ?\DateTime $validTo = null;
-
     protected ?Category $employeeType = null;
-
     protected string $position = '';
-
     protected ?Location $location = null;
-
     protected string $room = '';
-
     protected string $officeHours = '';
-
     protected bool $publish = false;
 
     /**
@@ -63,6 +53,14 @@ class Contract extends AbstractEntity
     protected ObjectStorage $phoneNumbers;
 
     public function __construct()
+    {
+        $this->initializeObject();
+    }
+
+    /**
+     * @link https://docs.typo3.org/m/typo3/reference-coreapi/main/en-us/ExtensionArchitecture/Extbase/Reference/Domain/Model/Index.html#good-use-initializeobject-for-setup
+     */
+    public function initializeObject(): void
     {
         $this->physicalAddresses = new ObjectStorage();
         $this->emailAddresses = new ObjectStorage();

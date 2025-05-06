@@ -16,18 +16,22 @@ use TYPO3\CMS\Extbase\DomainObject\AbstractEntity;
 class ProfileInformation extends AbstractEntity
 {
     protected string $type = '';
-
     protected string $title = '';
-
     protected string $bodytext = '';
-
     protected string $link = '';
-
     protected int $year = 0;
-
     protected int $yearStart = 0;
-
     protected int $yearEnd = 0;
+
+    public function __construct()
+    {
+        $this->initializeObject();
+    }
+
+    /**
+     * @link https://docs.typo3.org/m/typo3/reference-coreapi/main/en-us/ExtensionArchitecture/Extbase/Reference/Domain/Model/Index.html#good-use-initializeobject-for-setup
+     */
+    public function initializeObject(): void {}
 
     public function getType(): string
     {

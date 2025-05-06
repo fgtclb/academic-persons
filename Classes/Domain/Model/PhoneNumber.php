@@ -26,6 +26,16 @@ class PhoneNumber extends AbstractEntity
      */
     protected string $type = '';
 
+    public function __construct()
+    {
+        $this->initializeObject();
+    }
+
+    /**
+     * @link https://docs.typo3.org/m/typo3/reference-coreapi/main/en-us/ExtensionArchitecture/Extbase/Reference/Domain/Model/Index.html#good-use-initializeobject-for-setup
+     */
+    public function initializeObject(): void {}
+
     public function getPhoneNumber(): string
     {
         return $this->phoneNumber;

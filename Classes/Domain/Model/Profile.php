@@ -21,97 +21,73 @@ use TYPO3\CMS\Extbase\Persistence\ObjectStorage;
 class Profile extends AbstractEntity
 {
     protected string $gender = '';
-
     protected string $title = '';
-
     /**
      * @Validate("TYPO3\CMS\Extbase\Validation\Validator\NotEmptyValidator")
      */
     protected string $firstName = '';
-
     protected string $firstNameAlpha = '';
-
     protected string $middleName = '';
-
     /**
      * @Validate("TYPO3\CMS\Extbase\Validation\Validator\NotEmptyValidator")
      */
     protected string $lastName = '';
-
     protected string $lastNameAlpha = '';
-
     /**
      * @Cascade("remove")
      */
     protected ?FileReference $image = null;
-
     /**
      * @var ObjectStorage<Contract>
      * @Lazy
      * @Cascade("remove")
      */
     protected ObjectStorage $contracts;
-
     protected string $websiteTitle = '';
-
     protected string $website = '';
-
     protected string $teachingArea = '';
-
     protected string $coreCompetences = '';
-
     /**
      * @var ObjectStorage<ProfileInformation>
      * @Lazy
      * @Cascade("remove")
      */
     protected ObjectStorage $memberships;
-
     /**
      * @var ObjectStorage<ProfileInformation>
      * @Lazy
      * @Cascade("remove")
      */
     protected ObjectStorage $pressMedia;
-
     protected string $supervisedThesis = '';
-
     protected string $supervisedDoctoralThesis = '';
-
     /**
      * @var ObjectStorage<ProfileInformation>
      * @Lazy
      * @Cascade("remove")
      */
     protected ObjectStorage $vita;
-
     /**
      * @var ObjectStorage<ProfileInformation>
      * @Lazy
      * @Cascade("remove")
      */
     protected ObjectStorage $publications;
-
     /**
      * @var ObjectStorage<ProfileInformation>
      * @Lazy
      * @Cascade("remove")
      */
     protected ObjectStorage $scientificResearch;
-
     protected string $publicationsLink = '';
-
     protected string $publicationsLinkTitle = '';
-
     protected string $miscellaneous = '';
-
     /**
      * @var ObjectStorage<ProfileInformation>
      * @Lazy
      * @Cascade("remove")
      */
     protected ObjectStorage $cooperation;
-
     /**
      * @var ObjectStorage<ProfileInformation>
      * @Lazy
@@ -120,6 +96,14 @@ class Profile extends AbstractEntity
     protected ObjectStorage $lectures;
 
     public function __construct()
+    {
+        $this->initializeObject();
+    }
+
+    /**
+     * @link https://docs.typo3.org/m/typo3/reference-coreapi/main/en-us/ExtensionArchitecture/Extbase/Reference/Domain/Model/Index.html#good-use-initializeobject-for-setup
+     */
+    public function initializeObject(): void
     {
         $this->contracts = new ObjectStorage();
         $this->memberships = new ObjectStorage();
