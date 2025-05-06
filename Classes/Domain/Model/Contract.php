@@ -139,7 +139,7 @@ class Contract extends AbstractEntity
         return $this->position;
     }
 
-    public function setLocation(Location $location): void
+    public function setLocation(?Location $location): void
     {
         $this->location = $location;
     }

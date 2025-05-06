@@ -253,7 +253,7 @@ return [
             'l10n_display' => 'defaultAsReadonly',
             'config' => [
                 'type' => 'file',
-                'maxitems' => 6,
+                'maxitems' => 1,
                 'allowed' => 'common-image-types',
             ],
         ],

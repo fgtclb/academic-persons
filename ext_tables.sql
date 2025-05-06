@@ -27,7 +27,7 @@ CREATE TABLE tx_academicpersons_domain_model_contract (
 
     employee_type int(11) unsigned DEFAULT '0' NOT NULL,
     position varchar(255) DEFAULT '' NOT NULL,
-    location int(11) unsigned DEFAULT '0' NOT NULL,
+    location int(11) unsigned  DEFAULT NULL,
 
     room varchar(255) DEFAULT '' NOT NULL,
     office_hours text,
