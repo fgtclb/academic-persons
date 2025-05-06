@@ -5,12 +5,11 @@ declare(strict_types=1);
 namespace Fgtclb\AcademicPersons\Tests\Functional\Plugins;
 
 use PHPUnit\Framework\Attributes\Test;
-use TYPO3\CMS\Core\Tests\Functional\SiteHandling\SiteBasedTestTrait;
+use SBUERK\TYPO3\Testing\SiteHandling\SiteBasedTestTrait;
+use SBUERK\TYPO3\Testing\TestCase\FunctionalTestCase;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
-use TYPO3\TestingFramework\Core\Functional\Framework\Frontend\Hook\TypoScriptInstructionModifier;
 use TYPO3\TestingFramework\Core\Functional\Framework\Frontend\InternalRequest;
 use TYPO3\TestingFramework\Core\Functional\Framework\Frontend\InternalRequestContext;
-use TYPO3\TestingFramework\Core\Functional\FunctionalTestCase;
 
 final class AcademicPersonsDetailPluginTest extends FunctionalTestCase
 {
@@ -42,13 +41,6 @@ final class AcademicPersonsDetailPluginTest extends FunctionalTestCase
             ],
             'debug' => false,
         ],
-        'SC_OPTIONS' => [
-            'Core/TypoScript/TemplateService' => [
-                'runThroughTemplatesPostProcessing' => [
-                    'FunctionalTest' => TypoScriptInstructionModifier::class . '->apply',
-                ],
-            ],
-        ],
     ];
 
     protected const LANGUAGE_PRESETS = [
@@ -71,8 +63,8 @@ final class AcademicPersonsDetailPluginTest extends FunctionalTestCase
     private function setUpFrontendRootPageForTestCase(): void
     {
         $this->setUpFrontendRootPage(
-            1,
-            [
+            pageId: 1,
+            typoScriptFiles: [
                 'constants' => [
                     'EXT:fluid_styled_content/Configuration/TypoScript/constants.typoscript',
                     'EXT:academic_persons/Configuration/TypoScript/constants.typoscript',
@@ -85,7 +77,7 @@ final class AcademicPersonsDetailPluginTest extends FunctionalTestCase
                     'EXT:test_plugin_templates/Configuration/TypoScript/setup.typoscript',
                     'EXT:academic_persons/Tests/Functional/Plugins/Fixtures/TypoScript/Setup/Rendering.typoscript',
                 ],
-            ]
+            ],
         );
     }
 
@@ -95,11 +87,14 @@ final class AcademicPersonsDetailPluginTest extends FunctionalTestCase
         $this->importCSVDataSet(__DIR__ . '/Fixtures/AcademicPersonsDetailPlugin/defaultLanguageOnly.csv');
         $this->setUpFrontendRootPageForTestCase();
         $this->writeSiteConfiguration(
-            'acme',
-            $this->buildSiteConfiguration(1, 'https://www.acme.com/'),
-            [
+            identifier: 'acme',
+            site: $this->buildSiteConfiguration(
+                rootPageId: 1,
+                base: 'https://www.acme.com/',
+            ),
+            languages: [
                 $this->buildDefaultLanguageConfiguration('EN', '/'),
-            ]
+            ],
         );
 
         $requestContext = new InternalRequestContext();
@@ -126,12 +121,18 @@ final class AcademicPersonsDetailPluginTest extends FunctionalTestCase
         $this->importCSVDataSet(__DIR__ . '/Fixtures/AcademicPersonsDetailPlugin/fullyLocalized.csv');
         $this->setUpFrontendRootPageForTestCase();
         $this->writeSiteConfiguration(
-            'acme',
-            $this->buildSiteConfiguration(1, 'https://www.acme.com/'),
-            [
-                $this->buildDefaultLanguageConfiguration('EN', '/'),
-                $this->buildDefaultLanguageConfiguration('DE', '/de/'),
-            ]
+            identifier: 'acme',
+            site: $this->buildSiteConfiguration(1, 'https://www.acme.com/'),
+            languages: [
+                $this->buildDefaultLanguageConfiguration(
+                    identifier: 'EN',
+                    base: '/',
+                ),
+                $this->buildLanguageConfiguration(
+                    identifier: 'DE',
+                    base: '/de/',
+                ),
+            ],
         );
 
         $requestContext = new InternalRequestContext();
@@ -158,12 +159,23 @@ final class AcademicPersonsDetailPluginTest extends FunctionalTestCase
         $this->importCSVDataSet(__DIR__ . '/Fixtures/AcademicPersonsDetailPlugin/localizedPagesAndTtContent_notLocalizedProfile.csv');
         $this->setUpFrontendRootPageForTestCase();
         $this->writeSiteConfiguration(
-            'acme',
-            $this->buildSiteConfiguration(1, 'https://www.acme.com/'),
-            [
-                $this->buildDefaultLanguageConfiguration('EN', '/'),
-                $this->buildLanguageConfiguration('DE', '/de/', ['EN'], 'fallback'),
-            ]
+            identifier: 'acme',
+            site: $this->buildSiteConfiguration(
+                rootPageId: 1,
+                base: 'https://www.acme.com/',
+            ),
+            languages: [
+                $this->buildDefaultLanguageConfiguration(
+                    identifier: 'EN',
+                    base: '/',
+                ),
+                $this->buildLanguageConfiguration(
+                    identifier: 'DE',
+                    base: '/de/',
+                    fallbackIdentifiers: ['EN'],
+                    fallbackType: 'fallback',
+                ),
+            ],
         );
 
         $requestContext = new InternalRequestContext();
@@ -194,12 +206,23 @@ final class AcademicPersonsDetailPluginTest extends FunctionalTestCase
         $this->importCSVDataSet(__DIR__ . '/Fixtures/AcademicPersonsDetailPlugin/localizedPagesAndTtContent_notLocalizedProfile.csv');
         $this->setUpFrontendRootPageForTestCase();
         $this->writeSiteConfiguration(
-            'acme',
-            $this->buildSiteConfiguration(1, 'https://www.acme.com/'),
-            [
-                $this->buildDefaultLanguageConfiguration('EN', '/'),
-                $this->buildLanguageConfiguration('DE', '/de/', [], 'strict'),
-            ]
+            identifier: 'acme',
+            site: $this->buildSiteConfiguration(
+                rootPageId: 1,
+                base: 'https://www.acme.com/',
+            ),
+            languages: [
+                $this->buildDefaultLanguageConfiguration(
+                    identifier: 'EN',
+                    base: '/',
+                ),
+                $this->buildLanguageConfiguration(
+                    identifier: 'DE',
+                    base: '/de/',
+                    fallbackIdentifiers: [],
+                    fallbackType: 'strict',
+                ),
+            ],
         );
 
         $requestContext = new InternalRequestContext();

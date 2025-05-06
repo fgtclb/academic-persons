@@ -12,10 +12,10 @@ declare(strict_types=1);
 namespace Fgtclb\AcademicPersons\Tests\Functional\Hook;
 
 use PHPUnit\Framework\Attributes\Test;
+use SBUERK\TYPO3\Testing\TestCase\FunctionalTestCase;
 use TYPO3\CMS\Core\DataHandling\DataHandler;
 use TYPO3\CMS\Core\Localization\LanguageServiceFactory;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
-use TYPO3\TestingFramework\Core\Functional\FunctionalTestCase;
 
 class DataHandlerHooksTest extends FunctionalTestCase
 {
