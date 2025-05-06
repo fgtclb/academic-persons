@@ -12,7 +12,7 @@
     ],
     "require": {
         "typo3/cms-core": "^12.4 || ^13.4",
-		"fgtclb/academic-persons": "2.0.*@dev"
+        "fgtclb/academic-persons": "2.0.*@dev"
     },
     "extra": {
         "typo3/cms": {
