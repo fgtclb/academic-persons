@@ -49,7 +49,10 @@
             "dev-main": "2.0.x-dev"
         }
     },
+    "conflict": {
+        "georgringer/numbered-pagination": "<2.1.0 || >= 3.0.0"
+    },
     "suggest": {
-        "georgringer/numbered-pagination": "Install to use numbered pagination. (~1.x)"
+        "georgringer/numbered-pagination": "Install to use numbered pagination. (~2.1)"
     }
 }

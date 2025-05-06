@@ -8,7 +8,7 @@ $EM_CONF[$_EXTKEY] = [
     'author_email' => 'tim.schreiner@km2.de',
     'author_company' => 'FGTCLB',
     'state' => 'beta',
-    'version' => '1.1.5',
+    'version' => '2.0.0',
     'clearCacheOnLoad' => true,
     'constraints' => [
         'depends' => [
@@ -21,7 +21,7 @@ $EM_CONF[$_EXTKEY] = [
         'conflicts' => [
         ],
         'suggests' => [
-            'numbered_pagination' => '1.0.0-1.99.99',
+            'numbered_pagination' => '2.1.0-2.99.99',
         ],
     ],
 ];
