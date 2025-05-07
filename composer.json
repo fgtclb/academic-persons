@@ -21,6 +21,7 @@
         "typo3/cms-extbase": "^12.4 || ^13.4",
         "typo3/cms-fluid": "^12.4 || ^13.4",
         "typo3/cms-frontend": "^12.4 || ^13.4",
+        "typo3/cms-install": "^12.4 || ^13.4",
         "typo3/cms-rte-ckeditor": "^12.4 || ^13.4"
     },
     "autoload": {

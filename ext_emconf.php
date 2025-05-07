@@ -16,6 +16,7 @@ $EM_CONF[$_EXTKEY] = [
             'extbase' => '12.4.0-13.4.99',
             'fluid' => '12.4.0-13.4.99',
             'frontend' => '12.4.0-13.4.99',
+            'install' => '12.4.0-13.4.99',
             'rte_ckeditor' => '12.4.0-13.4.99',
         ],
         'conflicts' => [
