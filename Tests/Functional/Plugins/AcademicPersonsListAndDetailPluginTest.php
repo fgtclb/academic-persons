@@ -4,29 +4,17 @@ declare(strict_types=1);
 
 namespace Fgtclb\AcademicPersons\Tests\Functional\Plugins;
 
+use Fgtclb\AcademicPersons\Tests\Functional\AbstractAcademicPersonsTestCase;
 use PHPUnit\Framework\Attributes\Test;
 use SBUERK\TYPO3\Testing\SiteHandling\SiteBasedTestTrait;
-use SBUERK\TYPO3\Testing\TestCase\FunctionalTestCase;
 use TYPO3\CMS\Core\Information\Typo3Version;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\TestingFramework\Core\Functional\Framework\Frontend\InternalRequest;
 use TYPO3\TestingFramework\Core\Functional\Framework\Frontend\InternalRequestContext;
 
-final class AcademicPersonsListAndDetailPluginTest extends FunctionalTestCase
+final class AcademicPersonsListAndDetailPluginTest extends AbstractAcademicPersonsTestCase
 {
     use SiteBasedTestTrait;
-
-    protected array $coreExtensionsToLoad = [
-        'typo3/cms-install',
-        'typo3/cms-rte-ckeditor',
-        'typo3/cms-fluid-styled-content',
-    ];
-
-    protected array $testExtensionsToLoad = [
-        'georgringer/numbered-pagination',
-        'fgtclb/academic-persons',
-        'tests/plugin-templates',
-    ];
 
     protected array $configurationToUseInTestInstance = [
         'SYS' => [
@@ -53,6 +41,19 @@ final class AcademicPersonsListAndDetailPluginTest extends FunctionalTestCase
 
     protected function setUp(): void
     {
+        $this->coreExtensionsToLoad = array_unique([
+            ...array_values($this->coreExtensionsToLoad),
+            ...array_values([
+                'typo3/cms-fluid-styled-content',
+            ]),
+        ]);
+        $this->testExtensionsToLoad = array_unique([
+            ...array_values($this->testExtensionsToLoad),
+            ...array_values([
+                'georgringer/numbered-pagination',
+                'tests/plugin-templates',
+            ]),
+        ]);
         parent::setUp();
     }
 

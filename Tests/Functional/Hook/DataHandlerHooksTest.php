@@ -11,30 +11,15 @@ declare(strict_types=1);
 
 namespace Fgtclb\AcademicPersons\Tests\Functional\Hook;
 
+use Fgtclb\AcademicPersons\Tests\Functional\AbstractAcademicPersonsTestCase;
 use PHPUnit\Framework\Attributes\Test;
-use SBUERK\TYPO3\Testing\TestCase\FunctionalTestCase;
 use TYPO3\CMS\Core\DataHandling\DataHandler;
 use TYPO3\CMS\Core\Localization\LanguageServiceFactory;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
-class DataHandlerHooksTest extends FunctionalTestCase
+class DataHandlerHooksTest extends AbstractAcademicPersonsTestCase
 {
     private DataHandler $dataHandler;
-
-    /**
-     * @var list<non-empty-string>
-     */
-    protected array $coreExtensionsToLoad = [
-        'typo3/cms-install',
-        'typo3/cms-rte-ckeditor',
-    ];
-
-    /**
-     * @var list<non-empty-string>
-     */
-    protected array $testExtensionsToLoad = [
-        'fgtclb/academic-persons',
-    ];
 
     protected function setUp(): void
     {

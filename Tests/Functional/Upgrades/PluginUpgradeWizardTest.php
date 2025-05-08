@@ -4,22 +4,13 @@ declare(strict_types=1);
 
 namespace Fgtclb\AcademicPersons\Tests\Functional\Upgrades;
 
+use Fgtclb\AcademicPersons\Tests\Functional\AbstractAcademicPersonsTestCase;
 use Fgtclb\AcademicPersons\Upgrades\PluginUpgradeWizard;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\Attributes\Test;
-use SBUERK\TYPO3\Testing\TestCase\FunctionalTestCase;
 
-final class PluginUpgradeWizardTest extends FunctionalTestCase
+final class PluginUpgradeWizardTest extends AbstractAcademicPersonsTestCase
 {
-    protected array $coreExtensionsToLoad = [
-        'typo3/cms-install',
-        'typo3/cms-rte-ckeditor',
-    ];
-
-    protected array $testExtensionsToLoad = [
-        'fgtclb/academic-persons',
-    ];
-
     #[Test]
     public function updateNecessaryReturnsFalseWhenListTypeRecordsAreAvailable(): void
     {
