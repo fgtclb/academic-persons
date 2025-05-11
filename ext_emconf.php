@@ -1,15 +1,10 @@
 <?php
 
 $EM_CONF[$_EXTKEY] = [
-    'title' => 'FGTCLB: Academic Persons',
-    'description' => 'Adds a person database to TYPO3 with plugins to show them in the frontend.',
+    'author' => 'FGTCLB',
+    'author_company' => 'FGTCLB GmbH',
+    'author_email' => 'hello@fgtclb.com',
     'category' => 'plugin',
-    'author' => 'Tim Schreiner',
-    'author_email' => 'tim.schreiner@km2.de',
-    'author_company' => 'FGTCLB',
-    'state' => 'beta',
-    'version' => '2.0.1',
-    'clearCacheOnLoad' => true,
     'constraints' => [
         'depends' => [
             'typo3' => '12.4.0-13.4.99',
@@ -25,4 +20,8 @@ $EM_CONF[$_EXTKEY] = [
             'numbered_pagination' => '2.1.0-2.99.99',
         ],
     ],
+    'description' => 'Adds a person database to TYPO3 with plugins to show them in the frontend.',
+    'state' => 'beta',
+    'title' => 'FGTCLB: Academic Persons',
+    'version' => '2.0.1',
 ];
