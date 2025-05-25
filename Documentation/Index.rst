@@ -31,9 +31,13 @@ Academic Persons
 
 ----
 
-This extension adds an academic person database to TYPO3.
-Records can be created, edit and displayed in the frontend.
-There is a list and a detail view for the frontend .
+This TYPO3 extension adds a personal database to TYPO3, with requirements that
+are usually used for colleges, universities or public institutions.
+
+The profile data records can be automatically created and linked in conjunction
+with the LDAP extension on the basis of FE user data records. The data can be
+enriched with data via separate HiS-in-One synchronization. Data records can be
+created, edited and displayed in the front end and in different display modes.
 
 ----
 

@@ -8,9 +8,58 @@
 
 ## Description
 
-This extension adds an academic person database to TYPO3.
-Records can be created, edit and displayed in the frontend.
-There is a list and a detail view for the frontend .
+This TYPO3 extension adds a personal database to TYPO3, with requirements that
+are usually used for colleges, universities or public institutions. The profile
+data records can be automatically created and linked in conjunction with the
+LDAP extension on the basis of FE user data records. The data can be enriched
+with data via separate HiS-in-One synchronization. Data records can be created,
+edited and displayed in the front end and in different display modes.
+
+The following profile data is available to users after installation:
+
+* Master data:
+    * Salutation / Gender
+    * title
+    * First name
+    * Last name
+    * Middle name
+    * Website + website link
+    * Image
+    * URL
+* Contracts:
+    * Each person can receive any amount of contract data in order to be displayed
+      in individual roles, functions or organizational units.
+    * Position
+    * Organizational unit / department - link to own data type
+    * Contract start / end
+    * Location - e.g. for campus Link to own data type
+    * Room information
+    * Office hours
+* Address data
+* Email addresses
+* Telephone addresses
+* Linked pages (in combination with the Contact-For-Pages extension)
+* Employment category based on system categories
+* Profile text data:
+    * All textual content can be freely designed using the standard text editor.
+    * Learning areas/fields of activity
+    * Research areas
+    * Supervised dissertations
+    * Supervised doctoral theses
+    * Miscellaneous information
+* Profile timeline entries
+    * All timeline entries allow the chronological presentation of content, usually
+      with a start and/or end year, a title, a short description and a link
+    * Research projects
+    * Academic career
+    * Memberships/committee activities
+    * Networks and cooperation's
+    * Publications
+    * Lectures
+    * Press/Media Publications
+
+The extension also provides some plugins to display the persons in the frontend
+as a list view and detail view for each person.
 
 > [!NOTE]
 > This extension is currently in beta state - please notice that there might be changes to the structure
