@@ -33,7 +33,7 @@ mod.wizards.newContentElement.wizardItems.academic {
       }
     }
     academicpersons_selectedprofiles {
-      iconIdentifier = persons_icon
+      iconIdentifier = actions-user
       title = LLL:EXT:academic_persons/Resources/Private/Language/locallang_be.xlf:plugin.selectedprofiles.label
       description = LLL:EXT:academic_persons/Resources/Private/Language/locallang_be.xlf:plugin.selectedprofiles.description
       tt_content_defValues {
@@ -41,7 +41,7 @@ mod.wizards.newContentElement.wizardItems.academic {
       }
     }
     academicpersons_selectedcontracts {
-      iconIdentifier = persons_icon
+      iconIdentifier = actions-user
       title = LLL:EXT:academic_persons/Resources/Private/Language/locallang_be.xlf:plugin.selectedcontracts.label
       description = LLL:EXT:academic_persons/Resources/Private/Language/locallang_be.xlf:plugin.selectedcontracts.description
       tt_content_defValues {
