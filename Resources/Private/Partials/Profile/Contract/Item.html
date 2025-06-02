@@ -1,0 +1,62 @@
+<html
+    data-namespace-typo3-fluid="true"
+    xmlns:f="http://typo3.org/ns/TYPO3/CMS/Fluid/ViewHelpers"
+>
+
+<f:if condition="{contract}">
+    <f:then>
+        <f:render
+            section="Contract"
+            arguments="{_all}"
+        />
+    </f:then>
+    <f:else>
+        <f:for each="{profile.contracts}" as="contract">
+            <f:render
+                section="Contract"
+                arguments="{_all}"
+            />
+        </f:for>
+    </f:else>
+</f:if>
+
+<f:section name="Contract">
+    <ul class="list-group list-group-flush">
+        <f:if condition="{settings.showFields}">
+            <f:then>
+                <f:for each="{settings.showFields}" as="field">
+                    <f:render
+                        partial="Profile/Contract/Field"
+                        arguments="{
+                            fieldName: '{field -> f:format.trim(side: \'left\', characters: \'contracts.\')}',
+                            contract: contract
+                        }"
+                    />
+                </f:for>
+            </f:then>
+            <f:else>
+                <f:for
+                    each="{
+                        0:'position',
+                        1:'room',
+                        2:'officeHours',
+                        3:'emailAddresses',
+                        4:'phoneNumbers',
+                        5:'physicalAddresses'
+                    }"
+                    as="field"
+                >
+                    <f:render
+                        partial="Profile/Contract/Field"
+                        arguments="{
+                            fieldName: field,
+                            contract: contract
+                        }"
+                    />
+                </f:for>
+            </f:else>
+        </f:if>
+    </ul>
+</f:section>
+
+</html>

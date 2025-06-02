@@ -1,0 +1,83 @@
+<html
+    data-namespace-typo3-fluid="true"
+    xmlns:f="http://typo3.org/ns/TYPO3/CMS/Fluid/ViewHelpers"
+>
+
+<nav>
+    <ul class="pagination justify-content-center mt-4">
+        <f:if condition="{pagination.previousPageNumber} && {pagination.previousPageNumber} >= {pagination.firstPageNumber}">
+            <li class="page-item first">
+                <f:link.action
+                    arguments="{demand: '{currentPage: 1}'}"
+                    title="{f:translate(key:'widget.pagination.first', extensionName: 'fluid')}"
+                    class="page-link"
+                >
+                    <span>{f:translate(key:'widget.pagination.first', extensionName: 'fluid')}</span>
+                </f:link.action>
+            </li>
+
+            <li class="page-item previous">
+                <f:link.action
+                    arguments="{demand: '{currentPage: pagination.previousPageNumber}'}"
+                    title="{f:translate(key:'widget.pagination.previous', extensionName: 'fluid')}"
+                    class="page-link"
+                >
+                    <span>{f:translate(key:'widget.pagination.previous', extensionName: 'fluid')}</span>
+                </f:link.action>
+            </li>
+        </f:if>
+
+        <f:if condition="{pagination.hasLessPages}">
+            <li class="page-item">
+                <span>…</span>
+            </li>
+        </f:if>
+
+        <f:for each="{pagination.allPageNumbers}" as="page">
+            <f:if condition="{page} == {paginator.currentPageNumber}">
+                <f:then>
+                    <li class="page-item current">
+                        <span class="page-link active">{page}</span>
+                    </li>
+                </f:then>
+                <f:else>
+                    <li class="page-item">
+                        <f:link.action arguments="{demand: '{currentPage: page}'}" class="page-link">
+                            <span>{page}</span>
+                        </f:link.action>
+                    </li>
+                </f:else>
+            </f:if>
+        </f:for>
+
+        <f:if condition="{pagination.hasMorePages}">
+            <li class="page-item">
+                <span>…</span>
+            </li>
+        </f:if>
+
+        <f:if condition="{pagination.nextPageNumber} && {pagination.nextPageNumber} <= {pagination.lastPageNumber}">
+            <li class="page-item next">
+                <f:link.action
+                    arguments="{demand: '{currentPage: pagination.nextPageNumber}'}"
+                    title="{f:translate(key:'widget.pagination.next', extensionName: 'fluid')}"
+                    class="page-link"
+                >
+                    <span>{f:translate(key:'widget.pagination.next', extensionName: 'fluid')}</span>
+                </f:link.action>
+            </li>
+
+            <li class="page-item last">
+                <f:link.action
+                    arguments="{demand: '{currentPage: pagination.lastPageNumber}'}"
+                    title="{f:translate(key:'widget.pagination.last', extensionName: 'fluid')}"
+                    class="page-link"
+                >
+                    <span>{f:translate(key:'widget.pagination.last', extensionName: 'fluid')}</span>
+                </f:link.action>
+            </li>
+        </f:if>
+    </ul>
+</nav>
+
+</html>

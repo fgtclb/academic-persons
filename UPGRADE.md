@@ -2,6 +2,19 @@
 
 ## X.Y.Z
 
+### BREAKING: Removed partials
+
+Some partials got removed as the templating structure has changed. Those partials include:
+
+`Resources/Private/Partials/List/AlphabetPagination.html`
+`Resources/Private/Partials/List/ListItem.html`
+`Resources/Private/Partials/List/Pagination.html`
+`Resources/Private/Partials/SelectedContracts/ListItem.html`
+
+> [!NOTE]
+> The default templating now supports basic bootstrap styling and is semantically optimized
+> to also not lack any major accessibility.
+
 ## 2.0.1
 
 ## 2.0.0

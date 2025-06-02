@@ -2,17 +2,30 @@
     data-namespace-typo3-fluid="true"
     xmlns:f="http://typo3.org/ns/TYPO3/CMS/Fluid/ViewHelpers"
 >
-<f:if condition="{contracts}">
-    <ul>
-        <f:for each="{contracts}" as="contract">
-            <f:render
-                partial="SelectedContracts/ListItem"
-                arguments="{
-                    contract: contract,
-                    settings: settings
-                }"
-            />
-        </f:for>
-    </ul>
-</f:if>
+
+<div class="academic-persons-contracts">
+    <f:if condition="{contracts}">
+        <f:then>
+            <div class="row">
+                <f:for each="{contracts}" as="contract">
+                    <div class="col-12 col-md-6 col-lg-4 col-xl-3">
+                        <f:render
+                            partial="Profile/Item"
+                            arguments="{
+                                settings: settings,
+                                profile: contract.profile,
+                                contract: contract,
+                                data: data
+                            }"
+                        />
+                    </div>
+                </f:for>
+            </div>
+        </f:then>
+        <f:else>
+            <p>{f:translate(key: 'list.noContractsFound', extensionName: 'academic_persons')}</p>
+        </f:else>
+    </f:if>
+</div>
+
 </html>

@@ -1,36 +1,30 @@
-<html data-namespace-typo3-fluid="true"
-      xmlns:f="http://typo3.org/ns/TYPO3/CMS/Fluid/ViewHelpers"
+<html
+    data-namespace-typo3-fluid="true"
+    xmlns:f="http://typo3.org/ns/TYPO3/CMS/Fluid/ViewHelpers"
 >
 
-<f:if condition="{profiles}">
-    <f:variable name="profilesToList" value="{profiles}" />
-    <f:if condition="{settings.paginationEnabled}">
-        <f:variable name="profilesToList" value="{pagination.paginator.paginatedItems}" />
-    </f:if>
-
-    <f:if condition="{demand.groupBy}">
+<div class="academic-persons-profiles">
+    <f:if condition="{profiles}">
         <f:then>
-            <f:groupedFor as="groupedProfiles" groupBy="{demand.groupBy}" each="{profilesToList}">
-                <h3>{groupKey}</h3>
-                <ul>
-                    <f:for each="{groupedProfiles}" as="profile">
-                        <f:render partial="List/ListItem" arguments="{profile: profile, demand: demand, settings: settings}" />
-                    </f:for>
-                </ul>
-            </f:groupedFor>
+            <div class="row">
+                <f:for each="{profiles}" as="profile">
+                    <div class="col-12 col-md-6 col-lg-4 col-xl-3">
+                        <f:render
+                            partial="Profile/Item"
+                            arguments="{
+                                settings: settings,
+                                profile: profile,
+                                data: data
+                            }"
+                        />
+                    </div>
+                </f:for>
+            </div>
         </f:then>
         <f:else>
-            <ul>
-                <f:for each="{profilesToList}" as="profile">
-                    <f:render partial="List/ListItem" arguments="{profile: profile, demand: demand, settings: settings}" />
-                </f:for>
-            </ul>
+            <p>{f:translate(key: 'list.noProfilesFound', extensionName: 'academic_persons')}</p>
         </f:else>
     </f:if>
-
-    <f:if condition="{settings.paginationEnabled}">
-        <f:render partial="List/Pagination" arguments="{paginator: paginator, pagination: pagination}" />
-    </f:if>
-</f:if>
+</div>
 
 </html>

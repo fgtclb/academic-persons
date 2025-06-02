@@ -1,360 +1,358 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<xliff version="1.2" xmlns="urn:oasis:names:tc:xliff:document:1.2">
-    <file source-language="en" datatype="plaintext" product-name="academic_persons">
-        <header/>
-        <body>
-            <!-- Addresses -->
+<xliff version="1.2"
+	xmlns="urn:oasis:names:tc:xliff:document:1.2">
+	<file source-language="en" datatype="plaintext" product-name="academic_persons">
+		<header/>
+		<body>
+			<!-- Addresses -->
 
-            <trans-unit id="tx_academicpersons_domain_model_address.columns.additional.label">
-                <source>Additional</source>
-            </trans-unit>
-            <trans-unit id="tx_academicpersons_domain_model_address.columns.city.label">
-                <source>City</source>
-            </trans-unit>
-            <trans-unit id="tx_academicpersons_domain_model_address.columns.country.label">
-                <source>Country</source>
-            </trans-unit>
-            <trans-unit id="tx_academicpersons_domain_model_address.columns.state.label">
-                <source>State</source>
-            </trans-unit>
-            <trans-unit id="tx_academicpersons_domain_model_address.columns.street.label">
-                <source>Street</source>
-            </trans-unit>
-            <trans-unit id="tx_academicpersons_domain_model_address.columns.street_number.label">
-                <source>Street Number</source>
-            </trans-unit>
-            <trans-unit id="tx_academicpersons_domain_model_address.columns.type.items.undefined.label">
-                <source>Undefined</source>
-            </trans-unit>
-            <trans-unit id="tx_academicpersons_domain_model_address.columns.type.label">
-                <source>Type</source>
-            </trans-unit>
-            <trans-unit id="tx_academicpersons_domain_model_address.columns.zip.label">
-                <source>Zip</source>
-            </trans-unit>
-            <trans-unit id="tx_academicpersons_domain_model_address.ctrl.label">
-                <source>Address</source>
-            </trans-unit>
+			<trans-unit id="tx_academicpersons_domain_model_address.columns.additional.label">
+				<source>Additional</source>
+			</trans-unit>
+			<trans-unit id="tx_academicpersons_domain_model_address.columns.city.label">
+				<source>City</source>
+			</trans-unit>
+			<trans-unit id="tx_academicpersons_domain_model_address.columns.country.label">
+				<source>Country</source>
+			</trans-unit>
+			<trans-unit id="tx_academicpersons_domain_model_address.columns.state.label">
+				<source>State</source>
+			</trans-unit>
+			<trans-unit id="tx_academicpersons_domain_model_address.columns.street.label">
+				<source>Street</source>
+			</trans-unit>
+			<trans-unit id="tx_academicpersons_domain_model_address.columns.street_number.label">
+				<source>Street Number</source>
+			</trans-unit>
+			<trans-unit id="tx_academicpersons_domain_model_address.columns.type.items.undefined.label">
+				<source>Undefined</source>
+			</trans-unit>
+			<trans-unit id="tx_academicpersons_domain_model_address.columns.type.label">
+				<source>Type</source>
+			</trans-unit>
+			<trans-unit id="tx_academicpersons_domain_model_address.columns.zip.label">
+				<source>Zip</source>
+			</trans-unit>
+			<trans-unit id="tx_academicpersons_domain_model_address.ctrl.label">
+				<source>Address</source>
+			</trans-unit>
 
-            <!-- Contracts -->
+			<!-- Contracts -->
 
-            <trans-unit id="tx_academicpersons_domain_model_contract.columns.email_addresses.label">
-                <source>Email Addresses</source>
-            </trans-unit>
-            <trans-unit id="tx_academicpersons_domain_model_contract.columns.employee_type.label">
-                <source>Employee Type</source>
-            </trans-unit>
-            <trans-unit id="tx_academicpersons_domain_model_contract.columns.function_type.label">
-                <source>Function Type</source>
-            </trans-unit>
-            <trans-unit id="tx_academicpersons_domain_model_contract.columns.location.label">
-                <source>Location / Campus</source>
-            </trans-unit>
-            <trans-unit id="tx_academicpersons_domain_model_contract.columns.office_hours.label">
-                <source>Office hours</source>
-            </trans-unit>
-            <trans-unit id="tx_academicpersons_domain_model_contract.columns.organisational_level_1.label">
-                <source>Organisational Level 1</source>
-            </trans-unit>
-            <trans-unit id="tx_academicpersons_domain_model_contract.columns.organisational_level_2.label">
-                <source>Organisational Level 2</source>
-            </trans-unit>
-            <trans-unit id="tx_academicpersons_domain_model_contract.columns.organisational_level_3.label">
-                <source>Organisational Level 3</source>
-            </trans-unit>
-            <trans-unit id="tx_academicpersons_domain_model_contract.columns.organisational_unit.label">
-                <source>Organisational Unit</source>
-            </trans-unit>
-            <trans-unit id="tx_academicpersons_domain_model_contract.columns.phone_numbers.label">
-                <source>Phone Numbers</source>
-            </trans-unit>
-            <trans-unit id="tx_academicpersons_domain_model_contract.columns.physical_addresses.label">
-                <source>Addresses</source>
-            </trans-unit>
-            <trans-unit id="tx_academicpersons_domain_model_contract.columns.physical_addresses_chosen.label">
-                <source>Address</source>
-            </trans-unit>
-            <trans-unit id="tx_academicpersons_domain_model_contract.columns.position.label">
-                <source>Position</source>
-            </trans-unit>
-            <trans-unit id="tx_academicpersons_domain_model_contract.columns.profile.label">
-                <source>Profile</source>
-            </trans-unit>
-            <trans-unit id="tx_academicpersons_domain_model_contract.columns.publish.label">
-                <source>Show this contract online?</source>
-            </trans-unit>
-            <trans-unit id="tx_academicpersons_domain_model_contract.columns.room.label">
-                <source>Room</source>
-            </trans-unit>
-            <trans-unit id="tx_academicpersons_domain_model_contract.columns.sorting.label">
-                <source>Sorting</source>
-            </trans-unit>
-            <trans-unit id="tx_academicpersons_domain_model_contract.columns.valid_from.label">
-                <source>Valid From</source>
-            </trans-unit>
-            <trans-unit id="tx_academicpersons_domain_model_contract.columns.valid_to.label">
-                <source>Valid To</source>
-            </trans-unit>
-            <trans-unit id="tx_academicpersons_domain_model_contract.ctrl.label">
-                <source>Employee Contract</source>
-            </trans-unit>
-            <trans-unit id="tx_academicpersons_domain_model_contract.div.addresses.label">
-                <source>Addresses</source>
-            </trans-unit>
-            <trans-unit id="tx_academicpersons_domain_model_contract.div.employeeType.label">
-                <source>Employee Type</source>
-            </trans-unit>
-            <trans-unit id="tx_academicpersons_domain_model_contract.div.general.label">
-                <source>General</source>
-            </trans-unit>
-            <trans-unit id="tx_academicpersons_domain_model_contract.please_select">
-                <source>Please select...</source>
-            </trans-unit>
+			<trans-unit id="tx_academicpersons_domain_model_contract.columns.email_addresses.label">
+				<source>Email Addresses</source>
+			</trans-unit>
+			<trans-unit id="tx_academicpersons_domain_model_contract.columns.employee_type.label">
+				<source>Employee Type</source>
+			</trans-unit>
+			<trans-unit id="tx_academicpersons_domain_model_contract.columns.function_type.label">
+				<source>Function Type</source>
+			</trans-unit>
+			<trans-unit id="tx_academicpersons_domain_model_contract.columns.location.label">
+				<source>Location / Campus</source>
+			</trans-unit>
+			<trans-unit id="tx_academicpersons_domain_model_contract.columns.office_hours.label">
+				<source>Office hours</source>
+			</trans-unit>
+			<trans-unit id="tx_academicpersons_domain_model_contract.columns.organisational_level_1.label">
+				<source>Organisational Level 1</source>
+			</trans-unit>
+			<trans-unit id="tx_academicpersons_domain_model_contract.columns.organisational_level_2.label">
+				<source>Organisational Level 2</source>
+			</trans-unit>
+			<trans-unit id="tx_academicpersons_domain_model_contract.columns.organisational_level_3.label">
+				<source>Organisational Level 3</source>
+			</trans-unit>
+			<trans-unit id="tx_academicpersons_domain_model_contract.columns.organisational_unit.label">
+				<source>Organisational Unit</source>
+			</trans-unit>
+			<trans-unit id="tx_academicpersons_domain_model_contract.columns.phone_numbers.label">
+				<source>Phone Numbers</source>
+			</trans-unit>
+			<trans-unit id="tx_academicpersons_domain_model_contract.columns.physical_addresses.label">
+				<source>Addresses</source>
+			</trans-unit>
+			<trans-unit id="tx_academicpersons_domain_model_contract.columns.physical_addresses_chosen.label">
+				<source>Address</source>
+			</trans-unit>
+			<trans-unit id="tx_academicpersons_domain_model_contract.columns.position.label">
+				<source>Position</source>
+			</trans-unit>
+			<trans-unit id="tx_academicpersons_domain_model_contract.columns.publish.label">
+				<source>Show this contract online?</source>
+			</trans-unit>
+			<trans-unit id="tx_academicpersons_domain_model_contract.columns.room.label">
+				<source>Room</source>
+			</trans-unit>
+			<trans-unit id="tx_academicpersons_domain_model_contract.columns.sorting.label">
+				<source>Sorting</source>
+			</trans-unit>
+			<trans-unit id="tx_academicpersons_domain_model_contract.columns.valid_from.label">
+				<source>Valid From</source>
+			</trans-unit>
+			<trans-unit id="tx_academicpersons_domain_model_contract.columns.valid_to.label">
+				<source>Valid To</source>
+			</trans-unit>
+			<trans-unit id="tx_academicpersons_domain_model_contract.ctrl.label">
+				<source>Employee Contract</source>
+			</trans-unit>
+			<trans-unit id="tx_academicpersons_domain_model_contract.div.addresses.label">
+				<source>Addresses</source>
+			</trans-unit>
+			<trans-unit id="tx_academicpersons_domain_model_contract.div.employeeType.label">
+				<source>Employee Type</source>
+			</trans-unit>
+			<trans-unit id="tx_academicpersons_domain_model_contract.div.general.label">
+				<source>General</source>
+			</trans-unit>
+			<trans-unit id="tx_academicpersons_domain_model_contract.please_select">
+				<source>Please select...</source>
+			</trans-unit>
 
-            <!-- Email Addresses -->
+			<!-- Email Addresses -->
 
-            <trans-unit id="tx_academicpersons_domain_model_email.columns.contract.label">
-                <source>Contract</source>
-            </trans-unit>
-            <trans-unit id="tx_academicpersons_domain_model_email.columns.email.label">
-                <source>Email Address</source>
-            </trans-unit>
-            <trans-unit id="tx_academicpersons_domain_model_email.columns.type.items.undefined.label">
-                <source>Undefined</source>
-            </trans-unit>
-            <trans-unit id="tx_academicpersons_domain_model_email.columns.type.label">
-                <source>Type</source>
-            </trans-unit>
-            <trans-unit id="tx_academicpersons_domain_model_email.ctrl.label">
-                <source>Email Address</source>
-            </trans-unit>
+			<trans-unit id="tx_academicpersons_domain_model_email.columns.contract.label">
+				<source>Contract</source>
+			</trans-unit>
+			<trans-unit id="tx_academicpersons_domain_model_email.columns.email.label">
+				<source>Email Address</source>
+			</trans-unit>
+			<trans-unit id="tx_academicpersons_domain_model_email.columns.type.items.undefined.label">
+				<source>Undefined</source>
+			</trans-unit>
+			<trans-unit id="tx_academicpersons_domain_model_email.columns.type.label">
+				<source>Type</source>
+			</trans-unit>
+			<trans-unit id="tx_academicpersons_domain_model_email.ctrl.label">
+				<source>Email Address</source>
+			</trans-unit>
 
-            <!-- Function Types -->
+			<!-- Function Types -->
 
-            <trans-unit id="tx_academicpersons_domain_model_function_type.columns.function_name.label">
-                <source>Function Name</source>
-            </trans-unit>
-            <trans-unit id="tx_academicpersons_domain_model_function_type.columns.function_name_female.label">
-                <source>Function Name Female</source>
-            </trans-unit>
-            <trans-unit id="tx_academicpersons_domain_model_function_type.columns.function_name_male.label">
-                <source>Function Name Male</source>
-            </trans-unit>
-            <trans-unit id="tx_academicpersons_domain_model_function_type.ctrl.label">
-                <source>Function Type</source>
-            </trans-unit>
+			<trans-unit id="tx_academicpersons_domain_model_function_type.columns.function_name.label">
+				<source>Function Name</source>
+			</trans-unit>
+			<trans-unit id="tx_academicpersons_domain_model_function_type.columns.function_name_female.label">
+				<source>Function Name Female</source>
+			</trans-unit>
+			<trans-unit id="tx_academicpersons_domain_model_function_type.columns.function_name_male.label">
+				<source>Function Name Male</source>
+			</trans-unit>
+			<trans-unit id="tx_academicpersons_domain_model_function_type.ctrl.label">
+				<source>Function Type</source>
+			</trans-unit>
 
-            <!-- Locations -->
+			<!-- Locations -->
 
-            <trans-unit id="tx_academicpersons_domain_model_location.columns.title.label">
-                <source>Title</source>
-            </trans-unit>
-            <trans-unit id="tx_academicpersons_domain_model_location.ctrl.label">
-                <source>Location</source>
-            </trans-unit>
+			<trans-unit id="tx_academicpersons_domain_model_location.columns.title.label">
+				<source>Title</source>
+			</trans-unit>
+			<trans-unit id="tx_academicpersons_domain_model_location.ctrl.label">
+				<source>Location</source>
+			</trans-unit>
 
-            <!-- Organisational Units -->
-            <trans-unit id="tx_academicpersons_domain_model_organisational_unit.columns.display_text.label">
-                <source>Display Text</source>
-            </trans-unit>
-            <trans-unit id="tx_academicpersons_domain_model_organisational_unit.columns.long_text.label">
-                <source>Long Text</source>
-            </trans-unit>
-            <trans-unit id="tx_academicpersons_domain_model_organisational_unit.columns.parent.label">
-                <source>Parent</source>
-            </trans-unit>
+			<!-- Organisational Units -->
+			<trans-unit id="tx_academicpersons_domain_model_organisational_unit.columns.display_text.label">
+				<source>Display Text</source>
+			</trans-unit>
+			<trans-unit id="tx_academicpersons_domain_model_organisational_unit.columns.long_text.label">
+				<source>Long Text</source>
+			</trans-unit>
+			<trans-unit id="tx_academicpersons_domain_model_organisational_unit.columns.parent.label">
+				<source>Parent</source>
+			</trans-unit>
 			<trans-unit id="tx_academicpersons_domain_model_organisational_unit.columns.parent.default.label">
-                <source>No parent</source>
-            </trans-unit>
-            <trans-unit id="tx_academicpersons_domain_model_organisational_unit.columns.unique_name.label">
-                <source>Unique Name</source>
-            </trans-unit>
-            <trans-unit id="tx_academicpersons_domain_model_organisational_unit.columns.unit_name.label">
-                <source>Unit Name</source>
-            </trans-unit>
-            <trans-unit id="tx_academicpersons_domain_model_organisational_unit.columns.valid_from.label">
-                <source>Valid From</source>
-            </trans-unit>
-            <trans-unit id="tx_academicpersons_domain_model_organisational_unit.columns.valid_to.label">
-                <source>Valid To</source>
-            </trans-unit>
-            <trans-unit id="tx_academicpersons_domain_model_organisational_unit.ctrl.label">
-                <source>Organisational Unit</source>
-            </trans-unit>
-            <trans-unit id="tx_academicpersons_domain_model_organisational_unit.columns.contracts.label">
-                <source>Employee Contracts</source>
-            </trans-unit>
+				<source>No parent</source>
+			</trans-unit>
+			<trans-unit id="tx_academicpersons_domain_model_organisational_unit.columns.unique_name.label">
+				<source>Unique Name</source>
+			</trans-unit>
+			<trans-unit id="tx_academicpersons_domain_model_organisational_unit.columns.unit_name.label">
+				<source>Unit Name</source>
+			</trans-unit>
+			<trans-unit id="tx_academicpersons_domain_model_organisational_unit.columns.valid_from.label">
+				<source>Valid From</source>
+			</trans-unit>
+			<trans-unit id="tx_academicpersons_domain_model_organisational_unit.columns.valid_to.label">
+				<source>Valid To</source>
+			</trans-unit>
+			<trans-unit id="tx_academicpersons_domain_model_organisational_unit.ctrl.label">
+				<source>Organisational Unit</source>
+			</trans-unit>
+			<trans-unit id="tx_academicpersons_domain_model_organisational_unit.columns.contracts.label">
+				<source>Employee Contracts</source>
+			</trans-unit>
 
-            <!-- Phone Numbers -->
+			<!-- Phone Numbers -->
 
-            <trans-unit id="tx_academicpersons_domain_model_phone_number.columns.contract.label">
-                <source>Contract</source>
-            </trans-unit>
-            <trans-unit id="tx_academicpersons_domain_model_phone_number.columns.phone_number.label">
-                <source>Phone Number</source>
-            </trans-unit>
-            <trans-unit id="tx_academicpersons_domain_model_phone_number.columns.type.items.undefined.label">
-                <source>Undefined</source>
-            </trans-unit>
-            <trans-unit id="tx_academicpersons_domain_model_phone_number.columns.type.label">
-                <source>Type</source>
-            </trans-unit>
-            <trans-unit id="tx_academicpersons_domain_model_phone_number.ctrl.label">
-                <source>Phone Number</source>
-            </trans-unit>
+			<trans-unit id="tx_academicpersons_domain_model_phone_number.columns.contract.label">
+				<source>Contract</source>
+			</trans-unit>
+			<trans-unit id="tx_academicpersons_domain_model_phone_number.columns.phone_number.label">
+				<source>Phone Number</source>
+			</trans-unit>
+			<trans-unit id="tx_academicpersons_domain_model_phone_number.columns.type.items.undefined.label">
+				<source>Undefined</source>
+			</trans-unit>
+			<trans-unit id="tx_academicpersons_domain_model_phone_number.columns.type.label">
+				<source>Type</source>
+			</trans-unit>
+			<trans-unit id="tx_academicpersons_domain_model_phone_number.ctrl.label">
+				<source>Phone Number</source>
+			</trans-unit>
 
-            <!-- Profiles -->
+			<!-- Profiles -->
 
-            <trans-unit id="tx_academicpersons_domain_model_profile.columns.contracts.label">
-                <source>Employee Contracts</source>
-            </trans-unit>
-            <trans-unit id="tx_academicpersons_domain_model_profile.columns.cooperation.label">
-                <source>Networks and Cooperations</source>
-            </trans-unit>
-            <trans-unit id="tx_academicpersons_domain_model_profile.columns.core_competences.label">
-                <source>Research areas</source>
-            </trans-unit>
-            <trans-unit id="tx_academicpersons_domain_model_profile.columns.first_name.label">
-                <source>First Name</source>
-            </trans-unit>
-            <trans-unit id="tx_academicpersons_domain_model_profile.columns.first_name_alpha.label">
-                <source>First Letter of First Name</source>
-            </trans-unit>
-            <trans-unit id="tx_academicpersons_domain_model_profile.columns.gender.items.diverse">
-                <source>Diverse</source>
-            </trans-unit>
-            <trans-unit id="tx_academicpersons_domain_model_profile.columns.gender.items.mr">
-                <source>Mr.</source>
-            </trans-unit>
-            <trans-unit id="tx_academicpersons_domain_model_profile.columns.gender.items.ms">
-                <source>Ms.</source>
-            </trans-unit>
-            <trans-unit id="tx_academicpersons_domain_model_profile.columns.gender.items.none">
-                <source>Not given</source>
-            </trans-unit>
-            <trans-unit id="tx_academicpersons_domain_model_profile.columns.gender.label">
-                <source>Gender</source>
-            </trans-unit>
-            <trans-unit id="tx_academicpersons_domain_model_profile.columns.image.label">
-                <source>Image</source>
-            </trans-unit>
-            <trans-unit id="tx_academicpersons_domain_model_profile.columns.last_name.label">
-                <source>Last Name</source>
-            </trans-unit>
-            <trans-unit id="tx_academicpersons_domain_model_profile.columns.last_name_alpha.label">
-                <source>First Letter of Last Name</source>
-            </trans-unit>
-            <trans-unit id="tx_academicpersons_domain_model_profile.columns.lectures.label">
-                <source>Lectures</source>
-            </trans-unit>
-            <trans-unit id="tx_academicpersons_domain_model_profile.columns.memberships.label">
-                <source>Memberships/Committee activities</source>
-            </trans-unit>
-            <trans-unit id="tx_academicpersons_domain_model_profile.columns.middle_name.label">
-                <source>Middle Name</source>
-            </trans-unit>
-            <trans-unit id="tx_academicpersons_domain_model_profile.columns.miscellaneous.label">
-                <source>Miscellaneous information</source>
-            </trans-unit>
-            <trans-unit id="tx_academicpersons_domain_model_profile.columns.press_media.label">
-                <source>Press/Media</source>
-            </trans-unit>
-            <trans-unit id="tx_academicpersons_domain_model_profile.columns.publications.label">
-                <source>Publications</source>
-            </trans-unit>
-            <trans-unit id="tx_academicpersons_domain_model_profile.columns.publications_link.label">
-                <source>Link to publications</source>
-            </trans-unit>
-            <trans-unit id="tx_academicpersons_domain_model_profile.columns.publications_link_title.label">
-                <source>Website link title (e.g. OPUS4)</source>
-            </trans-unit>
-            <trans-unit id="tx_academicpersons_domain_model_profile.columns.scientific_research.label">
-                <source>Research projects</source>
-            </trans-unit>
-            <trans-unit id="tx_academicpersons_domain_model_profile.columns.slug.label">
-                <source>URL Path</source>
-            </trans-unit>
-            <trans-unit id="tx_academicpersons_domain_model_profile.columns.supervised_doctoral_thesis.label">
-                <source>Supervised doctoral theses</source>
-            </trans-unit>
-            <trans-unit id="tx_academicpersons_domain_model_profile.columns.supervised_thesis.label">
-                <source>Supervised theses</source>
-            </trans-unit>
-            <trans-unit id="tx_academicpersons_domain_model_profile.columns.teaching_area.label">
-                <source>Teaching areas/Fields of activity</source>
-            </trans-unit>
-            <trans-unit id="tx_academicpersons_domain_model_profile.columns.title.label">
-                <source>Title</source>
-            </trans-unit>
-            <trans-unit id="tx_academicpersons_domain_model_profile.columns.vita.label">
-                <source>Academic career</source>
-            </trans-unit>
-            <trans-unit id="tx_academicpersons_domain_model_profile.columns.website.label">
-                <source>Website</source>
-            </trans-unit>
-            <trans-unit id="tx_academicpersons_domain_model_profile.columns.website_title.label">
-                <source>Website Link Title</source>
-            </trans-unit>
-            <trans-unit id="tx_academicpersons_domain_model_profile.ctrl.label">
-                <source>Profile</source>
-            </trans-unit>
-            <trans-unit id="tx_academicpersons_domain_model_profile.div.contracts.label">
-                <source>Contracts</source>
-            </trans-unit>
-            <trans-unit id="tx_academicpersons_domain_model_profile.div.general.label">
-                <source>General</source>
-            </trans-unit>
-            <trans-unit id="tx_academicpersons_domain_model_profile.div.structuredInformation.label">
-                <source>Profile (Timeline)</source>
-            </trans-unit>
-            <trans-unit id="tx_academicpersons_domain_model_profile.div.unstructuredInformation.label">
-                <source>Profile (Text)</source>
-            </trans-unit>
+			<trans-unit id="tx_academicpersons_domain_model_profile.columns.contracts.label">
+				<source>Employee Contracts</source>
+			</trans-unit>
+			<trans-unit id="tx_academicpersons_domain_model_profile.columns.cooperation.label">
+				<source>Networks and Cooperations</source>
+			</trans-unit>
+			<trans-unit id="tx_academicpersons_domain_model_profile.columns.core_competences.label">
+				<source>Research areas</source>
+			</trans-unit>
+			<trans-unit id="tx_academicpersons_domain_model_profile.columns.first_name.label">
+				<source>First Name</source>
+			</trans-unit>
+			<trans-unit id="tx_academicpersons_domain_model_profile.columns.first_name_alpha.label">
+				<source>First Letter of First Name</source>
+			</trans-unit>
+			<trans-unit id="tx_academicpersons_domain_model_profile.columns.gender.items.diverse">
+				<source>Diverse</source>
+			</trans-unit>
+			<trans-unit id="tx_academicpersons_domain_model_profile.columns.gender.items.mr">
+				<source>Mr.</source>
+			</trans-unit>
+			<trans-unit id="tx_academicpersons_domain_model_profile.columns.gender.items.ms">
+				<source>Ms.</source>
+			</trans-unit>
+			<trans-unit id="tx_academicpersons_domain_model_profile.columns.gender.items.none">
+				<source>Not given</source>
+			</trans-unit>
+			<trans-unit id="tx_academicpersons_domain_model_profile.columns.gender.label">
+				<source>Gender</source>
+			</trans-unit>
+			<trans-unit id="tx_academicpersons_domain_model_profile.columns.image.label">
+				<source>Image</source>
+			</trans-unit>
+			<trans-unit id="tx_academicpersons_domain_model_profile.columns.last_name.label">
+				<source>Last Name</source>
+			</trans-unit>
+			<trans-unit id="tx_academicpersons_domain_model_profile.columns.last_name_alpha.label">
+				<source>First Letter of Last Name</source>
+			</trans-unit>
+			<trans-unit id="tx_academicpersons_domain_model_profile.columns.lectures.label">
+				<source>Lectures</source>
+			</trans-unit>
+			<trans-unit id="tx_academicpersons_domain_model_profile.columns.memberships.label">
+				<source>Memberships/Committee activities</source>
+			</trans-unit>
+			<trans-unit id="tx_academicpersons_domain_model_profile.columns.middle_name.label">
+				<source>Middle Name</source>
+			</trans-unit>
+			<trans-unit id="tx_academicpersons_domain_model_profile.columns.miscellaneous.label">
+				<source>Miscellaneous information</source>
+			</trans-unit>
+			<trans-unit id="tx_academicpersons_domain_model_profile.columns.press_media.label">
+				<source>Press/Media</source>
+			</trans-unit>
+			<trans-unit id="tx_academicpersons_domain_model_profile.columns.publications.label">
+				<source>Publications</source>
+			</trans-unit>
+			<trans-unit id="tx_academicpersons_domain_model_profile.columns.publications_link.label">
+				<source>Link to publications</source>
+			</trans-unit>
+			<trans-unit id="tx_academicpersons_domain_model_profile.columns.publications_link_title.label">
+				<source>Website link title (e.g. OPUS4)</source>
+			</trans-unit>
+			<trans-unit id="tx_academicpersons_domain_model_profile.columns.scientific_research.label">
+				<source>Research projects</source>
+			</trans-unit>
+			<trans-unit id="tx_academicpersons_domain_model_profile.columns.slug.label">
+				<source>URL Path</source>
+			</trans-unit>
+			<trans-unit id="tx_academicpersons_domain_model_profile.columns.supervised_doctoral_thesis.label">
+				<source>Supervised doctoral theses</source>
+			</trans-unit>
+			<trans-unit id="tx_academicpersons_domain_model_profile.columns.supervised_thesis.label">
+				<source>Supervised theses</source>
+			</trans-unit>
+			<trans-unit id="tx_academicpersons_domain_model_profile.columns.teaching_area.label">
+				<source>Teaching areas/Fields of activity</source>
+			</trans-unit>
+			<trans-unit id="tx_academicpersons_domain_model_profile.columns.title.label">
+				<source>Title</source>
+			</trans-unit>
+			<trans-unit id="tx_academicpersons_domain_model_profile.columns.vita.label">
+				<source>Academic career</source>
+			</trans-unit>
+			<trans-unit id="tx_academicpersons_domain_model_profile.columns.website.label">
+				<source>Website</source>
+			</trans-unit>
+			<trans-unit id="tx_academicpersons_domain_model_profile.columns.website_title.label">
+				<source>Website Link Title</source>
+			</trans-unit>
+			<trans-unit id="tx_academicpersons_domain_model_profile.ctrl.label">
+				<source>Profile</source>
+			</trans-unit>
+			<trans-unit id="tx_academicpersons_domain_model_profile.div.contracts.label">
+				<source>Contracts</source>
+			</trans-unit>
+			<trans-unit id="tx_academicpersons_domain_model_profile.div.general.label">
+				<source>General</source>
+			</trans-unit>
+			<trans-unit id="tx_academicpersons_domain_model_profile.div.structuredInformation.label">
+				<source>Profile (Timeline)</source>
+			</trans-unit>
+			<trans-unit id="tx_academicpersons_domain_model_profile.div.unstructuredInformation.label">
+				<source>Profile (Text)</source>
+			</trans-unit>
 
-            <!-- Profile Information -->
+			<!-- Profile Information -->
 
-            <trans-unit id="tx_academicpersons_domain_model_profile_information.columns.bodytext.label">
-                <source>Text</source>
-            </trans-unit>
-            <trans-unit id="tx_academicpersons_domain_model_profile_information.columns.link.label">
-                <source>Link</source>
-            </trans-unit>
-            <trans-unit id="tx_academicpersons_domain_model_profile_information.columns.profile.label">
-                <source>Profile</source>
-            </trans-unit>
-            <trans-unit id="tx_academicpersons_domain_model_profile_information.columns.title.label">
-                <source>Title</source>
-            </trans-unit>
-            <trans-unit id="tx_academicpersons_domain_model_profile_information.columns.type.items.cooperation.label">
-                <source>Network / cooperation</source>
-            </trans-unit>
-            <trans-unit id="tx_academicpersons_domain_model_profile_information.columns.type.items.curriculum_vitae.label">
-                <source>Curriculum vitae</source>
-            </trans-unit>
-            <trans-unit id="tx_academicpersons_domain_model_profile_information.columns.type.items.lecture.label">
-                <source>Lecture</source>
-            </trans-unit>
-            <trans-unit id="tx_academicpersons_domain_model_profile_information.columns.type.items.membership.label">
-                <source>Membership / committee</source>
-            </trans-unit>
-            <trans-unit id="tx_academicpersons_domain_model_profile_information.columns.type.items.publication.label">
-                <source>Publication</source>
-            </trans-unit>
-            <trans-unit id="tx_academicpersons_domain_model_profile_information.columns.type.label">
-                <source>Type</source>
-            </trans-unit>
-            <trans-unit id="tx_academicpersons_domain_model_profile_information.columns.year.label">
-                <source>Year</source>
-            </trans-unit>
-            <trans-unit id="tx_academicpersons_domain_model_profile_information.columns.year_end.label">
-                <source>End Year</source>
-            </trans-unit>
-            <trans-unit id="tx_academicpersons_domain_model_profile_information.columns.year_start.label">
-                <source>Start Year</source>
-            </trans-unit>
-            <trans-unit id="tx_academicpersons_domain_model_profile_information.ctrl.label">
-                <source>Profile information</source>
-            </trans-unit>
-        </body>
-    </file>
+			<trans-unit id="tx_academicpersons_domain_model_profile_information.columns.bodytext.label">
+				<source>Text</source>
+			</trans-unit>
+			<trans-unit id="tx_academicpersons_domain_model_profile_information.columns.link.label">
+				<source>Link</source>
+			</trans-unit>
+			<trans-unit id="tx_academicpersons_domain_model_profile_information.columns.profile.label">
+				<source>Profile</source>
+			</trans-unit>
+			<trans-unit id="tx_academicpersons_domain_model_profile_information.columns.title.label">
+				<source>Title</source>
+			</trans-unit>
+			<trans-unit id="tx_academicpersons_domain_model_profile_information.columns.type.items.cooperation.label">
+				<source>Network / cooperation</source>
+			</trans-unit>
+			<trans-unit id="tx_academicpersons_domain_model_profile_information.columns.type.items.curriculum_vitae.label">
+				<source>Curriculum vitae</source>
+			</trans-unit>
+			<trans-unit id="tx_academicpersons_domain_model_profile_information.columns.type.items.lecture.label">
+				<source>Lecture</source>
+			</trans-unit>
+			<trans-unit id="tx_academicpersons_domain_model_profile_information.columns.type.items.membership.label">
+				<source>Membership / committee</source>
+			</trans-unit>
+			<trans-unit id="tx_academicpersons_domain_model_profile_information.columns.type.items.publication.label">
+				<source>Publication</source>
+			</trans-unit>
+			<trans-unit id="tx_academicpersons_domain_model_profile_information.columns.type.label">
+				<source>Type</source>
+			</trans-unit>
+			<trans-unit id="tx_academicpersons_domain_model_profile_information.columns.year.label">
+				<source>Year</source>
+			</trans-unit>
+			<trans-unit id="tx_academicpersons_domain_model_profile_information.columns.year_end.label">
+				<source>End Year</source>
+			</trans-unit>
+			<trans-unit id="tx_academicpersons_domain_model_profile_information.columns.year_start.label">
+				<source>Start Year</source>
+			</trans-unit>
+			<trans-unit id="tx_academicpersons_domain_model_profile_information.ctrl.label">
+				<source>Profile information</source>
+			</trans-unit>
+		</body>
+	</file>
 </xliff>

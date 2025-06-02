@@ -173,7 +173,6 @@ $tcaConfiguration = [
                 'relationship' => 'oneToOne',
                 'minitems' => 0,
                 'maxitems' => 1,
-                'size' => 5,
             ],
         ],
         'physical_addresses' => [

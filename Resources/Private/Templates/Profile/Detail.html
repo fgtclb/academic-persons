@@ -2,10 +2,17 @@
     data-namespace-typo3-fluid="true"
     xmlns:f="http://typo3.org/ns/TYPO3/CMS/Fluid/ViewHelpers"
 >
+
 <div class="academic-persons-detail">
-    <h1>
-        {profile.title} {profile.firstName} {profile.middleName} {profile.lastName}
-    </h1>
+    <f:render
+        partial="Profile/Header"
+        arguments="{
+            header: '{profile.title} {profile.firstName} {profile.middleName} {profile.lastName}',
+            layout: '{data.header_layout}',
+            subheader: '{data.subheader}',
+            detail: 'true'
+        }"
+    />
 
     <f:if condition="{profile.image}">
         <f:image
@@ -16,112 +23,132 @@
         />
     </f:if>
 
-    <f:comment><!-- Contracts --></f:comment>
+    <f:if condition="{profile.contracts}">
+        <f:render
+            partial="Profile/SectionHeader"
+            arguments="{
+                header: '{f:translate(key: \'detail.contracts\', extensionName: \'academic_persons\')}',
+                layout: '{data.header_layout}',
+                subheader: '{data.subheader}',
+                detail: 'true'
+            }"
+        />
 
-    <h2>{f:translate(key: 'detail.contracts', extensionName: 'academic_persons')}</h2>
+        <ul class="list-group list-group-flush">
+            <f:for each="{profile.contracts}" as="contract">
+                <li class="accordion list-group-item" id="contract-accordion-{contract.uid}">
+                    <f:render
+                        partial="Profile/DataHeader"
+                        arguments="{
+                            header: '{f:render(
+                                section: \'AccordionHeader\',
+                                arguments: {uniqueId: contract.uid, header: contract.position}
+                            )}',
+                            layout: '{data.header_layout}',
+                            positionClass: 'accordion-header',
+                            subheader: '{data.subheader}'
+                        }"
+                    />
 
-    <f:for each="{profile.contracts}" as="contract">
-        <div class="card mt-4">
-            <div class="card-header">
-                <h3>{contract.position}</h3>
-            </div>
-
-            <div class="card-body">
-                <f:if condition="{contract.room}">
-                    <p>
-                        <strong>{f:translate(key: 'detail.room', extensionName: 'academic_persons')}:</strong> {contract.room}
-                    </p>
-                </f:if>
-
-                <f:if condition="{contract.phoneNumbers}">
-                    <p>
-                        <strong>{f:translate(key: 'detail.phoneNumbers', extensionName: 'academic_persons')}:</strong>
-
-                        <f:for
-                            each="{contract.phoneNumbers}"
-                            as="phoneNumber"
-                            iteration="phoneNumbersIterator"
-                        >
-							<a href="tel:{phoneNumber.phoneNumber}">
-								{phoneNumber.phoneNumber}
-
-								{f:if(
-									condition: '{phoneNumber.type}',
-									then: '({phoneNumber.type})'
-								)}{f:if(
-									condition: '!{phoneNumbersIterator.isLast}',
-									then: ', '
-								)}
-							</a>
-                        </f:for>
-                    </p>
-                </f:if>
-
-                <f:if condition="{contract.emailAddresses}">
-                    <p>
-                        <strong>{f:translate(key: 'detail.emailAddresses', extensionName: 'academic_persons')}:</strong>
-
-                        <f:for
-                            each="{contract.emailAddresses}"
-                            as="emailAddress"
-                            iteration="emailAddressesIterator"
-                        >
-							<f:link.email email="{emailAddress.email}">
-								{emailAddress.email}
-
-								{f:if(
-									condition: '{emailAddress.type}',
-									then: '({emailAddress.type})'
-								)}{f:if(
-									condition: '!{emailAddressesIterator.isLast}',
-									then: ', '
-								)}
-							</f:link.email>
-                        </f:for>
-                    </p>
-                </f:if>
-
-                <f:if condition="{contract.physicalAddresses}">
-                    <f:for
-                        each="{contract.physicalAddresses}"
-                        as="physicalAddress"
+                    <div
+                        id="collapse-{contract.uid}"
+                        class="accordion-collapse collapse"
+                        aria-labelledby="heading-{contract.uid}"
+                        data-bs-parent="#contract-accordion-{contract.uid}"
                     >
-                        <p>
-                            <f:if condition="{physicalAddress.type}">
-                                <strong>{f:translate(key: 'detail.physicalAddress.{physicalAddress.type}', extensionName: 'academic_persons')}:</strong>
+                        <ul class="accordion-body">
+                            <f:if condition="{contract.room}">
+                                <li>
+                                    <b>{f:translate(key: 'detail.room', extensionName: 'academic_persons')}:</b>
+
+                                    {contract.room}
+                                </li>
                             </f:if>
 
-                            {physicalAddress.street} {physicalAddress.streetNumber}{physicalAddress.additional},
-                            {physicalAddress.zip} {physicalAddress.city}{f:if(
-                                condition: '{physicalAddress.state}',
-                                then: ', {physicalAddress.state}'
-                            )}{f:if(
-                                condition: '{physicalAddress.country}',
-                                then: ', {physicalAddress.country}'
-                            )}
-                        </p>
-                    </f:for>
-                </f:if>
-            </div>
-        </div>
-    </f:for>
+                            <f:if condition="{contract.phoneNumbers}">
+                                <li>
+                                    <b>{f:translate(key: 'detail.phoneNumbers', extensionName: 'academic_persons')}:</b>
 
-    <h2 class="mt-4">{f:translate(key: 'detail.additionalInformation', extensionName: 'academic_persons')}</h2>
+                                    <f:for each="{contract.phoneNumbers}" as="item" iteration="i">
+                                        <a href="tel:{item.phoneNumber}">
+                                            {item.phoneNumber}
+
+                                            {f:if(
+                                                condition: '{item.type}',
+                                                then: '({item.type})'
+                                            )}{f:if(condition: '!{i.isLast}', then: ', ')}
+                                        </a>
+                                    </f:for>
+                                </li>
+                            </f:if>
+
+                            <f:if condition="{contract.emailAddresses}">
+                                <li>
+                                    <b>{f:translate(key: 'detail.emailAddresses', extensionName: 'academic_persons')}:</b>
+
+                                    <f:for each="{contract.emailAddresses}" as="item" iteration="i">
+                                        <f:link.email email="{item.email}">
+                                            {item.email}
+
+                                            {f:if(
+                                                condition: '{item.type}',
+                                                then: '({item.type})'
+                                            )}{f:if(condition: '!{i.isLast}', then: ', ')}
+                                        </f:link.email>
+                                    </f:for>
+                                </li>
+                            </f:if>
+
+                            <f:for each="{contract.physicalAddresses}" as="item">
+                                <li>
+                                    <f:if condition="{item.type}">
+                                        <b>
+                                            {f:translate(
+                                                key: 'detail.physicalAddress.{item.type}',
+                                                extensionName: 'academic_persons'
+                                            )}:
+                                        </b>
+                                    </f:if>
+
+                                    <f:if condition="{item.street} || {item.streetNumber}">
+                                        {item.street} {item.streetNumber} {item.additional},
+                                    </f:if>
+
+                                    <f:if condition="{item.zip} || {item.city}">
+                                        {item.zip} {item.city} |
+                                    </f:if>
+
+                                    <f:if condition="{item.state}">
+                                        {item.state},
+                                    </f:if>
+
+                                    <f:if condition="{item.country}">
+                                        {item.country}
+                                    </f:if>
+                                </li>
+                            </f:for>
+                        </ul>
+                    </div>
+                </li>
+            </f:for>
+        </ul>
+    </f:if>
+
+    <f:render
+        partial="Profile/SectionHeader"
+        arguments="{
+            header: '{f:translate(key: \'detail.additionalInformation\', extensionName: \'academic_persons\')}',
+            layout: '{data.header_layout}',
+            subheader: '{data.subheader}',
+            detail: 'true'
+        }"
+    />
 
     <f:if condition="{profile.website}">
         <p>
-            <strong>{f:translate(key: 'detail.website', extensionName: 'academic_persons')}:</strong>
+            <b>{f:translate(key: 'detail.website', extensionName: 'academic_persons')}:</b>
 
-            <f:link.typolink
-                parameter="{profile.website}"
-                target="_blank"
-                absolute="true"
-                title="{f:if(
-                    condition: '{profile.websiteTitle}',
-                    then: '{profile.websiteTitle}',
-                    else: '{profile.website}'
-                )}"
-            >
+            <f:link.typolink parameter="{profile.website}" target="_blank" absolute="true">
                 {f:if(
                     condition: '{profile.websiteTitle}',
                     then: '{profile.websiteTitle}',
@@ -131,115 +158,123 @@
         </p>
     </f:if>
 
-    <f:comment><!-- Profile (text) --></f:comment>
+    <ul class="list-group list-group-flush">
+        <f:for
+             each="{
+                0:'{name: \'teachingArea\', type: \'text\'}',
+                1:'{name: \'coreCompetences\', type: \'text\'}',
+                2:'{name: \'supervisedThesis\', type: \'text\'}',
+                3:'{name: \'supervisedDoctoralThesis\', type: \'text\'}',
+                4:'{name: \'miscellaneous\', type: \'text\'}',
+                5:'{name: \'scientificResearch\', type: \'timeline\'}',
+                6:'{name: \'vita\', type: \'timeline\'}',
+                7:'{name: \'memberships\', type: \'timeline\'}',
+                8:'{name: \'cooperation\', type: \'timeline\'}',
+                9:'{name: \'publications\', type: \'timeline\'}',
+                10:'{name: \'lectures\', type: \'timeline\'}',
+                11:'{name: \'pressMedia\', type: \'timeline\'}'
+            }"
+            as="field"
+        >
+            <f:if condition="{profile.{field.name}}">
+                <li class="accordion list-group-item" id="{field.name}-accordion">
+                    <f:variable name="HeaderTitle">
+                        {f:translate(key: 'detail.{field.name}', extensionName: 'academic_persons')}
+                    </f:variable>
 
-    <f:for
-        each="{
-            0:'teachingArea',
-            1:'coreCompetences',
-            2:'supervisedThesis',
-            3:'supervisedDoctoralThesis',
-            4:'miscellaneous'
-        }"
-        as="text"
-    >
-        <f:if condition="profile.{text}">
-            <div class="card mt-4">
-                <div class="card-header">
-                    <h3>{f:translate(key: 'detail.{text}', extensionName: 'academic_persons')}</h3>
-                </div>
+                    <f:render
+                        partial="Profile/DataHeader"
+                        arguments="{
+                            header: '{f:render(
+                                section: \'AccordionHeader\',
+                                arguments: {uniqueId: field.name, header: HeaderTitle}
+                            )}',
+                            layout: '{data.header_layout}',
+                            positionClass: 'accordion-header',
+                            subheader: '{data.subheader}'
+                        }"
+                    />
 
-                <div class="card-body">
-                    {profile.{text} -> f:format.html()}
-                </div>
-            </div>
-        </f:if>
-    </f:for>
+                    <div
+                        id="collapse-{field.name}"
+                        class="accordion-collapse collapse"
+                        aria-labelledby="heading-{field.name}"
+                        data-bs-parent="#{field.name}-accordion"
+                    >
+                        <div class="accordion-body">
+                            <f:if condition="{field.type} == 'text'">
+                                <f:then>
+                                    {profile.{field.name} -> f:format.html()}
+                                </f:then>
+                                <f:else>
+                                    <f:if condition="{field.name} == 'publications' && {profile.publicationsLink}">
+                                        <p>
+                                            <b>
+                                                {f:translate(key: 'detail.publicationsLink', extensionName: 'academic_persons')}:
+                                            </b>
 
-    <f:comment><!-- Profile (timeline) --></f:comment>
+                                            <f:link.typolink parameter="{profile.publicationsLink}" target="_blank" absolute="true">
+                                                {f:if(
+                                                    condition: '{profile.publicationsLinkTitle}',
+                                                    then: '{profile.publicationsLinkTitle}',
+                                                    else: '{profile.publicationsLink}'
+                                                )}
+                                            </f:link.typolink>
+                                        </p>
+                                    </f:if>
 
-    <f:for
-        each="{
-            0:'scientificResearch',
-            1:'vita',
-            2:'memberships',
-            3:'cooperation',
-            4:'publications',
-            5:'lectures',
-            6:'pressMedia'
-        }"
-        as="timeline"
-    >
-        <f:if condition="{profile.{timeline} -> f:count()} > 0 || {timeline} == 'publications' && {profile.publicationsLink}">
-            <div class="card mt-4">
-                <div class="card-header">
-                    <h3>{f:translate(key: 'detail.{timeline}', extensionName: 'academic_persons')}</h3>
-                </div>
+                                    <f:for each="{profile.{field.name}}" as="item">
+                                        <b>
+                                            <f:if condition="{item.yearStart} || {item.yearEnd}">
+                                                <f:then>
+                                                    <f:if condition="!{item.yearEnd} && {item.yearStart}">
+                                                        {f:translate(key: 'detail.since', extensionName: 'academic_persons')}
+                                                    </f:if>
 
-                <div class="card-body">
-                    <f:if condition="{timeline} == 'publications' && {profile.publicationsLink}">
-                        <p>
-                            <strong>{f:translate(key: 'detail.publicationsLink', extensionName: 'academic_persons')}:</strong>
+                                                    {f:if(condition: '{item.yearStart}', then: '{item.yearStart}')}
 
-                            <f:link.typolink
-                                parameter="{profile.publicationsLink}"
-                                target="_blank"
-                                absolute="true"
-                                title="{f:if(
-                                    condition: '{profile.publicationsLinkTitle}',
-                                    then: '{profile.publicationsLinkTitle}',
-                                    else: '{profile.publicationsLink}'
-                                )}"
-                            >
-                                {f:if(
-                                    condition: '{profile.publicationsLinkTitle}',
-                                    then: '{profile.publicationsLinkTitle}',
-                                    else: '{profile.publicationsLink}'
-                                )}
-                            </f:link.typolink>
-                        </p>
-                    </f:if>
+                                                    <f:if condition="{item.yearEnd} && {item.yearStart}">
+                                                        -
+                                                    </f:if>
 
-                    <dl>
-                        <f:for each="{profile.{timeline}}" as="item">
-                            <dt>
-                                <f:if condition="{item.yearStart} || {item.yearEnd}">
-                                    <f:then>
-                                        <f:variable name="yearString">
-                                            <f:if condition="!{item.yearEnd} && {item.yearStart}">
-                                                {f:translate(key: 'detail.since', extensionName: 'academic_persons')}
+                                                    <f:if condition="!{item.yearStart} && {item.yearEnd}">
+                                                        {f:translate(key: 'detail.till', extensionName: 'academic_persons')}
+                                                    </f:if>
+
+                                                    {f:if(condition: '{item.yearEnd}', then: '{item.yearEnd}')}:
+                                                </f:then>
+                                                <f:else if="{item.year}">
+                                                    {item.year}:
+                                                </f:else>
                                             </f:if>
 
-                                            {f:if(condition: '{item.yearStart} > 0', then: '{item.yearStart}')}
+                                            {item.title}
+                                        </b>
 
-                                            <f:if condition="{item.yearEnd} && {item.yearStart}">
-                                                -
-                                            </f:if>
-
-                                            <f:if condition="!{item.yearStart} && {item.yearEnd}">
-                                                {f:translate(key: 'detail.till', extensionName: 'academic_persons')}
-                                            </f:if>
-
-                                            {f:if(condition: '{item.yearEnd} > 0', then: '{item.yearEnd}')}
-                                        </f:variable>
-                                    </f:then>
-                                    <f:else>
-                                        <f:variable name="yearString">
-                                            {f:if(condition: '{item.year} > 0', then: '{item.year}')}
-                                        </f:variable>
-                                    </f:else>
-                                </f:if>
-
-                                {yearString}{f:if(condition: '{yearString}', then: ':')}
-                                {item.title}
-                            </dt>
-
-                            <dd>{item.bodytext -> f:format.html()}</dd>
-                        </f:for>
-                    </dl>
-                </div>
-            </div>
-        </f:if>
-    </f:for>
+                                        <span>{item.bodytext -> f:format.html()}</span>
+                                    </f:for>
+                                </f:else>
+                            </f:if>
+                        </div>
+                    </div>
+                </li>
+            </f:if>
+        </f:for>
+    </ul>
 </div>
+
+<f:section name="AccordionHeader">
+    <button
+        class="accordion-button collapsed"
+        type="button"
+        data-bs-toggle="collapse"
+        data-bs-target="#collapse-{uniqueId}"
+        aria-expanded="false"
+        aria-controls="collapse-{uniqueId}"
+        id="heading-{uniqueId}"
+    >
+        {header}
+    </button>
+</f:section>
+
 </html>

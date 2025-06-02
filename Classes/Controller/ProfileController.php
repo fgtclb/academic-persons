@@ -180,7 +180,11 @@ final class ProfileController extends ActionController
         $event = $this->eventDispatcher->dispatch(new ModifyDetailProfileEvent($profile, $this->view));
         $profile = $event->getProfile();
 
-        $this->view->assign('profile', $profile);
+        $this->view->assignMultiple([
+            'data' => $this->getCurrentContentObjectRenderer()?->data,
+            'profile' => $profile,
+        ]);
+
         $this->addCacheTags(
             'profile_detail_view',
             sprintf('profile_detail_view_%d', $profile->getUid()),

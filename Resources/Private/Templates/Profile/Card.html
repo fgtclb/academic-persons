@@ -3,59 +3,28 @@
     xmlns:f="http://typo3.org/ns/TYPO3/CMS/Fluid/ViewHelpers"
 >
 
-<div class="academic-persons-cards">
-	<f:if condition="{profiles}">
-		<f:then>
-			<f:for each="{profiles}" as="profile">
-				<section class="profile-card">
-					<f:if condition="{profile.title} || {profile.firstName} || {profile.middleName} || {profile.lastName}">
-						<f:link.action
-							action="detail"
-							pageUid="{settings.detailPid}"
-							extensionName="AcademicPersons"
-							controller="Profile"
-							pluginName="Detail"
-							arguments="{profile: address.profile}"
-						>
-							{profile.title} {profile.firstName} {profile.middleName} {profile.lastName}
-						</f:link.action>
-					</f:if>
-
-					<f:if condition="{profile.contracts}">
-						<f:variable name="contract">{profile.contracts.0}</f:variable>
-
-						<f:if condition="{contract.position}">
-							<div>
-								<p>
-									{contract.position}
-								</p>
-							</div>
-						</f:if>
-
-						<f:if condition="{contract.emailAddresses}">
-							<f:for each="{contract.emailAddresses}" as="emailAddress">
-								<address>
-									<f:link.email email="{emailAddress.email}">
-										{emailAddress.email}
-									</f:link.email>
-								</address>
-							</f:for>
-						</f:if>
-
-						<f:if condition="{contract.phoneNumbers}">
-							<f:for each="{contract.phoneNumbers}" as="phoneNumber">
-								<a href="tel:{phoneNumber.phoneNumber}">
-									{phoneNumber.phoneNumber}
-								</a>
-							</f:for>
-						</f:if>
-					</f:if>
-				</section>
-			</f:for>
-		</f:then>
-		<f:else>
-			<f:translate key="card.noProfileSelected" extensionName="academic_persons" default="No profile was selected" />
-		</f:else>
-	</f:if>
+<div class="academic-persons-card">
+    <f:if condition="{profiles}">
+        <f:then>
+            <div class="row">
+                <f:for each="{profiles}" as="profile">
+                    <div class="col-12 col-md-6 col-lg-4 col-xl-3">
+                        <f:render
+                            partial="Profile/Item"
+                            arguments="{
+                                settings: settings,
+                                profile: profile,
+                                data: data
+                            }"
+                        />
+                    </div>
+                </f:for>
+            </div>
+        </f:then>
+        <f:else>
+            <p>{f:translate(key: 'list.noProfilesFound', extensionName: 'academic_persons')}</p>
+        </f:else>
+    </f:if>
 </div>
+
 </html>

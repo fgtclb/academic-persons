@@ -1,0 +1,50 @@
+<html
+    data-namespace-typo3-fluid="true"
+    xmlns:f="http://typo3.org/ns/TYPO3/CMS/Fluid/ViewHelpers"
+>
+
+<f:if condition="{contract.{fieldName}} && {fieldName} != 'profile.image'">
+    <li class="list-group-item">
+        <b>{f:translate(key: 'contracts.{fieldName}', extensionName: 'academic_persons')}:</b>
+
+        <f:if condition="{fieldName} == position || {fieldName} == room || {fieldName} == officeHours">
+            {contract.{fieldName}}
+        </f:if>
+
+        <f:if condition="{fieldName} == emailAddresses || {fieldName} == phoneNumbers">
+            <f:for each="{contract.{fieldName}}" as="item" iteration="i">
+                <f:if condition="{item.email}">
+                    <f:link.email email="{item.email}"/>{f:if(condition: '!{i.isLast}', then: ', ')}
+                </f:if>
+
+                <f:if condition="{item.phoneNumber}">
+                    <a href="tel:{item.phoneNumber}">{item.phoneNumber}</a>{f:if(condition: '!{i.isLast}', then: ', ')}
+                </f:if>
+            </f:for>
+        </f:if>
+
+        <f:if condition="{fieldName} == physicalAddresses">
+            <f:for each="{contract.{fieldName}}" as="item" >
+                <span class="d-block">
+                    <f:if condition="{item.street} || {item.streetNumber}">
+                        {item.street} {item.streetNumber} {item.additional},
+                    </f:if>
+
+                    <f:if condition="{item.zip} || {item.city}">
+                        {item.zip} {item.city} |
+                    </f:if>
+
+                    <f:if condition="{item.state}">
+                        {item.state},
+                    </f:if>
+
+                    <f:if condition="{item.country}">
+                        {item.country}
+                    </f:if>
+                </span>
+            </f:for>
+        </f:if>
+    </li>
+</f:if>
+
+</html>

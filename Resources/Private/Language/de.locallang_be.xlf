@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<xliff version="1.2" xmlns="urn:oasis:names:tc:xliff:document:1.2">
+<xliff version="1.2"
+    xmlns="urn:oasis:names:tc:xliff:document:1.2">
     <file source-language="en" datatype="plaintext" product-name="academic_persons">
         <header/>
         <body>
@@ -33,16 +34,16 @@
                 <target>Academic</target>
             </trans-unit>
             <trans-unit id="plugin.list.label">
-                <source> List of profiles</source>
-                <target>Liste von Profilen</target>
+                <source>Persons List</source>
+                <target>Personen Liste</target>
             </trans-unit>
             <trans-unit id="plugin.detail.label">
-                <source>Detail view of one profile</source>
-                <target>Detailansicht eines Profils</target>
+                <source>Persons Detail</source>
+                <target>Personen Detail</target>
             </trans-unit>
             <trans-unit id="plugin.listAndDetail.label">
-                <source>List and detail view of profiles</source>
-                <target>Liste und Detailansicht von Profilen</target>
+                <source>Persons List and Detail</source>
+                <target>Personen Liste and Detail</target>
             </trans-unit>
             <trans-unit id="content.ctype.group.label">
                 <source>Academic</source>
@@ -70,24 +71,24 @@
                 <target>Akademisch</target>
             </trans-unit>
             <trans-unit id="newContentElement.wizardItems.academic.list.title">
-                <source>Academic Persons List</source>
-                <target>Akademische Personen Liste</target>
+                <source>Persons List</source>
+                <target>Personen Liste</target>
             </trans-unit>
             <trans-unit id="newContentElement.wizardItems.academic.list.description">
                 <source>Plugin for listing academic persons</source>
                 <target>Plugin zur Auflistung akademischer Personen</target>
             </trans-unit>
             <trans-unit id="newContentElement.wizardItems.academic.detail.title">
-                <source>Academic Persons Detail</source>
-                <target>Akademische Personen Detail</target>
+                <source>Persons Detail</source>
+                <target>Personen Detail</target>
             </trans-unit>
             <trans-unit id="newContentElement.wizardItems.academic.detail.description">
                 <source>Plugin for viewing single academic persons</source>
                 <target>Plugin zur Ansicht einzelner akademischer Personen</target>
             </trans-unit>
             <trans-unit id="newContentElement.wizardItems.academic.listAndDetail.title">
-                <source>Academic Persons List and Detail</source>
-                <target>Akademische Personen Liste und Detail</target>
+                <source>Persons List and Detail</source>
+                <target>Personen Liste und Detail</target>
             </trans-unit>
             <trans-unit id="newContentElement.wizardItems.academic.listAndDetail.description">
                 <source>Plugin for listing and viewing academic persons</source>

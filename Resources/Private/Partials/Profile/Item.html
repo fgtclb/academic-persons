@@ -1,0 +1,91 @@
+<html
+    data-namespace-typo3-fluid="true"
+    xmlns:f="http://typo3.org/ns/TYPO3/CMS/Fluid/ViewHelpers"
+>
+
+<f:if condition="{data.CType} == 'academicpersons_listanddetail'">
+    <f:then>
+        <f:variable
+            name="detailUri"
+            value="{f:uri.action(
+                action: 'detail',
+                arguments: {
+                    profile: profile
+                },
+                pluginName: 'ListAndDetail',
+                controller: 'Profile',
+                extensionName: 'academicpersons'
+            )}"
+        />
+    </f:then>
+    <f:else>
+        <f:variable
+            name="detailUri"
+            value="{f:uri.action(
+                pageUid: settings.detailPid,
+                action: 'detail',
+                arguments: {
+                    profile: profile
+                },
+                pluginName: 'Detail',
+                controller: 'Profile',
+                extensionName: 'academicpersons'
+            )}"
+        />
+    </f:else>
+</f:if>
+
+<div class="academic-persons-item card flex-column-reverse">
+    <div>
+        <div class="card-body">
+            <f:if condition="{groupedProfiles}">
+                <f:then>
+                    <f:render
+                        partial="Profile/SectionHeader"
+                        arguments="{
+                            header: '{profile.firstName} {profile.middleName} {profile.lastName}',
+                            layout: '{data.header_layout}',
+                            subheader: '{data.subheader}',
+                            link: '{detailUri}',
+                            positionClass: 'card-title'
+                        }"
+                    />
+                </f:then>
+                <f:else>
+                    <f:render
+                        partial="Profile/Header"
+                        arguments="{
+                            header: '{profile.firstName} {profile.middleName} {profile.lastName}',
+                            layout: '{data.header_layout}',
+                            subheader: '{data.subheader}',
+                            link: '{detailUri}',
+                            positionClass: 'card-title'
+                        }"
+                    />
+                </f:else>
+            </f:if>
+        </div>
+
+        <f:render
+            partial="Profile/Contract/Item"
+            arguments="{_all}"
+        />
+    </div>
+
+    <f:if condition="{profile.image}">
+        <f:if condition="{settings.showFields}">
+            <f:then>
+                <f:for each="{settings.showFields}" as="field">
+                    <f:if condition="{field} == 'profile.image'">
+                        <f:image image="{profile.image}" class="card-img-top img-fluid"/>
+                    </f:if>
+                </f:for>
+            </f:then>
+            <f:else>
+                <f:image image="{profile.image}" class="card-img-top img-fluid"/>
+            </f:else>
+        </f:if>
+    </f:if>
+</div>
+
+</html>

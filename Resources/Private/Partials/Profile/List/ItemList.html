@@ -1,0 +1,72 @@
+<html
+    lang="en"
+    xmlns:f="http://typo3.org/ns/TYPO3/CMS/Fluid/ViewHelpers"
+    data-namespace-typo3-fluid="true"
+>
+
+<f:if condition="{profilesToList}">
+    <f:then>
+        <f:if condition="{demand.groupBy}">
+            <f:then>
+                <f:groupedFor as="groupedProfiles" groupBy="{demand.groupBy}" each="{profilesToList}">
+                    <f:render
+                        partial="Profile/Header"
+                        arguments="{
+                            header: '{groupKey -> f:format.case()}',
+                            layout: '{data.header_layout}',
+                            subheader: '{data.subheader}'
+                        }"
+                    />
+
+                    <div class="academic-persons-itemlist row">
+                        <f:for each="{groupedProfiles}" as="profile">
+                            <div class="col-12 col-md-6 col-lg-4 col-xl-3">
+                                <f:render
+                                    partial="Profile/Item"
+                                    arguments="{
+                                        profile: profile,
+                                        settings: settings,
+                                        data: data,
+                                        groupedProfiles: 'true'
+                                    }"
+                                />
+                            </div>
+                        </f:for>
+                    </div>
+                </f:groupedFor>
+            </f:then>
+            <f:else>
+                <div class="academic-persons-itemlist row">
+                    <f:for each="{profilesToList}" as="profile">
+                        <div class="col-12 col-md-6 col-lg-4 col-xl-3">
+                            <f:render
+                                partial="Profile/Item"
+                                arguments="{
+                                    profile: profile,
+                                    settings: settings,
+                                    data: data
+                                }"
+                            />
+                        </div>
+                    </f:for>
+                </div>
+            </f:else>
+        </f:if>
+
+        <f:if condition="{settings.paginationEnabled} && {paginator.paginatedItems}">
+            <f:render
+                partial="Profile/List/Pagination"
+                arguments="{
+                    demand: demand,
+                    paginator: paginator,
+                    pagination: pagination
+                }"
+            />
+        </f:if>
+    </f:then>
+    <f:else>
+        <p>{f:translate(key: 'list.noProfilesFound', extensionName: 'academic_persons')}</p>
+    </f:else>
+</f:if>
+
+</html>

@@ -145,7 +145,7 @@
                             <value>table</value>
                         </numIndex>
                     </items>
-                    <default>asc</default>
+                    <default>list</default>
                 </config>
             </settings.viewMode.default>
             <settings.fallbackForNonTranslated>
