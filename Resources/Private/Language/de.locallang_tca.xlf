@@ -191,6 +191,10 @@
                 <source>Parent</source>
                 <target>Übergeordnete Einheit</target>
             </trans-unit>
+            <trans-unit id="tx_academicpersons_domain_model_organisational_unit.columns.parent.default.label">
+                <source>No parent</source>
+                <target>Keine übergeordnete Einheit</target>
+            </trans-unit>
             <trans-unit id="tx_academicpersons_domain_model_organisational_unit.columns.unique_name.label">
                 <source>Unique Name</source>
                 <target>Eindeutiger Name</target>

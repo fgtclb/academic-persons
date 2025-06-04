@@ -82,6 +82,12 @@ return [
                 'renderType' => 'selectSingle',
                 'foreign_table' => 'tx_academicpersons_domain_model_organisational_unit',
                 'foreign_table_where' => 'AND {#tx_academicpersons_domain_model_organisational_unit}.{#sys_language_uid} IN (-1, 0)',
+                'items' => [
+                    [
+                        'label' => 'LLL:EXT:academic_persons/Resources/Private/Language/locallang_tca.xlf:tx_academicpersons_domain_model_organisational_unit.columns.parent.default.label',
+                        'value' => 0,
+                    ],
+                ],
                 'default' => 0,
             ],
         ],

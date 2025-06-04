@@ -157,6 +157,9 @@
             <trans-unit id="tx_academicpersons_domain_model_organisational_unit.columns.parent.label">
                 <source>Parent</source>
             </trans-unit>
+			<trans-unit id="tx_academicpersons_domain_model_organisational_unit.columns.parent.default.label">
+                <source>No parent</source>
+            </trans-unit>
             <trans-unit id="tx_academicpersons_domain_model_organisational_unit.columns.unique_name.label">
                 <source>Unique Name</source>
             </trans-unit>
