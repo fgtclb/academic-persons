@@ -45,12 +45,11 @@ use TYPO3\CMS\Extbase\Utility\ExtensionUtility;
         implode(',', [
             '--div--;LLL:EXT:academic_persons/Resources/Private/Language/locallang_be.xlf:element.tab.configuration',
             'pi_flexform',
+            'pages',
         ]),
         'academicpersons_list',
         'after:header'
     );
-    $GLOBALS['TCA']['tt_content']['types']['list']['subtypes_excludelist']['academicpersons_list'] = 'recursive,select_key';
-    $GLOBALS['TCA']['tt_content']['types']['list']['subtypes_addlist']['academicpersons_list'] = 'pi_flexform';
     ExtensionManagementUtility::addPiFlexFormValue(
         '*',
         sprintf('FILE:EXT:academic_persons/Configuration/FlexForms/Core%s/List.xml', $typo3MajorVersion),
@@ -75,12 +74,11 @@ use TYPO3\CMS\Extbase\Utility\ExtensionUtility;
         implode(',', [
             '--div--;LLL:EXT:academic_persons/Resources/Private/Language/locallang_be.xlf:element.tab.configuration',
             'pi_flexform',
+            'pages',
         ]),
         'academicpersons_listanddetail',
         'after:header'
     );
-    $GLOBALS['TCA']['tt_content']['types']['list']['subtypes_excludelist']['academicpersons_listanddetail'] = 'recursive,select_key';
-    $GLOBALS['TCA']['tt_content']['types']['list']['subtypes_addlist']['academicpersons_listanddetail'] = 'pi_flexform';
     ExtensionManagementUtility::addPiFlexFormValue(
         '*',
         sprintf('FILE:EXT:academic_persons/Configuration/FlexForms/Core%s/List.xml', $typo3MajorVersion),
@@ -123,8 +121,6 @@ use TYPO3\CMS\Extbase\Utility\ExtensionUtility;
         'academicpersons_card',
         'after:header'
     );
-    $GLOBALS['TCA']['tt_content']['types']['list']['subtypes_excludelist']['academicpersons_card'] = 'recursive,select_key';
-    $GLOBALS['TCA']['tt_content']['types']['list']['subtypes_addlist']['academicpersons_card'] = 'pi_flexform';
     ExtensionManagementUtility::addPiFlexFormValue(
         '*',
         sprintf('FILE:EXT:academic_persons/Configuration/FlexForms/Core%s/List.xml', $typo3MajorVersion),
@@ -153,8 +149,6 @@ use TYPO3\CMS\Extbase\Utility\ExtensionUtility;
         'academicpersons_selectedprofiles',
         'after:header'
     );
-    $GLOBALS['TCA']['tt_content']['types']['list']['subtypes_excludelist']['academicpersons_selectedprofiles'] = 'recursive,select_key';
-    $GLOBALS['TCA']['tt_content']['types']['list']['subtypes_addlist']['academicpersons_selectedprofiles'] = 'pi_flexform';
     ExtensionManagementUtility::addPiFlexFormValue(
         '*',
         sprintf('FILE:EXT:academic_persons/Configuration/FlexForms/Core%s/SelectedProfiles.xml', $typo3MajorVersion),
@@ -183,8 +177,6 @@ use TYPO3\CMS\Extbase\Utility\ExtensionUtility;
         'academicpersons_selectedcontracts',
         'after:header'
     );
-    $GLOBALS['TCA']['tt_content']['types']['list']['subtypes_excludelist']['academicpersons_selectedcontracts'] = 'recursive,select_key';
-    $GLOBALS['TCA']['tt_content']['types']['list']['subtypes_addlist']['academicpersons_selectedcontracts'] = 'pi_flexform';
     ExtensionManagementUtility::addPiFlexFormValue(
         '*',
         sprintf('FILE:EXT:academic_persons/Configuration/FlexForms/Core%s/SelectedContracts.xml', $typo3MajorVersion),
