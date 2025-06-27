@@ -163,6 +163,21 @@
 			<trans-unit id="flexform.el.numberOfLinks.label">
 				<source>Number of Links</source>
 			</trans-unit>
+			<trans-unit id="flexform.el.pageTitleFormat.label">
+				<source>PageTitle display format</source>
+			</trans-unit>
+			<trans-unit id="flexform.el.pageTitleFormat.listanddetail_description">
+				<source>for person detail page</source>
+			</trans-unit>
+			<trans-unit id="flexform.el.pageTitleFormat.items.none">
+				<source>Default page title</source>
+			</trans-unit>
+			<trans-unit id="flexform.el.pageTitleFormat.items.tiltefirstmiddlelastname">
+				<source>Title Firstname Middlename Lastname</source>
+			</trans-unit>
+			<trans-unit id="flexform.el.pageTitleFormat.items.lastcommafirstmiddlename">
+				<source>Lastname, Firstname Middlename</source>
+			</trans-unit>
 			<trans-unit id="flexform.el.profileList.label">
 				<source>List of profiles</source>
 			</trans-unit>

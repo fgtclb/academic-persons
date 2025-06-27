@@ -3,6 +3,31 @@
         <sheetTitle>LLL:EXT:academic_persons/Resources/Private/Language/locallang_be.xlf:flexform.tab.settings</sheetTitle>
         <type>array</type>
         <el>
+            <settings.pageTitleFormat>
+                <label>LLL:EXT:academic_persons/Resources/Private/Language/locallang_be.xlf:flexform.el.pageTitleFormat.label</label>
+                <description>LLL:EXT:academic_persons/Resources/Private/Language/locallang_be.xlf:flexform.el.pageTitleFormat.listanddetail_description</description>
+                <config>
+                    <type>input</type>
+                    <size>100</size>
+                    <eval>trim</eval>
+                    <valuePicker>
+                        <items>
+                            <numIndex index="0" type="array">
+                                <numIndex index="0">LLL:EXT:academic_persons/Resources/Private/Language/locallang_be.xlf:flexform.el.pageTitleFormat.items.none</numIndex>
+                                <numIndex index="1"></numIndex>
+                            </numIndex>
+                            <numIndex index="1" type="array">
+                                <numIndex index="0">LLL:EXT:academic_persons/Resources/Private/Language/locallang_be.xlf:flexform.el.pageTitleFormat.items.tiltefirstmiddlelastname</numIndex>
+                                <numIndex index="1">%%TITLE%% %%FIRST_NAME%% %%MIDDLE_NAME%% %%LAST_NAME%%</numIndex>
+                            </numIndex>
+                            <numIndex index="2" type="array">
+                                <numIndex index="0">LLL:EXT:academic_persons/Resources/Private/Language/locallang_be.xlf:flexform.el.pageTitleFormat.items.lastcommafirstmiddlename</numIndex>
+                                <numIndex index="1">%%LAST_NAME%%, %%FIRST_NAME%% %%MIDDLE_NAME%%</numIndex>
+                            </numIndex>
+                        </items>
+                    </valuePicker>
+                </config>
+            </settings.pageTitleFormat>
             <settings.detailPid>
                 <label>LLL:EXT:academic_persons/Resources/Private/Language/locallang_be.xlf:flexform.el.detailPid.label</label>
                 <config>

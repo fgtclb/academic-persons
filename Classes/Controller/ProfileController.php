@@ -17,6 +17,7 @@ use FGTCLB\AcademicPersons\Domain\Repository\ContractRepository;
 use FGTCLB\AcademicPersons\Domain\Repository\ProfileRepository;
 use FGTCLB\AcademicPersons\Event\ModifyDetailProfileEvent;
 use FGTCLB\AcademicPersons\Event\ModifyListProfilesEvent;
+use FGTCLB\AcademicPersons\PageTitle\ProfileTitleProvider;
 use GeorgRinger\NumberedPagination\NumberedPagination;
 use Psr\Http\Message\ResponseInterface;
 use TYPO3\CMS\Core\Cache\CacheDataCollector;
@@ -33,18 +34,23 @@ use TYPO3\CMS\Frontend\Page\PageAccessFailureReasons;
 
 final class ProfileController extends ActionController
 {
+    private ContractRepository $contractRepository;
     private ProfileRepository $profileRepository;
+    private ProfileTitleProvider $profileTitleProvider;
+
+    public function injectContractRepository(ContractRepository $contractRepository): void
+    {
+        $this->contractRepository = $contractRepository;
+    }
 
     public function injectProfileRepository(ProfileRepository $profileRepository): void
     {
         $this->profileRepository = $profileRepository;
     }
 
-    private ContractRepository $contractRepository;
-
-    public function injectContractRepository(ContractRepository $contractRepository): void
+    public function injectProfileTitleProvider(ProfileTitleProvider $profileTitleProvider): void
     {
-        $this->contractRepository = $contractRepository;
+        $this->profileTitleProvider = $profileTitleProvider;
     }
 
     public function initializeListAction(): void
@@ -176,20 +182,25 @@ final class ProfileController extends ActionController
             );
         }
 
+        $pageTitleFormat = $this->resolveDetailPageTitleFormat();
+        /** @todo Add more context to ModifyDetailProfileEvent and allow PageTitleFormat to be changeable in event */
         /** @var ModifyDetailProfileEvent $event */
         $event = $this->eventDispatcher->dispatch(new ModifyDetailProfileEvent($profile, $this->view));
         $profile = $event->getProfile();
 
-        $this->view->assignMultiple([
-            'data' => $this->getCurrentContentObjectRenderer()?->data,
-            'profile' => $profile,
-        ]);
+        // Add page title based on profile name
+        $this->profileTitleProvider->setFromProfile($profile, $pageTitleFormat);
 
+        // Set additional detail page cache tags
         $this->addCacheTags(
             'profile_detail_view',
             sprintf('profile_detail_view_%d', $profile->getUid()),
         );
 
+        $this->view->assignMultiple([
+            'data' => $this->getCurrentContentObjectRenderer()?->data,
+            'profile' => $profile,
+        ]);
         return $this->htmlResponse();
     }
 
@@ -338,5 +349,17 @@ final class ProfileController extends ActionController
     private function getCurrentContentObjectRenderer(): ?ContentObjectRenderer
     {
         return $this->request->getAttribute('currentContentObject');
+    }
+
+    private function resolveDetailPageTitleFormat(): string
+    {
+        // Determine pageTitleFormat form FlexForm settings
+        if (isset($this->settings['pageTitleFormat'])
+            && is_string($this->settings['pageTitleFormat'])
+            && trim($this->settings['pageTitleFormat'], ' ') !== ''
+        ) {
+            return trim($this->settings['pageTitleFormat'], ' ');
+        }
+        return ProfileTitleProvider::DETAIL_PAGE_TITLE_FORMAT;
     }
 }

@@ -27,3 +27,10 @@ plugin.tx_academicpersons {
     }
   }
 }
+
+config.pageTitleProviders {
+    profile  {
+        provider = FGTCLB\AcademicPersons\PageTitle\ProfileTitleProvider
+        before = calendarize,altPageTitle,record,seo
+    }
+}

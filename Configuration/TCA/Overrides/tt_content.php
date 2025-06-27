@@ -98,6 +98,11 @@ use TYPO3\CMS\Extbase\Utility\ExtensionUtility;
         ExtensionUtility::PLUGIN_TYPE_CONTENT_ELEMENT,
         'academic_persons'
     );
+    ExtensionManagementUtility::addPiFlexFormValue(
+        '*',
+        sprintf('FILE:EXT:academic_persons/Configuration/FlexForms/Core%s/Detail.xml', $typo3MajorVersion),
+        'academicpersons_detail'
+    );
 
     //==================================================================================================================
     // Plugin: academicpersons_card

@@ -15,3 +15,10 @@ page {
     bootstrap.external = 1
   }
 }
+
+config.pageTitleProviders {
+    profile  {
+        provider = FGTCLB\AcademicPersons\PageTitle\ProfileTitleProvider
+        before = calendarize,altPageTitle,record,seo
+    }
+}

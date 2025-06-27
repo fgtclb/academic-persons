@@ -1,252 +1,272 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <xliff version="1.2"
-    xmlns="urn:oasis:names:tc:xliff:document:1.2">
-    <file source-language="en" datatype="plaintext" product-name="academic_persons">
-        <header/>
-        <body>
-            <trans-unit id="extension_configuration.types.profileTypes.label">
-                <source>Profile Types: Comma-separated list of profile types</source>
-                <target>Profiltypen: Kommagetrennte Liste von Profiltypen</target>
-            </trans-unit>
-            <trans-unit id="extension_configuration.types.physicalAddressTypes.label">
-                <source>Physical Address Types: Comma-separated list of physical address types</source>
-                <target>Physikalische Adresstypen: Kommagetrennte Liste von physischen Adresstypen</target>
-            </trans-unit>
-            <trans-unit id="extension_configuration.types.emailAddressTypes.label">
-                <source>Email Address Types: Comma-separated list of email address types</source>
-                <target>E-Mail Adresstypen: Kommagetrennte Liste von E-Mail-Adresstypen</target>
-            </trans-unit>
-            <trans-unit id="extension_configuration.types.phoneNumberTypes.label">
-                <source>Phone Number Types: Comma-separated list of phone number types</source>
-                <target>Rufnummertypen: Kommagetrennte Liste von Rufnummertypen</target>
-            </trans-unit>
-            <trans-unit id="extension_configuration.demand.allowedGroupByValues.label">
-                <source>Group By Values: Comma-separated list of allowed group by values</source>
-                <target>Nach Werten gruppieren: Kommagetrennte Liste von zulässigen Gruppierungswerten</target>
-            </trans-unit>
-            <trans-unit id="extension_configuration.demand.allowedSortByValues.label">
-                <source>Sort By Values: Comma-separated list of allowed sort by values</source>
-                <target>Nach Werten sortieren: Kommagetrennte Liste von zulässigen Sortierwerten</target>
-            </trans-unit>
+	   xmlns="urn:oasis:names:tc:xliff:document:1.2">
+	<file source-language="en" datatype="plaintext" product-name="academic_persons">
+		<header/>
+		<body>
+			<trans-unit id="extension_configuration.types.profileTypes.label">
+				<source>Profile Types: Comma-separated list of profile types</source>
+				<target>Profiltypen: Kommagetrennte Liste von Profiltypen</target>
+			</trans-unit>
+			<trans-unit id="extension_configuration.types.physicalAddressTypes.label">
+				<source>Physical Address Types: Comma-separated list of physical address types</source>
+				<target>Physikalische Adresstypen: Kommagetrennte Liste von physischen Adresstypen</target>
+			</trans-unit>
+			<trans-unit id="extension_configuration.types.emailAddressTypes.label">
+				<source>Email Address Types: Comma-separated list of email address types</source>
+				<target>E-Mail Adresstypen: Kommagetrennte Liste von E-Mail-Adresstypen</target>
+			</trans-unit>
+			<trans-unit id="extension_configuration.types.phoneNumberTypes.label">
+				<source>Phone Number Types: Comma-separated list of phone number types</source>
+				<target>Rufnummertypen: Kommagetrennte Liste von Rufnummertypen</target>
+			</trans-unit>
+			<trans-unit id="extension_configuration.demand.allowedGroupByValues.label">
+				<source>Group By Values: Comma-separated list of allowed group by values</source>
+				<target>Nach Werten gruppieren: Kommagetrennte Liste von zulässigen Gruppierungswerten</target>
+			</trans-unit>
+			<trans-unit id="extension_configuration.demand.allowedSortByValues.label">
+				<source>Sort By Values: Comma-separated list of allowed sort by values</source>
+				<target>Nach Werten sortieren: Kommagetrennte Liste von zulässigen Sortierwerten</target>
+			</trans-unit>
 
-            <trans-unit id="content.ctype.group.label">
-                <source>Academic</source>
-                <target>Academic</target>
-            </trans-unit>
-            <trans-unit id="plugin.list.label">
-                <source>Persons List</source>
-                <target>Personen Liste</target>
-            </trans-unit>
-            <trans-unit id="plugin.detail.label">
-                <source>Persons Detail</source>
-                <target>Personen Detail</target>
-            </trans-unit>
-            <trans-unit id="plugin.listAndDetail.label">
-                <source>Persons List and Detail</source>
-                <target>Personen Liste and Detail</target>
-            </trans-unit>
-            <trans-unit id="content.ctype.group.label">
-                <source>Academic</source>
-                <target>Academic</target>
-            </trans-unit>
-            <trans-unit id="plugin.selectedprofiles.label">
-                <source>Profiles: Selected Profiles</source>
-                <target>Profiles: Selected Profiles</target>
-            </trans-unit>
-            <trans-unit id="plugin.selectedprofiles.description">
-                <source>Plugin to list only selected profiles</source>
-                <target>Plugin to list only selected profiles</target>
-            </trans-unit>
-            <trans-unit id="plugin.selectedcontracts.label">
-                <source>Profiles: Selected Contracts</source>
-                <target>Profiles: Selected Contracts</target>
-            </trans-unit>
-            <trans-unit id="plugin.selectedcontracts.description">
-                <source>Plugin to list only selected contracts</source>
-                <target>Plugin to list only selected contracts</target>
-            </trans-unit>
+			<trans-unit id="content.ctype.group.label">
+				<source>Academic</source>
+				<target>Academic</target>
+			</trans-unit>
+			<trans-unit id="plugin.list.label">
+				<source>Persons List</source>
+				<target>Personen Liste</target>
+			</trans-unit>
+			<trans-unit id="plugin.detail.label">
+				<source>Persons Detail</source>
+				<target>Personen Detail</target>
+			</trans-unit>
+			<trans-unit id="plugin.listAndDetail.label">
+				<source>Persons List and Detail</source>
+				<target>Personen Liste and Detail</target>
+			</trans-unit>
+			<trans-unit id="content.ctype.group.label">
+				<source>Academic</source>
+				<target>Academic</target>
+			</trans-unit>
+			<trans-unit id="plugin.selectedprofiles.label">
+				<source>Profiles: Selected Profiles</source>
+				<target>Profiles: Selected Profiles</target>
+			</trans-unit>
+			<trans-unit id="plugin.selectedprofiles.description">
+				<source>Plugin to list only selected profiles</source>
+				<target>Plugin to list only selected profiles</target>
+			</trans-unit>
+			<trans-unit id="plugin.selectedcontracts.label">
+				<source>Profiles: Selected Contracts</source>
+				<target>Profiles: Selected Contracts</target>
+			</trans-unit>
+			<trans-unit id="plugin.selectedcontracts.description">
+				<source>Plugin to list only selected contracts</source>
+				<target>Plugin to list only selected contracts</target>
+			</trans-unit>
 
-            <trans-unit id="newContentElement.wizardItems.academic">
-                <source>Academic</source>
-                <target>Akademisch</target>
-            </trans-unit>
-            <trans-unit id="newContentElement.wizardItems.academic.list.title">
-                <source>Persons List</source>
-                <target>Personen Liste</target>
-            </trans-unit>
-            <trans-unit id="newContentElement.wizardItems.academic.list.description">
-                <source>Plugin for listing academic persons</source>
-                <target>Plugin zur Auflistung akademischer Personen</target>
-            </trans-unit>
-            <trans-unit id="newContentElement.wizardItems.academic.detail.title">
-                <source>Persons Detail</source>
-                <target>Personen Detail</target>
-            </trans-unit>
-            <trans-unit id="newContentElement.wizardItems.academic.detail.description">
-                <source>Plugin for viewing single academic persons</source>
-                <target>Plugin zur Ansicht einzelner akademischer Personen</target>
-            </trans-unit>
-            <trans-unit id="newContentElement.wizardItems.academic.listAndDetail.title">
-                <source>Persons List and Detail</source>
-                <target>Personen Liste und Detail</target>
-            </trans-unit>
-            <trans-unit id="newContentElement.wizardItems.academic.listAndDetail.description">
-                <source>Plugin for listing and viewing academic persons</source>
-                <target>Plugin zur Auflistung und Ansicht akademischer Personen</target>
-            </trans-unit>
-            <trans-unit id="newContentElement.wizardItems.academic.card.title">
-                <source>Contacts</source>
-                <target>Kontakte</target>
-            </trans-unit>
-            <trans-unit id="newContentElement.wizardItems.academic.card.description">
-                <source>Adds one or more contacts</source>
-                <target>Fügt ein oder mehrere Kontakte hinzu</target>
-            </trans-unit>
+			<trans-unit id="newContentElement.wizardItems.academic">
+				<source>Academic</source>
+				<target>Akademisch</target>
+			</trans-unit>
+			<trans-unit id="newContentElement.wizardItems.academic.list.title">
+				<source>Persons List</source>
+				<target>Personen Liste</target>
+			</trans-unit>
+			<trans-unit id="newContentElement.wizardItems.academic.list.description">
+				<source>Plugin for listing academic persons</source>
+				<target>Plugin zur Auflistung akademischer Personen</target>
+			</trans-unit>
+			<trans-unit id="newContentElement.wizardItems.academic.detail.title">
+				<source>Persons Detail</source>
+				<target>Personen Detail</target>
+			</trans-unit>
+			<trans-unit id="newContentElement.wizardItems.academic.detail.description">
+				<source>Plugin for viewing single academic persons</source>
+				<target>Plugin zur Ansicht einzelner akademischer Personen</target>
+			</trans-unit>
+			<trans-unit id="newContentElement.wizardItems.academic.listAndDetail.title">
+				<source>Persons List and Detail</source>
+				<target>Personen Liste und Detail</target>
+			</trans-unit>
+			<trans-unit id="newContentElement.wizardItems.academic.listAndDetail.description">
+				<source>Plugin for listing and viewing academic persons</source>
+				<target>Plugin zur Auflistung und Ansicht akademischer Personen</target>
+			</trans-unit>
+			<trans-unit id="newContentElement.wizardItems.academic.card.title">
+				<source>Contacts</source>
+				<target>Kontakte</target>
+			</trans-unit>
+			<trans-unit id="newContentElement.wizardItems.academic.card.description">
+				<source>Adds one or more contacts</source>
+				<target>Fügt ein oder mehrere Kontakte hinzu</target>
+			</trans-unit>
 
-            <trans-unit id="element.tab.configuration">
-                <source>Configuration</source>
-                <target>Konfiguration</target>
-            </trans-unit>
-            <trans-unit id="flexform.tab.settings">
-                <source>Settings</source>
-                <target>Einstellungen</target>
-            </trans-unit>
-            <trans-unit id="flexform.el.detailPid.label">
-                <source>Detail Page</source>
-                <target>Detail Seite</target>
-            </trans-unit>
-            <trans-unit id="flexform.el.listPid.label">
-                <source>List Page</source>
-                <target>Listen Seite</target>
-            </trans-unit>
-            <trans-unit id="flexform.el.functionTypes.label">
-                <source>Function Types</source>
-                <target>Funktionstypen</target>
-            </trans-unit>
-            <trans-unit id="flexform.el.groupBy.label">
-                <source>Group By (is given priority in sorting if activ)</source>
-                <target>Gruppieren nach (wird vorrangig bei der Sortierung berücksichtigt)</target>
-            </trans-unit>
-            <trans-unit id="flexform.el.groupBy.items.none">
-                <source>No grouping</source>
-                <target>Keine Gruppierung</target>
-            </trans-unit>
-            <trans-unit id="flexform.el.groupBy.items.first_name">
-                <source>First Letter of First Name</source>
-                <target>Erster Buchstabe des Vornamens</target>
-            </trans-unit>
-            <trans-unit id="flexform.el.groupBy.items.last_name">
-                <source>First Letter of Last Name</source>
-                <target>Erster Buchstabe des Nachnamens</target>
-            </trans-unit>
-            <trans-unit id="flexform.el.organisationalUnits.label">
-                <source>Organisational Units</source>
-                <target>Organisationseinheiten</target>
-            </trans-unit>
-            <trans-unit id="flexform.el.sortBy.label">
-                <source>Sort By (sorting of activated grouping has priority)</source>
-                <target>Sortieren nach (wird nachrangig bei aktivierter Gruppierung berücksichtigt)</target>
-            </trans-unit>
-            <trans-unit id="flexform.el.selectedContracts.label">
-                <source>Selected Contracts</source>
-                <target>Ausgewählte Verträge</target>
-            </trans-unit>
-            <trans-unit id="flexform.el.selectedProfiles.label">
-                <source>Selected Profiles</source>
-                <target>Ausgewählte Profile</target>
-            </trans-unit>
-            <trans-unit id="flexform.el.showFields.label">
-                <source>Show only selected Fields</source>
-                <target>Nur ausgewählte Felder anzeigen</target>
-            </trans-unit>
-            <trans-unit id="flexform.el.showFields.groups.profile">
-                <source>Profile</source>
-                <target>Profil</target>
-            </trans-unit>
-            <trans-unit id="flexform.el.showFields.groups.contracts">
-                <source>Contracts</source>
-                <target>Verträge</target>
-            </trans-unit>
-            <trans-unit id="flexform.el.sortBy.items.none">
-                <source>No sorting</source>
-                <target>Keine Sortierung</target>
-            </trans-unit>
-            <trans-unit id="flexform.el.sortBy.items.first_name">
-                <source>First Name</source>
-                <target>Vorname</target>
-            </trans-unit>
-            <trans-unit id="flexform.el.sortBy.items.last_name">
-                <source>Last Name</source>
-                <target>Nachname</target>
-            </trans-unit>
-            <trans-unit id="flexform.el.sortByDirection.label">
-                <source>Sort By Direction</source>
-                <target>Nach Richtung sortieren</target>
-            </trans-unit>
-            <trans-unit id="flexform.el.sortByDirection.items.asc">
-                <source>Ascending</source>
-                <target>Aufsteigend</target>
-            </trans-unit>
-            <trans-unit id="flexform.el.sortByDirection.items.desc">
-                <source>Descending</source>
-                <target>Absteigend</target>
-            </trans-unit>
-            <trans-unit id="flexform.el.alphabetPaginationEnabled.label">
-                <source>Alphabetical Pagination</source>
-                <target>Alphabetische Paginierung</target>
-            </trans-unit>
-            <trans-unit id="flexform.el.alphabetPaginationEnabled.items.0.label">
-                <source>Enabled</source>
-                <target>Aktiviert</target>
-            </trans-unit>
-            <trans-unit id="flexform.el.paginationEnabled.label">
-                <source>Pagination</source>
-                <target>Paginierung</target>
-            </trans-unit>
-            <trans-unit id="flexform.el.paginationEnabled.items.0.label">
-                <source>Enabled</source>
-                <target>Aktiviert</target>
-            </trans-unit>
-            <trans-unit id="flexform.el.resultsPerPage.label">
-                <source>Results per Page</source>
-                <target>Ergebnisse pro Seite</target>
-            </trans-unit>
-            <trans-unit id="flexform.el.numberOfLinks.label">
-                <source>Number of Links</source>
-                <target>Anzahl der Links</target>
-            </trans-unit>
-            <trans-unit id="flexform.el.paginationEnabled.items.0.label">
-                <source>Enabled</source>
-                <target>Aktiviert</target>
-            </trans-unit>
-            <trans-unit id="flexform.el.profileList.label">
-                <source>List of profiles</source>
-                <target>Liste von Profilen</target>
-            </trans-unit>
-            <trans-unit id="flexform.el.fallbackForNonTranslated.label">
-                <source>Fallback to default language for non translated profiles</source>
-                <target>Fallback auf die Standardsprache für nicht übersetzte Profile</target>
-            </trans-unit>
-            <trans-unit id="flexform.el.viewMode.enabled.label">
-                <source>View Mode Toggle</source>
-                <target>Ansichtsmodus-Umschalter</target>
-            </trans-unit>
-            <trans-unit id="flexform.el.viewMode.enabled.items.0.label">
-                <source>Enabled</source>
-                <target>Aktiviert</target>
-            </trans-unit>
-            <trans-unit id="flexform.el.viewMode.default.label">
-                <source>View Mode Default</source>
-                <target>Standard für Ansichtsmodus</target>
-            </trans-unit>
-            <trans-unit id="flexform.el.viewMode.default.I.list">
-                <source>List</source>
-                <target>Liste</target>
-            </trans-unit>
-            <trans-unit id="flexform.el.viewMode.default.I.table">
-                <source>Table</source>
-                <target>Tabelle</target>
-            </trans-unit>
-        </body>
-    </file>
+			<trans-unit id="element.tab.configuration">
+				<source>Configuration</source>
+				<target>Konfiguration</target>
+			</trans-unit>
+			<trans-unit id="flexform.tab.settings">
+				<source>Settings</source>
+				<target>Einstellungen</target>
+			</trans-unit>
+			<trans-unit id="flexform.el.detailPid.label">
+				<source>Detail Page</source>
+				<target>Detail Seite</target>
+			</trans-unit>
+			<trans-unit id="flexform.el.listPid.label">
+				<source>List Page</source>
+				<target>Listen Seite</target>
+			</trans-unit>
+			<trans-unit id="flexform.el.functionTypes.label">
+				<source>Function Types</source>
+				<target>Funktionstypen</target>
+			</trans-unit>
+			<trans-unit id="flexform.el.groupBy.label">
+				<source>Group By (is given priority in sorting if activ)</source>
+				<target>Gruppieren nach (wird vorrangig bei der Sortierung berücksichtigt)</target>
+			</trans-unit>
+			<trans-unit id="flexform.el.groupBy.items.none">
+				<source>No grouping</source>
+				<target>Keine Gruppierung</target>
+			</trans-unit>
+			<trans-unit id="flexform.el.groupBy.items.first_name">
+				<source>First Letter of First Name</source>
+				<target>Erster Buchstabe des Vornamens</target>
+			</trans-unit>
+			<trans-unit id="flexform.el.groupBy.items.last_name">
+				<source>First Letter of Last Name</source>
+				<target>Erster Buchstabe des Nachnamens</target>
+			</trans-unit>
+			<trans-unit id="flexform.el.organisationalUnits.label">
+				<source>Organisational Units</source>
+				<target>Organisationseinheiten</target>
+			</trans-unit>
+			<trans-unit id="flexform.el.sortBy.label">
+				<source>Sort By (sorting of activated grouping has priority)</source>
+				<target>Sortieren nach (wird nachrangig bei aktivierter Gruppierung berücksichtigt)</target>
+			</trans-unit>
+			<trans-unit id="flexform.el.selectedContracts.label">
+				<source>Selected Contracts</source>
+				<target>Ausgewählte Verträge</target>
+			</trans-unit>
+			<trans-unit id="flexform.el.selectedProfiles.label">
+				<source>Selected Profiles</source>
+				<target>Ausgewählte Profile</target>
+			</trans-unit>
+			<trans-unit id="flexform.el.showFields.label">
+				<source>Show only selected Fields</source>
+				<target>Nur ausgewählte Felder anzeigen</target>
+			</trans-unit>
+			<trans-unit id="flexform.el.showFields.groups.profile">
+				<source>Profile</source>
+				<target>Profil</target>
+			</trans-unit>
+			<trans-unit id="flexform.el.showFields.groups.contracts">
+				<source>Contracts</source>
+				<target>Verträge</target>
+			</trans-unit>
+			<trans-unit id="flexform.el.sortBy.items.none">
+				<source>No sorting</source>
+				<target>Keine Sortierung</target>
+			</trans-unit>
+			<trans-unit id="flexform.el.sortBy.items.first_name">
+				<source>First Name</source>
+				<target>Vorname</target>
+			</trans-unit>
+			<trans-unit id="flexform.el.sortBy.items.last_name">
+				<source>Last Name</source>
+				<target>Nachname</target>
+			</trans-unit>
+			<trans-unit id="flexform.el.sortByDirection.label">
+				<source>Sort By Direction</source>
+				<target>Nach Richtung sortieren</target>
+			</trans-unit>
+			<trans-unit id="flexform.el.sortByDirection.items.asc">
+				<source>Ascending</source>
+				<target>Aufsteigend</target>
+			</trans-unit>
+			<trans-unit id="flexform.el.sortByDirection.items.desc">
+				<source>Descending</source>
+				<target>Absteigend</target>
+			</trans-unit>
+			<trans-unit id="flexform.el.alphabetPaginationEnabled.label">
+				<source>Alphabetical Pagination</source>
+				<target>Alphabetische Paginierung</target>
+			</trans-unit>
+			<trans-unit id="flexform.el.alphabetPaginationEnabled.items.0.label">
+				<source>Enabled</source>
+				<target>Aktiviert</target>
+			</trans-unit>
+			<trans-unit id="flexform.el.paginationEnabled.label">
+				<source>Pagination</source>
+				<target>Paginierung</target>
+			</trans-unit>
+			<trans-unit id="flexform.el.paginationEnabled.items.0.label">
+				<source>Enabled</source>
+				<target>Aktiviert</target>
+			</trans-unit>
+			<trans-unit id="flexform.el.resultsPerPage.label">
+				<source>Results per Page</source>
+				<target>Ergebnisse pro Seite</target>
+			</trans-unit>
+			<trans-unit id="flexform.el.numberOfLinks.label">
+				<source>Number of Links</source>
+				<target>Anzahl der Links</target>
+			</trans-unit>
+			<trans-unit id="flexform.el.paginationEnabled.items.0.label">
+				<source>Enabled</source>
+				<target>Aktiviert</target>
+			</trans-unit>
+			<trans-unit id="flexform.el.pageTitleFormat.label">
+				<source>PageTitle display format</source>
+				<target>Seitentitel Anzeige Format</target>
+			</trans-unit>
+			<trans-unit id="flexform.el.pageTitleFormat.listanddetail_description">
+				<source>for person detail page</source>
+				<target>für Person Detailansicht</target>
+			</trans-unit>
+			<trans-unit id="flexform.el.pageTitleFormat.items.none">
+				<source>Default page title</source>
+				<target>Standard Seitentitel</target>
+			</trans-unit>
+			<trans-unit id="flexform.el.pageTitleFormat.items.tiltefirstmiddlelastname">
+				<source>Title Firstname Middlename Lastname</source>
+				<target>Titel Vorname Mittelname Nachname</target>
+			</trans-unit>
+			<trans-unit id="flexform.el.pageTitleFormat.items.lastcommafirstmiddlename">
+				<source>Lastname, Firstname Middlename</source>
+				<target>Nachname, Vorname Mittelname</target>
+			</trans-unit>
+			<trans-unit id="flexform.el.profileList.label">
+				<source>List of profiles</source>
+				<target>Liste von Profilen</target>
+			</trans-unit>
+			<trans-unit id="flexform.el.fallbackForNonTranslated.label">
+				<source>Fallback to default language for non translated profiles</source>
+				<target>Fallback auf die Standardsprache für nicht übersetzte Profile</target>
+			</trans-unit>
+			<trans-unit id="flexform.el.viewMode.enabled.label">
+				<source>View Mode Toggle</source>
+				<target>Ansichtsmodus-Umschalter</target>
+			</trans-unit>
+			<trans-unit id="flexform.el.viewMode.enabled.items.0.label">
+				<source>Enabled</source>
+				<target>Aktiviert</target>
+			</trans-unit>
+			<trans-unit id="flexform.el.viewMode.default.label">
+				<source>View Mode Default</source>
+				<target>Standard für Ansichtsmodus</target>
+			</trans-unit>
+			<trans-unit id="flexform.el.viewMode.default.I.list">
+				<source>List</source>
+				<target>Liste</target>
+			</trans-unit>
+			<trans-unit id="flexform.el.viewMode.default.I.table">
+				<source>Table</source>
+				<target>Tabelle</target>
+			</trans-unit>
+		</body>
+	</file>
 </xliff>

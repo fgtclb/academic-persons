@@ -2,7 +2,9 @@
 
 ## X.Y.Z
 
-### BREAKING: Removed partials
+### BREAKING CHANGES
+
+#### BREAKING: Removed partials
 
 Some partials got removed as the templating structure has changed. Those partials include:
 
@@ -14,6 +16,47 @@ Some partials got removed as the templating structure has changed. Those partial
 > [!NOTE]
 > The default templating now supports basic bootstrap styling and is semantically optimized
 > to also not lack any major accessibility.
+
+### FEATURES
+
+#### `pageTitleFormat` FlexForm option for person detail view
+
+It's now possible to define the format used to generate the HTML PageTitle for
+the detail view of persons in the frontend, using the TYPO3 PageTitle API.
+
+The default format used based on `Profile` extbase model data is:
+
+```
+%%TITLE%% %%FIRST_NAME%% %%MIDDLE_NAME%% %%LAST_NAME%%
+```
+
+To allow easier customization in project, a new FlexForm option `pageTitleFormat`
+has been added to `listanddetail` plugin and as single new option for the `detail`
+plugin, which uses `TCA type=input` combined with a ValuePicker to allow picking
+from a list of pre-defined formats while still making it possible to define own
+custom format directly on plugin usage.
+
+The mapping from placeholder to extbase model is based on transforming the
+placeholder to camelcase using first character after separators and prefix
+it with `get`, and if the getter exists it is called to retrieve the value.
+
+For example:
+
+```
+PLACEHOLDER...: %%FIRST_NAME%%
+CAMEL_CASE....: FirstName
+PREFIXED......: getFirstName
+
+which calls `Profile->getFirstName()` to retrieve the replacement value from
+the detail view profile.
+```
+
+The whole process contains some behaviour, which needs to be kept in mind:
+
+* Leading and trailing spaces are trimmed from each value(placeholder).
+* Multiple spaces are removed from the whole format string.
+* Leading and trailing spaces are trimmed from the whole format pattern, after
+  placeholder resolving has been processed.
 
 ## 2.0.1
 
