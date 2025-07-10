@@ -11,26 +11,21 @@ declare(strict_types=1);
 
 namespace FGTCLB\AcademicPersons\Event;
 
+use FGTCLB\AcademicPersons\Controller\ProfileController;
 use FGTCLB\AcademicPersons\Domain\Model\Profile;
-use TYPO3\CMS\Extbase\Mvc\View\ViewInterface as DeprecatedExtbaseViewInterface;
-use TYPO3Fluid\Fluid\View\ViewInterface;
+use TYPO3\CMS\Core\View\ViewInterface as CoreViewInterface;
+use TYPO3Fluid\Fluid\View\ViewInterface as FluidViewInterface;
 
+/**
+ * Fired in {@see ProfileController::detailAction()} included in `detail` and `listanddetail`
+ * extbase plugins to allow assigning additional data to the detail view or replace the
+ * profile.
+ */
 final class ModifyDetailProfileEvent
 {
-    /**
-     * @param Profile $profile
-     * @param ViewInterface|DeprecatedExtbaseViewInterface $view
-     * @todo Add ViewInterface as type for $view when TYPO3 v11 support is dropped.
-     */
     public function __construct(
         private Profile $profile,
-        /**
-         * The Extbase ViewInterface has been deprecated in TYPO3 v11.5 and has to be replaced with the TYPO3Fluid ViewInterface.
-         * @see https://docs.typo3.org/c/typo3/cms-core/main/en-us/Changelog/11.5/Deprecation-95222-ExtbaseViewInterface.html
-         *
-         * @todo Add native type when v11 support is dropped.
-         */
-        private $view
+        private FluidViewInterface|CoreViewInterface $view,
     ) {}
 
     public function getProfile(): Profile
@@ -43,10 +38,7 @@ final class ModifyDetailProfileEvent
         $this->profile = $profile;
     }
 
-    /**
-     * @return DeprecatedExtbaseViewInterface|ViewInterface
-     */
-    public function getView()
+    public function getView(): FluidViewInterface|CoreViewInterface
     {
         return $this->view;
     }
