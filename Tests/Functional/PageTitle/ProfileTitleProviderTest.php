@@ -5,13 +5,98 @@ declare(strict_types=1);
 namespace FGTCLB\AcademicPersons\Tests\Functional\PageTitle;
 
 use FGTCLB\AcademicPersons\Domain\Model\Profile;
+use FGTCLB\AcademicPersons\Event\ProfileTitlePlaceholderReplacementEvent;
 use FGTCLB\AcademicPersons\PageTitle\ProfileTitleProvider;
 use FGTCLB\AcademicPersons\Tests\Functional\AbstractAcademicPersonsTestCase;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\Attributes\Test;
+use Symfony\Component\DependencyInjection\Container;
+use TYPO3\CMS\Core\EventDispatcher\ListenerProvider;
 
 final class ProfileTitleProviderTest extends AbstractAcademicPersonsTestCase
 {
+    public static function profileTitlePlaceholderReplacementEventIsDispatchedDataSets(): \Generator
+    {
+        yield '#1 upper case placeholder not getter of profile' => [
+            'format' => '%%SOMEIDENTIFIER%%',
+            'dispatchedPlaceholder' => 'SOMEIDENTIFIER',
+        ];
+        yield '#2 lower case placeholder not getter of profile' => [
+            'format' => '%%someidentifier%%',
+            'dispatchedPlaceholder' => 'someidentifier',
+        ];
+        yield '#3 colon is allowed' => [
+            'format' => '%%SOME;IDENTIFIER%%',
+            'dispatchedPlaceholder' => 'SOME;IDENTIFIER',
+        ];
+        yield '#4 double-point is allowed' => [
+            'format' => '%%SOME:IDENTIFIER%%',
+            'dispatchedPlaceholder' => 'SOME:IDENTIFIER',
+        ];
+        yield '#5 hyphen is allowed' => [
+            'format' => '%%SOME-IDENTIFIER%%',
+            'dispatchedPlaceholder' => 'SOME-IDENTIFIER',
+        ];
+        yield '#6 underscore is allowed' => [
+            'format' => '%%SOME_IDENTIFIER%%',
+            'dispatchedPlaceholder' => 'SOME_IDENTIFIER',
+        ];
+        yield '#7 dot is allowed' => [
+            'format' => '%%SOME.IDENTIFIER%%',
+            'dispatchedPlaceholder' => 'SOME.IDENTIFIER',
+        ];
+        yield '#8 space is allowed' => [
+            'format' => '%%SOME IDENTIFIER%%',
+            'dispatchedPlaceholder' => 'SOME IDENTIFIER',
+        ];
+        yield '#9 slash is allowed' => [
+            'format' => '%%SOME/IDENTIFIER%%',
+            'dispatchedPlaceholder' => 'SOME/IDENTIFIER',
+        ];
+        yield '#10 backslash is allowed' => [
+            'format' => '%%SOME\IDENTIFIER%%',
+            'dispatchedPlaceholder' => 'SOME\IDENTIFIER',
+        ];
+        yield '#11 backslash is allowed' => [
+            'format' => '%%SOME\\IDENTIFIER%%',
+            'dispatchedPlaceholder' => 'SOME\\IDENTIFIER',
+        ];
+        yield '#11 language identifier (LLL:)' => [
+            'format' => '%%LLL:EXT:myext/Resources/Private/Languages/locallang.db:some.identifier%%',
+            'dispatchedPlaceholder' => 'LLL:EXT:myext/Resources/Private/Languages/locallang.db:some.identifier',
+        ];
+        yield '#12 language identifier (LLL:) containing spaces in path' => [
+            'format' => '%%LLL:EXT:myext/Resources/Private/Languages/some path with spaces/locallang.db:some.identifier%%',
+            'dispatchedPlaceholder' => 'LLL:EXT:myext/Resources/Private/Languages/some path with spaces/locallang.db:some.identifier',
+        ];
+    }
+
+    #[DataProvider('profileTitlePlaceholderReplacementEventIsDispatchedDataSets')]
+    #[Test]
+    public function profileTitlePlaceholderReplacementEventIsDispatchedForNonProfilePlaceholders(string $format, string $dispatchedPlaceholder): void
+    {
+        $dispatchedCount = 0;
+        $dispatchedForPlaceholder = '';
+        /** @var Container $container */
+        $container = $this->get('service_container');
+        $container->set(
+            'placeholder-dispatched',
+            static function (ProfileTitlePlaceholderReplacementEvent $event) use (
+                &$dispatchedForPlaceholder,
+                &$dispatchedCount,
+            ): void {
+                $dispatchedForPlaceholder = $event->getPlaceholder();
+                $dispatchedCount++;
+            }
+        );
+        $listenerProvider = $container->get(ListenerProvider::class);
+        $listenerProvider->addListener(ProfileTitlePlaceholderReplacementEvent::class, 'placeholder-dispatched');
+
+        $this->createSubject(new Profile(), $format)->getTitle();
+        $this->assertSame(1, $dispatchedCount);
+        $this->assertSame($dispatchedPlaceholder, $dispatchedForPlaceholder);
+    }
+
     #[Test]
     public function setFromProfileKeepsUnresolvedPlaceholder(): void
     {

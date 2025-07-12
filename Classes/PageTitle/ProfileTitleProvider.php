@@ -39,7 +39,7 @@ final class ProfileTitleProvider extends AbstractPageTitleProvider
     {
         // replace all `%%` surrounded values with model fields
         $title = (string)preg_replace_callback(
-            pattern: '/%%([\w\d]+)%%/',
+            pattern: '/%%([[:blank:];:.\w\d\/\-\\\\]+)%%/',
             callback: function (array $matches) use ($profile): string {
                 $originalPlaceholder = $matches[1];
                 $placeholder = $matches[1];

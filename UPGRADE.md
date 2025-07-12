@@ -81,6 +81,21 @@ The whole process contains some behaviour, which needs to be kept in mind:
 * Leading and trailing spaces are trimmed from the whole format pattern, after
   placeholder resolving has been processed.
 
+Example for allowed characters as placeholder identifier:
+
+```
+%%SOME.IDENTIFIER%%
+%%SOME:IDENTIFIER%%
+%%SOME;IDENTIFIER%%
+%%SOME-IDENTIFIER%%
+%%SOME_IDENTIFIER%%
+%%SOME/IDENTIFIER%%
+%%SOME\IDENTIFIER%%
+%%SOME IDENTIFIER%%
+```
+Note that most of them has no handling for matching person profile getters, but
+are use-full for advanced replacement using the experimental PSR-14 event.
+
 ## 2.0.1
 
 ## 2.0.0
