@@ -25,10 +25,12 @@
         <f:if condition="{settings.showFields}">
             <f:then>
                 <f:for each="{settings.showFields}" as="field">
+                    <f:variable name="fieldName">{field -> f:split(separator: '.', limit: 2)}</f:variable>
+
                     <f:render
                         partial="Profile/Contract/Field"
                         arguments="{
-                            fieldName: '{field -> f:format.trim(side: \'left\', characters: \'contracts.\')}',
+                            fieldName: fieldName.1,
                             contract: contract
                         }"
                     />
