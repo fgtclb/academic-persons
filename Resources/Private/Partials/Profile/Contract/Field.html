@@ -7,7 +7,12 @@
     <li class="list-group-item">
         <b>{f:translate(key: 'contracts.{fieldName}', extensionName: 'academic_persons')}:</b>
 
-        <f:if condition="{fieldName} == position || {fieldName} == room || {fieldName} == officeHours">
+        <f:if condition="
+            {fieldName} == position
+            || {fieldName} == room
+            || {fieldName} == officeHours
+            || {fieldName} == location
+        ">
             {contract.{fieldName}}
         </f:if>
 

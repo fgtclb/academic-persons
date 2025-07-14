@@ -13,7 +13,7 @@ class ProfileShowFieldsItemProcFunc
      */
     public function showFields(&$params): void
     {
-        // ToDo: Create a registry option to define more fields to select
+        // @todo Create a registry option to define more fields to select.
         $params['items'] = array_merge($this->defaultFieldItemShowFields(), []);
         $params['itemGroups'] = [
             'contracts' => 'Contracts',
@@ -71,6 +71,12 @@ class ProfileShowFieldsItemProcFunc
             [
                 'label' => BackendUtility::getItemLabel('tx_academicpersons_domain_model_contract', 'phone_numbers'),
                 'value' => 'contracts.phoneNumbers',
+                'icon' => null,
+                'group' => 'contracts',
+            ],
+            [
+                'label' => BackendUtility::getItemLabel('tx_academicpersons_domain_model_contract', 'location'),
+                'value' => 'contracts.location',
                 'icon' => null,
                 'group' => 'contracts',
             ],

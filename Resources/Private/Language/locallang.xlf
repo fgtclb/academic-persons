@@ -15,6 +15,9 @@
 			<trans-unit id="contracts.officeHours">
 				<source>Office Hours</source>
 			</trans-unit>
+			<trans-unit id="contracts.location">
+				<source>Location</source>
+			</trans-unit>
 			<trans-unit id="contracts.emailAdresses">
 				<source>E-Mail</source>
 			</trans-unit>

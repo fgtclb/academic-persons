@@ -19,6 +19,10 @@
 				<source>Office Hours</source>
 				<target>Bürozeiten</target>
 			</trans-unit>
+			<trans-unit id="contracts.location">
+				<source>Location</source>
+				<target>Ort</target>
+			</trans-unit>
 			<trans-unit id="contracts.emailAddresses">
 				<source>E-Mail</source>
 				<target>E-Mail</target>
