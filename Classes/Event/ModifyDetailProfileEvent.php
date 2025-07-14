@@ -26,8 +26,8 @@ final class ModifyDetailProfileEvent
 {
     public function __construct(
         private Profile $profile,
-        private FluidViewInterface|CoreViewInterface $view,
-        private PluginControllerActionContextInterface $pluginControllerActionContext,
+        private readonly FluidViewInterface|CoreViewInterface $view,
+        private readonly PluginControllerActionContextInterface $pluginControllerActionContext,
     ) {}
 
     public function getProfile(): Profile

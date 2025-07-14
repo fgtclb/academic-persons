@@ -18,6 +18,8 @@ use FGTCLB\AcademicPersons\Domain\Repository\ContractRepository;
 use FGTCLB\AcademicPersons\Domain\Repository\ProfileRepository;
 use FGTCLB\AcademicPersons\Event\ModifyDetailProfileEvent;
 use FGTCLB\AcademicPersons\Event\ModifyListProfilesEvent;
+use FGTCLB\AcademicPersons\Event\ModifySelectedContractsEvent;
+use FGTCLB\AcademicPersons\Event\ModifySelectedProfilesEvent;
 use FGTCLB\AcademicPersons\PageTitle\ProfileTitleProvider;
 use GeorgRinger\NumberedPagination\NumberedPagination;
 use Psr\Http\Message\ResponseInterface;
@@ -227,8 +229,8 @@ final class ProfileController extends ActionController
         $profileUids = GeneralUtility::intExplode(',', $this->settings['selectedProfiles'], true);
         $profiles = $this->profileRepository->findByUids($profileUids);
 
-        /** @var ModifyListProfilesEvent $event */
-        $event = $this->eventDispatcher->dispatch(new ModifyListProfilesEvent(
+        /** @var ModifySelectedProfilesEvent $event */
+        $event = $this->eventDispatcher->dispatch(new ModifySelectedProfilesEvent(
             $profiles,
             $this->view,
             new PluginControllerActionContext($this->request, $this->settings),
@@ -266,6 +268,14 @@ final class ProfileController extends ActionController
 
         $contractUids = GeneralUtility::intExplode(',', $this->settings['selectedContracts'], true);
         $contracts = $this->contractRepository->findByUids($contractUids);
+
+        /** @var ModifySelectedContractsEvent $event */
+        $event = $this->eventDispatcher->dispatch(new ModifySelectedContractsEvent(
+            $contracts,
+            $this->view,
+            new PluginControllerActionContext($this->request, $this->settings),
+        ));
+        $contracts = $event->getContracts();
 
         // Sort profiles by order in selection
         $sortedContracts = [];

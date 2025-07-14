@@ -4,6 +4,14 @@
 
 ### BREAKING CHANGES
 
+#### BREAKING: `ProfilesController::selectedProfilesAction()` no longer dispatches `ModifyListProfilesEvent`
+
+`ProfilesController::selectedProfilesAction()` dispatched the `ModifyListProfilesEvent`
+PSR14 event accidentally due to copy&paste when introducing the new plugin and action
+for `2.0.x`. This event is no longer dispatched for this action, instead the new and
+correct event [ModifySelectedProfilesEvent](#feature-modifyselectedprofilesevent-profilescontrollerselectedprofilesaction)
+is now dispatched.
+
 #### BREAKING: Removed partials
 
 Some partials got removed as the templating structure has changed. Those partials include:
@@ -42,7 +50,44 @@ See [Autowiring other Methods (e.g. Setters and Public Typed Properties)](https:
 
 ### FEATURES
 
-#### Introduce `PluginControllerActionContext` suitable
+#### FEATURE: Introduce new PSR-14 events `ModifySelectedProfilesEvent` and `ModifySelectedContractsEvent`
+
+New PSR-14 events are introduced which are dispatched in `ProfileController`
+actions.
+
+##### FEATURE: `ModifySelectedProfilesEvent` (ProfilesController::selectedProfilesAction())
+
+`ProfileController::selectedProfilesAction()` dispatches now the new PSR-14
+`ModifySelectedProfilesEvent` instead of erroneous copied listAction event
+`ModifyListProfilesEvent`, which is no longer dispatched. That should not
+be that of an issue for most implementations.
+
+The event provides following methods:
+
+* `getProfiles(): QueryResultInterface` return current result set.
+* `setProfiles(QueryResultInterface $profiles): void` to allow setting a custom
+  resultset.
+* `getView(): FluidViewInterface|CoreViewInterface` return the current view to
+  allow assigning custom values to the view.
+* `getPluginControllerActionContext(): PluginControllerActionContextInterface`
+  to provide more context information, see [FEATURE `PluginControllerActionContext`](#feature-introduce-plugincontrolleractioncontext-suitable).
+
+##### FEATURE: `ModifySelectedContractsEvent` (ProfilesController::selectedContractsAction())
+
+`ProfileController::selectedContractsAction()` dispatches now the new PSR-14
+`ModifySelectedContractsEvent`.
+
+The event provides following methods:
+
+* `getContracts(): QueryResultInterface` return current result set.
+* `setContracts(QueryResultInterface $contracts): void` to allow setting a custom
+  resultset.
+* `getView(): FluidViewInterface|CoreViewInterface` return the current view to
+  allow assigning custom values to the view.
+* `getPluginControllerActionContext(): PluginControllerActionContextInterface`
+  to provide more context information, see [FEATURE `PluginControllerActionContext`](#feature-introduce-plugincontrolleractioncontext-suitable).
+
+#### FEATURE: Introduce `PluginControllerActionContext` suitable
 
 A new readonly DTO object `PluginControllerActionContext` is introduced and is
 attached to dispatched PSR-14 events in `ProfileController` actions.
