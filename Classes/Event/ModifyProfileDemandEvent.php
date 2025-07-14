@@ -12,7 +12,11 @@ declare(strict_types=1);
 namespace FGTCLB\AcademicPersons\Event;
 
 use FGTCLB\AcademicPersons\Domain\Model\Dto\DemandInterface;
+use FGTCLB\AcademicPersons\Domain\Repository\ProfileRepository;
 
+/**
+ * Dispatched in {@see ProfileRepository::findByDemand().
+ */
 final class ModifyProfileDemandEvent
 {
     public function __construct(private DemandInterface $demand) {}

@@ -12,6 +12,7 @@ declare(strict_types=1);
 namespace FGTCLB\AcademicPersons\Event;
 
 use FGTCLB\AcademicPersons\Controller\ProfileController;
+use FGTCLB\AcademicPersons\Domain\Model\Dto\PluginControllerActionContextInterface;
 use FGTCLB\AcademicPersons\Domain\Model\Profile;
 use TYPO3\CMS\Core\View\ViewInterface as CoreViewInterface;
 use TYPO3Fluid\Fluid\View\ViewInterface as FluidViewInterface;
@@ -26,6 +27,7 @@ final class ModifyDetailProfileEvent
     public function __construct(
         private Profile $profile,
         private FluidViewInterface|CoreViewInterface $view,
+        private PluginControllerActionContextInterface $pluginControllerActionContext,
     ) {}
 
     public function getProfile(): Profile
@@ -41,5 +43,10 @@ final class ModifyDetailProfileEvent
     public function getView(): FluidViewInterface|CoreViewInterface
     {
         return $this->view;
+    }
+
+    public function getPluginControllerActionContext(): PluginControllerActionContextInterface
+    {
+        return $this->pluginControllerActionContext;
     }
 }

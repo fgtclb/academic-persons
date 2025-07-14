@@ -11,6 +11,7 @@ declare(strict_types=1);
 
 namespace FGTCLB\AcademicPersons\Event;
 
+use FGTCLB\AcademicPersons\Domain\Model\Dto\PluginControllerActionContextInterface;
 use FGTCLB\AcademicPersons\Domain\Model\Profile;
 use TYPO3\CMS\Core\View\ViewInterface as CoreViewInterface;
 use TYPO3\CMS\Extbase\Persistence\QueryResultInterface;
@@ -32,6 +33,7 @@ final class ModifyListProfilesEvent
     public function __construct(
         private QueryResultInterface $profiles,
         private FluidViewInterface|CoreViewInterface $view,
+        private readonly PluginControllerActionContextInterface $pluginControllerActionContext,
     ) {}
 
     /**
@@ -53,5 +55,10 @@ final class ModifyListProfilesEvent
     public function getView(): FluidViewInterface|CoreViewInterface
     {
         return $this->view;
+    }
+
+    public function getPluginControllerActionContext(): PluginControllerActionContextInterface
+    {
+        return $this->pluginControllerActionContext;
     }
 }

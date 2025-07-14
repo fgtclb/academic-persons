@@ -11,6 +11,7 @@ declare(strict_types=1);
 
 namespace FGTCLB\AcademicPersons\Controller;
 
+use FGTCLB\AcademicPersons\Domain\Model\Dto\PluginControllerActionContext;
 use FGTCLB\AcademicPersons\Domain\Model\Dto\ProfileDemand;
 use FGTCLB\AcademicPersons\Domain\Model\Profile;
 use FGTCLB\AcademicPersons\Domain\Repository\ContractRepository;
@@ -80,7 +81,11 @@ final class ProfileController extends ActionController
         $profiles = $this->profileRepository->findByDemand($demand);
 
         /** @var ModifyListProfilesEvent $event */
-        $event = $this->eventDispatcher->dispatch(new ModifyListProfilesEvent($profiles, $this->view));
+        $event = $this->eventDispatcher->dispatch(new ModifyListProfilesEvent(
+            $profiles,
+            $this->view,
+            new PluginControllerActionContext($this->request, $this->settings),
+        ));
         $profiles = $event->getProfiles();
 
         if ($demand->getAlphabetFilter() !== '') {
@@ -185,7 +190,11 @@ final class ProfileController extends ActionController
         $pageTitleFormat = $this->resolveDetailPageTitleFormat();
         /** @todo Add more context to ModifyDetailProfileEvent and allow PageTitleFormat to be changeable in event */
         /** @var ModifyDetailProfileEvent $event */
-        $event = $this->eventDispatcher->dispatch(new ModifyDetailProfileEvent($profile, $this->view));
+        $event = $this->eventDispatcher->dispatch(new ModifyDetailProfileEvent(
+            $profile,
+            $this->view,
+            new PluginControllerActionContext($this->request, $this->settings)
+        ));
         $profile = $event->getProfile();
 
         // Add page title based on profile name
@@ -219,7 +228,11 @@ final class ProfileController extends ActionController
         $profiles = $this->profileRepository->findByUids($profileUids);
 
         /** @var ModifyListProfilesEvent $event */
-        $event = $this->eventDispatcher->dispatch(new ModifyListProfilesEvent($profiles, $this->view));
+        $event = $this->eventDispatcher->dispatch(new ModifyListProfilesEvent(
+            $profiles,
+            $this->view,
+            new PluginControllerActionContext($this->request, $this->settings),
+        ));
         $profiles = $event->getProfiles();
 
         // Sort profiles by order in selection
