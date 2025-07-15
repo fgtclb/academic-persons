@@ -189,18 +189,21 @@ final class ProfileController extends ActionController
             );
         }
 
-        $pageTitleFormat = $this->resolveDetailPageTitleFormat();
-        /** @todo Add more context to ModifyDetailProfileEvent and allow PageTitleFormat to be changeable in event */
         /** @var ModifyDetailProfileEvent $event */
         $event = $this->eventDispatcher->dispatch(new ModifyDetailProfileEvent(
             $profile,
             $this->view,
-            new PluginControllerActionContext($this->request, $this->settings)
+            new PluginControllerActionContext($this->request, $this->settings),
+            ProfileTitleProvider::DETAIL_PAGE_TITLE_FORMAT,
+            $this->resolveDetailPageTitleFormat(),
         ));
         $profile = $event->getProfile();
 
         // Add page title based on profile name
-        $this->profileTitleProvider->setFromProfile($profile, $pageTitleFormat);
+        $this->profileTitleProvider->setFromProfile(
+            $profile,
+            $event->getPageTitleFormatToUse(),
+        );
 
         // Set additional detail page cache tags
         $this->addCacheTags(
@@ -383,6 +386,6 @@ final class ProfileController extends ActionController
         ) {
             return trim($this->settings['pageTitleFormat'], ' ');
         }
-        return ProfileTitleProvider::DETAIL_PAGE_TITLE_FORMAT;
+        return '';
     }
 }
