@@ -4,14 +4,20 @@ declare(strict_types=1);
 
 namespace FGTCLB\AcademicPersons\Tests\Functional\PageTitle;
 
+use FGTCLB\AcademicPersons\Domain\Model\Dto\PluginControllerActionContext;
 use FGTCLB\AcademicPersons\Domain\Model\Profile;
-use FGTCLB\AcademicPersons\Event\ProfileTitlePlaceholderReplacementEvent;
+use FGTCLB\AcademicPersons\Event\ModifyProfileTitlePlaceholderReplacementEvent;
 use FGTCLB\AcademicPersons\PageTitle\ProfileTitleProvider;
 use FGTCLB\AcademicPersons\Tests\Functional\AbstractAcademicPersonsTestCase;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\Attributes\Test;
 use Symfony\Component\DependencyInjection\Container;
 use TYPO3\CMS\Core\EventDispatcher\ListenerProvider;
+use TYPO3\CMS\Core\Http\ServerRequest;
+use TYPO3\CMS\Core\Localization\Locales;
+use TYPO3\CMS\Core\Site\Entity\Site;
+use TYPO3\CMS\Core\Site\Entity\SiteLanguage;
+use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 final class ProfileTitleProviderTest extends AbstractAcademicPersonsTestCase
 {
@@ -81,7 +87,7 @@ final class ProfileTitleProviderTest extends AbstractAcademicPersonsTestCase
         $container = $this->get('service_container');
         $container->set(
             'placeholder-dispatched',
-            static function (ProfileTitlePlaceholderReplacementEvent $event) use (
+            static function (ModifyProfileTitlePlaceholderReplacementEvent $event) use (
                 &$dispatchedForPlaceholder,
                 &$dispatchedCount,
             ): void {
@@ -90,7 +96,7 @@ final class ProfileTitleProviderTest extends AbstractAcademicPersonsTestCase
             }
         );
         $listenerProvider = $container->get(ListenerProvider::class);
-        $listenerProvider->addListener(ProfileTitlePlaceholderReplacementEvent::class, 'placeholder-dispatched');
+        $listenerProvider->addListener(ModifyProfileTitlePlaceholderReplacementEvent::class, 'placeholder-dispatched');
 
         $this->createSubject(new Profile(), $format)->getTitle();
         $this->assertSame(1, $dispatchedCount);
@@ -192,9 +198,23 @@ final class ProfileTitleProviderTest extends AbstractAcademicPersonsTestCase
 
     private function createSubject(?Profile $profile = null, string $format = ProfileTitleProvider::DETAIL_PAGE_TITLE_FORMAT): ProfileTitleProvider
     {
+        $siteLanguage = $this->createStub(SiteLanguage::class);
+        $siteLanguage->method('getLanguageId')->willReturn(0);
+        $siteLanguage->method('getLocale')->willReturn(GeneralUtility::makeInstance(Locales::class)->createLocale('en_US'));
+        $site = $this->createStub(Site::class);
+        $site->method('getDefaultLanguage')->willReturn($siteLanguage);
+        $site->method('getAllLanguages')->willReturn([$siteLanguage]);
+        $request = (new ServerRequest())
+            ->withAttribute('site', $site)
+            ->withAttribute('language', $siteLanguage);
+        $pluginControllerActionContext = new PluginControllerActionContext($request, []);
         $subject = $this->get(ProfileTitleProvider::class);
         if ($profile !== null) {
-            $subject->setFromProfile($profile, $format);
+            $subject->setFromProfile(
+                $pluginControllerActionContext,
+                $profile,
+                $format,
+            );
         }
         return $subject;
     }

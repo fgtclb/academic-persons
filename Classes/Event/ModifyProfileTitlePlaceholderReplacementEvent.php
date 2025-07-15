@@ -4,23 +4,31 @@ declare(strict_types=1);
 
 namespace FGTCLB\AcademicPersons\Event;
 
+use FGTCLB\AcademicPersons\Domain\Model\Dto\PluginControllerActionContextInterface;
 use FGTCLB\AcademicPersons\Domain\Model\Profile;
 use FGTCLB\AcademicPersons\PageTitle\ProfileTitleProvider;
 
 /**
- * Fired in {@see ProfileTitleProvider::dispatchReplacementEvent()} for each found pageTitleFormat
- * placeholder value (`%%SOME_IDENTIFIER%%` => `SOME_IDENTIFER`) to allow changing the replacement
- * value.
+ * Fired in {@see ProfileTitleProvider::dispatchModifyProfileTitlePlaceholderReplacementEvent()} for each
+ * found pageTitleFormat placeholder value (`%%SOME_IDENTIFIER%%` => `SOME_IDENTIFER`) to allow changing
+ * the replacement value.
  *
- * @internal event implementation is considered experimental for now and not part of Public API.
+ * Note that the event is executed after all internal replacement methods has been processed and that
+ * this event is dispatched for each single placeholder on its own.
  */
-final class ProfileTitlePlaceholderReplacementEvent
+final class ModifyProfileTitlePlaceholderReplacementEvent
 {
     public function __construct(
+        private readonly PluginControllerActionContextInterface $pluginControllerActionContext,
         private readonly Profile $profile,
         private readonly string $placeholder,
         private string $replacement,
     ) {}
+
+    public function getPluginControllerActionContext(): PluginControllerActionContextInterface
+    {
+        return $this->pluginControllerActionContext;
+    }
 
     /**
      * Person profile extbase model for the current detail view page.

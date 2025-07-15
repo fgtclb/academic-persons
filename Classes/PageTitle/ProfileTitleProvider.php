@@ -5,8 +5,9 @@ declare(strict_types=1);
 namespace FGTCLB\AcademicPersons\PageTitle;
 
 use FGTCLB\AcademicPersons\Controller\ProfileController;
+use FGTCLB\AcademicPersons\Domain\Model\Dto\PluginControllerActionContext;
 use FGTCLB\AcademicPersons\Domain\Model\Profile;
-use FGTCLB\AcademicPersons\Event\ProfileTitlePlaceholderReplacementEvent;
+use FGTCLB\AcademicPersons\Event\ModifyProfileTitlePlaceholderReplacementEvent;
 use Psr\EventDispatcher\EventDispatcherInterface;
 use TYPO3\CMS\Core\PageTitle\AbstractPageTitleProvider;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
@@ -35,16 +36,24 @@ final class ProfileTitleProvider extends AbstractPageTitleProvider
      *
      * Note: Non-existing model getter will be not replaced and does not throw or log any errors.
      */
-    public function setFromProfile(Profile $profile, string $format = self::DETAIL_PAGE_TITLE_FORMAT): void
-    {
+    public function setFromProfile(
+        PluginControllerActionContext $pluginControllerActionContext,
+        Profile $profile,
+        string $format = self::DETAIL_PAGE_TITLE_FORMAT
+    ): void {
         // replace all `%%` surrounded values with model fields
         $title = (string)preg_replace_callback(
             pattern: '/%%([[:blank:];:.\w\d\/\-\\\\]+)%%/',
-            callback: function (array $matches) use ($profile): string {
+            callback: function (array $matches) use ($pluginControllerActionContext, $profile): string {
                 $originalPlaceholder = $matches[1];
                 $placeholder = $matches[1];
                 $placeholder = $this->profileGetterPlaceholderReplacement($profile, $placeholder);
-                $placeholder = $this->dispatchProfileTitleTagPlaceholderReplacementEvent($profile, $originalPlaceholder, $placeholder);
+                $placeholder = $this->dispatchModifyProfileTitlePlaceholderReplacementEvent(
+                    $pluginControllerActionContext,
+                    $profile,
+                    $originalPlaceholder,
+                    $placeholder,
+                );
                 return ($originalPlaceholder === $placeholder)
                     // no replacement processed, return full placeholder with surrounding percent
                     // signs to indicate unreplaced value
@@ -61,21 +70,25 @@ final class ProfileTitleProvider extends AbstractPageTitleProvider
         $this->setTitle($title);
     }
 
-    private function profileGetterPlaceholderReplacement(Profile $profile, string $placeholder): string
-    {
+    private function profileGetterPlaceholderReplacement(
+        Profile $profile,
+        string $placeholder
+    ): string {
         $getterName = 'get' . str_replace('_', '', ucwords(mb_strtolower($placeholder), '_'));
         return method_exists($profile, $getterName)
             ? trim($profile->{$getterName}(), ' ')
             : $placeholder;
     }
 
-    private function dispatchProfileTitleTagPlaceholderReplacementEvent(
+    private function dispatchModifyProfileTitlePlaceholderReplacementEvent(
+        PluginControllerActionContext $pluginControllerActionContext,
         Profile $profile,
         string $placeholder,
         string $replacement,
     ): string {
-        /** @var ProfileTitlePlaceholderReplacementEvent $event */
-        $event = $this->getEventDispatcher()->dispatch(new ProfileTitlePlaceholderReplacementEvent(
+        /** @var ModifyProfileTitlePlaceholderReplacementEvent $event */
+        $event = $this->getEventDispatcher()->dispatch(new ModifyProfileTitlePlaceholderReplacementEvent(
+            pluginControllerActionContext: $pluginControllerActionContext,
             profile: $profile,
             placeholder: $placeholder,
             replacement: $replacement,

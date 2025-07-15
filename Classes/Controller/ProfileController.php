@@ -189,11 +189,12 @@ final class ProfileController extends ActionController
             );
         }
 
+        $pluginControllerActionContext = new PluginControllerActionContext($this->request, $this->settings);
         /** @var ModifyDetailProfileEvent $event */
         $event = $this->eventDispatcher->dispatch(new ModifyDetailProfileEvent(
             $profile,
             $this->view,
-            new PluginControllerActionContext($this->request, $this->settings),
+            $pluginControllerActionContext,
             ProfileTitleProvider::DETAIL_PAGE_TITLE_FORMAT,
             $this->resolveDetailPageTitleFormat(),
         ));
@@ -201,6 +202,7 @@ final class ProfileController extends ActionController
 
         // Add page title based on profile name
         $this->profileTitleProvider->setFromProfile(
+            $pluginControllerActionContext,
             $profile,
             $event->getPageTitleFormatToUse(),
         );
