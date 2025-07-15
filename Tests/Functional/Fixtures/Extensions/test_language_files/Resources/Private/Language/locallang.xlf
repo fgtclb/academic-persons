@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<xliff version="1.2"
+	   xmlns="urn:oasis:names:tc:xliff:document:1.2">
+	<file source-language="en" datatype="plaintext" original="messages" date="2025-02-24T11:41:07Z" product-name="test_language_files">
+		<header/>
+		<body>
+
+			<!-- /* \FGTCLB\AcademicPersons\Tests\Functional\PageTitle\ProfileTitleProviderTest */ -->
+
+			<trans-unit id="placeholder.with.dots">
+				<source>Placeholder with dots</source>
+			</trans-unit>
+			<trans-unit id="placeholder-with-dashes">
+				<source>Placeholder with dashes</source>
+			</trans-unit>
+			<trans-unit id="placeholder_with_underscores">
+				<source>Placeholder with underscores</source>
+			</trans-unit>
+		</body>
+	</file>
+</xliff>

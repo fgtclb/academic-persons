@@ -16,4 +16,22 @@ abstract class AbstractAcademicPersonsTestCase extends FunctionalTestCase
     protected array $testExtensionsToLoad = [
         'fgtclb/academic-persons',
     ];
+
+    protected function addCoreExtension(string ...$extensions): void
+    {
+        foreach ($extensions as $extension) {
+            if ($extension !== '' && !in_array($extension, $this->coreExtensionsToLoad)) {
+                $this->coreExtensionsToLoad[] = $extension;
+            }
+        }
+    }
+
+    protected function addTestExtension(string ...$extensions): void
+    {
+        foreach ($extensions as $extension) {
+            if ($extension !== '' && !in_array($extension, $this->testExtensionsToLoad)) {
+                $this->testExtensionsToLoad[] = $extension;
+            }
+        }
+    }
 }

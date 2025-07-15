@@ -11,16 +11,24 @@ use FGTCLB\AcademicPersons\PageTitle\ProfileTitleProvider;
 use FGTCLB\AcademicPersons\Tests\Functional\AbstractAcademicPersonsTestCase;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\Attributes\Test;
+use Psr\Http\Message\ServerRequestInterface;
 use Symfony\Component\DependencyInjection\Container;
 use TYPO3\CMS\Core\EventDispatcher\ListenerProvider;
 use TYPO3\CMS\Core\Http\ServerRequest;
 use TYPO3\CMS\Core\Localization\Locales;
 use TYPO3\CMS\Core\Site\Entity\Site;
 use TYPO3\CMS\Core\Site\Entity\SiteLanguage;
-use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 final class ProfileTitleProviderTest extends AbstractAcademicPersonsTestCase
 {
+    protected function setUp(): void
+    {
+        $this->addTestExtension(...array_values([
+            'tests/language-files',
+        ]));
+        parent::setUp();
+    }
+
     public static function profileTitlePlaceholderReplacementEventIsDispatchedDataSets(): \Generator
     {
         yield '#1 upper case placeholder not getter of profile' => [
@@ -200,7 +208,7 @@ final class ProfileTitleProviderTest extends AbstractAcademicPersonsTestCase
     {
         $siteLanguage = $this->createStub(SiteLanguage::class);
         $siteLanguage->method('getLanguageId')->willReturn(0);
-        $siteLanguage->method('getLocale')->willReturn(GeneralUtility::makeInstance(Locales::class)->createLocale('en_US'));
+        $siteLanguage->method('getLocale')->willReturn($this->get(Locales::class)->createLocale('en_US'));
         $site = $this->createStub(Site::class);
         $site->method('getDefaultLanguage')->willReturn($siteLanguage);
         $site->method('getAllLanguages')->willReturn([$siteLanguage]);
@@ -217,5 +225,110 @@ final class ProfileTitleProviderTest extends AbstractAcademicPersonsTestCase
             );
         }
         return $subject;
+    }
+
+    /**
+     * @return array<string, array{placeholder: string, locale: string|null, expected: string}>
+     */
+    public static function localizationPlaceholderDataSets(): array
+    {
+        return [
+            // placeholder.with.dots
+            '#1 placeholder.with.dots (default)' => [
+                'placeholder' => 'LLL:EXT:test_language_files/Resources/Private/Language/locallang.xlf:placeholder.with.dots',
+                'locale' => null,
+                'expected' => 'Placeholder with dots',
+            ],
+            '#2 placeholder.with.dots (en_US)' => [
+                'placeholder' => 'LLL:EXT:test_language_files/Resources/Private/Language/locallang.xlf:placeholder.with.dots',
+                'locale' => 'en_US',
+                'expected' => 'Placeholder with dots',
+            ],
+            '#3 placeholder.with.dots (de_DE)' => [
+                'placeholder' => 'LLL:EXT:test_language_files/Resources/Private/Language/locallang.xlf:placeholder.with.dots',
+                'locale' => 'de_DE',
+                'expected' => 'Platzhalter mit Punkten',
+            ],
+            // placeholder-with-dashes
+            '#4 placeholder-with-dashes (default)' => [
+                'placeholder' => 'LLL:EXT:test_language_files/Resources/Private/Language/locallang.xlf:placeholder-with-dashes',
+                'locale' => null,
+                'expected' => 'Placeholder with dashes',
+            ],
+            '#5 placeholder-with-dashes (en_US)' => [
+                'placeholder' => 'LLL:EXT:test_language_files/Resources/Private/Language/locallang.xlf:placeholder-with-dashes',
+                'locale' => 'en_US',
+                'expected' => 'Placeholder with dashes',
+            ],
+            '#6 placeholder-with-dashes (de_DE)' => [
+                'placeholder' => 'LLL:EXT:test_language_files/Resources/Private/Language/locallang.xlf:placeholder-with-dashes',
+                'locale' => 'de_DE',
+                'expected' => 'Platzhalter mit Bindestrichen',
+            ],
+            // placeholder_with_underscores
+            '#7 placeholder_with_underscores (default)' => [
+                'placeholder' => 'LLL:EXT:test_language_files/Resources/Private/Language/locallang.xlf:placeholder_with_underscores',
+                'locale' => null,
+                'expected' => 'Placeholder with underscores',
+            ],
+            '#8 placeholder_with_underscores (en_US)' => [
+                'placeholder' => 'LLL:EXT:test_language_files/Resources/Private/Language/locallang.xlf:placeholder_with_underscores',
+                'locale' => 'en_US',
+                'expected' => 'Placeholder with underscores',
+            ],
+            '#9 placeholder_with_underscores (de_DE)' => [
+                'placeholder' => 'LLL:EXT:test_language_files/Resources/Private/Language/locallang.xlf:placeholder_with_underscores',
+                'locale' => 'de_DE',
+                'expected' => 'Platzhalter mit Unterstrichen',
+            ],
+        ];
+    }
+
+    #[DataProvider('localizationPlaceholderDataSets')]
+    #[Test]
+    public function processTranslationPlaceholderReturnsExpectedReplacement(
+        string $placeholder,
+        ?string $locale,
+        string $expected,
+    ): void {
+        $subject = $this->get(ProfileTitleProvider::class);
+        $pluginControllerActionContext = new PluginControllerActionContext($this->createRequest($locale), []);
+        $reflection = new \ReflectionClass($subject);
+        $reflectionMethod = $reflection->getMethod('processTranslationPlaceholder');
+        $this->assertSame($expected, $reflectionMethod->invoke($subject, $pluginControllerActionContext, $placeholder, $placeholder));
+    }
+
+    #[DataProvider('localizationPlaceholderDataSets')]
+    #[Test]
+    public function setFromProfileWithLocalizedPrefixSetsExpectedTitle(
+        string $placeholder,
+        ?string $locale,
+        string $expected,
+    ): void {
+        $profile = new Profile();
+        $profile->setLastName('Müllermann');
+        // Looks weired, but we need to escape each percentage with another percentage,
+        // which makes four percentage signs for the two required for start/end signs.
+        $format = sprintf('%%%%%s%%%%: %%%%LAST_NAME%%%%', $placeholder);
+        $expectedPageTitle = sprintf('%s: Müllermann', $expected);
+        $subject = $this->get(ProfileTitleProvider::class);
+        $pluginControllerActionContext = new PluginControllerActionContext($this->createRequest($locale), []);
+        $subject->setFromProfile($pluginControllerActionContext, $profile, $format);
+        $this->assertSame($expectedPageTitle, $subject->getTitle());
+    }
+
+    private function createRequest(?string $locale = null): ServerRequestInterface
+    {
+        $request = (new ServerRequest());
+        if ($locale !== null) {
+            $siteLanguage = $this->createStub(SiteLanguage::class);
+            $siteLanguage->method('getLanguageId')->willReturn(0);
+            $siteLanguage->method('getLocale')->willReturn($this->get(Locales::class)->createLocale($locale));
+            $site = $this->createStub(Site::class);
+            $site->method('getDefaultLanguage')->willReturn($siteLanguage);
+            $site->method('getAllLanguages')->willReturn([$siteLanguage]);
+            $request = $request->withAttribute('site', $site)->withAttribute('language', $siteLanguage);
+        }
+        return $request;
     }
 }

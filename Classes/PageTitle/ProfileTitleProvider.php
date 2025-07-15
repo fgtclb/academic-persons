@@ -9,6 +9,9 @@ use FGTCLB\AcademicPersons\Domain\Model\Dto\PluginControllerActionContext;
 use FGTCLB\AcademicPersons\Domain\Model\Profile;
 use FGTCLB\AcademicPersons\Event\ModifyProfileTitlePlaceholderReplacementEvent;
 use Psr\EventDispatcher\EventDispatcherInterface;
+use TYPO3\CMS\Core\Authentication\BackendUserAuthentication;
+use TYPO3\CMS\Core\Localization\LanguageService;
+use TYPO3\CMS\Core\Localization\LanguageServiceFactory;
 use TYPO3\CMS\Core\PageTitle\AbstractPageTitleProvider;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
@@ -22,6 +25,10 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
 final class ProfileTitleProvider extends AbstractPageTitleProvider
 {
     public const DETAIL_PAGE_TITLE_FORMAT = '%%TITLE%% %%FIRST_NAME%% %%MIDDLE_NAME%% %%LAST_NAME%%';
+
+    public function __construct(
+        private readonly LanguageServiceFactory $languageServiceFactory,
+    ) {}
 
     public function setTitle(string $title): void
     {
@@ -48,6 +55,7 @@ final class ProfileTitleProvider extends AbstractPageTitleProvider
                 $originalPlaceholder = $matches[1];
                 $placeholder = $matches[1];
                 $placeholder = $this->profileGetterPlaceholderReplacement($profile, $placeholder);
+                $placeholder = $this->processTranslationPlaceholder($pluginControllerActionContext, $originalPlaceholder, $placeholder);
                 $placeholder = $this->dispatchModifyProfileTitlePlaceholderReplacementEvent(
                     $pluginControllerActionContext,
                     $profile,
@@ -80,6 +88,27 @@ final class ProfileTitleProvider extends AbstractPageTitleProvider
             : $placeholder;
     }
 
+    /**
+     * Replaces translation placeholder in the format `LLL:EXT:myext/Resources/Private/Language/file.xlf:some.identifier`
+     * using the resolved language in following order to localize the identifier:
+     *
+     * * resolved request site language
+     * * default site language of resolved request site
+     * * backend user preferences if available
+     * * fallback to default language (english)
+     */
+    private function processTranslationPlaceholder(
+        PluginControllerActionContext $pluginControllerActionContext,
+        string $placeholder,
+        string $replacement,
+    ): string {
+        if (!str_starts_with($placeholder, 'LLL:EXT:') || $placeholder !== $replacement) {
+            // Nothing to do or already replaced.
+            return $replacement;
+        }
+        return $this->getLanguageService($pluginControllerActionContext)->sL($replacement);
+    }
+
     private function dispatchModifyProfileTitlePlaceholderReplacementEvent(
         PluginControllerActionContext $pluginControllerActionContext,
         Profile $profile,
@@ -99,5 +128,17 @@ final class ProfileTitleProvider extends AbstractPageTitleProvider
     private function getEventDispatcher(): EventDispatcherInterface
     {
         return GeneralUtility::makeInstance(EventDispatcherInterface::class);
+    }
+
+    private function getLanguageService(PluginControllerActionContext $pluginControllerActionContext): LanguageService
+    {
+        return ($pluginControllerActionContext->getLanguage() !== null)
+            ? $this->languageServiceFactory->createFromSiteLanguage($pluginControllerActionContext->getLanguage())
+            : $this->languageServiceFactory->createFromUserPreferences($this->getBackendUser());
+    }
+
+    private function getBackendUser(): ?BackendUserAuthentication
+    {
+        return $GLOBALS['BE_USER'] ?? null;
     }
 }
