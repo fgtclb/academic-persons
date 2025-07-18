@@ -34,3 +34,12 @@ config.pageTitleProviders {
         before = calendarize,altPageTitle,record,seo
     }
 }
+
+// ----------------------------------------------------------------------------------------------------------------------
+//  Add following FlexForm settings (settings.<identifier>) to be allowed overridden in TypoScript if empty in FlexForm,
+//  still taking set values in FlexForm as the higher candidates but have a sane fallback to system wide defaults.
+//
+//  https://docs.typo3.org/c/typo3/cms-core/main/en-us/Changelog/12.3/Feature-99976-IntroduceignoreFlexFormSettingsIfEmptyExtbaseConfiguration.html
+// ----------------------------------------------------------------------------------------------------------------------
+@import 'EXT:academic_persons/Configuration/TypoScript/Shared/allow_typoscript_override_empty_flexform_settings.typoscript'
+// ----------------------------------------------------------------------------------------------------------------------
