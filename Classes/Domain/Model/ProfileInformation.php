@@ -15,7 +15,7 @@ use TYPO3\CMS\Extbase\DomainObject\AbstractEntity;
 
 class ProfileInformation extends AbstractEntity
 {
-    protected Profile $profile;
+    protected ?Profile $profile = null;
     protected string $type = '';
     protected string $title = '';
     protected string $bodytext = '';
@@ -41,7 +41,7 @@ class ProfileInformation extends AbstractEntity
         return $this;
     }
 
-    public function getProfile(): Profile
+    public function getProfile(): ?Profile
     {
         return $this->profile;
     }

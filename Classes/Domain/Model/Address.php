@@ -15,7 +15,7 @@ use TYPO3\CMS\Extbase\DomainObject\AbstractEntity;
 
 class Address extends AbstractEntity
 {
-    protected Contract $contract;
+    protected ?Contract $contract = null;
     protected string $street = '';
     protected string $streetNumber = '';
     protected string $additional = '';
@@ -42,7 +42,7 @@ class Address extends AbstractEntity
         return $this;
     }
 
-    public function getContract(): Contract
+    public function getContract(): ?Contract
     {
         return $this->contract;
     }

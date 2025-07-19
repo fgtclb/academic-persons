@@ -15,7 +15,7 @@ use TYPO3\CMS\Extbase\DomainObject\AbstractEntity;
 
 class Email extends AbstractEntity
 {
-    protected Contract $contract;
+    protected ?Contract $contract = null;
     protected string $email = '';
     protected string $type = '';
     protected int $sorting = 0;
@@ -36,7 +36,7 @@ class Email extends AbstractEntity
         return $this;
     }
 
-    public function getContract(): Contract
+    public function getContract(): ?Contract
     {
         return $this->contract;
     }

@@ -19,7 +19,7 @@ use TYPO3\CMS\Extbase\Persistence\ObjectStorage;
 
 class Contract extends AbstractEntity
 {
-    protected Profile $profile;
+    protected ?Profile $profile = null;
     protected ?OrganisationalUnit $organisationalUnit = null;
     protected ?FunctionType $functionType = null;
     protected ?\DateTime $validFrom = null;
@@ -74,7 +74,7 @@ class Contract extends AbstractEntity
         return $this;
     }
 
-    public function getProfile(): Profile
+    public function getProfile(): ?Profile
     {
         return $this->profile;
     }
@@ -189,6 +189,11 @@ class Contract extends AbstractEntity
         return $this->publish;
     }
 
+    public function getPublish(): bool
+    {
+        return $this->publish;
+    }
+
     public function setSorting(int $sorting): self
     {
         $this->sorting = $sorting;
@@ -289,26 +294,12 @@ class Contract extends AbstractEntity
 
     public function getLabel(): string
     {
-        $firstName = '-';
-        $lastName = '-';
-        if ($this->profile !== null) {
-            $firstName = $this->profile->getLastName() ?: '-';
-            $lastName = $this->profile->getFirstName() ?: '-';
-        }
-
-        $functionType = '-';
-        if ($this->functionType !== null) {
-            $functionType = $this->functionType->getFunctionName() ?: '-';
-        }
-
-        $organisationalUnit = '-';
-        if ($this->organisationalUnit !== null) {
-            $organisationalUnit = $this->organisationalUnit->getUnitName() ?: '-';
-        }
-
-        $validFrom = $this->validFrom ? $this->validFrom->format('Y-m-d') : '-';
-        $validTo = $this->validTo ? $this->validTo->format('Y-m-d') : '-';
-
+        $firstName = ($this->getProfile()?->getLastName() ?? '') ?: '-';
+        $lastName = ($this->getProfile()?->getFirstName() ?? '') ?: '-';
+        $functionType = ($this->getFunctionType()?->getFunctionName() ?? '') ?: '-';
+        $organisationalUnit = ($this->getOrganisationalUnit()?->getUnitName() ?? '') ?: '-';
+        $validFrom = ($this->getValidFrom()?->format('Y-m-d') ?? '') ?: '-';
+        $validTo = ($this->getValidTo()?->format('Y-m-d') ?? '') ?: '-';
         return sprintf(
             '%s, %s / %s / %s / %s-%s',
             $firstName,
@@ -319,4 +310,5 @@ class Contract extends AbstractEntity
             $validTo
         );
     }
+
 }
