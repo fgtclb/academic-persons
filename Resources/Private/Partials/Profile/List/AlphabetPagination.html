@@ -10,6 +10,15 @@
 
 <nav class="alphabetical-pagination mb-4">
     <ul class="pagination justify-content-center">
+        <li class="page-item">
+            <f:link.action
+                arguments="{demand: '{alphabetFilter: \'\'}'}"
+                class="page-link"
+                rel="nofollow"
+            >
+                <span>A-Z</span>
+            </f:link.action>
+        </li>
         <f:for each="{alphabets}" as="alphabet">
             <li class="page-item">
                 <f:if condition="{demand.alphabetFilter} == {alphabet}">
