@@ -1,0 +1,14 @@
+"pages",
+,"uid","pid","doktype","title","slug",
+,1,0,1,"site 1","/",
+"tt_content",
+,"uid","pid","hidden","deleted","CType","list_type",
+,1,1,0,1,"academicpersons_detail","",
+,2,1,0,0,"list","unrelated_plugin",
+,3,1,0,0,"text","",
+"be_groups",,
+,"uid","explicit_allowdeny"
+,1,""
+,2,"tt_content:CType:list"
+,3,"tt_content:CType:academicpersons_detail"
+,4,"tt_content:CType:list,tt_content:list_type:unrelated_plugin,tt_content:CType:academicpersons_detail"

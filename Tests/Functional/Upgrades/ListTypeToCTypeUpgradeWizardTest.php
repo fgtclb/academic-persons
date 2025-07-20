@@ -5,17 +5,27 @@ declare(strict_types=1);
 namespace FGTCLB\AcademicPersons\Tests\Functional\Upgrades;
 
 use FGTCLB\AcademicPersons\Tests\Functional\AbstractAcademicPersonsTestCase;
-use FGTCLB\AcademicPersons\Upgrades\PluginUpgradeWizard;
+use FGTCLB\AcademicPersons\Upgrades\ListTypeToCTypeUpgradeWizard;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\Attributes\Test;
 
-final class PluginUpgradeWizardTest extends AbstractAcademicPersonsTestCase
+/**
+ * This upgrade wizards migrates deprecated `list_type` (subtype) content elements to `CType`(main type)
+ * content elements, which includes all provided extbase plugins for `EXT:academic_persons.
+ *
+ * Further, permission selections for backend users and groups are updated to have the same permissions
+ * in place for instances which has configured user permissions on list_type level.
+ *
+ * The upgrade wizard is based in the TYPO3 v13 `AbstractListTypeToCTypeUpdate` but not extending it,
+ * because it would not be available in TYPO3 v12 instances.
+ */
+final class ListTypeToCTypeUpgradeWizardTest extends AbstractAcademicPersonsTestCase
 {
     #[Test]
     public function updateNecessaryReturnsFalseWhenListTypeRecordsAreAvailable(): void
     {
-        $subject = $this->get(PluginUpgradeWizard::class);
-        $this->assertInstanceOf(PluginUpgradeWizard::class, $subject);
+        $subject = $this->get(ListTypeToCTypeUpgradeWizard::class);
+        $this->assertInstanceOf(ListTypeToCTypeUpgradeWizard::class, $subject);
         $this->assertFalse($subject->updateNecessary());
     }
 
@@ -74,8 +84,8 @@ final class PluginUpgradeWizardTest extends AbstractAcademicPersonsTestCase
         string $fixtureDataSetFile,
     ): void {
         $this->importCSVDataSet(__DIR__ . '/Fixtures/DataSets/' . $fixtureDataSetFile);
-        $subject = $this->get(PluginUpgradeWizard::class);
-        $this->assertInstanceOf(PluginUpgradeWizard::class, $subject);
+        $subject = $this->get(ListTypeToCTypeUpgradeWizard::class);
+        $this->assertInstanceOf(ListTypeToCTypeUpgradeWizard::class, $subject);
         $this->assertTrue($subject->updateNecessary(), 'updateNecessary() returns true');
     }
 
@@ -85,9 +95,21 @@ final class PluginUpgradeWizardTest extends AbstractAcademicPersonsTestCase
         string $fixtureDataSetFile,
     ): void {
         $this->importCSVDataSet(__DIR__ . '/Fixtures/DataSets/' . $fixtureDataSetFile);
-        $subject = $this->get(PluginUpgradeWizard::class);
-        $this->assertInstanceOf(PluginUpgradeWizard::class, $subject);
+        $subject = $this->get(ListTypeToCTypeUpgradeWizard::class);
+        $this->assertInstanceOf(ListTypeToCTypeUpgradeWizard::class, $subject);
         $this->assertTrue($subject->executeUpdate(), 'updateNecessary() returns true');
         $this->assertCSVDataSet(__DIR__ . '/Fixtures/Upgraded/' . $fixtureDataSetFile);
+        $this->assertFalse($subject->updateNecessary(), 'updateNecessary() returns false after all elements have been migrated.');
+    }
+
+    #[Test]
+    public function permissionsAreMigratedAsExpected(): void
+    {
+        $this->importCSVDataSet(__DIR__ . '/Fixtures/DataSets/listTypeWithBackendUserPermissions.csv');
+        $subject = $this->get(ListTypeToCTypeUpgradeWizard::class);
+        $this->assertInstanceOf(ListTypeToCTypeUpgradeWizard::class, $subject);
+        $this->assertTrue($subject->executeUpdate(), 'updateNecessary() returns true');
+        $this->assertCSVDataSet(__DIR__ . '/Fixtures/Upgraded/listTypeWithBackendUserPermissions.csv');
+        $this->assertFalse($subject->updateNecessary(), 'updateNecessary() returns false after all elements have been migrated.');
     }
 }
