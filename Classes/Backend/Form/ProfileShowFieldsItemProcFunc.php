@@ -29,7 +29,7 @@ class ProfileShowFieldsItemProcFunc
         $typo3MajorVersion = (new Typo3Version())->getMajorVersion();
         $selectLabelKey = ($typo3MajorVersion >= 12) ? 'label' : 0;
         $selectValueKey = ($typo3MajorVersion >= 12) ? 'value' : 1;
-        $selectIconKey = ($typo3MajorVersion >= 12) ? 'icon' : 1;
+        $selectIconKey = ($typo3MajorVersion >= 12) ? 'icon' : 2;
         $selectGroupKey = ($typo3MajorVersion >= 12) ? 'group' : 3;
 
         return [
