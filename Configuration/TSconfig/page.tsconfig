@@ -1,6 +1,4 @@
 mod.wizards.newContentElement.wizardItems.academic {
-  header = LLL:EXT:academic_persons/Resources/Private/Language/locallang_be.xlf:newContentElement.wizardItems.academic
-  after = special
   elements {
     academicpersons_list {
       iconIdentifier = persons_icon
@@ -10,7 +8,6 @@ mod.wizards.newContentElement.wizardItems.academic {
         CType = academicpersons_list
       }
     }
-
     academicpersons_detail {
       iconIdentifier = persons_icon
       title = LLL:EXT:academic_persons/Resources/Private/Language/locallang_be.xlf:newContentElement.wizardItems.academic.detail.title
@@ -19,7 +16,6 @@ mod.wizards.newContentElement.wizardItems.academic {
         CType = academicpersons_detail
       }
     }
-
     academicpersons_listanddetail {
       iconIdentifier = persons_icon
       title = LLL:EXT:academic_persons/Resources/Private/Language/locallang_be.xlf:newContentElement.wizardItems.academic.listAndDetail.title
@@ -28,7 +24,6 @@ mod.wizards.newContentElement.wizardItems.academic {
         CType = academicpersons_listanddetail
       }
     }
-
     academicpersons_card {
       iconIdentifier = actions-user
       title = LLL:EXT:academic_persons/Resources/Private/Language/locallang_be.xlf:newContentElement.wizardItems.academic.card.title
@@ -37,7 +32,6 @@ mod.wizards.newContentElement.wizardItems.academic {
         CType = academicpersons_card
       }
     }
-
     academicpersons_selectedprofiles {
       iconIdentifier = persons_icon
       title = LLL:EXT:academic_persons/Resources/Private/Language/locallang_be.xlf:plugin.selectedprofiles.label
@@ -46,7 +40,6 @@ mod.wizards.newContentElement.wizardItems.academic {
         CType = academicpersons_selectedprofiles
       }
     }
-
     academicpersons_selectedcontracts {
       iconIdentifier = persons_icon
       title = LLL:EXT:academic_persons/Resources/Private/Language/locallang_be.xlf:plugin.selectedcontracts.label
@@ -56,10 +49,8 @@ mod.wizards.newContentElement.wizardItems.academic {
       }
     }
   }
-
   show := addToList(academicpersons_list,academicpersons_detail,academicpersons_listanddetail,academicpersons_card,academicpersons_selectedprofiles,academicpersons_selectedcontracts)
 }
-
 
 TCEFORM.tt_content {
   pi_flexform {

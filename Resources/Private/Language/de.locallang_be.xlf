@@ -29,10 +29,6 @@
 				<target>Nach Werten sortieren: Kommagetrennte Liste von zulässigen Sortierwerten</target>
 			</trans-unit>
 
-			<trans-unit id="content.ctype.group.label">
-				<source>Academic</source>
-				<target>Academic</target>
-			</trans-unit>
 			<trans-unit id="plugin.list.label">
 				<source>Persons List</source>
 				<target>Personen Liste</target>
@@ -44,10 +40,6 @@
 			<trans-unit id="plugin.listAndDetail.label">
 				<source>Persons List and Detail</source>
 				<target>Personen Liste and Detail</target>
-			</trans-unit>
-			<trans-unit id="content.ctype.group.label">
-				<source>Academic</source>
-				<target>Academic</target>
 			</trans-unit>
 			<trans-unit id="plugin.selectedprofiles.label">
 				<source>Profiles: Selected Profiles</source>

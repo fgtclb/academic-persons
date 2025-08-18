@@ -23,9 +23,6 @@
 				<source>Sort By Values: Comma-separated list of allowed sort by values</source>
 			</trans-unit>
 
-			<trans-unit id="content.ctype.group.label">
-				<source>Academic</source>
-			</trans-unit>
 			<trans-unit id="plugin.list.label">
 				<source>Persons List</source>
 			</trans-unit>
@@ -34,9 +31,6 @@
 			</trans-unit>
 			<trans-unit id="plugin.listAndDetail.label">
 				<source>Persons List and Detail</source>
-			</trans-unit>
-			<trans-unit id="content.ctype.group.label">
-				<source>Academic</source>
 			</trans-unit>
 			<trans-unit id="plugin.selectedprofiles.label">
 				<source>Profiles: Selected Profiles</source>

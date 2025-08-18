@@ -1,2 +1,4 @@
 name: fgtclb/academic-persons-default
 label: Academic Persons Default
+dependencies:
+  - fgtclb/academic-base-ctype-group

@@ -18,16 +18,6 @@ use TYPO3\CMS\Extbase\Utility\ExtensionUtility;
     $typo3MajorVersion = (new Typo3Version())->getMajorVersion();
 
     //==================================================================================================================
-    // Add custom content element group `academicpersons`
-    //==================================================================================================================
-    ExtensionManagementUtility::addTcaSelectItemGroup(
-        'tt_content',
-        'CType',
-        'academic',
-        'LLL:EXT:academic_persons/Resources/Private/Language/locallang_be.xlf:content.ctype.group.label',
-    );
-
-    //==================================================================================================================
     // Plugin: academicpersons_list
     //==================================================================================================================
     ExtensionManagementUtility::addPlugin(
