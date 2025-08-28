@@ -170,7 +170,7 @@
                             <numIndex index="1">table</numIndex>
                         </numIndex>
                     </items>
-                    <default>asc</default>
+                    <default>list</default>
                 </config>
             </settings.viewMode.default>
             <settings.fallbackForNonTranslated>
