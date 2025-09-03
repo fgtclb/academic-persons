@@ -35,6 +35,7 @@ $tcaConfiguration = [
         'typeicon_classes' => [
             'default' => 'tx_academicpersons_domain_model_phone_number',
         ],
+        'sortby' => 'sorting',
     ],
     'columns' => [
         'hidden' => [
@@ -81,8 +82,9 @@ $tcaConfiguration = [
             ],
         ],
         'sorting' => [
+            'label' => 'LLL:EXT:academic_persons/Resources/Private/Language/locallang_tca.xlf:tx_academicpersons_domain_model_profile.sorting.label',
             'config' => [
-                'type' => 'none',
+                'type' => 'passthrough',
             ],
         ],
         'contract' => [

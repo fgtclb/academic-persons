@@ -35,6 +35,7 @@ $tcaConfiguration = [
         'typeicon_classes' => [
             'default' => 'tx_academicpersons_domain_model_profile_information',
         ],
+        'sortby' => 'sorting',
     ],
     'columns' => [
         'hidden' => [
@@ -149,6 +150,12 @@ $tcaConfiguration = [
                 'type' => 'number',
                 'min' => 0,
                 'max' => 9999,
+            ],
+        ],
+        'sorting' => [
+            'label' => 'LLL:EXT:academic_persons/Resources/Private/Language/locallang_tca.xlf:tx_academicpersons_domain_model_profile.sorting.label',
+            'config' => [
+                'type' => 'passthrough',
             ],
         ],
     ],
