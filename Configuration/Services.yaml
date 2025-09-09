@@ -12,11 +12,11 @@ services:
     alias: FGTCLB\AcademicPersons\Domain\Model\Dto\ProfileDemand
     public: true
 
-  FGTCLB\AcademicPersons\Registry\AcademicPersonsSettingsRegistry:
+  FGTCLB\AcademicPersons\Settings\AcademicPersonsSettings:
     public: true
     factory:
-      - '@FGTCLB\AcademicPersons\Loader\AcademicPersonsSettingsLoader'
-      - 'load'
+      - '@FGTCLB\AcademicPersons\Settings\AcademicPersonsSettingsFactory'
+      - 'get'
 
   FGTCLB\AcademicPersons\Command\CreateProfilesCommand:
     tags:

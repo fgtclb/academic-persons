@@ -2,7 +2,8 @@
 
 declare(strict_types=1);
 
-use FGTCLB\AcademicPersons\Registry\AcademicPersonsSettingsRegistry;
+use FGTCLB\AcademicPersons\Settings\AcademicPersonsSettings;
+use TYPO3\CMS\Core\Utility\ArrayUtility;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
@@ -288,9 +289,8 @@ $tcaConfiguration = [
 ];
 
 // @todo MAIN TCA Files should be kept without dynamic calls, and following should be done in override files.
-$settingsRegistry = GeneralUtility::makeInstance(AcademicPersonsSettingsRegistry::class);
-// @todo Why this not matching convention ? Can't we use a convention based approach here ?
-$validations = $settingsRegistry->getValidationsForTca('profileInformation');
-$tcaConfiguration = array_replace_recursive($tcaConfiguration, $validations);
-
+ArrayUtility::mergeRecursiveWithOverrule(
+    $tcaConfiguration,
+    GeneralUtility::makeInstance(AcademicPersonsSettings::class)->getValidationTcaTableConfig('profileInformation'),
+);
 return $tcaConfiguration;

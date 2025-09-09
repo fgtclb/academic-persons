@@ -1,27 +1,55 @@
+#-----------------------------------------------------------------------------------------------------------------------
+# EXT:academic_persons - Validation configuration for EXT:academic_persons_edit or custom implementation.
+#-----------------------------------------------------------------------------------------------------------------------
+# @internal Syntax if this configuration file is considered experimental and will change until 2.1.0 release.
+#-----------------------------------------------------------------------------------------------------------------------
+
+#-----------------------------------------------------------------------------------------------------------------------
+# Profile information types
+#-----------------------------------------------------------------------------------------------------------------------
 profileInformationsTypes:
   cooperation:
     label: 'LLL:EXT:academic_persons/Resources/Private/Language/locallang_tca.xlf:tx_academicpersons_domain_model_profile.columns.cooperation.label'
     type: cooperation
+    fieldName: cooperation
   lectures:
     label: 'LLL:EXT:academic_persons/Resources/Private/Language/locallang_tca.xlf:tx_academicpersons_domain_model_profile.columns.lectures.label'
     type: lecture
+    fieldName: lectures
   memberships:
     label: 'LLL:EXT:academic_persons/Resources/Private/Language/locallang_tca.xlf:tx_academicpersons_domain_model_profile.columns.memberships.label'
     type: membership
+    fieldName: memberships
   pressMedia:
     label: 'LLL:EXT:academic_persons/Resources/Private/Language/locallang_tca.xlf:tx_academicpersons_domain_model_profile.columns.press_media.label'
     type: press_media
+    fieldName: press_media
   publications:
     label: 'LLL:EXT:academic_persons/Resources/Private/Language/locallang_tca.xlf:tx_academicpersons_domain_model_profile.columns.publications.label'
     type: publication
+    fieldName: publications
   scientificResearch:
     label: 'LLL:EXT:academic_persons/Resources/Private/Language/locallang_tca.xlf:tx_academicpersons_domain_model_profile.columns.scientific_research.label'
     type: scientific_research
+    fieldName: scientific_research
   vita:
     label: 'LLL:EXT:academic_persons/Resources/Private/Language/locallang_tca.xlf:tx_academicpersons_domain_model_profile.columns.vita.label'
     type: curriculum_vitae
+    fieldName: vita
+#-----------------------------------------------------------------------------------------------------------------------
+
+#-----------------------------------------------------------------------------------------------------------------------
+# Validation configuration for frontend fluid forms and backend formengine configured using TCA adoption.
+#-----------------------------------------------------------------------------------------------------------------------
 validations:
   # @todo We either need a translation map (to TCA) or simply matching convention which resolves needs to be added.
+  # @todo Syntax and build-up is more than sub-optimal and needs a complete redesign and implementation.
+  # <identifier>:
+  #   <propertyName>:
+  #      - required
+  #      - email
+  #      - disabled
+  #      - readonly
   contract:
     position:
       - required
@@ -57,4 +85,4 @@ validations:
       - required
     title:
       - required
-
+#-----------------------------------------------------------------------------------------------------------------------

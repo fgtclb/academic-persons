@@ -2,7 +2,8 @@
 
 declare(strict_types=1);
 
-use FGTCLB\AcademicPersons\Registry\AcademicPersonsSettingsRegistry;
+use FGTCLB\AcademicPersons\Settings\AcademicPersonsSettings;
+use TYPO3\CMS\Core\Utility\ArrayUtility;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
@@ -484,13 +485,12 @@ $tcaConfiguration = [
 ];
 
 // @todo MAIN TCA Files should be kept without dynamic calls, and following should be done in override files.
-$settingsRegistry = GeneralUtility::makeInstance(AcademicPersonsSettingsRegistry::class);
-$settings = $settingsRegistry->getSettings();
-if (isset($settings['profileInformationsTypes'])) {
-    foreach ($settings['profileInformationsTypes'] as $type => $typeSettings) {
-        $columnIdentifier = GeneralUtility::camelCaseToLowerCaseUnderscored($type);
+$settings = GeneralUtility::makeInstance(AcademicPersonsSettings::class);
+if ($settings->profileInformationTypes !== []) {
+    foreach ($settings->profileInformationTypes as $type => $typeSettings) {
+        $columnIdentifier = $typeSettings->fieldName;
         $tcaConfiguration['columns'][$columnIdentifier] = [
-            'label' => $typeSettings['label'] ?? $columnIdentifier,
+            'label' => $typeSettings->label ?: $columnIdentifier,
             'exclude' => true,
             'config' => [
                 'type' => 'inline',
@@ -523,13 +523,13 @@ if (isset($settings['profileInformationsTypes'])) {
                 'foreign_sortby' => 'sorting',
                 'foreign_table' => 'tx_academicpersons_domain_model_profile_information',
                 'foreign_match_fields' => [
-                    'type' => $typeSettings['type'] ?? '',
+                    'type' => $typeSettings->type,
                 ],
                 'overrideChildTca' => [
                     'columns' => [
                         'type' => [
                             'config' => [
-                                'default' => $typeSettings['type'] ?? '',
+                                'default' => $typeSettings->type ?: '',
                             ],
                         ],
                     ],
@@ -538,7 +538,9 @@ if (isset($settings['profileInformationsTypes'])) {
         ];
     }
 }
-$validations = $settingsRegistry->getValidationsForTca('profile');
-$tcaConfiguration = array_replace_recursive($tcaConfiguration, $validations);
+ArrayUtility::mergeRecursiveWithOverrule(
+    $tcaConfiguration,
+    $settings->getValidationTcaTableConfig('profile'),
+);
 
 return $tcaConfiguration;

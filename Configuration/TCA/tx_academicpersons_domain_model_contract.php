@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-use FGTCLB\AcademicPersons\Registry\AcademicPersonsSettingsRegistry;
+use FGTCLB\AcademicPersons\Settings\AcademicPersonsSettings;
 use FGTCLB\AcademicPersons\Tca\ContractLabels;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
@@ -368,8 +368,7 @@ $tcaConfiguration = [
 ];
 
 // @todo MAIN TCA Files should be kept without dynamic calls, and following should be done in override files.
-$settingsRegistry = GeneralUtility::makeInstance(AcademicPersonsSettingsRegistry::class);
-$validations = $settingsRegistry->getValidationsForTca('contract');
+$validations = GeneralUtility::makeInstance(AcademicPersonsSettings::class)->getValidationTcaTableConfig('contract');
 $tcaConfiguration = array_replace_recursive($tcaConfiguration, $validations);
 
 return $tcaConfiguration;
