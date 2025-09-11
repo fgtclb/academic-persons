@@ -69,20 +69,26 @@ validations:
       - required
     streetNumber:
       - required
+      - number
     zip:
       - required
+      - number
     city:
       - required
     country:
       - required
   profile:
     firstName:
+      - disabled
       - required
+    middleName:
+      - disabled
     lastName:
-      - required
+      - disabled
   profileInformation:
     year:
       - required
+      - number
     title:
       - required
 #-----------------------------------------------------------------------------------------------------------------------
