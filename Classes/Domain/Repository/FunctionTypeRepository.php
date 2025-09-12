@@ -26,6 +26,8 @@ class FunctionTypeRepository extends Repository
     public function findAll(): QueryResultInterface
     {
         $query = $this->createQuery();
+        // @todo Completely ignoring storage pages is a bad design, special for multi site instances.
+        //       Needs a better way to deal with this hear and in other places.
         $query->getQuerySettings()->setRespectStoragePage(false);
         return $query->execute();
     }

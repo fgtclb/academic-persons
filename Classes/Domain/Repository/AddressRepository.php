@@ -12,9 +12,23 @@ declare(strict_types=1);
 namespace FGTCLB\AcademicPersons\Domain\Repository;
 
 use FGTCLB\AcademicPersons\Domain\Model\Address;
+use TYPO3\CMS\Extbase\Persistence\QueryResultInterface;
 use TYPO3\CMS\Extbase\Persistence\Repository;
 
 /**
  * @extends Repository<Address>
  */
-class AddressRepository extends Repository {}
+class AddressRepository extends Repository
+{
+    /**
+     * @return QueryResultInterface<int, Address>
+     */
+    public function findAll(): QueryResultInterface
+    {
+        $query = $this->createQuery();
+        // @todo Completely ignoring storage pages is a bad design, special for multi site instances.
+        //       Needs a better way to deal with this hear and in other places.
+        $query->getQuerySettings()->setRespectStoragePage(false);
+        return $query->execute();
+    }
+}
