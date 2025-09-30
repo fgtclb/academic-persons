@@ -4,14 +4,14 @@ declare(strict_types=1);
 
 namespace FGTCLB\AcademicPersons\Service;
 
-use FGTCLB\AcademicPersons\Domain\Model\Dto\Syncronizer\SyncronizerContext;
+use FGTCLB\AcademicPersons\Domain\Model\Dto\Syncronizer\SynchronizerContext;
 
 /**
  * @internal being experimental for now until implementation has been streamlined, tested and covered with tests.
  */
-interface RecordSyncronizerInterface
+interface RecordSynchronizerInterface
 {
-    public function syncronize(
-        SyncronizerContext $context,
+    public function synchronize(
+        SynchronizerContext $context,
     ): void;
 }

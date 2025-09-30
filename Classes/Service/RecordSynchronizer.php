@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace FGTCLB\AcademicPersons\Service;
 
 use Doctrine\DBAL\Result;
-use FGTCLB\AcademicPersons\Domain\Model\Dto\Syncronizer\SyncronizerContext;
+use FGTCLB\AcademicPersons\Domain\Model\Dto\Syncronizer\SynchronizerContext;
 use Symfony\Component\DependencyInjection\Attribute\AsAlias;
 use Symfony\Component\DependencyInjection\Attribute\Autoconfigure;
 use TYPO3\CMS\Core\Database\Connection;
@@ -18,24 +18,24 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
  * @internal being experimental for now until implementation has been streamlined, tested and covered with tests.
  * @final not marked as final for functional testing reasons (for now). Class should not be extended otherwise.
  */
-#[AsAlias(id: RecordSyncronizerInterface::class, public: true)]
+#[AsAlias(id: RecordSynchronizerInterface::class, public: true)]
 #[Autoconfigure(public: true)]
-class RecordSyncronizer implements RecordSyncronizerInterface
+class RecordSynchronizer implements RecordSynchronizerInterface
 {
     public function __construct(
         private readonly ConnectionPool $connectionPool,
     ) {}
 
-    public function syncronize(SyncronizerContext $context): void
+    public function synchronize(SynchronizerContext $context): void
     {
-        $this->syncronizeRecord($context, []);
+        $this->synchronizeRecord($context, []);
     }
 
     /**
      * @param array<string, int|float|string|bool|null> $values
      * @throws \Doctrine\DBAL\Exception
      */
-    private function syncronizeRecord(SyncronizerContext $context, array $values): void
+    private function synchronizeRecord(SynchronizerContext $context, array $values): void
     {
         $defaultRecord = $this->getDefaultRecord(
             $context->tableName,
@@ -92,7 +92,7 @@ class RecordSyncronizer implements RecordSyncronizerInterface
                     continue;
                 }
                 while ($inlineChild = $inlineChilds->fetchAssociative()) {
-                    $this->syncronizeRecord(
+                    $this->synchronizeRecord(
                         $context->withRecord($inlineTable, $inlineChild['uid']),
                         [
                             (string)$inlineField => $translatedRecord['uid'],
@@ -226,7 +226,7 @@ class RecordSyncronizer implements RecordSyncronizerInterface
      * @param array<string, mixed> $translatedRecord
      */
     private function updateTranslation(
-        SyncronizerContext $context,
+        SynchronizerContext $context,
         array $defaultRecord,
         array $translatedRecord
     ): void {

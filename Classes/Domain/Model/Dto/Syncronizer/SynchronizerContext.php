@@ -4,17 +4,17 @@ declare(strict_types=1);
 
 namespace FGTCLB\AcademicPersons\Domain\Model\Dto\Syncronizer;
 
-use FGTCLB\AcademicPersons\Service\RecordSyncronizerInterface;
+use FGTCLB\AcademicPersons\Service\RecordSynchronizerInterface;
 use TYPO3\CMS\Core\Site\Entity\Site;
 use TYPO3\CMS\Core\Site\Entity\SiteLanguage;
 
-final class SyncronizerContext
+final class SynchronizerContext
 {
     /**
      * @param array<int, SiteLanguage> $allowedSiteLanguages
      */
     public function __construct(
-        public readonly RecordSyncronizerInterface $recordSyncronizer,
+        public readonly RecordSynchronizerInterface $recordSyncronizer,
         public readonly Site $site,
         public readonly SiteLanguage $defaultLanguage,
         public readonly array $allowedSiteLanguages,
@@ -23,7 +23,7 @@ final class SyncronizerContext
     ) {}
 
     /**
-     * @param RecordSyncronizerInterface $recordSyncronizer
+     * @param RecordSynchronizerInterface $recordSyncronizer
      * @param Site $site
      * @param array<int, string|int> $allowedLanguageIds
      * @param string $tableName
@@ -31,7 +31,7 @@ final class SyncronizerContext
      * @return self
      */
     public static function create(
-        RecordSyncronizerInterface $recordSyncronizer,
+        RecordSynchronizerInterface $recordSyncronizer,
         Site $site,
         array $allowedLanguageIds,
         string $tableName,
