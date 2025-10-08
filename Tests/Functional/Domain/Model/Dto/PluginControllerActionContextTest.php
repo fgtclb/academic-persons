@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace FGTCLB\AcademicPersons\Tests\Functional\Domain\Model\DTO;
+namespace FGTCLB\AcademicPersons\Tests\Functional\Domain\Model\Dto;
 
 use FGTCLB\AcademicPersons\Domain\Model\Dto\PluginControllerActionContext;
 use FGTCLB\AcademicPersons\Tests\Functional\AbstractAcademicPersonsTestCase;
