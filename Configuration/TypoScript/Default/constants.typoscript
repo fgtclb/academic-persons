@@ -1,17 +1,26 @@
 plugin.tx_academicpersons {
+  # cat=plugin.tx_academicpersons//a; type=string; label=Detail page PID
   detailPid =
   demand {
+    # cat=plugin.tx_academicpersons//a; type=string; label=Group by
     groupBy =
+    # cat=plugin.tx_academicpersons//a; type=string; label=Sort by
     sortBy =
+    # cat=plugin.tx_academicpersons//a; type=string; label=Sort by direction
     sortByDirection = asc
   }
   pagination {
+    # cat=plugin.tx_academicpersons//a; type=string; label=Results per page
     resultsPerPage = 1
+    # cat=plugin.tx_academicpersons//a; type=string; label=Number of links
     numberOfLinks = 5
   }
   view {
+    # cat=plugin.tx_academicpersons/file; type=string; label=Path to template root (FE)
     templateRootPath = EXT:academic_persons/Resources/Private/Templates/
+    # cat=plugin.tx_academicpersons/file; type=string; label=Path to template partials (FE)
     partialRootPath = EXT:academic_persons/Resources/Private/Partials/
+    # cat=plugin.tx_academicpersons/file; type=string; label=Path to template layouts (FE)
     layoutRootPath = EXT:academic_persons/Resources/Private/Layouts/
   }
 }
