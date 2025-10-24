@@ -53,3 +53,4 @@ created, edited and displayed in the front end and in different display modes.
     Configuration/Index
     Templates/Index
     KnownProblems/Index
+    Changelog/Changelog-2
