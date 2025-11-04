@@ -11,6 +11,7 @@ declare(strict_types=1);
 
 namespace FGTCLB\AcademicPersons\Command;
 
+use FGTCLB\AcademicBase\Environment\StateManagerInterface;
 use FGTCLB\AcademicPersons\Event\ChooseProfileFactoryEvent;
 use FGTCLB\AcademicPersons\Profile\ProfileFactory;
 use FGTCLB\AcademicPersons\Provider\FrontendUserProvider;
@@ -25,8 +26,11 @@ use TYPO3\CMS\Frontend\Authentication\FrontendUserAuthentication;
 
 final class CreateProfilesCommand extends Command
 {
-    public function __construct(private readonly FrontendUserProvider $frontendUserProvider, private readonly EventDispatcherInterface $eventDispatcher)
-    {
+    public function __construct(
+        private readonly FrontendUserProvider $frontendUserProvider,
+        private readonly EventDispatcherInterface $eventDispatcher,
+        private readonly StateManagerInterface $stateManager,
+    ) {
         parent::__construct();
     }
 
@@ -52,26 +56,38 @@ final class CreateProfilesCommand extends Command
 
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
-        // @todo getUsersWithoutProfile() should return the doctrine result and not the full retrieved record array
-        $frontendUsers = $this->frontendUserProvider->getUsersWithoutProfile(
-            $this->getCommaSeparatedIntegerValueListOptionAsArrayOfIntegerValues($input, 'include-pids'),
-            $this->getCommaSeparatedIntegerValueListOptionAsArrayOfIntegerValues($input, 'exclude-pids'),
-        );
-        foreach ($frontendUsers as $frontendUser) {
-            $frontendUserAuthentication = GeneralUtility::makeInstance(FrontendUserAuthentication::class);
-            $frontendUserAuthentication->user = $frontendUser;
-            $frontendUserAuthentication->fetchGroupData(new ServerRequest());
+        $this->stateManager->backup();
+        $this->stateManager->reset();
+        try {
+            // @todo getUsersWithoutProfile() should return the doctrine result and not the full retrieved record array
+            $frontendUsers = $this->frontendUserProvider->getUsersWithoutProfile(
+                $this->getCommaSeparatedIntegerValueListOptionAsArrayOfIntegerValues($input, 'include-pids'),
+                $this->getCommaSeparatedIntegerValueListOptionAsArrayOfIntegerValues($input, 'exclude-pids'),
+            );
+            foreach ($frontendUsers as $frontendUser) {
+                $this->stateManager->backup();
+                $this->stateManager->reset();
+                try {
+                    $frontendUserAuthentication = GeneralUtility::makeInstance(FrontendUserAuthentication::class);
+                    $frontendUserAuthentication->user = $frontendUser;
+                    $frontendUserAuthentication->fetchGroupData(new ServerRequest());
 
-            /** @var ChooseProfileFactoryEvent $chooseProfileFactoryEvent */
-            $chooseProfileFactoryEvent = $this->eventDispatcher->dispatch(new ChooseProfileFactoryEvent($frontendUserAuthentication));
-            $profileFactory = $chooseProfileFactoryEvent->getProfileFactory();
-            if ($profileFactory === null) {
-                $profileFactory = GeneralUtility::makeInstance(ProfileFactory::class);
-            }
+                    /** @var ChooseProfileFactoryEvent $chooseProfileFactoryEvent */
+                    $chooseProfileFactoryEvent = $this->eventDispatcher->dispatch(new ChooseProfileFactoryEvent($frontendUserAuthentication));
+                    $profileFactory = $chooseProfileFactoryEvent->getProfileFactory();
+                    if ($profileFactory === null) {
+                        $profileFactory = GeneralUtility::makeInstance(ProfileFactory::class);
+                    }
 
-            if ($profileFactory->shouldCreateProfileForUser($frontendUserAuthentication)) {
-                $profileFactory->createProfileForUser($frontendUserAuthentication);
+                    if ($profileFactory->shouldCreateProfileForUser($frontendUserAuthentication)) {
+                        $profileFactory->createProfileForUser($frontendUserAuthentication);
+                    }
+                } finally {
+                    $this->stateManager->restore();
+                }
             }
+        } finally {
+            $this->stateManager->restore();
         }
 
         return Command::SUCCESS;
