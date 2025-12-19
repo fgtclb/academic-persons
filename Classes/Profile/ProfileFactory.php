@@ -16,7 +16,9 @@ use FGTCLB\AcademicPersons\Domain\Model\Contract;
 use FGTCLB\AcademicPersons\Domain\Model\Email;
 use FGTCLB\AcademicPersons\Domain\Model\PhoneNumber;
 use FGTCLB\AcademicPersons\Domain\Model\Profile;
+use Symfony\Component\DependencyInjection\Attribute\Autoconfigure;
 
+#[Autoconfigure(public: true, shared: true)]
 final class ProfileFactory extends AbstractProfileFactory
 {
     /**

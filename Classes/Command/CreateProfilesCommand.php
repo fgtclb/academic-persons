@@ -11,25 +11,17 @@ declare(strict_types=1);
 
 namespace FGTCLB\AcademicPersons\Command;
 
-use FGTCLB\AcademicBase\Environment\StateManagerInterface;
-use FGTCLB\AcademicPersons\Event\ChooseProfileFactoryEvent;
-use FGTCLB\AcademicPersons\Profile\ProfileFactory;
-use FGTCLB\AcademicPersons\Provider\FrontendUserProvider;
-use Psr\EventDispatcher\EventDispatcherInterface;
+use FGTCLB\AcademicPersons\Service\ProfileCreateCommandService;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
-use TYPO3\CMS\Core\Http\ServerRequest;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
-use TYPO3\CMS\Frontend\Authentication\FrontendUserAuthentication;
 
 final class CreateProfilesCommand extends Command
 {
     public function __construct(
-        private readonly FrontendUserProvider $frontendUserProvider,
-        private readonly EventDispatcherInterface $eventDispatcher,
-        private readonly StateManagerInterface $stateManager,
+        private readonly ProfileCreateCommandService $profileCreateCommandService
     ) {
         parent::__construct();
     }
@@ -56,40 +48,10 @@ final class CreateProfilesCommand extends Command
 
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
-        $this->stateManager->backup();
-        $this->stateManager->reset();
-        try {
-            // @todo getUsersWithoutProfile() should return the doctrine result and not the full retrieved record array
-            $frontendUsers = $this->frontendUserProvider->getUsersWithoutProfile(
-                $this->getCommaSeparatedIntegerValueListOptionAsArrayOfIntegerValues($input, 'include-pids'),
-                $this->getCommaSeparatedIntegerValueListOptionAsArrayOfIntegerValues($input, 'exclude-pids'),
-            );
-            foreach ($frontendUsers as $frontendUser) {
-                $this->stateManager->backup();
-                $this->stateManager->reset();
-                try {
-                    $frontendUserAuthentication = GeneralUtility::makeInstance(FrontendUserAuthentication::class);
-                    $frontendUserAuthentication->user = $frontendUser;
-                    $frontendUserAuthentication->fetchGroupData(new ServerRequest());
-
-                    /** @var ChooseProfileFactoryEvent $chooseProfileFactoryEvent */
-                    $chooseProfileFactoryEvent = $this->eventDispatcher->dispatch(new ChooseProfileFactoryEvent($frontendUserAuthentication));
-                    $profileFactory = $chooseProfileFactoryEvent->getProfileFactory();
-                    if ($profileFactory === null) {
-                        $profileFactory = GeneralUtility::makeInstance(ProfileFactory::class);
-                    }
-
-                    if ($profileFactory->shouldCreateProfileForUser($frontendUserAuthentication)) {
-                        $profileFactory->createProfileForUser($frontendUserAuthentication);
-                    }
-                } finally {
-                    $this->stateManager->restore();
-                }
-            }
-        } finally {
-            $this->stateManager->restore();
-        }
-
+        $this->profileCreateCommandService->execute(
+            $this->getCommaSeparatedIntegerValueListOptionAsArrayOfIntegerValues($input, 'include-pids'),
+            $this->getCommaSeparatedIntegerValueListOptionAsArrayOfIntegerValues($input, 'exclude-pids'),
+        );
         return Command::SUCCESS;
     }
 

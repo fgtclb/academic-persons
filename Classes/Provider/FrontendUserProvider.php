@@ -11,24 +11,37 @@ declare(strict_types=1);
 
 namespace FGTCLB\AcademicPersons\Provider;
 
+use Doctrine\DBAL\Result;
 use TYPO3\CMS\Core\Database\Connection;
 use TYPO3\CMS\Core\Database\ConnectionPool;
 
 final class FrontendUserProvider
 {
-    public function __construct(private readonly ConnectionPool $connectionPool) {}
+    public function __construct(
+        private readonly ConnectionPool $connectionPool,
+    ) {}
 
     /**
      * @param int[] $includePids
      * @param int[] $excludePids
      * @return array<int, array<string, mixed>>
-     * @todo getUsersWithoutProfile() should return the doctrine result and not the full retrieved record array
+     * @deprecated since v2.1, will be removed in v3.0. Use {@see FrontendUserProvider::getUsersWithoutProfileResult()}.
      */
     public function getUsersWithoutProfile(array $includePids = [], array $excludePids = []): array
+    {
+        return $this->getUsersWithoutProfileResult($includePids, $excludePids)->fetchAllAssociative();
+    }
+
+    /**
+     * @param int[] $includePids
+     * @param int[] $excludePids
+     */
+    public function getUsersWithoutProfileResult(array $includePids, array $excludePids = []): Result
     {
         $queryBuilder = $this->connectionPool->getQueryBuilderForTable('fe_users');
         $queryBuilder
             ->select('fe_users.*')
+            ->distinct()
             ->from('fe_users')
             ->leftJoin(
                 'fe_users',
@@ -77,8 +90,7 @@ final class FrontendUserProvider
         }
 
         return $queryBuilder
-            ->groupBy('fe_users.uid')
-            ->executeQuery()
-            ->fetchAllAssociative();
+            ->orderBy('fe_users.uid')
+            ->executeQuery();
     }
 }

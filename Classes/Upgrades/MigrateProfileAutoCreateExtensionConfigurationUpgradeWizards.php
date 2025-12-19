@@ -34,18 +34,20 @@ final class MigrateProfileAutoCreateExtensionConfigurationUpgradeWizards impleme
 
     public function executeUpdate(): bool
     {
+        $this->extensionConfiguration->synchronizeExtConfTemplateWithLocalConfigurationOfAllExtensions();
         $persons = $this->getExtensionConfiguration('academic_persons');
         $update = $persons;
         $personsEdit = $this->getExtensionConfiguration('academic_persons_edit');
-        if ($persons['autoCreateProfiles'] === 0 && $personsEdit['autoCreateProfiles'] === 1) {
-            $update['autoCreateProfiles'] = 1;
+        if ($persons['profile']['autoCreateProfiles'] === 0 && $personsEdit['profile']['autoCreateProfiles'] === 1) {
+            $update['profile']['autoCreateProfiles'] = 1;
         }
-        if ($persons['createProfileForUserGroups'] === '' && $personsEdit['createProfileForUserGroups'] !== '') {
-            $update['createProfileForUserGroups'] = $personsEdit['createProfileForUserGroups'];
+        if ($persons['profile']['createProfileForUserGroups'] === '' && $personsEdit['profile']['createProfileForUserGroups'] !== '') {
+            $update['profile']['createProfileForUserGroups'] = $personsEdit['profile']['createProfileForUserGroups'];
         }
         if ($update !== $persons) {
             $this->extensionConfiguration->set('academic_persons', $update);
         }
+        $this->extensionConfiguration->synchronizeExtConfTemplateWithLocalConfigurationOfAllExtensions();
         return true;
     }
 
@@ -62,8 +64,10 @@ final class MigrateProfileAutoCreateExtensionConfigurationUpgradeWizards impleme
     /**
      * @param string $extensionKey
      * @return array{
-     *     autoCreateProfiles: int,
-     *     createProfileForUserGroups: string,
+     *     profile: array{
+     *         autoCreateProfiles: int,
+     *         createProfileForUserGroups: string,
+     *     },
      * }
      */
     private function getExtensionConfiguration(string $extensionKey): array
@@ -73,9 +77,8 @@ final class MigrateProfileAutoCreateExtensionConfigurationUpgradeWizards impleme
         } catch (ExtensionConfigurationExtensionNotConfiguredException | ExtensionConfigurationPathDoesNotExistException) {
             $configuration = [];
         }
-        return [
-            'autoCreateProfiles' => (int)($configuration['autoCreateProfiles'] ?? 0),
-            'createProfileForUserGroups' => (string)($configuration['createProfileForUserGroups'] ?? ''),
-        ];
+        $configuration['profile']['autoCreateProfiles'] ??= 0;
+        $configuration['profile']['createProfileForUserGroups'] ??= '';
+        return $configuration;
     }
 }

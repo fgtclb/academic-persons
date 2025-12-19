@@ -20,5 +20,7 @@ use Symfony\Component\DependencyInjection\Loader\Configurator\ContainerConfigura
 return static function (ContainerConfigurator $container, ContainerBuilder $containerBuilder): void {
     $containerBuilder->registerForAutoconfiguration(TypesInterface::class)->setPublic(true);
     $containerBuilder->registerForAutoconfiguration(DemandValuesInterface::class)->setPublic(true);
-    $containerBuilder->registerForAutoconfiguration(ProfileFactoryInterface::class)->setPublic(true);
+    $containerBuilder->registerForAutoconfiguration(ProfileFactoryInterface::class)
+        ->setPublic(true)
+        ->setShared(true);
 };

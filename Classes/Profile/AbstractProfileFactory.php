@@ -45,13 +45,17 @@ abstract class AbstractProfileFactory implements ProfileFactoryInterface
     public function injectExtensionConfiguration(ExtensionConfiguration $extensionConfiguration): void
     {
         $this->extensionConfiguration = $extensionConfiguration;
-        $this->initializeExtensionConfigurationOptions($extensionConfiguration);
     }
 
     #[Required]
     public function injectPersistenceManagerInterface(PersistenceManagerInterface $persistenceManager): void
     {
         $this->persistenceManager = $persistenceManager;
+    }
+
+    public function initializeObject(): void
+    {
+        $this->initializeExtensionConfigurationOptions($this->extensionConfiguration);
     }
 
     public function shouldCreateProfileForUser(FrontendUserAuthentication $frontendUserAuthentication): bool
@@ -91,8 +95,12 @@ abstract class AbstractProfileFactory implements ProfileFactoryInterface
 
         $this->persistenceManager->persistAll();
 
-        $afterProfileUpdatedEvent = new AfterProfileUpdateEvent($profileForDefaultLanguage);
-        $this->eventDispatcher->dispatch($afterProfileUpdatedEvent);
+        try {
+            $afterProfileUpdatedEvent = new AfterProfileUpdateEvent($profileForDefaultLanguage);
+            $this->eventDispatcher->dispatch($afterProfileUpdatedEvent);
+        } finally {
+            // noop for now - can be used to integrate (state) cleanup
+        }
 
         return $profileForDefaultLanguage->getUid();
     }
@@ -109,8 +117,8 @@ abstract class AbstractProfileFactory implements ProfileFactoryInterface
         } catch (ExtensionConfigurationExtensionNotConfiguredException | ExtensionConfigurationPathDoesNotExistException) {
             $academicPersonsConfiguration = [];
         }
-        $this->autoCreateProfiles = ((int)($academicPersonsConfiguration['autoCreateProfiles'] ?? 0) !== 0);
-        $createProfileForUserGroups = (string)($academicPersonsConfiguration['createProfileForUserGroups'] ?? '');
+        $this->autoCreateProfiles = ((int)($academicPersonsConfiguration['profile']['autoCreateProfiles'] ?? 0) !== 0);
+        $createProfileForUserGroups = (string)($academicPersonsConfiguration['profile']['createProfileForUserGroups'] ?? '');
         $this->userGroupsToCreateProfilesFor = $createProfileForUserGroups === ''
             ? []
             : GeneralUtility::intExplode(',', $createProfileForUserGroups, true);

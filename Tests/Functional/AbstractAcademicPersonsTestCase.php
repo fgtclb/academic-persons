@@ -5,6 +5,8 @@ declare(strict_types=1);
 namespace FGTCLB\AcademicPersons\Tests\Functional;
 
 use SBUERK\TYPO3\Testing\TestCase\FunctionalTestCase;
+use TYPO3\CMS\Core\Configuration\ExtensionConfiguration;
+use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 abstract class AbstractAcademicPersonsTestCase extends FunctionalTestCase
 {
@@ -17,6 +19,13 @@ abstract class AbstractAcademicPersonsTestCase extends FunctionalTestCase
         'fgtclb/academic-base',
         'fgtclb/academic-persons',
     ];
+
+    protected function setUp(): void
+    {
+        parent::setUp();
+        $extensionConfiguration = GeneralUtility::makeInstance(ExtensionConfiguration::class);
+        $extensionConfiguration->synchronizeExtConfTemplateWithLocalConfigurationOfAllExtensions();
+    }
 
     protected function addCoreExtension(string ...$extensions): void
     {

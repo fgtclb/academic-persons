@@ -16,9 +16,10 @@ use TYPO3\CMS\Frontend\Authentication\FrontendUserAuthentication;
 
 final class ChooseProfileFactoryEvent
 {
-    private ?ProfileFactoryInterface $profileFactory = null;
-
-    public function __construct(private readonly FrontendUserAuthentication $frontendUserAuthentication) {}
+    public function __construct(
+        private readonly FrontendUserAuthentication $frontendUserAuthentication,
+        private ?ProfileFactoryInterface $profileFactory = null,
+    ) {}
 
     public function getFrontendUserAuthentication(): FrontendUserAuthentication
     {
