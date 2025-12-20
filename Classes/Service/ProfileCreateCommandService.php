@@ -14,6 +14,7 @@ use FGTCLB\AcademicPersons\Event\ChooseProfileFactoryEvent;
 use FGTCLB\AcademicPersons\Profile\ProfileFactory;
 use FGTCLB\AcademicPersons\Profile\ProfileFactoryInterface;
 use FGTCLB\AcademicPersons\Provider\FrontendUserProvider;
+use FGTCLB\AcademicPersons\Service\Event\ModifyProfileCreateEnvironmentStateBuildContextForFrontendUserEvent;
 use Psr\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\DependencyInjection\Attribute\Autoconfigure;
 use Symfony\Component\DependencyInjection\Attribute\Autowire;
@@ -85,7 +86,9 @@ final class ProfileCreateCommandService
                 return;
             }
             // Reapply build environment state to be sure that project implementation do not messup with the environment.
-            $this->stateManager->apply($environmentState);
+            if ($environmentState !== null) {
+                $this->stateManager->apply($environmentState);
+            }
             $profileFactory->createProfileForUser($frontendUserAuthentication);
         } finally {
             $this->stateManager->restore();
@@ -106,15 +109,24 @@ final class ProfileCreateCommandService
      * @param array<string, mixed> $frontendUserRecord
      * @throws NoTypo3VersionCompatibleEnvironmentBuilderFound
      */
-    private function bootstrapSuitableEnvironmentForFrontendUser(array $frontendUserRecord): StateInterface
+    private function bootstrapSuitableEnvironmentForFrontendUser(array $frontendUserRecord): ?StateInterface
     {
         $stateBuildContext = new StateBuildContext(
             ApplicationType::FRONTEND,
             (int)($frontendUserRecord['pid'] ?? 0),
             0,
         );
-        // @todo Consider dispatch PSR-14 event allowing to modify the StateBuildContext and influence
-        //       what environment should be bootstrapped.
+        $event = new ModifyProfileCreateEnvironmentStateBuildContextForFrontendUserEvent(
+            frontendUserRecord: $frontendUserRecord,
+            defaultStateBuildContext: $stateBuildContext,
+            stateBuildContext: $stateBuildContext,
+        );
+        $event = $this->eventDispatcher->dispatch($event);
+        /** @var ModifyProfileCreateEnvironmentStateBuildContextForFrontendUserEvent $event */
+        $stateBuildContext = $event->getStateBuildContext();
+        if ($stateBuildContext === null) {
+            return null;
+        }
         $state = $this->stateManager->bootstrap($stateBuildContext);
         $this->stateManager->apply($state);
         return $state;
@@ -123,11 +135,11 @@ final class ProfileCreateCommandService
     /**
      * @param array<string, mixed> $frontendUserRecord
      */
-    private function prepareFrontendUserAuthentication(array $frontendUserRecord, StateInterface $state): FrontendUserAuthentication
+    private function prepareFrontendUserAuthentication(array $frontendUserRecord, ?StateInterface $state = null): FrontendUserAuthentication
     {
         $frontendUserAuthentication = GeneralUtility::makeInstance(FrontendUserAuthentication::class);
         $frontendUserAuthentication->user = $frontendUserRecord;
-        $frontendUserAuthentication->fetchGroupData($state->request() ?? $GLOBALS['TYPO3_REQUEST'] ?? new ServerRequest());
+        $frontendUserAuthentication->fetchGroupData($state?->request() ?? $GLOBALS['TYPO3_REQUEST'] ?? new ServerRequest());
         return $frontendUserAuthentication;
     }
 

@@ -95,12 +95,8 @@ abstract class AbstractProfileFactory implements ProfileFactoryInterface
 
         $this->persistenceManager->persistAll();
 
-        try {
-            $afterProfileUpdatedEvent = new AfterProfileUpdateEvent($profileForDefaultLanguage);
-            $this->eventDispatcher->dispatch($afterProfileUpdatedEvent);
-        } finally {
-            // noop for now - can be used to integrate (state) cleanup
-        }
+        $afterProfileUpdatedEvent = new AfterProfileUpdateEvent($profileForDefaultLanguage);
+        $this->eventDispatcher->dispatch($afterProfileUpdatedEvent);
 
         return $profileForDefaultLanguage->getUid();
     }

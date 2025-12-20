@@ -5,11 +5,14 @@ declare(strict_types=1);
 namespace FGTCLB\AcademicPersons\Tests\Functional\Service\ProfileCreateCommandService;
 
 use FGTCLB\AcademicPersons\Profile\ProfileFactory;
+use FGTCLB\AcademicPersons\Service\Event\ModifyProfileCreateEnvironmentStateBuildContextForFrontendUserEvent;
 use FGTCLB\AcademicPersons\Service\ProfileCreateCommandService;
 use FGTCLB\AcademicPersons\Tests\Functional\AbstractAcademicPersonsTestCase;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\Attributes\Test;
 use SBUERK\TYPO3\Testing\SiteHandling\SiteBasedTestTrait;
+use Symfony\Component\DependencyInjection\Container;
+use TYPO3\CMS\Core\EventDispatcher\ListenerProvider;
 use TYPO3\CMS\Core\Utility\ArrayUtility;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
@@ -588,6 +591,7 @@ final class UsingDefaultProfileFactoryOnlyTest extends AbstractAcademicPersonsTe
             'includePids' => [],
             'excludePids' => [],
             'assertCsvFileName' => 'created-for-all-frontendusers.csv',
+            'dispatchedEventCount' => 8,
         ];
         yield '#2 only include pids' => [
             'includePids' => [
@@ -596,6 +600,7 @@ final class UsingDefaultProfileFactoryOnlyTest extends AbstractAcademicPersonsTe
             ],
             'excludePids' => [],
             'assertCsvFileName' => 'created-for-only-includepids.csv',
+            'dispatchedEventCount' => 4,
         ];
         yield '#3 only exclude pids' => [
             'includePids' => [],
@@ -604,6 +609,7 @@ final class UsingDefaultProfileFactoryOnlyTest extends AbstractAcademicPersonsTe
                 1110,
             ],
             'assertCsvFileName' => 'created-for-only-excludepids.csv',
+            'dispatchedEventCount' => 4,
         ];
         yield '#4 only excludePids discarding same pageId as includePid' => [
             'includePids' => [
@@ -615,6 +621,7 @@ final class UsingDefaultProfileFactoryOnlyTest extends AbstractAcademicPersonsTe
                 1110,
             ],
             'assertCsvFileName' => 'created-for-only-excludepids.csv',
+            'dispatchedEventCount' => 4,
         ];
     }
 
@@ -630,10 +637,28 @@ final class UsingDefaultProfileFactoryOnlyTest extends AbstractAcademicPersonsTe
         array $includePids,
         array $excludePids,
         string $assertCsvFileName,
+        int $dispatchedEventCount,
     ): void {
+        $dispatchedModifyEvents = [];
+        /** @var Container $container */
+        $container = $this->get('service_container');
+        $container->set(
+            'modify-profile-create-environment-state-build-context-for-frontend-user-listener',
+            static function (
+                ModifyProfileCreateEnvironmentStateBuildContextForFrontendUserEvent $event
+            ) use (&$dispatchedModifyEvents): void {
+                $dispatchedModifyEvents[] = $dispatchedModifyEvents;
+            }
+        );
+        $listenerProvider = $container->get(ListenerProvider::class);
+        $listenerProvider->addListener(
+            ModifyProfileCreateEnvironmentStateBuildContextForFrontendUserEvent::class,
+            'modify-profile-create-environment-state-build-context-for-frontend-user-listener',
+        );
         $this->assertFileExists(__DIR__ . '/Fixtures/Asserts/' . $assertCsvFileName);
         $profileCreateCommandService = GeneralUtility::makeInstance(ProfileCreateCommandService::class);
         $profileCreateCommandService->execute($includePids, $excludePids);
         $this->assertCSVDataSet(__DIR__ . '/Fixtures/Asserts/' . $assertCsvFileName);
+        $this->assertCount($dispatchedEventCount, $dispatchedModifyEvents);
     }
 }
