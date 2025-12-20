@@ -38,7 +38,7 @@ final class MigrateProfileAutoCreateExtensionConfigurationUpgradeWizards impleme
         $persons = $this->getExtensionConfiguration('academic_persons');
         $update = $persons;
         $personsEdit = $this->getExtensionConfiguration('academic_persons_edit');
-        if ($persons['profile']['autoCreateProfiles'] === 0 && $personsEdit['profile']['autoCreateProfiles'] === 1) {
+        if ((int)($persons['profile']['autoCreateProfiles']) === 0 && (int)($personsEdit['profile']['autoCreateProfiles']) === 1) {
             $update['profile']['autoCreateProfiles'] = 1;
         }
         if ($persons['profile']['createProfileForUserGroups'] === '' && $personsEdit['profile']['createProfileForUserGroups'] !== '') {
