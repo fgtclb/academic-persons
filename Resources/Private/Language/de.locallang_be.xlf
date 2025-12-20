@@ -34,6 +34,14 @@
 				<source>Sort By Values: Comma-separated list of allowed sort by values</source>
 				<target>Nach Werten sortieren: Kommagetrennte Liste von zulässigen Sortierwerten</target>
 			</trans-unit>
+			<trans-unit id="extension_configuration.profile.autoCreateProfiles.label">
+				<source>Auto create profile: Automatically creates a new profile for FE users</source>
+				<target>Automatisch Profil erstellen: Legt automatisch ein neues Profil für FE Benutzer an</target>
+			</trans-unit>
+			<trans-unit id="extension_configuration.profile.createProfileForUserGroups.label">
+				<source>Create for user groups: Create profiles only if current user is in one of these user group IDs.</source>
+				<target>Für Benutzergruppen erstellen: Legt Profile an, wenn der aktuelle Benutzer Teil dieser Gruppen-IDs ist</target>
+			</trans-unit>
 
 			<trans-unit id="plugin.list.label">
 				<source>Persons List</source>

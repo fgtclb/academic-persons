@@ -29,6 +29,11 @@ abstract class AbstractProfileFactory implements ProfileFactoryInterface
     protected PersistenceManagerInterface $persistenceManager;
     protected ExtensionConfiguration $extensionConfiguration;
     protected EventDispatcherInterface $eventDispatcher;
+    protected bool $autoCreateProfiles = false;
+    /**
+     * @var int[]
+     */
+    protected array $userGroupsToCreateProfilesFor = [];
 
     #[Required]
     public function injectEventDispatcherInterface(EventDispatcherInterface $eventDispatcher): void
@@ -40,6 +45,7 @@ abstract class AbstractProfileFactory implements ProfileFactoryInterface
     public function injectExtensionConfiguration(ExtensionConfiguration $extensionConfiguration): void
     {
         $this->extensionConfiguration = $extensionConfiguration;
+        $this->initializeExtensionConfigurationOptions($extensionConfiguration);
     }
 
     #[Required]
@@ -51,27 +57,16 @@ abstract class AbstractProfileFactory implements ProfileFactoryInterface
     public function shouldCreateProfileForUser(FrontendUserAuthentication $frontendUserAuthentication): bool
     {
         $userAspect = new UserAspect($frontendUserAuthentication);
-
-        try {
-            $configuration = $this->extensionConfiguration->get('academic_persons_edit');
-        } catch (ExtensionConfigurationExtensionNotConfiguredException | ExtensionConfigurationPathDoesNotExistException) {
+        if ($this->autoCreateProfiles === false) {
+            // Auto create not enabled, return false.
             return false;
         }
-
-        // Check if the profile should be created for the user
-        $shouldCreateProfile = (bool)($configuration['profile']['autoCreateProfiles'] ?? false);
-        if ($shouldCreateProfile === false) {
-            return false;
-        }
-
-        // Check if the user is in a user group that should have a profile created
-        $userGroupListToCreateProfileFor = (string)($configuration['profile']['createProfileForUserGroups'] ?? '');
-        if (empty($userGroupListToCreateProfileFor)) {
-            return $shouldCreateProfile;
+        if ($this->userGroupsToCreateProfilesFor === []) {
+            // Auto create enabled and no user group restrictions set, return true.
+            return true;
         }
         $userGroupId = $userAspect->getGroupIds();
-        $userGroupIdsToCreateProfileFor = GeneralUtility::intExplode(',', $userGroupListToCreateProfileFor);
-        $userIsInUserGroup = count(array_intersect($userGroupId, $userGroupIdsToCreateProfileFor)) > 0;
+        $userIsInUserGroup = array_intersect($userGroupId, $this->userGroupsToCreateProfilesFor) !== [];
 
         return $userIsInUserGroup;
     }
@@ -106,4 +101,18 @@ abstract class AbstractProfileFactory implements ProfileFactoryInterface
      * @param array<string, int|string|null> $frontendUserData
      */
     abstract protected function createProfileFromFrontendUser(array $frontendUserData): Profile;
+
+    private function initializeExtensionConfigurationOptions(ExtensionConfiguration $extensionConfiguration): void
+    {
+        try {
+            $academicPersonsConfiguration = $extensionConfiguration->get('academic_persons');
+        } catch (ExtensionConfigurationExtensionNotConfiguredException | ExtensionConfigurationPathDoesNotExistException) {
+            $academicPersonsConfiguration = [];
+        }
+        $this->autoCreateProfiles = ((int)($academicPersonsConfiguration['autoCreateProfiles'] ?? 0) !== 0);
+        $createProfileForUserGroups = (string)($academicPersonsConfiguration['createProfileForUserGroups'] ?? '');
+        $this->userGroupsToCreateProfilesFor = $createProfileForUserGroups === ''
+            ? []
+            : GeneralUtility::intExplode(',', $createProfileForUserGroups, true);
+    }
 }
