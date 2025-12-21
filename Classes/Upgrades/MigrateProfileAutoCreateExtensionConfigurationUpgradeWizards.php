@@ -34,7 +34,8 @@ final class MigrateProfileAutoCreateExtensionConfigurationUpgradeWizards impleme
 
     public function executeUpdate(): bool
     {
-        $this->extensionConfiguration->synchronizeExtConfTemplateWithLocalConfigurationOfAllExtensions();
+        $this->extensionConfiguration->synchronizeExtConfTemplateWithLocalConfiguration('academic_persons');
+        $this->extensionConfiguration->synchronizeExtConfTemplateWithLocalConfiguration('academic_persons_edit');
         $persons = $this->getExtensionConfiguration('academic_persons');
         $update = $persons;
         $personsEdit = $this->getExtensionConfiguration('academic_persons_edit');
@@ -47,7 +48,8 @@ final class MigrateProfileAutoCreateExtensionConfigurationUpgradeWizards impleme
         if ($update !== $persons) {
             $this->extensionConfiguration->set('academic_persons', $update);
         }
-        $this->extensionConfiguration->synchronizeExtConfTemplateWithLocalConfigurationOfAllExtensions();
+        $this->extensionConfiguration->synchronizeExtConfTemplateWithLocalConfiguration('academic_persons');
+        $this->extensionConfiguration->synchronizeExtConfTemplateWithLocalConfiguration('academic_persons_edit');
         return true;
     }
 
