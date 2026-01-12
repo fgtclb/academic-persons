@@ -13,6 +13,7 @@ namespace FGTCLB\AcademicPersons\Domain\Repository;
 
 use FGTCLB\AcademicPersons\Domain\Model\Profile;
 use FGTCLB\AcademicPersons\Domain\Model\ProfileInformation;
+use TYPO3\CMS\Extbase\Persistence\QueryInterface;
 use TYPO3\CMS\Extbase\Persistence\QueryResultInterface;
 use TYPO3\CMS\Extbase\Persistence\Repository;
 
@@ -48,6 +49,10 @@ class ProfileInformationRepository extends Repository
                     $query->equals('type', $type)
                 )
             )
+            ->setOrderings([
+                'sorting' => QueryInterface::ORDER_ASCENDING,
+                'uid' => QueryInterface::ORDER_ASCENDING,
+            ])
             ->execute();
     }
 }
