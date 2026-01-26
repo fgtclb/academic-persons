@@ -2,6 +2,13 @@
 
 declare(strict_types=1);
 
+/*
+ * This file is part of the "academic_persons" Extension for TYPO3 CMS.
+ *
+ * For the full copyright and license information, please read the
+ * LICENSE file that was distributed with this source code.
+ */
+
 namespace FGTCLB\AcademicPersons\Service;
 
 use Doctrine\DBAL\Result;
@@ -9,8 +16,8 @@ use FGTCLB\AcademicBase\Environment\Exception\NoTypo3VersionCompatibleEnvironmen
 use FGTCLB\AcademicBase\Environment\StateBuildContext;
 use FGTCLB\AcademicBase\Environment\StateInterface;
 use FGTCLB\AcademicBase\Environment\StateManagerInterface;
-use FGTCLB\AcademicPersons\Command\CreateProfilesCommand;
-use FGTCLB\AcademicPersons\Domain\Model\Dto\ProfileCreateCommandDto;
+use FGTCLB\AcademicPersons\Command\UpdateProfilesCommand;
+use FGTCLB\AcademicPersons\Domain\Model\Dto\ProfileUpdateCommandDto;
 use FGTCLB\AcademicPersons\Event\ChooseProfileFactoryEvent;
 use FGTCLB\AcademicPersons\Profile\ProfileActionType;
 use FGTCLB\AcademicPersons\Profile\ProfileFactory;
@@ -26,13 +33,13 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Frontend\Authentication\FrontendUserAuthentication;
 
 /**
- * This class provides the service methods for the {@see CreateProfilesCommand},
+ * This class provides the service methods for the {@see UpdateProfilesCommand},
  * which allows easier testing of them.
  *
- * @internal to be used only in {@see CreateProfilesCommand::execute()} and not part of public API.
+ * @internal to be used only in {@see UpdateProfilesCommand::execute()} and not part of public API.
  */
 #[Autoconfigure(public: true)]
-final class ProfileCreateCommandService
+final class ProfileUpdateCommandService
 {
     public function __construct(
         #[Autowire(service: ProfileFactory::class)]
@@ -45,15 +52,12 @@ final class ProfileCreateCommandService
     /**
      * @throws \Doctrine\DBAL\Exception
      */
-    public function execute(ProfileCreateCommandDto $profileCreateCommandDto): void
+    public function execute(ProfileUpdateCommandDto $dto): void
     {
         $this->stateManager->backup();
         $this->stateManager->reset();
         try {
-            $frontendUsersResult = $this->getUsersWithoutProfileResult(
-                $profileCreateCommandDto->includePids,
-                $profileCreateCommandDto->excludePids,
-            );
+            $frontendUsersResult = $this->getUsersWithProfileResult($dto->includePids, $dto->excludePids);
             while ($frontendUserRecord = $frontendUsersResult->fetchAssociative()) {
                 $this->processFrontendUserRecord($frontendUserRecord);
             }
@@ -66,9 +70,9 @@ final class ProfileCreateCommandService
      * @param int[] $includePids
      * @param int[] $excludePids
      */
-    private function getUsersWithoutProfileResult(array $includePids, array $excludePids = []): Result
+    private function getUsersWithProfileResult(array $includePids, array $excludePids = []): Result
     {
-        return $this->frontendUserProvider->getUsersWithoutProfileResult($includePids, $excludePids);
+        return $this->frontendUserProvider->getUsersWithProfileResult($includePids, $excludePids);
     }
 
     /**
@@ -85,14 +89,14 @@ final class ProfileCreateCommandService
                 $environmentState
             );
             $profileFactory = $this->getSuitableProfileFactory($frontendUserAuthentication);
-            if (!$profileFactory->shouldCreateProfileForUser($frontendUserAuthentication)) {
+            if (!$profileFactory->shouldUpdateProfileForUser($frontendUserAuthentication)) {
                 return;
             }
             // Reapply build environment state to be sure that project implementation do not messup with the environment.
             if ($environmentState !== null) {
                 $this->stateManager->apply($environmentState);
             }
-            $profileFactory->createProfileForUser($frontendUserAuthentication);
+            $profileFactory->updateProfileForUser($frontendUserAuthentication);
         } finally {
             $this->stateManager->restore();
         }
@@ -122,7 +126,7 @@ final class ProfileCreateCommandService
         $event = new ModifyProfileCommandEnvironmentStateBuildContextForFrontendUserEvent(
             frontendUserRecord: $frontendUserRecord,
             defaultStateBuildContext: $stateBuildContext,
-            action: ProfileActionType::Create,
+            action: ProfileActionType::Update,
             stateBuildContext: $stateBuildContext,
         );
         $event = $this->eventDispatcher->dispatch($event);
@@ -152,7 +156,7 @@ final class ProfileCreateCommandService
         /** @var ChooseProfileFactoryEvent $chooseProfileFactoryEvent */
         $chooseProfileFactoryEvent = $this->eventDispatcher->dispatch(new ChooseProfileFactoryEvent(
             frontendUserAuthentication: $frontendUserAuthentication,
-            action: ProfileActionType::Create,
+            action: ProfileActionType::Update,
         ));
         return $chooseProfileFactoryEvent->getProfileFactory()
             // Use EXT:academic_person default profile factory implementation

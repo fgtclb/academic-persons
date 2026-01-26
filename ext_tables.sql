@@ -13,6 +13,7 @@ CREATE TABLE tx_academicpersons_domain_model_address (
     state varchar(255) DEFAULT '' NOT NULL,
     country varchar(255) DEFAULT '' NOT NULL,
     sorting int(11) unsigned DEFAULT '0' NOT NULL,
+    import_identifier varchar(170) DEFAULT '' NOT NULL,
 );
 
 CREATE TABLE tx_academicpersons_domain_model_contract (
@@ -36,6 +37,9 @@ CREATE TABLE tx_academicpersons_domain_model_contract (
 
     publish smallint(5) unsigned DEFAULT '0' NOT NULL,
     sorting int(11) unsigned DEFAULT '0' NOT NULL,
+
+    import_identifier varchar(170) DEFAULT '' NOT NULL,
+    key idx_import_identifier(`import_identifier`),
 );
 
 CREATE TABLE tx_academicpersons_domain_model_email (
@@ -45,16 +49,25 @@ CREATE TABLE tx_academicpersons_domain_model_email (
     email varchar(255) DEFAULT '' NOT NULL,
 
     sorting int(11) unsigned DEFAULT '0' NOT NULL,
+
+    import_identifier varchar(170) DEFAULT '' NOT NULL,
+    key idx_import_identifier(`import_identifier`),
 );
 
 CREATE TABLE tx_academicpersons_domain_model_function_type (
     function_name varchar(255) DEFAULT '' NOT NULL,
     function_name_male varchar(255) DEFAULT '' NOT NULL,
     function_name_female varchar(255) DEFAULT '' NOT NULL,
+
+    import_identifier varchar(170) DEFAULT '' NOT NULL,
+    key idx_import_identifier(`import_identifier`),
 );
 
 CREATE TABLE tx_academicpersons_domain_model_location (
     title varchar(255) DEFAULT '' NOT NULL,
+
+    import_identifier varchar(170) DEFAULT '' NOT NULL,
+    key idx_import_identifier(`import_identifier`),
 );
 
 CREATE TABLE tx_academicpersons_domain_model_organisational_unit (
@@ -64,6 +77,9 @@ CREATE TABLE tx_academicpersons_domain_model_organisational_unit (
     display_text text,
     long_text text,
     contracts int(11) unsigned DEFAULT '0' NOT NULL,
+
+    import_identifier varchar(170) DEFAULT '' NOT NULL,
+    key idx_import_identifier(`import_identifier`),
 );
 
 CREATE TABLE tx_academicpersons_domain_model_phone_number (
@@ -71,6 +87,9 @@ CREATE TABLE tx_academicpersons_domain_model_phone_number (
     type varchar(40) DEFAULT '' NOT NULL,
     phone_number varchar(255) DEFAULT '' NOT NULL,
     sorting int(11) unsigned DEFAULT '0' NOT NULL,
+
+    import_identifier varchar(170) DEFAULT '' NOT NULL,
+    key idx_import_identifier(`import_identifier`),
 );
 
 
@@ -120,6 +139,9 @@ CREATE TABLE tx_academicpersons_domain_model_profile (
     vita int(11) unsigned DEFAULT '0' NOT NULL,
 
     frontend_users int(11) unsigned DEFAULT 0 NOT NULL,
+
+    import_identifier varchar(170) DEFAULT '' NOT NULL,
+    key idx_import_identifier(`import_identifier`),
 );
 
 CREATE TABLE tx_academicpersons_contract_address_mm (

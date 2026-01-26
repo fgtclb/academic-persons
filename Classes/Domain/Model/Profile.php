@@ -94,6 +94,7 @@ class Profile extends AbstractEntity
      * @var ObjectStorage<FrontendUser>
      */
     protected ObjectStorage $frontendUsers;
+    protected string $importIdentifier = '';
 
     public function __construct()
     {
@@ -500,6 +501,16 @@ class Profile extends AbstractEntity
     public function getVita(): ObjectStorage
     {
         return $this->vita;
+    }
+
+    public function getImportIdentifier(): string
+    {
+        return $this->importIdentifier;
+    }
+
+    public function setImportIdentifier(string $importIdentifier): void
+    {
+        $this->importIdentifier = $importIdentifier;
     }
 
     /**

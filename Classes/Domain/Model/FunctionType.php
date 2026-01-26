@@ -22,6 +22,7 @@ class FunctionType extends AbstractEntity
     protected string $functionName = '';
     protected string $functionNameMale = '';
     protected string $functionNameFemale = '';
+    protected string $importIdentifier = '';
 
     public function __construct()
     {
@@ -64,5 +65,15 @@ class FunctionType extends AbstractEntity
     public function getFunctionNameFemale(): string
     {
         return $this->functionNameFemale;
+    }
+
+    public function getImportIdentifier(): string
+    {
+        return $this->importIdentifier;
+    }
+
+    public function setImportIdentifier(string $importIdentifier): void
+    {
+        $this->importIdentifier = $importIdentifier;
     }
 }

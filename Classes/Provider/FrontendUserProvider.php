@@ -93,4 +93,68 @@ final class FrontendUserProvider
             ->orderBy('fe_users.uid')
             ->executeQuery();
     }
+
+    /**
+     * Get all frontend users that have a profile.
+     *
+     * @param int[] $includePids
+     * @param int[] $excludePids
+     */
+    public function getUsersWithProfileResult(array $includePids, array $excludePids = []): Result
+    {
+        $queryBuilder = $this->connectionPool->getQueryBuilderForTable('fe_users');
+        $queryBuilder
+            ->select('fe_users.*')
+            ->distinct()
+            ->from('fe_users')
+            ->innerJoin(
+                'fe_users',
+                'tx_academicpersons_feuser_mm',
+                'tx_academicpersons_feuser_mm',
+                $queryBuilder->expr()->eq(
+                    'fe_users.uid',
+                    $queryBuilder->quoteIdentifier('tx_academicpersons_feuser_mm.uid_foreign')
+                )
+            )
+            ->where(
+                $queryBuilder->expr()->isNotNull('tx_academicpersons_feuser_mm.uid_local'),
+                $queryBuilder->expr()->eq(
+                    'fe_users.tx_extbase_type',
+                    $queryBuilder->createNamedParameter('Tx_Academicpersonsedit_Domain_Model_FrontendUser', Connection::PARAM_STR)
+                )
+            );
+
+        // Ensure to have index in rising order without wholes (integer index keys)
+        $includePids = array_values($includePids);
+        $excludePids = array_values($excludePids);
+        // Remove excluded pids from include pids as this make no sense to have the same pid as IN() and NOT IN()
+        if ($includePids !== [] && $excludePids !== []) {
+            $includePids = array_values(
+                array_filter(
+                    $includePids,
+                    static fn($value) => !in_array($value, $excludePids, true),
+                )
+            );
+        }
+        if ($excludePids !== []) {
+            $queryBuilder->andWhere(
+                $queryBuilder->expr()->notIn(
+                    'fe_users.pid',
+                    $queryBuilder->quoteArrayBasedValueListToIntegerList($excludePids)
+                )
+            );
+        }
+        if ($includePids !== []) {
+            $queryBuilder->andWhere(
+                $queryBuilder->expr()->in(
+                    'fe_users.pid',
+                    $queryBuilder->quoteArrayBasedValueListToIntegerList($includePids)
+                )
+            );
+        }
+
+        return $queryBuilder
+            ->orderBy('fe_users.uid')
+            ->executeQuery();
+    }
 }

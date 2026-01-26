@@ -30,4 +30,10 @@ final class MessyProfileFactory extends AbstractProfileFactory
         return (new \ReflectionMethod($this->defaultProfileFactory, 'createProfileFromFrontendUser'))
             ->invoke($this->defaultProfileFactory, $frontendUserData);
     }
+
+    protected function updateProfileFromFrontendUser(array $frontendUserData, Profile $profile): void
+    {
+        (new \ReflectionMethod($this->defaultProfileFactory, 'updateProfileFromFrontendUser'))
+            ->invoke($this->defaultProfileFactory, $frontendUserData, $profile);
+    }
 }

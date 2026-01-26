@@ -3,7 +3,7 @@
 declare(strict_types=1);
 
 /*
- * This file is part of the "academic_persons_edit" Extension for TYPO3 CMS.
+ * This file is part of the "academic_persons" Extension for TYPO3 CMS.
  *
  * For the full copyright and license information, please read the
  * LICENSE file that was distributed with this source code.
@@ -11,18 +11,21 @@ declare(strict_types=1);
 
 namespace FGTCLB\AcademicPersons\Command;
 
-use FGTCLB\AcademicPersons\Domain\Model\Dto\ProfileCreateCommandDto;
-use FGTCLB\AcademicPersons\Service\ProfileCreateCommandService;
+use FGTCLB\AcademicPersons\Domain\Model\Dto\ProfileUpdateCommandDto;
+use FGTCLB\AcademicPersons\Service\ProfileUpdateCommandService;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
-final class CreateProfilesCommand extends Command
+/**
+ * @internal This command is for internal use and may change without notice.
+ */
+final class UpdateProfilesCommand extends Command
 {
     public function __construct(
-        private readonly ProfileCreateCommandService $profileCreateCommandService
+        private readonly ProfileUpdateCommandService $profileUpdateCommandService
     ) {
         parent::__construct();
     }
@@ -30,7 +33,7 @@ final class CreateProfilesCommand extends Command
     protected function configure(): void
     {
         $this
-            ->setHelp('This command create profiles for all frontend users that do not have a profile yet but should have one.')
+            ->setHelp('This command updates profiles for all frontend users that have a profile.')
             ->addOption(
                 'exclude-pids',
                 'e',
@@ -49,12 +52,10 @@ final class CreateProfilesCommand extends Command
 
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
-        $this->profileCreateCommandService->execute(
-            new ProfileCreateCommandDto(
-                includePids: $this->getCommaSeparatedIntegerValueListOptionAsArrayOfIntegerValues($input, 'include-pids'),
-                excludePids: $this->getCommaSeparatedIntegerValueListOptionAsArrayOfIntegerValues($input, 'exclude-pids'),
-            ),
-        );
+        $this->profileUpdateCommandService->execute(new ProfileUpdateCommandDto(
+            includePids: $this->getCommaSeparatedIntegerValueListOptionAsArrayOfIntegerValues($input, 'include-pids'),
+            excludePids: $this->getCommaSeparatedIntegerValueListOptionAsArrayOfIntegerValues($input, 'exclude-pids'),
+        ));
         return Command::SUCCESS;
     }
 

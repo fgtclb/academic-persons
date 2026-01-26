@@ -299,12 +299,12 @@ $tcaConfiguration = [
                 'items' => [
                     [
                         'label' => '',
-                        'value' => '',
+                        'value' => null,
                     ],
                 ],
                 'foreign_table' => 'tx_academicpersons_domain_model_location',
                 'foreign_table_where' => 'AND {#tx_academicpersons_domain_model_location}.{#sys_language_uid} IN (-1, 0)',
-                'default' => '',
+                'default' => null,
             ],
         ],
         'room' => [
@@ -323,6 +323,12 @@ $tcaConfiguration = [
                 'type' => 'text',
                 'rows' => 5,
                 'cols' => 60,
+            ],
+        ],
+        'import_identifier' => [
+            'label' => 'LLL:EXT:academic_persons/Resources/Private/Language/locallang_tca.xlf:generic.columns.import_identifier.label',
+            'config' => [
+                'type' => 'passthrough',
             ],
         ],
     ],

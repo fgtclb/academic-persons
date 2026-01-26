@@ -118,6 +118,12 @@ $tcaConfiguration = [
                 'itemsProcFunc' => RecordTypes::class . '->getEmailAddressTypes',
             ],
         ],
+        'import_identifier' => [
+            'label' => 'LLL:EXT:academic_persons/Resources/Private/Language/locallang_tca.xlf:generic.columns.import_identifier.label',
+            'config' => [
+                'type' => 'passthrough',
+            ],
+        ],
     ],
     'palettes' => [
         'general' => [

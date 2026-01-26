@@ -23,3 +23,10 @@ services:
       - name: console.command
         command: 'academic:createprofiles'
         description: 'This command create profiles for all frontend users that do not have a profile yet but should have one.'
+
+  FGTCLB\AcademicPersons\Command\UpdateProfilesCommand:
+    tags:
+      - name: console.command
+        command: 'academic:updateprofiles'
+        description: 'This command updates profiles for all frontend users that have a profile.'
+

@@ -19,6 +19,7 @@ class PhoneNumber extends AbstractEntity
     protected string $phoneNumber = '';
     protected string $type = '';
     protected int $sorting = 0;
+    protected string $importIdentifier = '';
 
     public function __construct()
     {
@@ -72,5 +73,15 @@ class PhoneNumber extends AbstractEntity
     public function getSorting(): int
     {
         return $this->sorting;
+    }
+
+    public function getImportIdentifier(): string
+    {
+        return $this->importIdentifier;
+    }
+
+    public function setImportIdentifier(string $importIdentifier): void
+    {
+        $this->importIdentifier = $importIdentifier;
     }
 }

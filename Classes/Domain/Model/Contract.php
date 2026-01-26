@@ -31,6 +31,7 @@ class Contract extends AbstractEntity
     protected string $officeHours = '';
     protected bool $publish = false;
     protected int $sorting = 0;
+    protected string $importIdentifier = '';
 
     /**
      * @var ObjectStorage<Address>
@@ -311,4 +312,13 @@ class Contract extends AbstractEntity
         );
     }
 
+    public function getImportIdentifier(): string
+    {
+        return $this->importIdentifier;
+    }
+
+    public function setImportIdentifier(string $importIdentifier): void
+    {
+        $this->importIdentifier = $importIdentifier;
+    }
 }

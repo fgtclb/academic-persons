@@ -11,6 +11,7 @@ declare(strict_types=1);
 
 namespace FGTCLB\AcademicPersons\Event;
 
+use FGTCLB\AcademicPersons\Profile\ProfileActionType;
 use FGTCLB\AcademicPersons\Profile\ProfileFactoryInterface;
 use TYPO3\CMS\Frontend\Authentication\FrontendUserAuthentication;
 
@@ -18,12 +19,18 @@ final class ChooseProfileFactoryEvent
 {
     public function __construct(
         private readonly FrontendUserAuthentication $frontendUserAuthentication,
+        private readonly ProfileActionType $action = ProfileActionType::Create,
         private ?ProfileFactoryInterface $profileFactory = null,
     ) {}
 
     public function getFrontendUserAuthentication(): FrontendUserAuthentication
     {
         return $this->frontendUserAuthentication;
+    }
+
+    public function getAction(): ProfileActionType
+    {
+        return $this->action;
     }
 
     public function getProfileFactory(): ?ProfileFactoryInterface

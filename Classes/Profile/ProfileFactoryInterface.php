@@ -17,8 +17,9 @@ interface ProfileFactoryInterface
 {
     public function shouldCreateProfileForUser(FrontendUserAuthentication $frontendUserAuthentication): bool;
 
-    /**
-     * @return int The new profile uid. Null if profile could not be created.
-     */
     public function createProfileForUser(FrontendUserAuthentication $frontendUserAuthentication): ?int;
+
+    public function shouldUpdateProfileForUser(FrontendUserAuthentication $frontendUserAuthentication): bool;
+
+    public function updateProfileForUser(FrontendUserAuthentication $frontendUserAuthentication): void;
 }

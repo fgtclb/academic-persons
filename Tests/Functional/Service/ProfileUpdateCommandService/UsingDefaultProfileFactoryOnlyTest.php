@@ -2,12 +2,13 @@
 
 declare(strict_types=1);
 
-namespace FGTCLB\AcademicPersons\Tests\Functional\Service\ProfileCreateCommandService;
+namespace FGTCLB\AcademicPersons\Tests\Functional\Service\ProfileUpdateCommandService;
 
-use FGTCLB\AcademicPersons\Domain\Model\Dto\ProfileCreateCommandDto;
+use FGTCLB\AcademicPersons\Domain\Model\Dto\ProfileUpdateCommandDto;
 use FGTCLB\AcademicPersons\Profile\ProfileFactory;
 use FGTCLB\AcademicPersons\Service\Event\ModifyProfileCommandEnvironmentStateBuildContextForFrontendUserEvent;
 use FGTCLB\AcademicPersons\Service\ProfileCreateCommandService;
+use FGTCLB\AcademicPersons\Service\ProfileUpdateCommandService;
 use FGTCLB\AcademicPersons\Tests\Functional\AbstractAcademicPersonsTestCase;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\Attributes\Test;
@@ -62,7 +63,7 @@ final class UsingDefaultProfileFactoryOnlyTest extends AbstractAcademicPersonsTe
             ]
         );
         parent::setUp();
-        $this->importCSVDataSet(__DIR__ . '/Fixtures/site-structure.csv');
+        $this->importCSVDataSet(__DIR__ . '/Fixtures/DataSets/site-structure.csv');
         $this->setUpFrontendRootPageForTestCase(
             pageId: 1,
             identifier: 'site-one',
@@ -140,7 +141,7 @@ final class UsingDefaultProfileFactoryOnlyTest extends AbstractAcademicPersonsTe
         $this->assertInstanceOf(ProfileFactory::class, $defaultFactory);
     }
 
-    public static function getUsersWithoutProfileResultDataSets(): \Generator
+    public static function getUsersWithProfileResultDataSets(): \Generator
     {
         yield '#1 return all frontenduser typed records from all pids' => [
             'includePids' => [],
@@ -166,17 +167,17 @@ final class UsingDefaultProfileFactoryOnlyTest extends AbstractAcademicPersonsTe
                     'uid' => 10,
                     'pid' => 100,
                     'username' => 'usera1',
-                    'first_name' => 'Max',
-                    'middle_name' => 'Marvin',
-                    'last_name' => 'Müllermann',
-                    'www' => 'https://www.example.com/',
-                    'address' => 'Street 1',
-                    'zip' => '73249',
-                    'city' => 'Wernau',
-                    'country' => 'Germany',
-                    'email' => 'info@email.org',
-                    'telephone' => '+4917521122334',
-                    'fax' => '+4917521122339',
+                    'first_name' => 'Max1',
+                    'middle_name' => 'Marvin1',
+                    'last_name' => 'Müllermann1',
+                    'www' => 'https://www.example1.com/',
+                    'address' => 'Street 11',
+                    'zip' => '73250',
+                    'city' => 'Wernau1',
+                    'country' => 'Germany1',
+                    'email' => 'info1@email.org',
+                    'telephone' => '+49175211223341',
+                    'fax' => '+49175211223391',
                 ],
                 1 => [
                     'uid' => 12,
@@ -230,17 +231,17 @@ final class UsingDefaultProfileFactoryOnlyTest extends AbstractAcademicPersonsTe
                     'uid' => 20,
                     'pid' => 1100,
                     'username' => 'usera2',
-                    'first_name' => 'Max',
-                    'middle_name' => 'Marvin',
-                    'last_name' => 'Müllermann',
-                    'www' => 'https://www.example.com/',
-                    'address' => 'Street 1',
-                    'zip' => '73249',
-                    'city' => 'Wernau',
-                    'country' => 'Germany',
-                    'email' => 'info@email.org',
-                    'telephone' => '+4917521122334',
-                    'fax' => '+4917521122339',
+                    'first_name' => 'Max1',
+                    'middle_name' => 'Marvin1',
+                    'last_name' => 'Müllermann1',
+                    'www' => 'https://www.example1.com/',
+                    'address' => 'Street 11',
+                    'zip' => '73250',
+                    'city' => 'Wernau1',
+                    'country' => 'Germany1',
+                    'email' => 'info1@email.org',
+                    'telephone' => '+49175211223341',
+                    'fax' => '+49175211223391',
                 ],
                 5 => [
                     'uid' => 22,
@@ -319,17 +320,17 @@ final class UsingDefaultProfileFactoryOnlyTest extends AbstractAcademicPersonsTe
                     'uid' => 10,
                     'pid' => 100,
                     'username' => 'usera1',
-                    'first_name' => 'Max',
-                    'middle_name' => 'Marvin',
-                    'last_name' => 'Müllermann',
-                    'www' => 'https://www.example.com/',
-                    'address' => 'Street 1',
-                    'zip' => '73249',
-                    'city' => 'Wernau',
-                    'country' => 'Germany',
-                    'email' => 'info@email.org',
-                    'telephone' => '+4917521122334',
-                    'fax' => '+4917521122339',
+                    'first_name' => 'Max1',
+                    'middle_name' => 'Marvin1',
+                    'last_name' => 'Müllermann1',
+                    'www' => 'https://www.example1.com/',
+                    'address' => 'Street 11',
+                    'zip' => '73250',
+                    'city' => 'Wernau1',
+                    'country' => 'Germany1',
+                    'email' => 'info1@email.org',
+                    'telephone' => '+49175211223341',
+                    'fax' => '+49175211223391',
                 ],
                 1 => [
                     'uid' => 14,
@@ -351,17 +352,17 @@ final class UsingDefaultProfileFactoryOnlyTest extends AbstractAcademicPersonsTe
                     'uid' => 20,
                     'pid' => 1100,
                     'username' => 'usera2',
-                    'first_name' => 'Max',
-                    'middle_name' => 'Marvin',
-                    'last_name' => 'Müllermann',
-                    'www' => 'https://www.example.com/',
-                    'address' => 'Street 1',
-                    'zip' => '73249',
-                    'city' => 'Wernau',
-                    'country' => 'Germany',
-                    'email' => 'info@email.org',
-                    'telephone' => '+4917521122334',
-                    'fax' => '+4917521122339',
+                    'first_name' => 'Max1',
+                    'middle_name' => 'Marvin1',
+                    'last_name' => 'Müllermann1',
+                    'www' => 'https://www.example1.com/',
+                    'address' => 'Street 11',
+                    'zip' => '73250',
+                    'city' => 'Wernau1',
+                    'country' => 'Germany1',
+                    'email' => 'info1@email.org',
+                    'telephone' => '+49175211223341',
+                    'fax' => '+49175211223391',
                 ],
                 4 => [
                     'uid' => 24,
@@ -408,17 +409,17 @@ final class UsingDefaultProfileFactoryOnlyTest extends AbstractAcademicPersonsTe
                     'uid' => 10,
                     'pid' => 100,
                     'username' => 'usera1',
-                    'first_name' => 'Max',
-                    'middle_name' => 'Marvin',
-                    'last_name' => 'Müllermann',
-                    'www' => 'https://www.example.com/',
-                    'address' => 'Street 1',
-                    'zip' => '73249',
-                    'city' => 'Wernau',
-                    'country' => 'Germany',
-                    'email' => 'info@email.org',
-                    'telephone' => '+4917521122334',
-                    'fax' => '+4917521122339',
+                    'first_name' => 'Max1',
+                    'middle_name' => 'Marvin1',
+                    'last_name' => 'Müllermann1',
+                    'www' => 'https://www.example1.com/',
+                    'address' => 'Street 11',
+                    'zip' => '73250',
+                    'city' => 'Wernau1',
+                    'country' => 'Germany1',
+                    'email' => 'info1@email.org',
+                    'telephone' => '+49175211223341',
+                    'fax' => '+49175211223391',
                 ],
                 1 => [
                     'uid' => 14,
@@ -440,17 +441,17 @@ final class UsingDefaultProfileFactoryOnlyTest extends AbstractAcademicPersonsTe
                     'uid' => 20,
                     'pid' => 1100,
                     'username' => 'usera2',
-                    'first_name' => 'Max',
-                    'middle_name' => 'Marvin',
-                    'last_name' => 'Müllermann',
-                    'www' => 'https://www.example.com/',
-                    'address' => 'Street 1',
-                    'zip' => '73249',
-                    'city' => 'Wernau',
-                    'country' => 'Germany',
-                    'email' => 'info@email.org',
-                    'telephone' => '+4917521122334',
-                    'fax' => '+4917521122339',
+                    'first_name' => 'Max1',
+                    'middle_name' => 'Marvin1',
+                    'last_name' => 'Müllermann1',
+                    'www' => 'https://www.example1.com/',
+                    'address' => 'Street 11',
+                    'zip' => '73250',
+                    'city' => 'Wernau1',
+                    'country' => 'Germany1',
+                    'email' => 'info1@email.org',
+                    'telephone' => '+49175211223341',
+                    'fax' => '+49175211223391',
                 ],
                 3 => [
                     'uid' => 24,
@@ -499,17 +500,17 @@ final class UsingDefaultProfileFactoryOnlyTest extends AbstractAcademicPersonsTe
                     'uid' => 10,
                     'pid' => 100,
                     'username' => 'usera1',
-                    'first_name' => 'Max',
-                    'middle_name' => 'Marvin',
-                    'last_name' => 'Müllermann',
-                    'www' => 'https://www.example.com/',
-                    'address' => 'Street 1',
-                    'zip' => '73249',
-                    'city' => 'Wernau',
-                    'country' => 'Germany',
-                    'email' => 'info@email.org',
-                    'telephone' => '+4917521122334',
-                    'fax' => '+4917521122339',
+                    'first_name' => 'Max1',
+                    'middle_name' => 'Marvin1',
+                    'last_name' => 'Müllermann1',
+                    'www' => 'https://www.example1.com/',
+                    'address' => 'Street 11',
+                    'zip' => '73250',
+                    'city' => 'Wernau1',
+                    'country' => 'Germany1',
+                    'email' => 'info1@email.org',
+                    'telephone' => '+49175211223341',
+                    'fax' => '+49175211223391',
                 ],
                 1 => [
                     'uid' => 14,
@@ -531,17 +532,17 @@ final class UsingDefaultProfileFactoryOnlyTest extends AbstractAcademicPersonsTe
                     'uid' => 20,
                     'pid' => 1100,
                     'username' => 'usera2',
-                    'first_name' => 'Max',
-                    'middle_name' => 'Marvin',
-                    'last_name' => 'Müllermann',
-                    'www' => 'https://www.example.com/',
-                    'address' => 'Street 1',
-                    'zip' => '73249',
-                    'city' => 'Wernau',
-                    'country' => 'Germany',
-                    'email' => 'info@email.org',
-                    'telephone' => '+4917521122334',
-                    'fax' => '+4917521122339',
+                    'first_name' => 'Max1',
+                    'middle_name' => 'Marvin1',
+                    'last_name' => 'Müllermann1',
+                    'www' => 'https://www.example1.com/',
+                    'address' => 'Street 11',
+                    'zip' => '73250',
+                    'city' => 'Wernau1',
+                    'country' => 'Germany1',
+                    'email' => 'info1@email.org',
+                    'telephone' => '+49175211223341',
+                    'fax' => '+49175211223391',
                 ],
                 3 => [
                     'uid' => 24,
@@ -570,49 +571,53 @@ final class UsingDefaultProfileFactoryOnlyTest extends AbstractAcademicPersonsTe
      * @param array<int, array<string, mixed>> $expectedRows
      * @throws \ReflectionException
      */
-    #[DataProvider(methodName: 'getUsersWithoutProfileResultDataSets')]
+    #[DataProvider(methodName: 'getUsersWithProfileResultDataSets')]
     #[Test]
-    public function getUsersWithoutProfileResultReturnsExpectedRows(
+    public function getUsersWithProfileResultReturnsExpectedRows(
         array $includePids,
         array $excludePids,
         array $fields,
         array $expectedRows,
     ): void {
         $expectedRows = $this->prepareRows($expectedRows, $fields);
-        $profileCreateCommandService = GeneralUtility::makeInstance(ProfileCreateCommandService::class);
-        $rows = (new \ReflectionMethod($profileCreateCommandService, 'getUsersWithoutProfileResult'))
+        $profileCreateCommandService = GeneralUtility::makeInstance(ProfileUpdateCommandService::class);
+        $rows = (new \ReflectionMethod($profileCreateCommandService, 'getUsersWithProfileResult'))
             ->invoke($profileCreateCommandService, $includePids, $excludePids)->fetchAllAssociative();
         $rows = $this->prepareRows($rows, $fields);
         $this->assertSame($expectedRows, $rows);
     }
 
-    public static function executeCreatesExpectedRecordsDataSets(): \Generator
+    public static function executeUpdatesExpectedRecordsDataSets(): \Generator
     {
         yield '#1 without include and exclude pids' => [
+            'additionalImportDataSets' => [],
             'includePids' => [],
             'excludePids' => [],
-            'assertCsvFileName' => 'created-for-all-frontendusers.csv',
+            'assertCsvFileName' => 'updated-for-all-frontendusers.csv',
             'dispatchedEventCount' => 8,
         ];
         yield '#2 only include pids' => [
+            'additionalImportDataSets' => [],
             'includePids' => [
                 100,
                 110,
             ],
             'excludePids' => [],
-            'assertCsvFileName' => 'created-for-only-includepids.csv',
+            'assertCsvFileName' => 'updated-for-only-includepids.csv',
             'dispatchedEventCount' => 4,
         ];
         yield '#3 only exclude pids' => [
+            'additionalImportDataSets' => [],
             'includePids' => [],
             'excludePids' => [
                 1100,
                 1110,
             ],
-            'assertCsvFileName' => 'created-for-only-excludepids.csv',
+            'assertCsvFileName' => 'updated-for-only-excludepids.csv',
             'dispatchedEventCount' => 4,
         ];
         yield '#4 only excludePids discarding same pageId as includePid' => [
+            'additionalImportDataSets' => [],
             'includePids' => [
                 1100,
                 1110,
@@ -621,25 +626,58 @@ final class UsingDefaultProfileFactoryOnlyTest extends AbstractAcademicPersonsTe
                 1100,
                 1110,
             ],
-            'assertCsvFileName' => 'created-for-only-excludepids.csv',
+            'assertCsvFileName' => 'updated-for-only-excludepids.csv',
             'dispatchedEventCount' => 4,
+        ];
+        // special cases
+        yield '#5 exclude pids - updates correct secondary relation records' => [
+            'additionalImportDataSets' => [
+                __DIR__ . '/Fixtures/DataSets/secondary-relations.csv',
+            ],
+            'includePids' => [],
+            'excludePids' => [
+                1100,
+                1110,
+            ],
+            'assertCsvFileName' => 'updated-secondary-relations.csv',
+            'dispatchedEventCount' => 5,
+        ];
+        yield '#6 exclude pids - removes correct relation items if empty' => [
+            'additionalImportDataSets' => [
+                __DIR__ . '/Fixtures/DataSets/secondary-relations-empty.csv',
+            ],
+            'includePids' => [],
+            'excludePids' => [
+                1100,
+                1110,
+            ],
+            'assertCsvFileName' => 'updated-secondary-relations-empty.csv',
+            'dispatchedEventCount' => 5,
         ];
     }
 
     /**
+     * @param string[] $additionalImportDataSets
      * @param int[] $includePids
      * @param int[] $excludePids
      * @param string $assertCsvFileName
      * @throws \Doctrine\DBAL\Exception
      */
-    #[DataProvider(methodName: 'executeCreatesExpectedRecordsDataSets')]
+    #[DataProvider(methodName: 'executeUpdatesExpectedRecordsDataSets')]
     #[Test]
-    public function executeCreatesExpectedRecordsInDatabase(
+    public function executeUpdatesExpectedRecordsInDatabase(
+        array $additionalImportDataSets,
         array $includePids,
         array $excludePids,
         string $assertCsvFileName,
         int $dispatchedEventCount,
     ): void {
+        if ($additionalImportDataSets !== []) {
+            foreach ($additionalImportDataSets as $importDataSet) {
+                $this->assertFileExists($importDataSet);
+                $this->importCSVDataSet($importDataSet);
+            }
+        }
         $dispatchedModifyEvents = [];
         /** @var Container $container */
         $container = $this->get('service_container');
@@ -657,12 +695,14 @@ final class UsingDefaultProfileFactoryOnlyTest extends AbstractAcademicPersonsTe
             'modify-profile-create-environment-state-build-context-for-frontend-user-listener',
         );
         $this->assertFileExists(__DIR__ . '/Fixtures/Asserts/' . $assertCsvFileName);
-        $profileCreateCommandService = GeneralUtility::makeInstance(ProfileCreateCommandService::class);
-        $profileCreateCommandService->execute(new ProfileCreateCommandDto(
+        $profileCreateCommandService = GeneralUtility::makeInstance(ProfileUpdateCommandService::class);
+        $profileCreateCommandService->execute(new ProfileUpdateCommandDto(
             includePids: $includePids,
             excludePids: $excludePids,
         ));
         $this->assertCSVDataSet(__DIR__ . '/Fixtures/Asserts/' . $assertCsvFileName);
         $this->assertCount($dispatchedEventCount, $dispatchedModifyEvents);
     }
+
+    // @toDo: Add tests for no record and no data returning early without creating a record
 }

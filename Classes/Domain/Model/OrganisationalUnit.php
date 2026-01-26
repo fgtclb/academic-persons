@@ -29,6 +29,7 @@ class OrganisationalUnit extends AbstractEntity
     protected string $longText = '';
     protected ?\DateTime $validFrom = null;
     protected ?\DateTime $validTo = null;
+    protected string $importIdentifier = '';
 
     /**
      * @var ObjectStorage<Contract>
@@ -154,5 +155,15 @@ class OrganisationalUnit extends AbstractEntity
     public function getContracts(): ObjectStorage
     {
         return $this->contracts;
+    }
+
+    public function getImportIdentifier(): string
+    {
+        return $this->importIdentifier;
+    }
+
+    public function setImportIdentifier(string $importIdentifier): void
+    {
+        $this->importIdentifier = $importIdentifier;
     }
 }

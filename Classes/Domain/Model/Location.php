@@ -16,6 +16,7 @@ use TYPO3\CMS\Extbase\DomainObject\AbstractEntity;
 class Location extends AbstractEntity
 {
     protected string $title = '';
+    protected string $importIdentifier = '';
 
     public function __construct()
     {
@@ -36,5 +37,15 @@ class Location extends AbstractEntity
     {
         $this->title = $title;
         return $this;
+    }
+
+    public function getImportIdentifier(): string
+    {
+        return $this->importIdentifier;
+    }
+
+    public function setImportIdentifier(string $importIdentifier): void
+    {
+        $this->importIdentifier = $importIdentifier;
     }
 }
