@@ -88,6 +88,15 @@ use TYPO3\CMS\Extbase\Utility\ExtensionUtility;
         ExtensionUtility::PLUGIN_TYPE_CONTENT_ELEMENT,
         'academic_persons'
     );
+    ExtensionManagementUtility::addToAllTCAtypes(
+        'tt_content',
+        implode(',', [
+            '--div--;LLL:EXT:academic_persons/Resources/Private/Language/locallang_be.xlf:element.tab.configuration',
+            'pi_flexform',
+        ]),
+        'academicpersons_detail',
+        'after:header'
+    );
     ExtensionManagementUtility::addPiFlexFormValue(
         '*',
         sprintf('FILE:EXT:academic_persons/Configuration/FlexForms/Core%s/Detail.xml', $typo3MajorVersion),
