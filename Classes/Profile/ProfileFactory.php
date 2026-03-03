@@ -66,8 +66,34 @@ final class ProfileFactory extends AbstractProfileFactory
                 break;
             }
         }
-        // @todo: Contracts should not be created if no physical/email address, phone number or other contract data exists
-        // --> early return
+        if ($contract !== null
+            && empty($frontendUserData['address'])
+            && empty($frontendUserData['zip'])
+            && empty($frontendUserData['city'])
+            && empty($frontendUserData['country'])
+            && empty($frontendUserData['email'])
+            && empty($frontendUserData['phone'])
+            && empty($frontendUserData['fax'])
+        ) {
+            // No contract data, remove previous attached contract.
+            // Note that $contracts->detach() would only remove the relation and making the record
+            // orphan (unconnected) and removing (deleting) it is used keep the database clean
+            // and allows to use the history to restore them.
+            $this->persistenceManager->remove($contract);
+            return;
+        }
+        if ($contract === null
+            && empty($frontendUserData['address'])
+            && empty($frontendUserData['zip'])
+            && empty($frontendUserData['city'])
+            && empty($frontendUserData['country'])
+            && empty($frontendUserData['email'])
+            && empty($frontendUserData['phone'])
+            && empty($frontendUserData['fax'])
+        ) {
+            // No contract and no contract data, nothing to do.
+            return;
+        }
         if ($contract === null) {
             $contract = new Contract();
             $contract->setImportIdentifier($importIdentifier);

@@ -313,6 +313,12 @@
 			<trans-unit id="tx_academicpersons_domain_model_profile.div.unstructuredInformation.label">
 				<source>Profile (Text)</source>
 			</trans-unit>
+			<trans-unit id="tx_academicpersons_domain_model_profile.columns.skip_sync.label">
+				<source>Disable profile sync</source>
+			</trans-unit>
+			<trans-unit id="tx_academicpersons_domain_model_profile.columns.skip_sync.description">
+				<source>Disabling the profile synchronization will prevent automatic updates from external sources.</source>
+			</trans-unit>
 
 			<!-- Profile Information -->
 

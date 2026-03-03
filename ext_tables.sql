@@ -117,6 +117,7 @@ CREATE TABLE tx_academicpersons_domain_model_profile (
     last_name_alpha varchar(1) DEFAULT '' NOT NULL,
     image int(11) unsigned DEFAULT '0' NOT NULL,
     slug varchar(2048) DEFAULT '' NOT NULL,
+    skip_sync tinyint(1) DEFAULT 0 NOT NULL,
 
     publications_link varchar(2048) DEFAULT '' NOT NULL,
     publications_link_title varchar(255) DEFAULT '' NOT NULL,

@@ -388,6 +388,14 @@
 				<source>Profile (Text)</source>
 				<target>Profil (Text)</target>
 			</trans-unit>
+			<trans-unit id="tx_academicpersons_domain_model_profile.columns.skip_sync.label">
+				<source>Disable profile sync</source>
+				<target>Profil-Synchronisation deaktivieren</target>
+			</trans-unit>
+			<trans-unit id="tx_academicpersons_domain_model_profile.columns.skip_sync.description">
+				<source>Disabling the profile synchronization will prevent automatic updates from external sources.</source>
+				<target>Die Deaktivierung der Profil-Synchronisation verhindert automatische Aktualisierungen aus externen Quellen.</target>
+			</trans-unit>
 
 			<!-- Profile Information -->
 

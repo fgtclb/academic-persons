@@ -116,12 +116,22 @@ final class FrontendUserProvider
                     $queryBuilder->quoteIdentifier('tx_academicpersons_feuser_mm.uid_foreign')
                 )
             )
+            ->innerJoin(
+                'tx_academicpersons_feuser_mm',
+                'tx_academicpersons_domain_model_profile',
+                'tx_academicpersons_domain_model_profile',
+                $queryBuilder->expr()->eq(
+                    'tx_academicpersons_feuser_mm.uid_local',
+                    $queryBuilder->quoteIdentifier('tx_academicpersons_domain_model_profile.uid')
+                )
+            )
             ->where(
                 $queryBuilder->expr()->isNotNull('tx_academicpersons_feuser_mm.uid_local'),
                 $queryBuilder->expr()->eq(
                     'fe_users.tx_extbase_type',
                     $queryBuilder->createNamedParameter('Tx_Academicpersonsedit_Domain_Model_FrontendUser', Connection::PARAM_STR)
-                )
+                ),
+                $queryBuilder->expr()->eq('tx_academicpersons_domain_model_profile.skip_sync', 0)
             );
 
         // Ensure to have index in rising order without wholes (integer index keys)

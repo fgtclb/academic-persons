@@ -654,6 +654,18 @@ final class UsingDefaultProfileFactoryOnlyTest extends AbstractAcademicPersonsTe
             'assertCsvFileName' => 'updated-secondary-relations-empty.csv',
             'dispatchedEventCount' => 5,
         ];
+        yield '#7 exclude pids - skip sync prevents updates for profile records' => [
+            'additionalImportDataSets' => [
+                __DIR__ . '/Fixtures/DataSets/skip-sync.csv',
+            ],
+            'includePids' => [],
+            'excludePids' => [
+                1100,
+                1110,
+            ],
+            'assertCsvFileName' => 'updated-skip-sync.csv',
+            'dispatchedEventCount' => 4,
+        ];
     }
 
     /**

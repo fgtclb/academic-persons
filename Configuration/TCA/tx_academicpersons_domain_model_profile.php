@@ -398,6 +398,22 @@ $tcaConfiguration = [
                 'type' => 'passthrough',
             ],
         ],
+        'skip_sync' => [
+            'label' => 'LLL:EXT:academic_persons/Resources/Private/Language/locallang_tca.xlf:tx_academicpersons_domain_model_profile.columns.skip_sync.label',
+            'description' => 'LLL:EXT:academic_persons/Resources/Private/Language/locallang_tca.xlf:tx_academicpersons_domain_model_profile.columns.skip_sync.description',
+            'config' => [
+                'type' => 'check',
+                'renderType' => 'checkboxToggle',
+                'items' => [
+                    [
+                        'label' => '',
+                    ],
+                ],
+                'default' => 0,
+            ],
+            'onChange' => 'reload',
+            'displayCond' => 'FIELD:import_identifier:REQ:true',
+        ],
     ],
     'palettes' => [
         'name' => [
@@ -434,6 +450,7 @@ $tcaConfiguration = [
         'hidden' => [
             'showitem' => implode(',', [
                 'hidden;LLL:EXT:frontend/Resources/Private/Language/locallang_ttc.xlf:field.default.hidden',
+                'skip_sync;LLL:EXT:academic_persons/Resources/Private/Language/locallang_tca.xlf:tx_academicpersons_domain_model_profile.columns.skip_sync.label',
             ]),
         ],
         'language' => [
