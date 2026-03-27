@@ -84,10 +84,12 @@ final class ProfileController extends ActionController
 
         /** @var ModifyListProfilesEvent $event */
         $event = $this->eventDispatcher->dispatch(new ModifyListProfilesEvent(
-            $profiles,
-            $this->view,
-            new PluginControllerActionContext($this->request, $this->settings),
+            profiles: $profiles,
+            view: $this->view,
+            pluginControllerActionContext: new PluginControllerActionContext($this->request, $this->settings),
+            profileDemand: $demand,
         ));
+        $demand = $event->getProfileDemand();
         $profiles = $event->getProfiles();
 
         if ($demand->getAlphabetFilter() !== '') {

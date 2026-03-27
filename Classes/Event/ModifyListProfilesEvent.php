@@ -12,6 +12,7 @@ declare(strict_types=1);
 namespace FGTCLB\AcademicPersons\Event;
 
 use FGTCLB\AcademicPersons\Domain\Model\Dto\PluginControllerActionContextInterface;
+use FGTCLB\AcademicPersons\Domain\Model\Dto\ProfileDemand;
 use FGTCLB\AcademicPersons\Domain\Model\Profile;
 use TYPO3\CMS\Core\View\ViewInterface as CoreViewInterface;
 use TYPO3\CMS\Extbase\Persistence\QueryResultInterface;
@@ -31,6 +32,7 @@ final class ModifyListProfilesEvent
         private QueryResultInterface $profiles,
         private readonly FluidViewInterface|CoreViewInterface $view,
         private readonly PluginControllerActionContextInterface $pluginControllerActionContext,
+        private ProfileDemand $profileDemand,
     ) {}
 
     /**
@@ -57,5 +59,15 @@ final class ModifyListProfilesEvent
     public function getPluginControllerActionContext(): PluginControllerActionContextInterface
     {
         return $this->pluginControllerActionContext;
+    }
+
+    public function getProfileDemand(): ProfileDemand
+    {
+        return $this->profileDemand;
+    }
+
+    public function setProfileDemand(ProfileDemand $profileDemand): void
+    {
+        $this->profileDemand = $profileDemand;
     }
 }
