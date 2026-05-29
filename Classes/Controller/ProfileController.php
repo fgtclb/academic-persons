@@ -137,6 +137,11 @@ final class ProfileController extends ActionController
         return $this->htmlResponse();
     }
 
+    public function initializeCardAction(): void
+    {
+        $this->settings['showFields'] = !empty($this->settings['showFields']) ? GeneralUtility::trimExplode(',', $this->settings['showFields']) : null;
+    }
+
     /**
      * @todo This action is literally broken in multi language sites. Needs to be adopted and covered
      *       with functional tests.
