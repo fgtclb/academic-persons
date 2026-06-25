@@ -666,6 +666,18 @@ final class UsingDefaultProfileFactoryOnlyTest extends AbstractAcademicPersonsTe
             'assertCsvFileName' => 'updated-skip-sync.csv',
             'dispatchedEventCount' => 4,
         ];
+        yield '#8 exclude pids - keeps hidden relation records hidden and does not duplicate them' => [
+            'additionalImportDataSets' => [
+                __DIR__ . '/Fixtures/DataSets/secondary-relations-hidden.csv',
+            ],
+            'includePids' => [],
+            'excludePids' => [
+                1100,
+                1110,
+            ],
+            'assertCsvFileName' => 'updated-secondary-relations-hidden.csv',
+            'dispatchedEventCount' => 5,
+        ];
     }
 
     /**
