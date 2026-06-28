@@ -91,8 +91,7 @@ abstract class AbstractProfileFactory implements ProfileFactoryInterface
             return null;
         }
 
-        /** @var FrontendUser|null $frontendUser */
-        $frontendUser = $this->persistenceManager->getObjectByIdentifier($userData['uid'], FrontendUser::class);
+        $frontendUser = $this->findFrontendUserIgnoringVisibility((int)$userData['uid']);
         if (!$frontendUser instanceof FrontendUser) {
             return null;
         }
@@ -107,6 +106,23 @@ abstract class AbstractProfileFactory implements ProfileFactoryInterface
         $this->eventDispatcher->dispatch($afterProfileUpdatedEvent);
 
         return $profileForDefaultLanguage->getUid();
+    }
+
+    /**
+     * Resolves the frontend user for the profile creation ignoring its visibility, so a profile is
+     * created for a disabled frontend user as well. The visibility itself is never changed here.
+     * Deleted frontend users stay excluded.
+     */
+    private function findFrontendUserIgnoringVisibility(int $frontendUserUid): ?FrontendUser
+    {
+        $query = $this->persistenceManager->createQueryForType(FrontendUser::class);
+        $query->getQuerySettings()
+            ->setRespectStoragePage(false)
+            ->setIgnoreEnableFields(true);
+        $query->matching($query->equals('uid', $frontendUserUid));
+        /** @var FrontendUser|null $frontendUser */
+        $frontendUser = $query->execute()->getFirst();
+        return $frontendUser;
     }
 
     public function shouldUpdateProfileForUser(FrontendUserAuthentication $frontendUserAuthentication): bool
@@ -127,7 +143,9 @@ abstract class AbstractProfileFactory implements ProfileFactoryInterface
         }
 
         $frontendUserUid = (int)$userData['uid'];
-        $profiles = $this->profileRepository->findByFrontendUser($frontendUserUid);
+        // Include hidden profiles so they keep being synchronized. The visibility (`hidden` enable
+        // field) is never changed here, therefore a manually hidden profile stays hidden.
+        $profiles = $this->profileRepository->findByFrontendUser($frontendUserUid, true);
         if ($profiles->count() === 0) {
             return;
         }

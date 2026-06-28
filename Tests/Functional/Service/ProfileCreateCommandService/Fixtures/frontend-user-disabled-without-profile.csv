@@ -1,0 +1,3 @@
+"fe_users",
+,"uid","pid","username","deleted","usergroup","disable","tx_extbase_type","first_name","middle_name","last_name","www","address","zip","city","country","email","telephone","fax",
+,30,100,"userdisablednoprofile",0,"10",1,"Tx_Academicpersonsedit_Domain_Model_FrontendUser","Max","Marvin","Müllermann","https://www.example.com/","Street 1","73249","Wernau","Germany","info@email.org","+4917521122334","+4917521122339",

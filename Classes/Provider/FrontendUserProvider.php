@@ -14,6 +14,7 @@ namespace FGTCLB\AcademicPersons\Provider;
 use Doctrine\DBAL\Result;
 use TYPO3\CMS\Core\Database\Connection;
 use TYPO3\CMS\Core\Database\ConnectionPool;
+use TYPO3\CMS\Core\Database\Query\Restriction\HiddenRestriction;
 
 final class FrontendUserProvider
 {
@@ -39,6 +40,14 @@ final class FrontendUserProvider
     public function getUsersWithoutProfileResult(array $includePids, array $excludePids = []): Result
     {
         $queryBuilder = $this->connectionPool->getQueryBuilderForTable('fe_users');
+        // Like the synchronization query, the profile creation must also consider disabled frontend
+        // users so that a profile is created for them as well, regardless of their visibility. The
+        // automatically applied hidden restriction would otherwise exclude disabled frontend users,
+        // so it is removed here. Deleted records stay excluded through the default deleted
+        // restriction. Frontend users that already have a profile - hidden or not - are excluded
+        // through the missing M:N relation (`tx_academicpersons_feuser_mm`), which is independent of
+        // the profile visibility.
+        $queryBuilder->getRestrictions()->removeByType(HiddenRestriction::class);
         $queryBuilder
             ->select('fe_users.*')
             ->distinct()
@@ -103,6 +112,12 @@ final class FrontendUserProvider
     public function getUsersWithProfileResult(array $includePids, array $excludePids = []): Result
     {
         $queryBuilder = $this->connectionPool->getQueryBuilderForTable('fe_users');
+        // The synchronization must keep already hidden profiles and disabled frontend users up to
+        // date as well, without ever changing their visibility (that is the responsibility of the
+        // ProfileFactory). The automatically applied hidden restriction would otherwise exclude
+        // frontend users that are disabled or whose profile is hidden, so it is removed here.
+        // Deleted records stay excluded through the default deleted restriction.
+        $queryBuilder->getRestrictions()->removeByType(HiddenRestriction::class);
         $queryBuilder
             ->select('fe_users.*')
             ->distinct()

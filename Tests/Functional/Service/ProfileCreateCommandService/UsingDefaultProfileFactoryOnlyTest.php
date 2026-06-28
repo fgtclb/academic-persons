@@ -586,6 +586,61 @@ final class UsingDefaultProfileFactoryOnlyTest extends AbstractAcademicPersonsTe
         $this->assertSame($expectedRows, $rows);
     }
 
+    /**
+     * A frontend user without a profile must be selected for the profile creation regardless of its
+     * own visibility, so a disabled frontend user gets a profile as well. A frontend user that
+     * already has a profile - hidden or not - must never be selected, because the M:N relation, not
+     * the profile visibility, decides whether a profile exists.
+     */
+    public static function getUsersWithoutProfileResultReturnsUsersRegardlessOfVisibilityDataSets(): \Generator
+    {
+        yield 'visible frontend user without profile is returned' => [
+            'frontendUserUid' => 10,
+            'shouldBeReturned' => true,
+        ];
+        yield 'disabled frontend user without profile is returned' => [
+            'frontendUserUid' => 30,
+            'shouldBeReturned' => true,
+        ];
+        yield 'visible frontend user with visible profile is not returned' => [
+            'frontendUserUid' => 32,
+            'shouldBeReturned' => false,
+        ];
+        yield 'visible frontend user with hidden profile is not returned' => [
+            'frontendUserUid' => 34,
+            'shouldBeReturned' => false,
+        ];
+        yield 'disabled frontend user with visible profile is not returned' => [
+            'frontendUserUid' => 36,
+            'shouldBeReturned' => false,
+        ];
+        yield 'disabled frontend user with hidden profile is not returned' => [
+            'frontendUserUid' => 38,
+            'shouldBeReturned' => false,
+        ];
+    }
+
+    /**
+     * @throws \ReflectionException
+     */
+    #[DataProvider(methodName: 'getUsersWithoutProfileResultReturnsUsersRegardlessOfVisibilityDataSets')]
+    #[Test]
+    public function getUsersWithoutProfileResultReturnsUsersRegardlessOfVisibility(
+        int $frontendUserUid,
+        bool $shouldBeReturned,
+    ): void {
+        $this->importCSVDataSet(__DIR__ . '/Fixtures/visibility-combinations.csv');
+        $profileCreateCommandService = GeneralUtility::makeInstance(ProfileCreateCommandService::class);
+        $rows = (new \ReflectionMethod($profileCreateCommandService, 'getUsersWithoutProfileResult'))
+            ->invoke($profileCreateCommandService, [100], [])->fetchAllAssociative();
+        $returnedUids = array_map(static fn(array $row): int => (int)$row['uid'], $rows);
+        if ($shouldBeReturned) {
+            $this->assertContains($frontendUserUid, $returnedUids);
+        } else {
+            $this->assertNotContains($frontendUserUid, $returnedUids);
+        }
+    }
+
     public static function executeCreatesExpectedRecordsDataSets(): \Generator
     {
         yield '#1 without include and exclude pids' => [
@@ -664,5 +719,104 @@ final class UsingDefaultProfileFactoryOnlyTest extends AbstractAcademicPersonsTe
         ));
         $this->assertCSVDataSet(__DIR__ . '/Fixtures/Asserts/' . $assertCsvFileName);
         $this->assertCount($dispatchedEventCount, $dispatchedModifyEvents);
+    }
+
+    /**
+     * A frontend user that already has a profile - even a hidden one - must not get a second
+     * profile created. The hidden profile keeps its visibility and is left to the update command
+     * for data synchronization.
+     *
+     * The first create run sets up the real profile (and the M:N relation) for the frontend users
+     * of pid 100. One of them is hidden afterwards, then a second create run must neither duplicate
+     * the hidden profile nor change its visibility.
+     *
+     * @throws \Doctrine\DBAL\Exception
+     */
+    #[Test]
+    public function executeDoesNotCreateAdditionalProfileForUserWithExistingHiddenProfile(): void
+    {
+        $profileCreateCommandService = GeneralUtility::makeInstance(ProfileCreateCommandService::class);
+
+        // First run: creates the profiles for the frontend users of pid 100 (uids 10 and 14).
+        $profileCreateCommandService->execute(new ProfileCreateCommandDto(includePids: [100], excludePids: []));
+        $this->assertSame(
+            2,
+            $this->countProfiles(),
+            'The first create run must create the two profiles for pid 100.',
+        );
+
+        // Hide the profile of fe_user 10.
+        $connection = $this->getConnectionPool()->getConnectionForTable('tx_academicpersons_domain_model_profile');
+        $connection->update(
+            'tx_academicpersons_domain_model_profile',
+            ['hidden' => 1],
+            ['import_identifier' => 'fe_users:10'],
+        );
+
+        // Second run: must not create a second profile for the now hidden one.
+        $profileCreateCommandService->execute(new ProfileCreateCommandDto(includePids: [100], excludePids: []));
+
+        $this->assertSame(
+            1,
+            $this->countProfiles(['import_identifier' => 'fe_users:10']),
+            'The hidden profile of fe_user 10 must not be duplicated by a second create run.',
+        );
+        $this->assertSame(
+            1,
+            $this->countProfiles(['import_identifier' => 'fe_users:10', 'hidden' => 1]),
+            'The hidden profile must keep its visibility.',
+        );
+        $this->assertSame(
+            2,
+            $this->countProfiles(),
+            'No additional profile must be created on the second run.',
+        );
+    }
+
+    /**
+     * A disabled frontend user without a profile must still get a profile created for it, just like
+     * a visible frontend user. The frontend user visibility must not exclude it from the creation.
+     *
+     * @throws \Doctrine\DBAL\Exception
+     */
+    #[Test]
+    public function executeCreatesProfileForDisabledFrontendUserWithoutProfile(): void
+    {
+        $this->importCSVDataSet(__DIR__ . '/Fixtures/frontend-user-disabled-without-profile.csv');
+        $profileCreateCommandService = GeneralUtility::makeInstance(ProfileCreateCommandService::class);
+
+        // pid 100 has the visible frontend users 10 and 14 plus the disabled user 30, all without a profile.
+        $profileCreateCommandService->execute(new ProfileCreateCommandDto(includePids: [100], excludePids: []));
+
+        $this->assertSame(
+            1,
+            $this->countProfiles(['import_identifier' => 'fe_users:30']),
+            'A profile must be created for the disabled frontend user without a profile.',
+        );
+        $this->assertSame(
+            3,
+            $this->countProfiles(),
+            'Profiles must be created for the visible and the disabled frontend users of pid 100.',
+        );
+    }
+
+    /**
+     * Counts profile records ignoring all enable field restrictions, so hidden profiles are
+     * counted as well.
+     *
+     * @param array<string, int|string> $identifiers
+     * @throws \Doctrine\DBAL\Exception
+     */
+    private function countProfiles(array $identifiers = []): int
+    {
+        $queryBuilder = $this->getConnectionPool()->getQueryBuilderForTable('tx_academicpersons_domain_model_profile');
+        $queryBuilder->getRestrictions()->removeAll();
+        $queryBuilder->count('uid')->from('tx_academicpersons_domain_model_profile');
+        foreach ($identifiers as $field => $value) {
+            $queryBuilder->andWhere(
+                $queryBuilder->expr()->eq($field, $queryBuilder->createNamedParameter($value))
+            );
+        }
+        return (int)$queryBuilder->executeQuery()->fetchOne();
     }
 }

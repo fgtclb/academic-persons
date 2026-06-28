@@ -587,6 +587,42 @@ final class UsingDefaultProfileFactoryOnlyTest extends AbstractAcademicPersonsTe
         $this->assertSame($expectedRows, $rows);
     }
 
+    /**
+     * All four visibility combinations of a frontend user and its profile must be selected for the
+     * synchronization query. Neither a disabled frontend user (`fe_users.disable`) nor a hidden
+     * profile (`tx_academicpersons_domain_model_profile.hidden`) may exclude the pair.
+     */
+    public static function getUsersWithProfileResultReturnsUsersRegardlessOfVisibilityDataSets(): \Generator
+    {
+        yield 'frontend user visible, profile visible' => [
+            'expectedFrontendUserUid' => 30,
+        ];
+        yield 'frontend user disabled, profile visible' => [
+            'expectedFrontendUserUid' => 32,
+        ];
+        yield 'frontend user visible, profile hidden' => [
+            'expectedFrontendUserUid' => 34,
+        ];
+        yield 'frontend user disabled, profile hidden' => [
+            'expectedFrontendUserUid' => 36,
+        ];
+    }
+
+    /**
+     * @throws \ReflectionException
+     */
+    #[DataProvider(methodName: 'getUsersWithProfileResultReturnsUsersRegardlessOfVisibilityDataSets')]
+    #[Test]
+    public function getUsersWithProfileResultReturnsUsersRegardlessOfVisibility(int $expectedFrontendUserUid): void
+    {
+        $this->importCSVDataSet(__DIR__ . '/Fixtures/DataSets/visibility-combinations.csv');
+        $profileUpdateCommandService = GeneralUtility::makeInstance(ProfileUpdateCommandService::class);
+        $rows = (new \ReflectionMethod($profileUpdateCommandService, 'getUsersWithProfileResult'))
+            ->invoke($profileUpdateCommandService, [100], [])->fetchAllAssociative();
+        $returnedUids = array_map(static fn(array $row): int => (int)$row['uid'], $rows);
+        $this->assertContains($expectedFrontendUserUid, $returnedUids);
+    }
+
     public static function executeUpdatesExpectedRecordsDataSets(): \Generator
     {
         yield '#1 without include and exclude pids' => [
@@ -677,6 +713,33 @@ final class UsingDefaultProfileFactoryOnlyTest extends AbstractAcademicPersonsTe
             ],
             'assertCsvFileName' => 'updated-secondary-relations-hidden.csv',
             'dispatchedEventCount' => 5,
+        ];
+        yield '#9 exclude pids - keeps hidden profile hidden but still synchronizes its data' => [
+            'additionalImportDataSets' => [
+                __DIR__ . '/Fixtures/DataSets/secondary-relations-profile-hidden.csv',
+            ],
+            'includePids' => [],
+            'excludePids' => [
+                1100,
+                1110,
+            ],
+            'assertCsvFileName' => 'updated-secondary-relations-profile-hidden.csv',
+            'dispatchedEventCount' => 5,
+        ];
+        // Covers all four frontend-user/profile visibility combinations in one run: both visible,
+        // frontend user disabled only, profile hidden only, and both disabled/hidden. All of them
+        // must be synchronized while their `disable`/`hidden` states are kept untouched.
+        yield '#10 exclude pids - synchronizes profiles regardless of frontend user and profile visibility' => [
+            'additionalImportDataSets' => [
+                __DIR__ . '/Fixtures/DataSets/visibility-combinations.csv',
+            ],
+            'includePids' => [],
+            'excludePids' => [
+                1100,
+                1110,
+            ],
+            'assertCsvFileName' => 'updated-visibility-combinations.csv',
+            'dispatchedEventCount' => 8,
         ];
     }
 

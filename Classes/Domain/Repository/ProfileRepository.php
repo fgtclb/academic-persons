@@ -271,13 +271,22 @@ class ProfileRepository extends Repository
     }
 
     /**
+     * Find profiles for a frontend user. With `$showHidden` enabled the hidden (disabled) profiles
+     * are included as well, which is required by the synchronization: it must keep updating the data
+     * of a hidden profile without ever changing its visibility. The frontend display keeps the
+     * default (`$showHidden = false`) so that hidden profiles stay hidden there.
+     *
      * @param int $frontendUserUid
+     * @param bool $showHidden
      * @return QueryResultInterface<int, Profile>
      */
-    public function findByFrontendUser(int $frontendUserUid): QueryResultInterface
+    public function findByFrontendUser(int $frontendUserUid, bool $showHidden = false): QueryResultInterface
     {
         $query = $this->createQuery();
         $query->getQuerySettings()->setRespectStoragePage(false);
+        if ($showHidden === true) {
+            $this->includeHiddenRecords($query);
+        }
 
         return $query
             ->matching(

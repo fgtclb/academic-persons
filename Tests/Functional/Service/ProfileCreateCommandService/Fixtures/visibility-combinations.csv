@@ -1,0 +1,24 @@
+"fe_users",
+,"uid","pid","username","deleted","usergroup","disable","tx_extbase_type","first_name","middle_name","last_name","www","address","zip","city","country","email","telephone","fax",
+# disabled frontend user without a profile
+,30,100,"userdisablednoprofile",0,"10",1,"Tx_Academicpersonsedit_Domain_Model_FrontendUser","Max","Marvin","Müllermann","https://www.example.com/","Street 1","73249","Wernau","Germany","info@email.org","+4917521122334","+4917521122339",
+# visible frontend user with a visible profile
+,32,100,"uservisibleprofile",0,"10",0,"Tx_Academicpersonsedit_Domain_Model_FrontendUser","Max","Marvin","Müllermann","https://www.example.com/","Street 1","73249","Wernau","Germany","info@email.org","+4917521122334","+4917521122339",
+# visible frontend user with a hidden profile
+,34,100,"userhiddenprofile",0,"10",0,"Tx_Academicpersonsedit_Domain_Model_FrontendUser","Max","Marvin","Müllermann","https://www.example.com/","Street 1","73249","Wernau","Germany","info@email.org","+4917521122334","+4917521122339",
+# disabled frontend user with a visible profile
+,36,100,"userdisabledvisibleprofile",0,"10",1,"Tx_Academicpersonsedit_Domain_Model_FrontendUser","Max","Marvin","Müllermann","https://www.example.com/","Street 1","73249","Wernau","Germany","info@email.org","+4917521122334","+4917521122339",
+# disabled frontend user with a hidden profile
+,38,100,"userdisabledhiddenprofile",0,"10",1,"Tx_Academicpersonsedit_Domain_Model_FrontendUser","Max","Marvin","Müllermann","https://www.example.com/","Street 1","73249","Wernau","Germany","info@email.org","+4917521122334","+4917521122339",
+"tx_academicpersons_feuser_mm",
+,"uid_local","uid_foreign","sorting","sorting_foreign",
+,10,32,1,0,
+,11,34,1,0,
+,12,36,1,0,
+,13,38,1,0,
+"tx_academicpersons_domain_model_profile",
+,"uid","pid","title","first_name","middle_name","last_name","website","hidden","import_identifier",
+,10,100,"","Max","Marvin","Müllermann","https://www.example.com/",0,"fe_users:32",
+,11,100,"","Max","Marvin","Müllermann","https://www.example.com/",1,"fe_users:34",
+,12,100,"","Max","Marvin","Müllermann","https://www.example.com/",0,"fe_users:36",
+,13,100,"","Max","Marvin","Müllermann","https://www.example.com/",1,"fe_users:38",
