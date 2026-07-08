@@ -18,21 +18,23 @@ was added to the following plugins:
 * **Card** (:php:`academicpersons_card`)
 * **Selected profiles** (:php:`academicpersons_selectedprofiles`)
 * **Selected contracts** (:php:`academicpersons_selectedcontracts`)
+* **Detail** (:php:`academicpersons_detail`)
 
 The `List`, `List and detail` and `Card` plugins share the
-core-version-aware :file:`List.xml` flexform; `Selected profiles` and
-`Selected contracts` use their own :file:`SelectedProfiles.xml` /
-:file:`SelectedContracts.xml` flexforms. All are provided for both the
-TYPO3 v12 and v13 flexform data structures.
+core-version-aware :file:`List.xml` flexform; `Selected profiles`,
+`Selected contracts` and `Detail` use their own :file:`SelectedProfiles.xml`,
+:file:`SelectedContracts.xml` and :file:`Detail.xml` flexforms. All are
+provided for both the TYPO3 v12 and v13 flexform data structures.
 
 When the option is enabled, the affected frontend listing includes hidden
 (disabled) records, independent of the Context API visibility settings.
 Only the `hidden` enable column (`disabled`) is ignored; the `deleted`,
 `starttime`/`endtime` and `fe_group` restrictions stay in effect.
 
-The single-profile **Detail** plugin (:php:`academicpersons_detail`) is
-not affected by this option: it resolves its profile through Extbase
-argument mapping, which is independent of the repository query settings.
+The single-profile **Detail** plugin resolves its profile through Extbase
+argument mapping, which normally respects enable fields. When the option
+is enabled, the detail view re-resolves the referenced profile including
+hidden records, so a hidden profile can be displayed on its detail page.
 
 Impact
 ======

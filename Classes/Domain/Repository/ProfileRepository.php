@@ -252,6 +252,25 @@ class ProfileRepository extends Repository
     }
 
     /**
+     * Resolve a single profile by uid including hidden (disabled) records.
+     *
+     * Used by {@see \FGTCLB\AcademicPersons\Controller\ProfileController::initializeDetailAction()}
+     * to allow the detail view to display a hidden profile when the plugin
+     * option "show hidden records" is enabled, since the default Extbase
+     * argument mapping respects enable fields.
+     */
+    public function findByUidIncludingHidden(int $uid): ?Profile
+    {
+        $query = $this->createQuery();
+        $query->getQuerySettings()->setRespectStoragePage(false);
+        $this->includeHiddenRecords($query);
+        $query->matching($query->equals('uid', $uid));
+        /** @var Profile|null $profile */
+        $profile = $query->execute()->getFirst();
+        return $profile;
+    }
+
+    /**
      * @param int $frontendUserUid
      * @return QueryResultInterface<int, Profile>
      */

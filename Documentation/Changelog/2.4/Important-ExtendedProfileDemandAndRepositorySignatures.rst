@@ -30,11 +30,17 @@ non-breaking (new optional parameter / new transport flag with defaults):
   and
   :php:`\FGTCLB\AcademicPersons\Domain\Repository\ContractRepository::findByUids()`
   gained an appended optional :php:`bool $showHidden = false` parameter.
+* :php:`\FGTCLB\AcademicPersons\Domain\Repository\ProfileRepository::findByUidIncludingHidden(int $uid): ?Profile`
+  is a new method that resolves a single profile by uid including hidden
+  (disabled) records. It is used by the detail view.
 * :php:`\FGTCLB\AcademicPersons\Controller\ProfileController` reads
   :php:`$this->settings['showHiddenRecords']` in
   :php:`adoptSettings()`, :php:`cardAction()`,
   :php:`selectedProfilesAction()` and :php:`selectedContractsAction()` and
-  threads it into the repositories.
+  threads it into the repositories. The new
+  :php:`initializeDetailAction()` re-resolves the `profile` argument via
+  :php:`findByUidIncludingHidden()` when the option is enabled, because the
+  default Extbase argument mapping respects enable fields.
 
 When the flag/parameter is set, the query ignores only the `disabled`
 (`hidden`) enable field via the Extbase query settings; the `deleted`,

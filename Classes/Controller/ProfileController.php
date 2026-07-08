@@ -184,6 +184,33 @@ final class ProfileController extends ActionController
         return $this->htmlResponse();
     }
 
+    public function initializeDetailAction(): void
+    {
+        // By default Extbase argument mapping resolves the `profile` argument
+        // respecting enable fields, so a hidden profile would map to null. When
+        // the plugin option "show hidden records" is enabled, re-resolve the
+        // referenced profile including hidden (disabled) records and inject the
+        // already hydrated object as the argument value.
+        $showHiddenRecords = (bool)($this->settings['showHiddenRecords'] ?? false);
+        if (!$showHiddenRecords || !$this->request->hasArgument('profile')) {
+            return;
+        }
+        $profileArgument = $this->request->getArgument('profile');
+        // Only a scalar uid reference needs manual resolution; an already
+        // mapped object or a complex value is left untouched.
+        if (!is_scalar($profileArgument)) {
+            return;
+        }
+        $profileUid = (int)$profileArgument;
+        if ($profileUid <= 0) {
+            return;
+        }
+        $profile = $this->profileRepository->findByUidIncludingHidden($profileUid);
+        if ($profile !== null) {
+            $this->request = $this->request->withArgument('profile', $profile);
+        }
+    }
+
     /**
      * @IgnoreValidation("profile")
      */

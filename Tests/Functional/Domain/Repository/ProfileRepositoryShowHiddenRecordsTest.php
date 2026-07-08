@@ -64,4 +64,30 @@ final class ProfileRepositoryShowHiddenRecordsTest extends AbstractAcademicPerso
         $result = $this->getProfileRepository()->findByDemand($demand);
         $this->assertSame([1, 2, 3, 4], $this->resultUids($result));
     }
+
+    #[Test]
+    public function findByUidIncludingHiddenReturnsHiddenProfile(): void
+    {
+        $this->importCSVDataSet(__DIR__ . '/Fixtures/ShowHiddenRecords/profiles.csv');
+        $profile = $this->getProfileRepository()->findByUidIncludingHidden(2);
+        $this->assertInstanceOf(Profile::class, $profile);
+        $this->assertSame(2, (int)$profile->getUid());
+    }
+
+    #[Test]
+    public function findByUidIncludingHiddenReturnsVisibleProfile(): void
+    {
+        $this->importCSVDataSet(__DIR__ . '/Fixtures/ShowHiddenRecords/profiles.csv');
+        $profile = $this->getProfileRepository()->findByUidIncludingHidden(1);
+        $this->assertInstanceOf(Profile::class, $profile);
+        $this->assertSame(1, (int)$profile->getUid());
+    }
+
+    #[Test]
+    public function findByUidIncludingHiddenDoesNotReturnDeletedProfile(): void
+    {
+        $this->importCSVDataSet(__DIR__ . '/Fixtures/ShowHiddenRecords/profiles.csv');
+        $profile = $this->getProfileRepository()->findByUidIncludingHidden(5);
+        $this->assertNull($profile);
+    }
 }
