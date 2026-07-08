@@ -37,7 +37,7 @@ class ContractRepository extends Repository
      * @param int[] $uids
      * @return QueryResultInterface<int, Contract>
      */
-    public function findByUids(array $uids): QueryResultInterface
+    public function findByUids(array $uids, bool $showHidden = false): QueryResultInterface
     {
         $query = $this->createQuery();
         // Selected uid's are default language and we need to configure extbase in away to
@@ -52,6 +52,12 @@ class ContractRepository extends Repository
         $query->getQuerySettings()->setLanguageAspect($changedLanguageAspect);
         $query->getQuerySettings()->setRespectStoragePage(false);
         $query->getQuerySettings()->setRespectSysLanguage(false);
+        if ($showHidden === true) {
+            // Include hidden (disabled) records; other enable fields
+            // (deleted, start-/endtime, fe_group) stay in effect.
+            $query->getQuerySettings()->setIgnoreEnableFields(true);
+            $query->getQuerySettings()->setEnableFieldsToBeIgnored(['disabled']);
+        }
         $query->matching($query->in('uid', $uids));
 
         return $query->execute();

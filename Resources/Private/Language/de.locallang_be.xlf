@@ -273,6 +273,14 @@
 				<source>Table</source>
 				<target>Tabelle</target>
 			</trans-unit>
+			<trans-unit id="flexform.el.showHiddenRecords.label">
+				<source>Show hidden records</source>
+				<target>Versteckte Datensätze anzeigen</target>
+			</trans-unit>
+			<trans-unit id="flexform.el.showHiddenRecords.description">
+				<source>If enabled, hidden (disabled) records are shown in the frontend, independent of the backend preview settings.</source>
+				<target>Wenn aktiviert, werden versteckte (deaktivierte) Datensätze unabhängig von den Backend-Vorschaueinstellungen im Frontend ausgegeben.</target>
+			</trans-unit>
 		</body>
 	</file>
 </xliff>

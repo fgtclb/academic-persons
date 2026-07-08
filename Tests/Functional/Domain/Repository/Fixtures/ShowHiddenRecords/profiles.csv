@@ -1,0 +1,7 @@
+"tx_academicpersons_domain_model_profile",
+,"uid","pid","sys_language_uid","hidden","deleted","last_name","first_name",
+,1,1,0,0,0,"Visible A","A",
+,2,1,0,1,0,"Hidden B","B",
+,3,1,0,0,0,"Visible C","C",
+,4,1,0,1,0,"Hidden D","D",
+,5,1,0,0,1,"Deleted E","E",

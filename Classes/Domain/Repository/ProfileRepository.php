@@ -123,6 +123,39 @@ class ProfileRepository extends Repository
                 E_USER_DEPRECATED
             );
         }
+
+        // @todo Remove method_exists() level (unnesting block) with next major, when added breaking to DemandInterface
+        //       and deprecation layer in ProfileController::adoptSettings().
+        if (method_exists($demand, 'getShowHiddenRecords')) {
+            if ($demand->getShowHiddenRecords() === true) {
+                $this->includeHiddenRecords($query);
+            }
+        } else {
+            trigger_error(
+                sprintf(
+                    'Class "%s" does not implement methods "%s" and "%s", which is deprecated, and will be added '
+                    . 'breaking with 1.x to interface "%s". Interface already includes commented method signature.',
+                    $demand::class,
+                    'setShowHiddenRecords',
+                    'getShowHiddenRecords',
+                    DemandInterface::class,
+                ),
+                E_USER_DEPRECATED
+            );
+        }
+    }
+
+    /**
+     * Include hidden (disabled) records by ignoring only the `disabled`
+     * (`hidden`) enable field. Other enable fields (deleted, start-/endtime,
+     * fe_group) stay in effect.
+     *
+     * @param QueryInterface<Profile> $query
+     */
+    private function includeHiddenRecords(QueryInterface $query): void
+    {
+        $query->getQuerySettings()->setIgnoreEnableFields(true);
+        $query->getQuerySettings()->setEnableFieldsToBeIgnored(['disabled']);
     }
 
     /**
@@ -195,7 +228,7 @@ class ProfileRepository extends Repository
      * @param int[] $uids
      * @return QueryResultInterface<int, Profile>
      */
-    public function findByUids(array $uids): QueryResultInterface
+    public function findByUids(array $uids, bool $showHidden = false): QueryResultInterface
     {
         $query = $this->createQuery();
         // Selected uid's are default language and we need to configure extbase in away to
@@ -210,6 +243,9 @@ class ProfileRepository extends Repository
         $query->getQuerySettings()->setLanguageAspect($changedLanguageAspect);
         $query->getQuerySettings()->setRespectStoragePage(false);
         $query->getQuerySettings()->setRespectSysLanguage(false);
+        if ($showHidden === true) {
+            $this->includeHiddenRecords($query);
+        }
 
         $query->matching($query->in('uid', $uids));
         return $query->execute();

@@ -21,6 +21,7 @@ class ProfileDemand implements DemandInterface
     protected string $profileList = '';
     private string $storagePages = '';
     private int $fallbackForNonTranslated = 0;
+    private bool $showHiddenRecords = false;
 
     /**
      * @var int[]
@@ -217,6 +218,27 @@ class ProfileDemand implements DemandInterface
     public function setFallbackForNonTranslated(int $fallbackForNonTranslated): ProfileDemand
     {
         $this->fallbackForNonTranslated = $fallbackForNonTranslated;
+        return $this;
+    }
+
+    /**
+     * Not usable for hydration or direct extbase request argument mapping,
+     * only to transport the plugin's "show hidden records" option within the
+     * DTO to the {@see ProfileRepository::findByDemand()} method.
+     */
+    public function getShowHiddenRecords(): bool
+    {
+        return $this->showHiddenRecords;
+    }
+
+    /**
+     * Not usable for hydration or direct extbase request argument mapping,
+     * only to transport the plugin's "show hidden records" option within the
+     * DTO to the {@see ProfileRepository::findByDemand()} method.
+     */
+    public function setShowHiddenRecords(bool $showHiddenRecords): ProfileDemand
+    {
+        $this->showHiddenRecords = $showHiddenRecords;
         return $this;
     }
 }

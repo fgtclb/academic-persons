@@ -204,6 +204,12 @@
 			<trans-unit id="flexform.el.viewMode.default.I.table">
 				<source>Table</source>
 			</trans-unit>
+			<trans-unit id="flexform.el.showHiddenRecords.label">
+				<source>Show hidden records</source>
+			</trans-unit>
+			<trans-unit id="flexform.el.showHiddenRecords.description">
+				<source>If enabled, hidden (disabled) records are shown in the frontend, independent of the backend preview settings.</source>
+			</trans-unit>
 		</body>
 	</file>
 </xliff>

@@ -102,4 +102,22 @@ interface DemandInterface
      * @todo Add to interface with next major version as breaking change.
      */
     //public function setFallbackForNonTranslated(int $fallbackForNonTranslated): ProfileDemand;
+
+    /**
+     * Not usable for hydration or direct extbase request argument mapping,
+     * only to transport the plugin's "show hidden records" option within the
+     * DTO to the {@see ProfileRepository::findByDemand()} method.
+     *
+     * @todo Add to interface with next major version as breaking change.
+     */
+    //public function getShowHiddenRecords(): bool;
+
+    /**
+     * Not usable for hydration or direct extbase request argument mapping,
+     * only to transport the plugin's "show hidden records" option within the
+     * DTO to the {@see ProfileRepository::findByDemand()} method.
+     *
+     * @todo Add to interface with next major version as breaking change.
+     */
+    //public function setShowHiddenRecords(bool $showHiddenRecords): ProfileDemand;
 }

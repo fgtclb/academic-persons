@@ -170,6 +170,7 @@ final class ProfileController extends ActionController
             if ($fallbackForNonTranslated === 1) {
                 $profileDemand->setFallbackForNonTranslated($fallbackForNonTranslated);
             }
+            $profileDemand->setShowHiddenRecords((bool)($this->settings['showHiddenRecords'] ?? false));
             $profiles = $this->profileRepository->findByDemand($profileDemand);
         }
 
@@ -239,7 +240,8 @@ final class ProfileController extends ActionController
         }
 
         $profileUids = GeneralUtility::intExplode(',', $this->settings['selectedProfiles'], true);
-        $profiles = $this->profileRepository->findByUids($profileUids);
+        $showHiddenRecords = (bool)($this->settings['showHiddenRecords'] ?? false);
+        $profiles = $this->profileRepository->findByUids($profileUids, $showHiddenRecords);
 
         /** @var ModifySelectedProfilesEvent $event */
         $event = $this->eventDispatcher->dispatch(new ModifySelectedProfilesEvent(
@@ -279,7 +281,8 @@ final class ProfileController extends ActionController
         }
 
         $contractUids = GeneralUtility::intExplode(',', $this->settings['selectedContracts'], true);
-        $contracts = $this->contractRepository->findByUids($contractUids);
+        $showHiddenRecords = (bool)($this->settings['showHiddenRecords'] ?? false);
+        $contracts = $this->contractRepository->findByUids($contractUids, $showHiddenRecords);
 
         /** @var ModifySelectedContractsEvent $event */
         $event = $this->eventDispatcher->dispatch(new ModifySelectedContractsEvent(
@@ -354,6 +357,8 @@ final class ProfileController extends ActionController
         if ($fallbackForNonTranslated === 1) {
             $demand->setFallbackForNonTranslated($fallbackForNonTranslated);
         }
+
+        $demand->setShowHiddenRecords((bool)($this->settings['showHiddenRecords'] ?? false));
     }
 
     /**
