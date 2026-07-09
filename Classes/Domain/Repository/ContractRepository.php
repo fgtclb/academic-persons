@@ -13,6 +13,7 @@ namespace FGTCLB\AcademicPersons\Domain\Repository;
 
 use FGTCLB\AcademicPersons\Domain\Model\Contract;
 use TYPO3\CMS\Core\Context\LanguageAspect;
+use TYPO3\CMS\Core\Site\Entity\Site;
 use TYPO3\CMS\Extbase\Persistence\QueryResultInterface;
 use TYPO3\CMS\Extbase\Persistence\Repository;
 
@@ -31,6 +32,44 @@ class ContractRepository extends Repository
         //       Needs a better way to deal with this hear and in other places.
         $query->getQuerySettings()->setRespectStoragePage(false);
         return $query->execute();
+    }
+
+    /**
+     * Resolve the contract records used to build the select items for the
+     * `itemsProcFunc` of contract selection fields (TCA and FlexForm).
+     *
+     * The FormEngine `itemsProcFunc` parameters are passed through so the
+     * query can be narrowed by context (effective pid, site, ...) later on
+     * without touching the calling handler again.
+     *
+     * @param array{
+     *      items: array<int, array{
+     *       label?: string|null,
+     *       value?: mixed,
+     *       icon?: string|null,
+     *       group?: string|null,
+     *      }>,
+     *      config: array<string, mixed>,
+     *      TSconfig: array<string, mixed>,
+     *      table: string,
+     *      row: array<string, mixed>,
+     *      field: string,
+     *      effectivePid: int,
+     *      site: Site|null,
+     *      flexParentDatabaseRow?: array<string, mixed>|null,
+     *      inlineParentUid?: int,
+     *      inlineParentTableName?: string,
+     *      inlineParentFieldName?: string,
+     *      inlineParentConfig?: array<string, mixed>,
+     *      inlineTopMostParentUid?: int,
+     *      inlineTopMostParentTableName?: string,
+     *      inlineTopMostParentFieldName?: string,
+     *  } $parameters
+     * @return QueryResultInterface<int, Contract>
+     */
+    public function getContractItemsForTcaItemsProcFunc(array $parameters): QueryResultInterface
+    {
+        return $this->findAll();
     }
 
     /**

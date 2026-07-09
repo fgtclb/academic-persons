@@ -2,82 +2,119 @@
 
 declare(strict_types=1);
 
-namespace FGTCLB\AcademicPersons\Backend\Form;
+namespace FGTCLB\AcademicPersons\Backend\FormEngine;
 
+use FGTCLB\AcademicBase\Event\ModifyTcaSelectFieldItemsEvent;
+use Psr\EventDispatcher\EventDispatcherInterface;
 use TYPO3\CMS\Backend\Utility\BackendUtility;
+use TYPO3\CMS\Core\Site\Entity\Site;
+use TYPO3\CMS\Core\Utility\ArrayUtility;
+use TYPO3\CMS\Core\Utility\GeneralUtility;
 
-class ProfileShowFieldsItemProcFunc
+/**
+ * `itemsProcFunc` handler dispatching {@see ModifyTcaSelectFieldItemsEvent} PSR-14 event
+ * with {@see self::getDefaultShowFieldItems()} to allow projects or other extension to
+ * modify the available select items.
+ *
+ * This is executed in the backend in FormEngine for TCA fields using this itemsProcFunc
+ * handler and also in controllers to retrieve the select options of the field.
+ */
+final class ProfileShowFieldsItems
 {
     /**
-     * @param array<string, mixed> $params
+     * @param array{
+     *      items: array<int, array{
+     *       label?: string|null,
+     *       value?: mixed,
+     *       icon?: string|null,
+     *       group?: string|null,
+     *      }>,
+     *      config: array<string, mixed>,
+     *      TSconfig: array<string, mixed>,
+     *      table: string,
+     *      row: array<string, mixed>,
+     *      field: string,
+     *      effectivePid: int,
+     *      site: Site|null,
+     *      flexParentDatabaseRow?: array<string, mixed>|null,
+     *      inlineParentUid?: int,
+     *      inlineParentTableName?: string,
+     *      inlineParentFieldName?: string,
+     *      inlineParentConfig?: array<string, mixed>,
+     *      inlineTopMostParentUid?: int,
+     *      inlineTopMostParentTableName?: string,
+     *      inlineTopMostParentFieldName?: string,
+     *  } $parameters
      */
-    public function showFields(&$params): void
+    public function itemsProcFunc(array &$parameters): void
     {
-        // @todo Create a registry option to define more fields to select.
-        $params['items'] = array_merge($this->defaultFieldItemShowFields(), []);
-        $params['itemGroups'] = [
+        ArrayUtility::mergeRecursiveWithOverrule(
+            $parameters['items'],
+            $this->getDefaultShowFieldItems()
+        );
+
+        $parameters['itemGroups'] = [
             'contracts' => 'Contracts',
         ];
+
+        /** @var ModifyTcaSelectFieldItemsEvent $event */
+        $event = GeneralUtility::makeInstance(EventDispatcherInterface::class)->dispatch(new ModifyTcaSelectFieldItemsEvent(parameters: $parameters));
+        $parameters = $event->getParameters();
     }
 
     /**
-     * @return array<int, array<string|int, mixed>>
+     * @return array<int, array{
+     *     label: string|null,
+     *     value: string,
+     *     group: string,
+     * }>
      */
-    private function defaultFieldItemShowFields(): array
+    private function getDefaultShowFieldItems(): array
     {
         return [
             [
                 'label' => BackendUtility::getItemLabel('tx_academicpersons_domain_model_profile', 'image'),
                 'value' => 'profile.image',
-                'icon' => null,
                 'group' => 'profile',
             ],
             [
                 'label' => BackendUtility::getItemLabel('tx_academicpersons_domain_model_contract', 'position'),
                 'value' => 'contracts.position',
-                'icon' => null,
                 'group' => 'contracts',
             ],
             [
                 'label' => BackendUtility::getItemLabel('tx_academicpersons_domain_model_contract', 'organisational_unit'),
                 'value' => 'contracts.organisationalUnit',
-                'icon' => null,
                 'group' => 'contracts',
             ],
             [
                 'label' =>  BackendUtility::getItemLabel('tx_academicpersons_domain_model_contract', 'room'),
                 'value' => 'contracts.room',
-                'icon' => null,
                 'group' => 'contracts',
             ],
             [
                 'label' => BackendUtility::getItemLabel('tx_academicpersons_domain_model_contract', 'office_hours'),
                 'value' => 'contracts.officeHours',
-                'icon' => null,
                 'group' => 'contracts',
             ],
             [
                 'label' =>  BackendUtility::getItemLabel('tx_academicpersons_domain_model_contract', 'physical_addresses'),
                 'value' => 'contracts.physicalAddresses',
-                'icon' => null,
                 'group' => 'contracts',
             ],
             [
                 'label' =>  BackendUtility::getItemLabel('tx_academicpersons_domain_model_contract', 'email_addresses'),
                 'value' => 'contracts.emailAddresses',
-                'icon' => null,
                 'group' => 'contracts',
             ],
             [
                 'label' => BackendUtility::getItemLabel('tx_academicpersons_domain_model_contract', 'phone_numbers'),
                 'value' => 'contracts.phoneNumbers',
-                'icon' => null,
                 'group' => 'contracts',
             ],
             [
                 'label' => BackendUtility::getItemLabel('tx_academicpersons_domain_model_contract', 'location'),
                 'value' => 'contracts.location',
-                'icon' => null,
                 'group' => 'contracts',
             ],
         ];
