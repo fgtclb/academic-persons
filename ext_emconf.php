@@ -17,6 +17,7 @@ $EM_CONF[$_EXTKEY] = [
             'frontend' => '12.4.22-13.4.99',
             'install' => '12.4.22-13.4.99',
             'rte_ckeditor' => '12.4.22-13.4.99',
+            'environment_state_manager' => '1.0.0-1.99.99',
             'academic_base' => '2.4.0',
         ],
         'suggests' => [
