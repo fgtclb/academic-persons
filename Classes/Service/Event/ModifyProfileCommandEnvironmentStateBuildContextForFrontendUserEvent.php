@@ -4,10 +4,10 @@ declare(strict_types=1);
 
 namespace FGTCLB\AcademicPersons\Service\Event;
 
-use FGTCLB\AcademicBase\Environment\StateBuildContext;
 use FGTCLB\AcademicPersons\Profile\ProfileActionType;
 use FGTCLB\AcademicPersons\Service\ProfileCreateCommandService;
 use FGTCLB\AcademicPersons\Service\ProfileUpdateCommandService;
+use FGTCLB\EnvironmentStateManager\StateBuildContext;
 
 /**
  * This event is dispatched in {@see ProfileCreateCommandService::bootstrapSuitableEnvironmentForFrontendUser()}
