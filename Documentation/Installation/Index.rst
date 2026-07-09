@@ -1,37 +1,53 @@
-..  include:: /Includes.rst.txt
-
 ..  _installation:
 
 ============
 Installation
 ============
 
-This extension can be installed using the TYPO3 `extension manager
-<https://extensions.typo3.org/extension/academic_persons>`__ or by `composer
-<https://packagist.org/packages/fgtclb/academic-persons>`__.
+The extension has to be installed like any other TYPO3 CMS extension. You can
+download and install it using one of the following methods.
 
-..  code-block:: shell
+..  tabs::
 
-    composer install \
-        'fgtclb/academic-persons':'^2'
+    ..  group-tab:: Composer
 
-Testing 2.x.x extension version in projects (composer mode)
------------------------------------------------------------
+        ..  code-block:: bash
+            :caption: Install the stable release
 
-It is already possible to use and test the `2.x` version in composer based instances,
-which is encouraged and feedback of issues not detected by us (or pull-requests).
+            composer require 'fgtclb/academic-persons':'^2'
 
-Your project should configure `minimum-stabilty: dev` and `prefer-stable` to allow
-requiring each extension but still use stable versions over development versions:
+        ..  tip::
 
-..  code-block:: shell
+            The ``2.x`` version can already be used and tested in Composer based
+            instances. Configure ``minimum-stability: dev`` and ``prefer-stable``
+            in your root :file:`composer.json` so requiring the extension still
+            prefers stable releases over development versions:
 
-    composer config minimum-stability "dev" \
-    && composer config "prefer-stable" true
+            ..  code-block:: bash
 
-and installed with:
+                composer config minimum-stability "dev" \
+                    && composer config "prefer-stable" true
 
-..  code-block:: shell
+            and install the development version with:
 
-    composer require \
-        'fgtclb/academic-persons':'2.*.*@dev'
+            ..  code-block:: bash
+
+                composer require 'fgtclb/academic-persons':'2.*.*@dev'
+
+    ..  group-tab:: Extension Manager
+
+        #.  Switch to the module :guilabel:`Admin Tools > Extensions`.
+        #.  Switch to :guilabel:`Get Extensions`.
+        #.  Search for the extension key :guilabel:`academic_persons`.
+        #.  Import the extension from the repository.
+
+    ..  group-tab:: Upload ZIP (TER)
+
+        #.  Get the current version from `TER`_ by downloading the ZIP version.
+            Alternatively, get the ZIP from the `GitHub Releases`_ page.
+        #.  Switch to the module :guilabel:`Admin Tools > Extensions`.
+        #.  Enable :guilabel:`Upload Extension`.
+        #.  Select or drag the extension ZIP archive and upload the file.
+
+..  _TER: https://extensions.typo3.org/extension/academic_persons
+..  _GitHub Releases: https://github.com/fgtclb/academic-persons/releases
