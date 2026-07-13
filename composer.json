@@ -49,7 +49,7 @@
             "extension-key": "academic_persons"
         },
         "branch-alias": {
-            "dev-main": "2.4.x-dev"
+            "dev-2": "2.4.x-dev"
         }
     },
     "conflict": {
