@@ -3,7 +3,7 @@
 $EM_CONF[$_EXTKEY] = [
     'title' => 'TESTS: Academic Persons Plugin Templates',
     'description' => 'Provide plugin template overrides for academic-persons for functional tests',
-    'version' => '2.4.0',
+    'version' => '3.0.0',
     'category' => 'plugin',
     'state' => 'beta',
     'author' => 'Stefan Bürk',
@@ -12,7 +12,7 @@ $EM_CONF[$_EXTKEY] = [
     'constraints' => [
         'depends' => [
             'typo3' => '12.4.22-13.4.99',
-            'academic_persons' => '2.4.0',
+            'academic_persons' => '3.0.0',
         ],
     ],
 ];
