@@ -23,7 +23,6 @@ use FGTCLB\AcademicPersons\Event\ModifySelectedProfilesEvent;
 use FGTCLB\AcademicPersons\PageTitle\ProfileTitleProvider;
 use GeorgRinger\NumberedPagination\NumberedPagination;
 use Psr\Http\Message\ResponseInterface;
-use TYPO3\CMS\Core\Cache\CacheDataCollector;
 use TYPO3\CMS\Core\Cache\CacheTag;
 use TYPO3\CMS\Core\Pagination\SimplePagination;
 use TYPO3\CMS\Core\Utility\ExtensionManagementUtility;
@@ -391,22 +390,10 @@ final class ProfileController extends ActionController
     /**
      * Add cache tags to the current page.
      *
-     * This method adds provided $tags to the current page,
-     * using the correct API based on the current TYPO3
-     * version.
-     *
-     * @see https://docs.typo3.org/c/typo3/cms-core/main/en-us/Changelog/13.3/Deprecation-102422-TypoScriptFrontendController-addCacheTags.html
-     *
      * @param string ...$tags
      */
     private function addCacheTags(string ...$tags): void
     {
-        // @todo Remove if-block when dropping `typo3/cms-*` v12 support
-        if (!class_exists(CacheDataCollector::class)) {
-            $this->getCurrentContentObjectRenderer()?->getTypoScriptFrontendController()?->addCacheTags($tags);
-            return;
-        }
-        // TYPO3 v13+
         $cacheCollector = $this->request->getAttribute('frontend.cache.collector');
         foreach ($tags as $tag) {
             $cacheCollector?->addCacheTags(new CacheTag($tag));
