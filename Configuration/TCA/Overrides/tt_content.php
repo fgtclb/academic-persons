@@ -9,22 +9,21 @@ declare(strict_types=1);
  * LICENSE file that was distributed with this source code.
  */
 
+use FGTCLB\AcademicBase\TcaManipulator;
 use TYPO3\CMS\Core\Utility\ExtensionManagementUtility;
-use TYPO3\CMS\Extbase\Utility\ExtensionUtility;
 
 (static function (): void {
 
     //==================================================================================================================
     // Plugin: academicpersons_list
     //==================================================================================================================
-    ExtensionManagementUtility::addPlugin(
+    (new TcaManipulator())->addContentElementPlugin(
         [
             'label' => 'LLL:EXT:academic_persons/Resources/Private/Language/locallang_be.xlf:plugin.list.label',
             'value' => 'academicpersons_list',
             'icon' => 'persons_icon',
             'group' => 'academic',
         ],
-        ExtensionUtility::PLUGIN_TYPE_CONTENT_ELEMENT,
         'academic_persons'
     );
     ExtensionManagementUtility::addToAllTCAtypes(
@@ -46,14 +45,13 @@ use TYPO3\CMS\Extbase\Utility\ExtensionUtility;
     //==================================================================================================================
     // Plugin: academicpersons_listanddetail
     //==================================================================================================================
-    ExtensionManagementUtility::addPlugin(
+    (new TcaManipulator())->addContentElementPlugin(
         [
             'label' => 'LLL:EXT:academic_persons/Resources/Private/Language/locallang_be.xlf:plugin.listAndDetail.label',
             'value' => 'academicpersons_listanddetail',
             'icon' => 'persons_icon',
             'group' => 'academic',
         ],
-        ExtensionUtility::PLUGIN_TYPE_CONTENT_ELEMENT,
         'academic_persons'
     );
     ExtensionManagementUtility::addToAllTCAtypes(
@@ -75,14 +73,13 @@ use TYPO3\CMS\Extbase\Utility\ExtensionUtility;
     //==================================================================================================================
     // Plugin: academicpersons_detail
     //==================================================================================================================
-    ExtensionManagementUtility::addPlugin(
+    (new TcaManipulator())->addContentElementPlugin(
         [
             'label' => 'LLL:EXT:academic_persons/Resources/Private/Language/locallang_be.xlf:plugin.detail.label',
             'value' => 'academicpersons_detail',
             'icon' => 'persons_icon',
             'group' => 'academic',
         ],
-        ExtensionUtility::PLUGIN_TYPE_CONTENT_ELEMENT,
         'academic_persons'
     );
     ExtensionManagementUtility::addToAllTCAtypes(
@@ -103,14 +100,13 @@ use TYPO3\CMS\Extbase\Utility\ExtensionUtility;
     //==================================================================================================================
     // Plugin: academicpersons_card
     //==================================================================================================================
-    ExtensionManagementUtility::addPlugin(
+    (new TcaManipulator())->addContentElementPlugin(
         [
             'label' => 'LLL:EXT:academic_persons/Resources/Private/Language/locallang_be.xlf:newContentElement.wizardItems.academic.card.title',
             'value' => 'academicpersons_card',
             'icon' => '',
             'group' => 'academic',
         ],
-        ExtensionUtility::PLUGIN_TYPE_CONTENT_ELEMENT,
         'academic_persons'
     );
     ExtensionManagementUtility::addToAllTCAtypes(
@@ -131,14 +127,13 @@ use TYPO3\CMS\Extbase\Utility\ExtensionUtility;
     //==================================================================================================================
     // Plugin: academicpersons_selectedprofiles
     //==================================================================================================================
-    ExtensionManagementUtility::addPlugin(
+    (new TcaManipulator())->addContentElementPlugin(
         [
             'label' => 'LLL:EXT:academic_persons/Resources/Private/Language/locallang_be.xlf:plugin.selectedprofiles.label',
             'value' => 'academicpersons_selectedprofiles',
             'icon' => '',
             'group' => 'academic',
         ],
-        ExtensionUtility::PLUGIN_TYPE_CONTENT_ELEMENT,
         'academic_persons'
     );
     ExtensionManagementUtility::addToAllTCAtypes(
@@ -159,14 +154,13 @@ use TYPO3\CMS\Extbase\Utility\ExtensionUtility;
     //==================================================================================================================
     // Plugin: academicpersons_selectedcontracts
     //==================================================================================================================
-    ExtensionManagementUtility::addPlugin(
+    (new TcaManipulator())->addContentElementPlugin(
         [
             'label' => 'LLL:EXT:academic_persons/Resources/Private/Language/locallang_be.xlf:plugin.selectedcontracts.label',
             'value' => 'academicpersons_selectedcontracts',
             'icon' => '',
             'group' => 'academic',
         ],
-        ExtensionUtility::PLUGIN_TYPE_CONTENT_ELEMENT,
         'academic_persons'
     );
     ExtensionManagementUtility::addToAllTCAtypes(
