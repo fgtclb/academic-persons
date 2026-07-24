@@ -9,13 +9,10 @@ declare(strict_types=1);
  * LICENSE file that was distributed with this source code.
  */
 
-use TYPO3\CMS\Core\Information\Typo3Version;
 use TYPO3\CMS\Core\Utility\ExtensionManagementUtility;
 use TYPO3\CMS\Extbase\Utility\ExtensionUtility;
 
 (static function (): void {
-
-    $typo3MajorVersion = (new Typo3Version())->getMajorVersion();
 
     //==================================================================================================================
     // Plugin: academicpersons_list
@@ -42,7 +39,7 @@ use TYPO3\CMS\Extbase\Utility\ExtensionUtility;
     );
     ExtensionManagementUtility::addPiFlexFormValue(
         '*',
-        sprintf('FILE:EXT:academic_persons/Configuration/FlexForms/Core%s/List.xml', $typo3MajorVersion),
+        'FILE:EXT:academic_persons/Configuration/FlexForms/List.xml',
         'academicpersons_list'
     );
 
@@ -71,7 +68,7 @@ use TYPO3\CMS\Extbase\Utility\ExtensionUtility;
     );
     ExtensionManagementUtility::addPiFlexFormValue(
         '*',
-        sprintf('FILE:EXT:academic_persons/Configuration/FlexForms/Core%s/List.xml', $typo3MajorVersion),
+        'FILE:EXT:academic_persons/Configuration/FlexForms/List.xml',
         'academicpersons_listanddetail'
     );
 
@@ -99,7 +96,7 @@ use TYPO3\CMS\Extbase\Utility\ExtensionUtility;
     );
     ExtensionManagementUtility::addPiFlexFormValue(
         '*',
-        sprintf('FILE:EXT:academic_persons/Configuration/FlexForms/Core%s/Detail.xml', $typo3MajorVersion),
+        'FILE:EXT:academic_persons/Configuration/FlexForms/Detail.xml',
         'academicpersons_detail'
     );
 
@@ -127,7 +124,7 @@ use TYPO3\CMS\Extbase\Utility\ExtensionUtility;
     );
     ExtensionManagementUtility::addPiFlexFormValue(
         '*',
-        sprintf('FILE:EXT:academic_persons/Configuration/FlexForms/Core%s/List.xml', $typo3MajorVersion),
+        'FILE:EXT:academic_persons/Configuration/FlexForms/List.xml',
         'academicpersons_card'
     );
 
@@ -155,7 +152,7 @@ use TYPO3\CMS\Extbase\Utility\ExtensionUtility;
     );
     ExtensionManagementUtility::addPiFlexFormValue(
         '*',
-        sprintf('FILE:EXT:academic_persons/Configuration/FlexForms/Core%s/SelectedProfiles.xml', $typo3MajorVersion),
+        'FILE:EXT:academic_persons/Configuration/FlexForms/SelectedProfiles.xml',
         'academicpersons_selectedprofiles'
     );
 
@@ -183,7 +180,7 @@ use TYPO3\CMS\Extbase\Utility\ExtensionUtility;
     );
     ExtensionManagementUtility::addPiFlexFormValue(
         '*',
-        sprintf('FILE:EXT:academic_persons/Configuration/FlexForms/Core%s/SelectedContracts.xml', $typo3MajorVersion),
+        'FILE:EXT:academic_persons/Configuration/FlexForms/SelectedContracts.xml',
         'academicpersons_selectedcontracts'
     );
 
