@@ -511,14 +511,28 @@ final class AcademicPersonsListAndDetailPluginTest extends AbstractAcademicPerso
     }
 
     /**
-     * @todo Investgate change TYPO3 core/extbase behaviour since v12 in core and either fix implementation or adjust
-     *       test for v12 when enabling it again.
+     * The selected profiles are fetched via Extbase persistence, which did not honour the site language
+     * "fallbackType: strict" for untranslated (child) records before TYPO3 v14.3.6: untranslated selected
+     * profiles were returned in their default language instead of being removed. This is a long-standing
+     * Extbase regression, fixed in core with change 66694 (14.3 backport 94935, forge #88886), released
+     * with TYPO3 v14.3.6 and the main line only (no TYPO3 v13.4 backport). The assertions below describe
+     * the corrected v14.3.6+ behaviour, so the test only runs there.
+     *
+     * @todo Verify these assertions once TYPO3 v14 support is added to this extension and the test runs.
+     * @see https://review.typo3.org/c/Packages/TYPO3.CMS/+/66694
+     * @see https://review.typo3.org/c/Packages/TYPO3.CMS/+/94935
+     * @see https://forge.typo3.org/issues/88886
      */
     #[Test]
     public function fullyLocalizedListDisplaysLocalizedSelectedProfilesForRequestedLanguageInSelectedOrderWithFallbackTypeStrictWhenNotAllProfilesAreLocalized(): void
     {
-        if ((new Typo3Version())->getMajorVersion() >= 12) {
-            $this->markTestSkipped('Different behaviour since TYPO3 v12 - needs investigation in core first if this was intended.');
+        if (version_compare((new Typo3Version())->getVersion(), '14.3.6', '<')) {
+            $this->markTestSkipped(
+                'Extbase honours "fallbackType: strict" for untranslated selected profiles only since '
+                . 'TYPO3 v14.3.6 (core fix https://review.typo3.org/c/Packages/TYPO3.CMS/+/66694 and its 14.3 '
+                . 'backport https://review.typo3.org/c/Packages/TYPO3.CMS/+/94935, forge #88886; not '
+                . 'backported to v13.4).'
+            );
         }
         $this->importCSVDataSet(__DIR__ . '/Fixtures/AcademicPersonsListAndDetailPlugin/fullyLocalized_selectedProfiles_notAllProfilesLocalized.csv');
         $this->setUpFrontendRootPageForTestCase();
