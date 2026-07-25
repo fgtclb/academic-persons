@@ -30,9 +30,6 @@ $tcaConfiguration = [
         'enablecolumns' => [
             'disabled' => 'hidden',
         ],
-        'searchFields' => implode(',', [
-            'phone_number',
-        ]),
         'typeicon_classes' => [
             'default' => 'tx_academicpersons_domain_model_phone_number',
         ],
@@ -161,4 +158,13 @@ ArrayUtility::mergeRecursiveWithOverrule(
     $tcaConfiguration,
     GeneralUtility::makeInstance(AcademicPersonsSettings::class)->getValidationTcaTableConfig('phoneNumber'),
 );
+
+// The 'searchFields' TCA ctrl option was removed in TYPO3 v14 (Breaking #106972);
+// v14 makes suitable field types searchable by default. Keep the explicit
+// inclusion list on v13, which still evaluates 'searchFields'.
+// @todo Remove once TYPO3 v13 support is dropped.
+if ((new \TYPO3\CMS\Core\Information\Typo3Version())->getMajorVersion() < 14) {
+    $tcaConfiguration['ctrl']['searchFields'] = 'phone_number';
+}
+
 return $tcaConfiguration;

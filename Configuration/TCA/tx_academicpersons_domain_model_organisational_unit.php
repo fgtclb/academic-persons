@@ -8,7 +8,7 @@ declare(strict_types=1);
  * For the full copyright and license information, please read the
  * LICENSE file that was distributed with this source code.
  */
-return [
+$tcaConfiguration = [
     'ctrl' => [
         'label' => 'unit_name',
         'default_sortby' => 'unit_name',
@@ -24,7 +24,6 @@ return [
         'enablecolumns' => [
             'disabled' => 'hidden',
         ],
-        'searchFields' => 'function_name',
         'typeicon_classes' => [
             'default' => 'tx_academicpersons_domain_model_organisational_unit',
         ],
@@ -207,3 +206,13 @@ return [
         ],
     ],
 ];
+
+// The 'searchFields' TCA ctrl option was removed in TYPO3 v14 (Breaking #106972);
+// v14 makes suitable field types searchable by default. Keep the explicit
+// inclusion list on v13, which still evaluates 'searchFields'.
+// @todo Remove once TYPO3 v13 support is dropped.
+if ((new \TYPO3\CMS\Core\Information\Typo3Version())->getMajorVersion() < 14) {
+    $tcaConfiguration['ctrl']['searchFields'] = 'function_name';
+}
+
+return $tcaConfiguration;
