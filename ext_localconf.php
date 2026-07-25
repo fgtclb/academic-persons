@@ -14,6 +14,15 @@ use TYPO3\CMS\Extbase\Utility\ExtensionUtility;
 
 defined('TYPO3') or die;
 
+// Define ACADEMIC_PERSONS_CASCADE_REMOVE for Classic (non-Composer) mode, where
+// composer.json `autoload.files` is not processed. In Composer mode the constant
+// is already defined via autoload.files, so this is skipped. ext_localconf.php is
+// cached/concatenated by TYPO3 (so __DIR__ is unreliable) — use extPath().
+// @todo Remove together with EXT_CONSTANTS.php once TYPO3 v13 support is dropped.
+if (!defined('ACADEMIC_PERSONS_CASCADE_REMOVE')) {
+    require_once \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::extPath('academic_persons') . 'EXT_CONSTANTS.php';
+}
+
 (static function (): void {
 
     $GLOBALS['TYPO3_CONF_VARS']['RTE']['Presets']['profile'] = 'EXT:academic_persons/Configuration/CKEditor/Profile.yaml';

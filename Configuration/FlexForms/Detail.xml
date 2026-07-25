@@ -12,16 +12,16 @@
                     <valuePicker>
                         <items>
                             <numIndex index="0" type="array">
-                                <numIndex index="0">LLL:EXT:academic_persons/Resources/Private/Language/locallang_be.xlf:flexform.el.pageTitleFormat.items.none</numIndex>
-                                <numIndex index="1"></numIndex>
+                                <label>LLL:EXT:academic_persons/Resources/Private/Language/locallang_be.xlf:flexform.el.pageTitleFormat.items.none</label>
+                                <value></value>
                             </numIndex>
                             <numIndex index="1" type="array">
-                                <numIndex index="0">LLL:EXT:academic_persons/Resources/Private/Language/locallang_be.xlf:flexform.el.pageTitleFormat.items.tiltefirstmiddlelastname</numIndex>
-                                <numIndex index="1">%%TITLE%% %%FIRST_NAME%% %%MIDDLE_NAME%% %%LAST_NAME%%</numIndex>
+                                <label>LLL:EXT:academic_persons/Resources/Private/Language/locallang_be.xlf:flexform.el.pageTitleFormat.items.tiltefirstmiddlelastname</label>
+                                <value>%%TITLE%% %%FIRST_NAME%% %%MIDDLE_NAME%% %%LAST_NAME%%</value>
                             </numIndex>
                             <numIndex index="2" type="array">
-                                <numIndex index="0">LLL:EXT:academic_persons/Resources/Private/Language/locallang_be.xlf:flexform.el.pageTitleFormat.items.lastcommafirstmiddlename</numIndex>
-                                <numIndex index="1">%%LAST_NAME%%, %%FIRST_NAME%% %%MIDDLE_NAME%%</numIndex>
+                                <label>LLL:EXT:academic_persons/Resources/Private/Language/locallang_be.xlf:flexform.el.pageTitleFormat.items.lastcommafirstmiddlename</label>
+                                <value>%%LAST_NAME%%, %%FIRST_NAME%% %%MIDDLE_NAME%%</value>
                             </numIndex>
                         </items>
                     </valuePicker>

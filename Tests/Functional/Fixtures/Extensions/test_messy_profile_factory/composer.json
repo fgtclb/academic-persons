@@ -16,7 +16,11 @@
     },
     "extra": {
         "typo3/cms": {
-            "extension-key": "test_messy_profile_factory"
+            "extension-key": "test_messy_profile_factory",
+            "version": "3.0.0-dev",
+            "Package": {
+                "providesPackages": []
+            }
         }
     },
     "autoload": {

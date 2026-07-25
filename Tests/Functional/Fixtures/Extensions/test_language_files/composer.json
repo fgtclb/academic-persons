@@ -16,7 +16,11 @@
     },
     "extra": {
         "typo3/cms": {
-            "extension-key": "test_language_files"
+            "extension-key": "test_language_files",
+            "version": "3.0.0-dev",
+            "Package": {
+                "providesPackages": []
+            }
         }
     }
 }

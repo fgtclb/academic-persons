@@ -33,9 +33,9 @@ class OrganisationalUnit extends AbstractEntity
 
     /**
      * @var ObjectStorage<Contract>
-     * @Lazy
-     * @Cascade("remove")
      */
+    #[Lazy]
+    #[Cascade(ACADEMIC_PERSONS_CASCADE_REMOVE)]
     protected ObjectStorage $contracts;
 
     public function __construct()

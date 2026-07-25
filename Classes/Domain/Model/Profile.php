@@ -29,15 +29,13 @@ class Profile extends AbstractEntity
     protected string $middleName = '';
     protected string $lastName = '';
     protected string $lastNameAlpha = '';
-    /**
-     * @Cascade("remove")
-     */
+    #[Cascade(ACADEMIC_PERSONS_CASCADE_REMOVE)]
     protected ?FileReference $image = null;
     /**
      * @var ObjectStorage<Contract>
-     * @Lazy
-     * @Cascade("remove")
      */
+    #[Lazy]
+    #[Cascade(ACADEMIC_PERSONS_CASCADE_REMOVE)]
     protected ObjectStorage $contracts;
     protected string $websiteTitle = '';
     protected string $website = '';
@@ -45,50 +43,50 @@ class Profile extends AbstractEntity
     protected string $coreCompetences = '';
     /**
      * @var ObjectStorage<ProfileInformation>
-     * @Lazy
-     * @Cascade("remove")
      */
+    #[Lazy]
+    #[Cascade(ACADEMIC_PERSONS_CASCADE_REMOVE)]
     protected ObjectStorage $memberships;
     /**
      * @var ObjectStorage<ProfileInformation>
-     * @Lazy
-     * @Cascade("remove")
      */
+    #[Lazy]
+    #[Cascade(ACADEMIC_PERSONS_CASCADE_REMOVE)]
     protected ObjectStorage $pressMedia;
     protected string $supervisedThesis = '';
     protected string $supervisedDoctoralThesis = '';
     /**
      * @var ObjectStorage<ProfileInformation>
-     * @Lazy
-     * @Cascade("remove")
      */
+    #[Lazy]
+    #[Cascade(ACADEMIC_PERSONS_CASCADE_REMOVE)]
     protected ObjectStorage $vita;
     /**
      * @var ObjectStorage<ProfileInformation>
-     * @Lazy
-     * @Cascade("remove")
      */
+    #[Lazy]
+    #[Cascade(ACADEMIC_PERSONS_CASCADE_REMOVE)]
     protected ObjectStorage $publications;
     /**
      * @var ObjectStorage<ProfileInformation>
-     * @Lazy
-     * @Cascade("remove")
      */
+    #[Lazy]
+    #[Cascade(ACADEMIC_PERSONS_CASCADE_REMOVE)]
     protected ObjectStorage $scientificResearch;
     protected string $publicationsLink = '';
     protected string $publicationsLinkTitle = '';
     protected string $miscellaneous = '';
     /**
      * @var ObjectStorage<ProfileInformation>
-     * @Lazy
-     * @Cascade("remove")
      */
+    #[Lazy]
+    #[Cascade(ACADEMIC_PERSONS_CASCADE_REMOVE)]
     protected ObjectStorage $cooperation;
     /**
      * @var ObjectStorage<ProfileInformation>
-     * @Lazy
-     * @Cascade("remove")
      */
+    #[Lazy]
+    #[Cascade(ACADEMIC_PERSONS_CASCADE_REMOVE)]
     protected ObjectStorage $lectures;
     /**
      * @var ObjectStorage<FrontendUser>

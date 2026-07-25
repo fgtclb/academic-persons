@@ -35,23 +35,23 @@ class Contract extends AbstractEntity
 
     /**
      * @var ObjectStorage<Address>
-     * @Lazy
-     * @Cascade("remove")
      */
+    #[Lazy]
+    #[Cascade(ACADEMIC_PERSONS_CASCADE_REMOVE)]
     protected ObjectStorage $physicalAddresses;
 
     /**
      * @var ObjectStorage<Email>
-     * @Lazy
-     * @Cascade("remove")
      */
+    #[Lazy]
+    #[Cascade(ACADEMIC_PERSONS_CASCADE_REMOVE)]
     protected ObjectStorage $emailAddresses;
 
     /**
      * @var ObjectStorage<PhoneNumber>
-     * @Lazy
-     * @Cascade("remove")
      */
+    #[Lazy]
+    #[Cascade(ACADEMIC_PERSONS_CASCADE_REMOVE)]
     protected ObjectStorage $phoneNumbers;
 
     public function __construct()
