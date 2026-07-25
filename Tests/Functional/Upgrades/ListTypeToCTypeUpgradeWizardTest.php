@@ -6,6 +6,7 @@ namespace FGTCLB\AcademicPersons\Tests\Functional\Upgrades;
 
 use FGTCLB\AcademicPersons\Tests\Functional\AbstractAcademicPersonsTestCase;
 use FGTCLB\AcademicPersons\Upgrades\ListTypeToCTypeUpgradeWizard;
+use FGTCLB\TestingHelper\FunctionalTestCase\EnsureTtContentListTypeColumnTrait;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\Attributes\Test;
 
@@ -21,6 +22,16 @@ use PHPUnit\Framework\Attributes\Test;
  */
 final class ListTypeToCTypeUpgradeWizardTest extends AbstractAcademicPersonsTestCase
 {
+    use EnsureTtContentListTypeColumnTrait;
+
+    protected function setUp(): void
+    {
+        parent::setUp();
+        // TYPO3 v14 removed tt_content.list_type; re-create it so the legacy
+        // list_type fixtures import and the migration is exercised on v14 too.
+        $this->ensureTtContentListTypeColumnExists();
+    }
+
     #[Test]
     public function updateNecessaryReturnsFalseWhenListTypeRecordsAreAvailable(): void
     {
