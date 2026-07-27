@@ -36,8 +36,10 @@ use TYPO3\CMS\Core\Utility\ExtensionManagementUtility;
         'academicpersons_list',
         'after:header'
     );
-    $GLOBALS['TCA']['tt_content']['types']['academicpersons_list']['columnsOverrides']['pi_flexform']['config']['ds']
-        = 'FILE:EXT:academic_persons/Configuration/FlexForms/List.xml';
+    (new TcaManipulator())->addContentElementPluginFlexForm(
+        'academicpersons_list',
+        'FILE:EXT:academic_persons/Configuration/FlexForms/List.xml',
+    );
 
     //==================================================================================================================
     // Plugin: academicpersons_listanddetail
@@ -61,8 +63,10 @@ use TYPO3\CMS\Core\Utility\ExtensionManagementUtility;
         'academicpersons_listanddetail',
         'after:header'
     );
-    $GLOBALS['TCA']['tt_content']['types']['academicpersons_listanddetail']['columnsOverrides']['pi_flexform']['config']['ds']
-        = 'FILE:EXT:academic_persons/Configuration/FlexForms/List.xml';
+    (new TcaManipulator())->addContentElementPluginFlexForm(
+        'academicpersons_listanddetail',
+        'FILE:EXT:academic_persons/Configuration/FlexForms/List.xml',
+    );
 
     //==================================================================================================================
     // Plugin: academicpersons_detail
@@ -85,8 +89,10 @@ use TYPO3\CMS\Core\Utility\ExtensionManagementUtility;
         'academicpersons_detail',
         'after:header'
     );
-    $GLOBALS['TCA']['tt_content']['types']['academicpersons_detail']['columnsOverrides']['pi_flexform']['config']['ds']
-        = 'FILE:EXT:academic_persons/Configuration/FlexForms/Detail.xml';
+    (new TcaManipulator())->addContentElementPluginFlexForm(
+        'academicpersons_detail',
+        'FILE:EXT:academic_persons/Configuration/FlexForms/Detail.xml',
+    );
 
     //==================================================================================================================
     // Plugin: academicpersons_card
@@ -109,8 +115,10 @@ use TYPO3\CMS\Core\Utility\ExtensionManagementUtility;
         'academicpersons_card',
         'after:header'
     );
-    $GLOBALS['TCA']['tt_content']['types']['academicpersons_card']['columnsOverrides']['pi_flexform']['config']['ds']
-        = 'FILE:EXT:academic_persons/Configuration/FlexForms/List.xml';
+    (new TcaManipulator())->addContentElementPluginFlexForm(
+        'academicpersons_card',
+        'FILE:EXT:academic_persons/Configuration/FlexForms/List.xml',
+    );
 
     //==================================================================================================================
     // Plugin: academicpersons_selectedprofiles
@@ -133,8 +141,10 @@ use TYPO3\CMS\Core\Utility\ExtensionManagementUtility;
         'academicpersons_selectedprofiles',
         'after:header'
     );
-    $GLOBALS['TCA']['tt_content']['types']['academicpersons_selectedprofiles']['columnsOverrides']['pi_flexform']['config']['ds']
-        = 'FILE:EXT:academic_persons/Configuration/FlexForms/SelectedProfiles.xml';
+    (new TcaManipulator())->addContentElementPluginFlexForm(
+        'academicpersons_selectedprofiles',
+        'FILE:EXT:academic_persons/Configuration/FlexForms/SelectedProfiles.xml',
+    );
 
     //==================================================================================================================
     // Plugin: academicpersons_selectedcontracts
@@ -157,7 +167,9 @@ use TYPO3\CMS\Core\Utility\ExtensionManagementUtility;
         'academicpersons_selectedcontracts',
         'after:header'
     );
-    $GLOBALS['TCA']['tt_content']['types']['academicpersons_selectedcontracts']['columnsOverrides']['pi_flexform']['config']['ds']
-        = 'FILE:EXT:academic_persons/Configuration/FlexForms/SelectedContracts.xml';
+    (new TcaManipulator())->addContentElementPluginFlexForm(
+        'academicpersons_selectedcontracts',
+        'FILE:EXT:academic_persons/Configuration/FlexForms/SelectedContracts.xml',
+    );
 
 })();
