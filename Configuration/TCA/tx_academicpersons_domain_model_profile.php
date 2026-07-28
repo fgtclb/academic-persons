@@ -91,15 +91,15 @@ $tcaConfiguration = [
                 'maxitems' => 20,
                 'items' => [
                     [
-                        'label' => 'LLL:EXT:core/Resources/Private/Language/locallang_general.xlf:LGL.hide_at_login',
+                        'label' => 'LLL:EXT:academic_base/Resources/Private/Language/locallang_tca.xlf:fe_group.hide_at_login',
                         'value' => -1,
                     ],
                     [
-                        'label' => 'LLL:EXT:core/Resources/Private/Language/locallang_general.xlf:LGL.any_login',
+                        'label' => 'LLL:EXT:academic_base/Resources/Private/Language/locallang_tca.xlf:fe_group.any_login',
                         'value' => -2,
                     ],
                     [
-                        'label' => 'LLL:EXT:core/Resources/Private/Language/locallang_general.xlf:LGL.usergroups',
+                        'label' => 'LLL:EXT:academic_base/Resources/Private/Language/locallang_tca.xlf:fe_group.usergroups',
                         'value' => '--div--',
                     ],
                 ],
@@ -115,7 +115,7 @@ $tcaConfiguration = [
             ],
         ],
         'l10n_parent' => [
-            'label' => 'LLL:EXT:core/Resources/Private/Language/locallang_general.xlf:LGL.l18n_parent',
+            'label' => 'LLL:EXT:academic_base/Resources/Private/Language/locallang_tca.xlf:l18n_parent',
             'displayCond' => 'FIELD:sys_language_uid:>:0',
             'config' => [
                 'type' => 'select',
@@ -448,7 +448,7 @@ $tcaConfiguration = [
         ],
         'hidden' => [
             'showitem' => implode(',', [
-                'hidden;LLL:EXT:frontend/Resources/Private/Language/locallang_ttc.xlf:field.default.hidden',
+                'hidden;LLL:EXT:academic_base/Resources/Private/Language/locallang_tca.xlf:field.hidden',
                 'skip_sync;LLL:EXT:academic_persons/Resources/Private/Language/locallang_tca.xlf:tx_academicpersons_domain_model_profile.columns.skip_sync.label',
             ]),
         ],
@@ -459,7 +459,7 @@ $tcaConfiguration = [
             ]),
         ],
         'access' => [
-            'label' => 'LLL:EXT:frontend/Resources/Private/Language/locallang_ttc.xlf:palette.access',
+            'label' => 'LLL:EXT:academic_base/Resources/Private/Language/locallang_tca.xlf:palette.access',
             'showitem' => implode(',', [
                 'starttime;LLL:EXT:frontend/Resources/Private/Language/locallang_ttc.xlf:starttime_formlabel',
                 'endtime;LLL:EXT:frontend/Resources/Private/Language/locallang_ttc.xlf:endtime_formlabel',
