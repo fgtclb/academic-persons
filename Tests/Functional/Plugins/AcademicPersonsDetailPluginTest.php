@@ -5,32 +5,14 @@ declare(strict_types=1);
 namespace FGTCLB\AcademicPersons\Tests\Functional\Plugins;
 
 use FGTCLB\AcademicPersons\Tests\Functional\AbstractAcademicPersonsTestCase;
+use FGTCLB\TestingHelper\FunctionalTestCase\FrontendPluginRenderingTrait;
 use PHPUnit\Framework\Attributes\Test;
 use SBUERK\TYPO3\Testing\SiteHandling\SiteBasedTestTrait;
-use TYPO3\CMS\Core\Utility\GeneralUtility;
-use TYPO3\TestingFramework\Core\Functional\Framework\Frontend\InternalRequest;
-use TYPO3\TestingFramework\Core\Functional\Framework\Frontend\InternalRequestContext;
 
 final class AcademicPersonsDetailPluginTest extends AbstractAcademicPersonsTestCase
 {
+    use FrontendPluginRenderingTrait;
     use SiteBasedTestTrait;
-
-    protected array $configurationToUseInTestInstance = [
-        'SYS' => [
-            'encryptionKey' => '4408d27a916d51e624b69af3554f516dbab61037a9f7b9fd6f81b4d3bedeccb6',
-            'features' => [
-                'subrequestPageErrors' => true,
-            ],
-        ],
-        'FE' => [
-            'cacheHash' => [
-                'requireCacheHashPresenceParameters' => ['value', 'testing[value]', 'tx_testing_link[value]'],
-                'excludedParameters' => ['L', 'tx_testing_link[excludedValue]'],
-                'enforceValidation' => true,
-            ],
-            'debug' => false,
-        ],
-    ];
 
     protected const LANGUAGE_PRESETS = [
         'EN' => ['id' => 0, 'title' => 'English', 'locale' => 'en_US.UTF8', 'iso' => 'en', 'hrefLang' => 'en-US', 'direction' => ''],
@@ -40,25 +22,23 @@ final class AcademicPersonsDetailPluginTest extends AbstractAcademicPersonsTestC
 
     protected function setUp(): void
     {
-        $this->coreExtensionsToLoad = array_unique([
-            ...array_values($this->coreExtensionsToLoad),
-            ...array_values([
-                'typo3/cms-fluid-styled-content',
-            ]),
+        $this->configurationToUseInTestInstance = $this->frontendPluginTestConfiguration([
+            'FE' => [
+                'cacheHash' => [
+                    'requireCacheHashPresenceParameters' => ['value', 'testing[value]', 'tx_testing_link[value]'],
+                    'excludedParameters' => ['L', 'tx_testing_link[excludedValue]'],
+                    'enforceValidation' => true,
+                ],
+            ],
         ]);
-        $this->testExtensionsToLoad = array_unique([
-            ...array_values($this->testExtensionsToLoad),
-            ...array_values([
-                'georgringer/numbered-pagination',
-                'tests/plugin-templates',
-            ]),
-        ]);
+        $this->addCoreExtensionsToLoad('typo3/cms-fluid-styled-content');
+        $this->addTestExtensionsToLoad('georgringer/numbered-pagination', 'tests/plugin-templates');
         parent::setUp();
     }
 
     protected function tearDown(): void
     {
-        GeneralUtility::rmdir($this->instancePath . '/typo3conf/sites', true);
+        $this->removeWrittenSiteConfiguration();
         parent::tearDown();
     }
 
@@ -88,19 +68,11 @@ final class AcademicPersonsDetailPluginTest extends AbstractAcademicPersonsTestC
     {
         $this->importCSVDataSet(__DIR__ . '/Fixtures/AcademicPersonsDetailPlugin/defaultLanguageOnly.csv');
         $this->setUpFrontendRootPageForTestCase();
-        $this->writeSiteConfiguration(
-            identifier: 'acme',
-            site: $this->buildSiteConfiguration(
-                rootPageId: 1,
-                base: 'https://www.acme.com/',
-            ),
-            languages: [
-                $this->buildDefaultLanguageConfiguration('EN', '/'),
-            ],
-        );
+        $this->writeFrontendPluginTestSite([
+            $this->buildDefaultLanguageConfiguration('EN', '/'),
+        ]);
 
-        $requestContext = new InternalRequestContext();
-        $request = new InternalRequest(
+        $content = $this->renderFrontendPage(
             'https://www.acme.com/home?' . http_build_query([
                 'tx_academicpersons_detail' => [
                     'controller' => 'Profile',
@@ -110,10 +82,6 @@ final class AcademicPersonsDetailPluginTest extends AbstractAcademicPersonsTestC
                 'cHash' => '13c8ec3ab2a317651a40bd164df8a366',
             ])
         );
-        $response = $this->executeFrontendSubRequest($request, $requestContext);
-        $this->assertSame(200, $response->getStatusCode());
-
-        $content = (string)$response->getBody();
         $this->assertStringContainsString('#1: [EN] Max Müllermann', $content);
     }
 
@@ -137,8 +105,7 @@ final class AcademicPersonsDetailPluginTest extends AbstractAcademicPersonsTestC
             ],
         );
 
-        $requestContext = new InternalRequestContext();
-        $request = new InternalRequest(
+        $content = $this->renderFrontendPage(
             'https://www.acme.com/de/home?' . http_build_query([
                 'tx_academicpersons_detail' => [
                     'controller' => 'Profile',
@@ -148,10 +115,6 @@ final class AcademicPersonsDetailPluginTest extends AbstractAcademicPersonsTestC
                 'cHash' => '008c1ca1df782f9191ecb45d4a4123e3',
             ])
         );
-        $response = $this->executeFrontendSubRequest($request, $requestContext);
-        $this->assertSame(200, $response->getStatusCode());
-
-        $content = (string)$response->getBody();
         $this->assertStringContainsString('#1: [DE] Max Müllermann', $content);
     }
 
@@ -160,28 +123,20 @@ final class AcademicPersonsDetailPluginTest extends AbstractAcademicPersonsTestC
     {
         $this->importCSVDataSet(__DIR__ . '/Fixtures/AcademicPersonsDetailPlugin/localizedPagesAndTtContent_notLocalizedProfile.csv');
         $this->setUpFrontendRootPageForTestCase();
-        $this->writeSiteConfiguration(
-            identifier: 'acme',
-            site: $this->buildSiteConfiguration(
-                rootPageId: 1,
-                base: 'https://www.acme.com/',
+        $this->writeFrontendPluginTestSite([
+            $this->buildDefaultLanguageConfiguration(
+                identifier: 'EN',
+                base: '/',
             ),
-            languages: [
-                $this->buildDefaultLanguageConfiguration(
-                    identifier: 'EN',
-                    base: '/',
-                ),
-                $this->buildLanguageConfiguration(
-                    identifier: 'DE',
-                    base: '/de/',
-                    fallbackIdentifiers: ['EN'],
-                    fallbackType: 'fallback',
-                ),
-            ],
-        );
+            $this->buildLanguageConfiguration(
+                identifier: 'DE',
+                base: '/de/',
+                fallbackIdentifiers: ['EN'],
+                fallbackType: 'fallback',
+            ),
+        ]);
 
-        $requestContext = new InternalRequestContext();
-        $request = new InternalRequest(
+        $content = $this->renderFrontendPage(
             'https://www.acme.com/de/home?' . http_build_query([
                 'tx_academicpersons_detail' => [
                     'controller' => 'Profile',
@@ -191,10 +146,6 @@ final class AcademicPersonsDetailPluginTest extends AbstractAcademicPersonsTestC
                 'cHash' => '008c1ca1df782f9191ecb45d4a4123e3',
             ])
         );
-        $response = $this->executeFrontendSubRequest($request, $requestContext);
-        $this->assertSame(200, $response->getStatusCode());
-
-        $content = (string)$response->getBody();
         $this->assertStringContainsString('<h2>Profiledetailpage</h2>', $content);
         $this->assertStringContainsString('#1: [EN] Max Müllermann', $content);
     }
@@ -207,28 +158,20 @@ final class AcademicPersonsDetailPluginTest extends AbstractAcademicPersonsTestC
     {
         $this->importCSVDataSet(__DIR__ . '/Fixtures/AcademicPersonsDetailPlugin/localizedPagesAndTtContent_notLocalizedProfile.csv');
         $this->setUpFrontendRootPageForTestCase();
-        $this->writeSiteConfiguration(
-            identifier: 'acme',
-            site: $this->buildSiteConfiguration(
-                rootPageId: 1,
-                base: 'https://www.acme.com/',
+        $this->writeFrontendPluginTestSite([
+            $this->buildDefaultLanguageConfiguration(
+                identifier: 'EN',
+                base: '/',
             ),
-            languages: [
-                $this->buildDefaultLanguageConfiguration(
-                    identifier: 'EN',
-                    base: '/',
-                ),
-                $this->buildLanguageConfiguration(
-                    identifier: 'DE',
-                    base: '/de/',
-                    fallbackIdentifiers: [],
-                    fallbackType: 'strict',
-                ),
-            ],
-        );
+            $this->buildLanguageConfiguration(
+                identifier: 'DE',
+                base: '/de/',
+                fallbackIdentifiers: [],
+                fallbackType: 'strict',
+            ),
+        ]);
 
-        $requestContext = new InternalRequestContext();
-        $request = new InternalRequest(
+        $content = $this->renderFrontendPage(
             'https://www.acme.com/de/home?' . http_build_query([
                 'tx_academicpersons_detail' => [
                     'controller' => 'Profile',
@@ -238,10 +181,6 @@ final class AcademicPersonsDetailPluginTest extends AbstractAcademicPersonsTestC
                 'cHash' => '008c1ca1df782f9191ecb45d4a4123e3',
             ])
         );
-        $response = $this->executeFrontendSubRequest($request, $requestContext);
-        $this->assertSame(200, $response->getStatusCode());
-
-        $content = (string)$response->getBody();
         $this->assertStringContainsString('<h2>Profiledetailpage</h2>', $content);
         $this->assertStringContainsString('#1: [EN] Max Müllermann', $content);
     }
