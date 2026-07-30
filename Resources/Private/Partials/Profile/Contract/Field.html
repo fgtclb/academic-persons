@@ -11,9 +11,12 @@
             {fieldName} == position
             || {fieldName} == room
             || {fieldName} == officeHours
-            || {fieldName} == location
         ">
             {contract.{fieldName}}
+        </f:if>
+
+        <f:if condition="{fieldName} == location">
+            {contract.location.title}
         </f:if>
 
         <f:if condition="{fieldName} == emailAddresses || {fieldName} == phoneNumbers">
