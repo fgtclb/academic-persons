@@ -25,9 +25,9 @@ use SBUERK\TYPO3\Testing\SiteHandling\SiteBasedTestTrait;
  * `lib.contentElement`, and on TYPO3 v14 that renders through the `record` view variable,
  * which is what the header assertion covers.
  *
- * Multi language is deliberately out of scope here: `cardAction()` carries a `@todo`
- * stating it is broken for multi language sites, so covering it would mean asserting
- * behaviour that is known to be wrong.
+ * Multi language is out of scope here and covered by
+ * {@see AcademicPersonsCardPluginLocalizationTest} instead, which is also where the
+ * `@todo` claiming this action is broken in multi language sites was settled.
  */
 final class AcademicPersonsCardPluginTest extends AbstractAcademicPersonsTestCase
 {

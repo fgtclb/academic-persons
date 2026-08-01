@@ -142,8 +142,17 @@ final class ProfileController extends ActionController
     }
 
     /**
-     * @todo This action is literally broken in multi language sites. Needs to be adopted and covered
-     *       with functional tests.
+     * This action used to carry a `@todo` calling it broken in multi language sites. That
+     * did not survive being reproduced: rendered across the language matrix in
+     * {@see \FGTCLB\AcademicPersons\Tests\Functional\Plugins\AcademicPersonsCardPluginLocalizationTest}
+     * it returns what the list plugin returns from the same selection.
+     *
+     * Two results in that matrix are still not desirable, and neither belongs to this
+     * action: a `fallbackType: free` site gets default language profiles, and before
+     * TYPO3 v14.3.6 a `strict` site keeps untranslated ones (forge #88886). Both come out
+     * of the shared `profileList` branch of `ProfileRepository::applyDemandForQuery()`,
+     * which turns language handling off before matching uids, and both were confirmed to
+     * hit `listAction()` in the same way.
      *
      * @return ResponseInterface
      */
