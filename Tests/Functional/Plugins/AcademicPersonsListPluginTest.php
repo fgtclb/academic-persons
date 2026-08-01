@@ -467,6 +467,50 @@ final class AcademicPersonsListPluginTest extends AbstractAcademicPersonsTestCas
         $this->assertStringNotContainsString('[EN] Max Müllermann', $content);
     }
 
+    /**
+     * The list plugin reaches the `profileList` branch of
+     * `ProfileRepository::applyDemandForQuery()`, which used to render default language
+     * profiles on a `fallbackType: free` site (ACE-341). On `main` the card plugin covers
+     * the same branch; this branch has no card rendering test, so this is the only guard
+     * against a regression in that shared query here.
+     */
+    #[Test]
+    public function fullyLocalizedListDisplaysLocalizedSelectedProfilesForRequestedLanguageWithFallbackTypeFree(): void
+    {
+        $this->importCSVDataSet(__DIR__ . '/Fixtures/AcademicPersonsListPlugin/fullyLocalized_selectedProfiles.csv');
+        $this->setUpFrontendRootPageForTestCase();
+        $this->writeSiteConfiguration(
+            identifier: 'acme',
+            site: $this->buildSiteConfiguration(
+                rootPageId: 1,
+                base: 'https://www.acme.com/',
+            ),
+            languages: [
+                $this->buildDefaultLanguageConfiguration(
+                    identifier: 'EN',
+                    base: '/',
+                ),
+                $this->buildLanguageConfiguration(
+                    identifier: 'DE',
+                    base: '/de/',
+                    fallbackIdentifiers: [],
+                    fallbackType: 'free',
+                ),
+            ],
+        );
+
+        $requestContext = new InternalRequestContext();
+        $request = new InternalRequest('https://www.acme.com/de/home');
+        $response = $this->executeFrontendSubRequest($request, $requestContext);
+        $this->assertSame(200, $response->getStatusCode());
+
+        $content = (string)$response->getBody();
+        $this->assertStringContainsString('[DE] Horst Huber', $content);
+        $this->assertStringContainsString('[DE] Max Müllermann', $content);
+        $this->assertStringNotContainsString('[EN] Horst Huber', $content);
+        $this->assertStringNotContainsString('[EN] Max Müllermann', $content);
+    }
+
     #[Test]
     public function fullyLocalizedListDisplaysLocalizedSelectedProfilesForRequestedLanguageInSelectedOrderWithFallbackTypeFallbackWhenNotAllProfilesAreLocalized(): void
     {
