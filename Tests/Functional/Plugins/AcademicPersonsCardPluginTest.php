@@ -116,6 +116,22 @@ final class AcademicPersonsCardPluginTest extends AbstractAcademicPersonsTestCas
     }
 
     #[Test]
+    public function cardPluginRendersSelectedProfilesInSelectedOrder(): void
+    {
+        $this->setUpTestCase('cardPage');
+
+        // The FlexForm selection is `2,1` - Horst before Max, the reverse of the uid
+        // order. The query behind it matches `uid IN (...)` without any ordering, so
+        // the sequence has to be restored from the selection (ACE-330).
+        $content = $this->renderHomePage();
+        $horst = strpos($content, 'Horst');
+        $max = strpos($content, 'Max');
+        $this->assertIsInt($horst);
+        $this->assertIsInt($max);
+        $this->assertLessThan($max, $horst, 'Horst is selected first and has to render first.');
+    }
+
+    #[Test]
     public function cardPluginRendersContentElementHeader(): void
     {
         $this->setUpTestCase('cardPage');
