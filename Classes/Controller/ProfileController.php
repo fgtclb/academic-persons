@@ -29,6 +29,7 @@ use TYPO3\CMS\Core\Pagination\SimplePagination;
 use TYPO3\CMS\Core\Utility\ExtensionManagementUtility;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Extbase\Annotation\IgnoreValidation;
+use TYPO3\CMS\Extbase\DomainObject\AbstractEntity;
 use TYPO3\CMS\Extbase\Mvc\Controller\ActionController;
 use TYPO3\CMS\Extbase\Pagination\QueryResultPaginator;
 use TYPO3\CMS\Frontend\ContentObject\ContentObjectRenderer;
@@ -115,16 +116,10 @@ final class ProfileController extends ActionController
 
         // If profiles were selected manually, sort them by order in selection
         if (!empty($demand->getProfileList())) {
-            $selectedProfiles = [];
-            $profileUidArray = GeneralUtility::intExplode(',', $demand->getProfileList(), true);
-            foreach ($profileUidArray as $uid) {
-                foreach ($profiles as $profile) {
-                    if ($profile->getUid() === $uid) {
-                        $selectedProfiles[] = $profile;
-                    }
-                }
-            }
-            $profiles = $selectedProfiles;
+            $profiles = $this->sortBySelectionOrder(
+                $profiles,
+                GeneralUtility::intExplode(',', $demand->getProfileList(), true),
+            );
         }
 
         $this->view->assignMultiple([
@@ -135,6 +130,36 @@ final class ProfileController extends ActionController
         $this->addCacheTags('profile_list_view');
 
         return $this->htmlResponse();
+    }
+
+    /**
+     * Bring records into the order the editor put them in.
+     *
+     * A selection is an ordered list in the FlexForm, but the query that fetches it
+     * matches `uid IN (...)` and returns whatever order the DBMS yields - the
+     * `profileList` branch of `ProfileRepository::applyDemandForQuery()` returns before
+     * any `setOrderings()` at all. So the order has to be restored here.
+     *
+     * Records not in the selection are dropped and a uid listed twice yields the record
+     * twice, which is what the three hand written copies of this loop did before it was
+     * extracted.
+     *
+     * @template T of AbstractEntity
+     * @param iterable<T> $records
+     * @param int[] $uids
+     * @return list<T>
+     */
+    private function sortBySelectionOrder(iterable $records, array $uids): array
+    {
+        $sorted = [];
+        foreach ($uids as $uid) {
+            foreach ($records as $record) {
+                if ($record->getUid() === $uid) {
+                    $sorted[] = $record;
+                }
+            }
+        }
+        return $sorted;
     }
 
     public function initializeCardAction(): void
@@ -171,10 +196,11 @@ final class ProfileController extends ActionController
                 $profileDemand->setFallbackForNonTranslated($fallbackForNonTranslated);
             }
             $profileDemand->setShowHiddenRecords((bool)($this->settings['showHiddenRecords'] ?? false));
-            $profiles = $this->profileRepository->findByDemand($profileDemand);
+            $profiles = $this->sortBySelectionOrder(
+                $this->profileRepository->findByDemand($profileDemand),
+                GeneralUtility::intExplode(',', $this->settings['demand']['profileList'], true),
+            );
         }
-
-        // @todo Add enforced sorting based on selected uid's order, similar to listAction/selectedProfilesAction ?
 
         $this->view->assignMultiple([
             'data' => $this->getCurrentContentObjectRenderer()?->data,
@@ -278,19 +304,9 @@ final class ProfileController extends ActionController
         ));
         $profiles = $event->getProfiles();
 
-        // Sort profiles by order in selection
-        $sortedProfiles = [];
-        foreach ($profileUids as $uid) {
-            foreach ($profiles as $profile) {
-                if ($profile->getUid() === $uid) {
-                    $sortedProfiles[] = $profile;
-                }
-            }
-        }
-
         $this->view->assignMultiple([
             'data' => $this->getCurrentContentObjectRenderer()?->data,
-            'profiles' => $sortedProfiles,
+            'profiles' => $this->sortBySelectionOrder($profiles, $profileUids),
         ]);
 
         return $this->htmlResponse();
@@ -319,19 +335,9 @@ final class ProfileController extends ActionController
         ));
         $contracts = $event->getContracts();
 
-        // Sort profiles by order in selection
-        $sortedContracts = [];
-        foreach ($contractUids as $uid) {
-            foreach ($contracts as $contract) {
-                if ($contract->getUid() === $uid) {
-                    $sortedContracts[] = $contract;
-                }
-            }
-        }
-
         $this->view->assignMultiple([
             'data' => $this->getCurrentContentObjectRenderer()?->data,
-            'contracts' => $sortedContracts,
+            'contracts' => $this->sortBySelectionOrder($contracts, $contractUids),
         ]);
 
         return $this->htmlResponse();
