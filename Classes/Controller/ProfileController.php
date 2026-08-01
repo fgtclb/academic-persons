@@ -147,12 +147,13 @@ final class ProfileController extends ActionController
      * {@see \FGTCLB\AcademicPersons\Tests\Functional\Plugins\AcademicPersonsCardPluginLocalizationTest}
      * it returns what the list plugin returns from the same selection.
      *
-     * Two results in that matrix are still not desirable, and neither belongs to this
-     * action: a `fallbackType: free` site gets default language profiles, and before
-     * TYPO3 v14.3.6 a `strict` site keeps untranslated ones (forge #88886). Both come out
-     * of the shared `profileList` branch of `ProfileRepository::applyDemandForQuery()`,
-     * which turns language handling off before matching uids, and both were confirmed to
-     * hit `listAction()` in the same way.
+     * One result in that matrix is still not desirable, and it does not belong to this
+     * action: before TYPO3 v14.3.6 a `strict` site keeps untranslated profiles (forge
+     * #88886, core). The other one - a `fallbackType: free` site rendering default
+     * language profiles - was ours and is fixed, see
+     * `ProfileRepository::matchSelectedUidsAcrossLanguages()` and ACE-341. Both came out
+     * of the shared `profileList` branch of `applyDemandForQuery()` and hit
+     * `listAction()` in the same way.
      *
      * @return ResponseInterface
      */

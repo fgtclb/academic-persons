@@ -336,6 +336,38 @@ final class AcademicPersonsListPluginTest extends AbstractAcademicPersonsTestCas
         $this->assertStringNotContainsString('[EN] Max Müllermann', $content);
     }
 
+    /**
+     * The list plugin reaches the same `profileList` branch of
+     * `ProfileRepository::applyDemandForQuery()` as the card plugin, and used to render
+     * default language profiles on a `fallbackType: free` site for the same reason
+     * (ACE-341). Kept here as well so a regression in that shared query cannot pass by
+     * only breaking one of the two plugins.
+     */
+    #[Test]
+    public function fullyLocalizedListDisplaysLocalizedSelectedProfilesForRequestedLanguageWithFallbackTypeFree(): void
+    {
+        $this->importCSVDataSet(__DIR__ . '/Fixtures/AcademicPersonsListPlugin/fullyLocalized_selectedProfiles.csv');
+        $this->setUpFrontendRootPageForTestCase();
+        $this->writeFrontendPluginTestSite([
+            $this->buildDefaultLanguageConfiguration(
+                identifier: 'EN',
+                base: '/',
+            ),
+            $this->buildLanguageConfiguration(
+                identifier: 'DE',
+                base: '/de/',
+                fallbackIdentifiers: [],
+                fallbackType: 'free',
+            ),
+        ]);
+
+        $content = $this->renderFrontendPage('https://www.acme.com/de/home');
+        $this->assertStringContainsString('[DE] Horst Huber', $content);
+        $this->assertStringContainsString('[DE] Max Müllermann', $content);
+        $this->assertStringNotContainsString('[EN] Horst Huber', $content);
+        $this->assertStringNotContainsString('[EN] Max Müllermann', $content);
+    }
+
     #[Test]
     public function fullyLocalizedListDisplaysLocalizedSelectedProfilesForRequestedLanguageInSelectedOrderWithFallbackTypeFallbackWhenNotAllProfilesAreLocalized(): void
     {

@@ -159,6 +159,34 @@ class ProfileRepository extends Repository
     }
 
     /**
+     * Prepare a query that matches records by uid taken from a manual selection.
+     *
+     * FormEngine persists such a selection as **default language** uids, so the language
+     * restriction has to come off - otherwise nothing matches in a translation. That
+     * alone is not enough: with `fallbackType: free` the aspect carries `OVERLAYS_OFF`,
+     * and the default language rows would then be handed to the frontend unoverlaid. So
+     * the aspect is lifted to `OVERLAYS_ON_WITH_FLOATING` first, and only then is the
+     * restriction dropped.
+     *
+     * Adopted from the generic Extbase backend implementation, and the same shape as
+     * `ContractRepository`, `EXT:academic_contacts4pages` `ContactRepository` and
+     * `EXT:academic_partners` `PartnershipRepository`.
+     *
+     * @param QueryInterface<Profile> $query
+     */
+    private function matchSelectedUidsAcrossLanguages(QueryInterface $query): void
+    {
+        $currentLanguageAspect = $query->getQuerySettings()->getLanguageAspect();
+        $changedLanguageAspect = new LanguageAspect(
+            $currentLanguageAspect->getId(),
+            $currentLanguageAspect->getContentId(),
+            $currentLanguageAspect->getOverlayType() === LanguageAspect::OVERLAYS_OFF ? LanguageAspect::OVERLAYS_ON_WITH_FLOATING : $currentLanguageAspect->getOverlayType()
+        );
+        $query->getQuerySettings()->setLanguageAspect($changedLanguageAspect);
+        $query->getQuerySettings()->setRespectSysLanguage(false);
+    }
+
+    /**
      * @param QueryInterface<Profile> $query
      */
     private function applyDemandForQuery(QueryInterface $query, DemandInterface $demand): void
@@ -166,7 +194,7 @@ class ProfileRepository extends Repository
         // Direct selected profiles make all other filters and orderings obsolete and is handled first.
         if ($demand->getProfileList() !== '') {
             $profileUidArray = GeneralUtility::intExplode(',', $demand->getProfileList(), true);
-            $query->getQuerySettings()->setRespectSysLanguage(false);
+            $this->matchSelectedUidsAcrossLanguages($query);
             $query->matching($query->in('uid', $profileUidArray));
             return;
         }
@@ -231,18 +259,8 @@ class ProfileRepository extends Repository
     public function findByUids(array $uids, bool $showHidden = false): QueryResultInterface
     {
         $query = $this->createQuery();
-        // Selected uid's are default language and we need to configure extbase in away to
-        // properly handle the overlay. This is adopted from the generic extbase backend
-        // implementation.
-        $currentLanguageAspect = $query->getQuerySettings()->getLanguageAspect();
-        $changedLanguageAspect = new LanguageAspect(
-            $currentLanguageAspect->getId(),
-            $currentLanguageAspect->getContentId(),
-            $currentLanguageAspect->getOverlayType() === LanguageAspect::OVERLAYS_OFF ? LanguageAspect::OVERLAYS_ON_WITH_FLOATING : $currentLanguageAspect->getOverlayType()
-        );
-        $query->getQuerySettings()->setLanguageAspect($changedLanguageAspect);
+        $this->matchSelectedUidsAcrossLanguages($query);
         $query->getQuerySettings()->setRespectStoragePage(false);
-        $query->getQuerySettings()->setRespectSysLanguage(false);
         if ($showHidden === true) {
             $this->includeHiddenRecords($query);
         }

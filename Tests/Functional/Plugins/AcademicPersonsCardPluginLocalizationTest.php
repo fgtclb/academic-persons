@@ -20,21 +20,17 @@ use TYPO3\CMS\Core\Information\Typo3Version;
  * `AcademicPersonsListPluginTest`). The `@todo` was removed on the strength of these
  * tests rather than acted on.
  *
- * That is not the same as calling every result here desirable. Two are not, and both are
- * properties of the shared `profileList` path in
- * `ProfileRepository::applyDemandForQuery()`, which disables language handling outright
- * (`setRespectSysLanguage(false)`) before matching uids - so they hit the list plugin
- * just as hard:
+ * That is not the same as calling every result here desirable. Two were not, and neither
+ * belonged to this action - both came out of the shared `profileList` path in
+ * `ProfileRepository::applyDemandForQuery()`, so they hit the list plugin just as hard:
  *
- * - a site language with `fallbackType: free` renders **default language** profiles.
- *   Verified by rendering the list plugin under the same configuration, which produced
- *   the same English output.
+ * - a site language with `fallbackType: free` rendered **default language** profiles,
+ *   because dropping the language restriction for a selection of default language uids
+ *   left `OVERLAYS_OFF` in place and nothing overlaid the rows. Fixed under ACE-341;
+ *   the free mode test below asserts the corrected output.
  * - under `fallbackType: strict` an untranslated profile is not dropped. That one is a
  *   core Extbase defect (forge #88886) fixed in TYPO3 v14.3.6, and the two tests below
  *   split on that version exactly as the list plugin tests do.
- *
- * If either should change it belongs in an issue against the repository query, not
- * against this action.
  */
 final class AcademicPersonsCardPluginLocalizationTest extends AbstractAcademicPersonsTestCase
 {
@@ -165,22 +161,20 @@ final class AcademicPersonsCardPluginLocalizationTest extends AbstractAcademicPe
     }
 
     #[Test]
-    public function fullyLocalizedCardWithFallbackTypeFreeRendersDefaultLanguageProfiles(): void
+    public function fullyLocalizedCardWithFallbackTypeFreeRendersTranslatedProfiles(): void
     {
-        // Current behaviour, and not a desirable one: a free mode site gets English
-        // profiles under a German heading. It is not specific to this action - the list
-        // plugin rendered under the same configuration produced the same English output.
-        // The cause is `applyDemandForQuery()` calling `setRespectSysLanguage(false)` for
-        // the `profileList` path, which both actions share.
+        // Free mode used to render English profiles under a German heading (ACE-341):
+        // a manual selection holds default language uids, so the language restriction
+        // has to come off - but with `OVERLAYS_OFF` nothing then overlaid the rows that
+        // came back. `matchSelectedUidsAcrossLanguages()` lifts the aspect first.
         $this->setUpTestCase('cardPage_fullyLocalized', 'free');
 
         $content = $this->renderGermanPage();
-        // The translated content element is what renders ...
         $this->assertStringContainsString('[DE] Unser Team', $content);
-        // ... with default language profiles inside it.
-        $this->assertRendersProfileName($content, '[EN] Max', 'Müllermann');
-        $this->assertRendersProfileName($content, '[EN] Horst', 'Huber');
-        $this->assertStringNotContainsString('[DE] Max', $content);
+        $this->assertRendersProfileName($content, '[DE] Max', 'Müllermann');
+        $this->assertRendersProfileName($content, '[DE] Horst', 'Huber');
+        $this->assertStringNotContainsString('[EN] Max', $content);
+        $this->assertStringNotContainsString('[EN] Horst', $content);
     }
 
     /**
