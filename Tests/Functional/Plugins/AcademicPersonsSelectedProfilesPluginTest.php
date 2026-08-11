@@ -163,7 +163,7 @@ final class AcademicPersonsSelectedProfilesPluginTest extends AbstractAcademicPe
                     identifier: 'DE',
                     base: '/de/',
                     fallbackIdentifiers: ['EN'],
-                    fallbackType: 'content_fallback',
+                    fallbackType: 'free',
                 ),
             ]
         );
@@ -219,6 +219,70 @@ final class AcademicPersonsSelectedProfilesPluginTest extends AbstractAcademicPe
         $this->assertStringNotContainsString('[EN] Max Müllermann', $content);
     }
 
+    /**
+     * "free" maps to `OVERLAYS_OFF`, which
+     * {@see \FGTCLB\AcademicPersons\Domain\Repository\ProfileRepository::matchSelectedUidsAcrossLanguages()} lifts to
+     * `OVERLAYS_ON_WITH_FLOATING` (ACE-341), so this exercises the same overlay decision as the
+     * strict test above, reached from a different site configuration.
+     *
+     * On TYPO3 v12 and v13 the rendered result is the same either way: Extbase persistence does not
+     * honour the requested overlay type for untranslated selected records there (forge #88886, fixed
+     * in v14.3.6 only, never backported to v13.4). The paths differ, the outcome coincides - do not
+     * collapse these tests into one.
+     *
+     * @see https://forge.typo3.org/issues/88886
+     */
+    #[Test]
+    public function fullyLocalized_selectedProfiles_notAllProfilesLocalized_freeMode(): void
+    {
+        $this->importCSVDataSet(__DIR__ . '/Fixtures/AcademicPersonsSelectedProfilesPlugin/fullyLocalized_allProfilesSelected_notAllProfilesLocalized.csv');
+        $this->setUpFrontendRootPageForTestCase();
+        $this->writeSiteConfiguration(
+            identifier: 'acme',
+            site: $this->buildSiteConfiguration(
+                rootPageId: 1,
+                base: 'https://www.acme.com/',
+            ),
+            languages: [
+                $this->buildDefaultLanguageConfiguration(
+                    identifier: 'EN',
+                    base: '/',
+                ),
+                $this->buildLanguageConfiguration(
+                    identifier: 'DE',
+                    base: '/de/',
+                    fallbackIdentifiers: ['EN'],
+                    fallbackType: 'free',
+                ),
+            ],
+        );
+
+        $requestContext = new InternalRequestContext();
+        $request = new InternalRequest('https://www.acme.com/de/home');
+        $response = $this->executeFrontendSubRequest($request, $requestContext);
+        $this->assertSame(200, $response->getStatusCode());
+
+        $content = (string)$response->getBody();
+        $this->assertStringContainsString('<h2>Selected Profiles</h2>', $content);
+        $this->assertStringContainsString('#0(3): [EN] Horst Huber', $content);
+        $this->assertStringContainsString('#1(1): [DE] Max Müllermann', $content);
+        $this->assertStringNotContainsString('[DE] Horst Huber', $content);
+        $this->assertStringNotContainsString('[EN] Max Müllermann', $content);
+    }
+
+    /**
+     * Genuine fallback mode, which no test covered before: "fallback" maps to `OVERLAYS_MIXED`, and
+     * unlike `OVERLAYS_OFF` the repositories leave that untouched - {@see \FGTCLB\AcademicPersons\Domain\Repository\ProfileRepository::matchSelectedUidsAcrossLanguages()}
+     * only lifts `OVERLAYS_OFF`. The untranslated selected profile is kept and rendered in the
+     * default language.
+     *
+     * On this branch that is the same output as the free- and strict-mode tests above, because no
+     * TYPO3 version it supports honours the requested overlay type for untranslated selected records
+     * (forge #88886 landed in v14.3.6 and was never backported to v13.4). The query path is a
+     * different one all the same, and on the 3.x line the three tests diverge.
+     *
+     * @see https://forge.typo3.org/issues/88886
+     */
     #[Test]
     public function fullyLocalized_selectedProfiles_notAllProfilesLocalized_fallbackMode(): void
     {
@@ -239,7 +303,7 @@ final class AcademicPersonsSelectedProfilesPluginTest extends AbstractAcademicPe
                     identifier: 'DE',
                     base: '/de/',
                     fallbackIdentifiers: ['EN'],
-                    fallbackType: 'content_fallback',
+                    fallbackType: 'fallback',
                 ),
             ],
         );
