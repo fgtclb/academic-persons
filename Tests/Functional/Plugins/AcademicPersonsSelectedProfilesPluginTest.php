@@ -8,6 +8,7 @@ use FGTCLB\AcademicPersons\Tests\Functional\AbstractAcademicPersonsTestCase;
 use FGTCLB\TestingHelper\FunctionalTestCase\FrontendPluginRenderingTrait;
 use PHPUnit\Framework\Attributes\Test;
 use SBUERK\TYPO3\Testing\SiteHandling\SiteBasedTestTrait;
+use TYPO3\CMS\Core\Information\Typo3Version;
 
 final class AcademicPersonsSelectedProfilesPluginTest extends AbstractAcademicPersonsTestCase
 {
@@ -125,9 +126,67 @@ final class AcademicPersonsSelectedProfilesPluginTest extends AbstractAcademicPe
         $this->assertStringNotContainsString('[EN] Max Müllermann', $content);
     }
 
+    /**
+     * The selected profiles are fetched via Extbase persistence, which did not honour the site language
+     * "fallbackType: strict" for untranslated (child) records before TYPO3 v14.3.6: untranslated selected
+     * profiles were returned in their default language instead of being removed. This is a long-standing
+     * Extbase regression, fixed in core with change 66694 (14.3 backport 94935, forge #88886), released
+     * with TYPO3 v14.3.6 and the main line only (no TYPO3 v13.4 backport). The assertions below describe
+     * the corrected v14.3.6+ behaviour, so the test only runs there; the test below states what happens
+     * before it, so the plugin is covered on every supported core either way.
+     *
+     * @see https://review.typo3.org/c/Packages/TYPO3.CMS/+/66694
+     * @see https://review.typo3.org/c/Packages/TYPO3.CMS/+/94935
+     * @see https://forge.typo3.org/issues/88886
+     */
     #[Test]
     public function fullyLocalized_allProfilesSelected_notAllProfilesLocalized_strictMode(): void
     {
+        if (version_compare((new Typo3Version())->getVersion(), '14.3.6', '<')) {
+            $this->markTestSkipped(
+                'Extbase honours "fallbackType: strict" for untranslated selected profiles only since '
+                . 'TYPO3 v14.3.6 (core fix https://review.typo3.org/c/Packages/TYPO3.CMS/+/66694 and its 14.3 '
+                . 'backport https://review.typo3.org/c/Packages/TYPO3.CMS/+/94935, forge #88886; not '
+                . 'backported to v13.4).'
+            );
+        }
+        $this->importCSVDataSet(__DIR__ . '/Fixtures/AcademicPersonsSelectedProfilesPlugin/fullyLocalized_allProfilesSelected_notAllProfilesLocalized.csv');
+        $this->setUpFrontendRootPageForTestCase();
+        $this->writeFrontendPluginTestSite([
+            $this->buildDefaultLanguageConfiguration(
+                identifier: 'EN',
+                base: '/',
+            ),
+            $this->buildLanguageConfiguration(
+                identifier: 'DE',
+                base: '/de/',
+                fallbackIdentifiers: [],
+                fallbackType: 'strict',
+            ),
+        ]);
+
+        $content = $this->renderFrontendPage('https://www.acme.com/de/home');
+        $this->assertStringContainsString('<h2>Selected Profiles</h2>', $content);
+        $this->assertStringContainsString('#0(1): [DE] Max Müllermann', $content);
+        $this->assertStringNotContainsString('[EN] Horst Huber', $content);
+        $this->assertStringNotContainsString('[DE] Horst Huber', $content);
+        $this->assertStringNotContainsString('[EN] Max Müllermann', $content);
+    }
+
+    /**
+     * The inverse of the test above: what TYPO3 v13.4 does, and what v14 did up to and including
+     * v14.3.5 - the untranslated selected profile is kept and rendered in the default language.
+     *
+     * @see https://forge.typo3.org/issues/88886
+     */
+    #[Test]
+    public function fullyLocalized_allProfilesSelected_notAllProfilesLocalized_strictMode_beforeCoreFix(): void
+    {
+        if (version_compare((new Typo3Version())->getVersion(), '14.3.6', '>=')) {
+            $this->markTestSkipped(
+                'Core fix for forge #88886 is present, see the test above for the corrected behaviour.'
+            );
+        }
         $this->importCSVDataSet(__DIR__ . '/Fixtures/AcademicPersonsSelectedProfilesPlugin/fullyLocalized_allProfilesSelected_notAllProfilesLocalized.csv');
         $this->setUpFrontendRootPageForTestCase();
         $this->writeFrontendPluginTestSite([
@@ -151,9 +210,67 @@ final class AcademicPersonsSelectedProfilesPluginTest extends AbstractAcademicPe
         $this->assertStringNotContainsString('[EN] Max Müllermann', $content);
     }
 
+    /**
+     * Same core defect as the strict-mode test above, reached over a different route.
+     *
+     * Note: "content_fallback" is not a fallback type core knows -
+     * {@see \TYPO3\CMS\Core\Context\LanguageAspectFactory::createFromSiteLanguage()} maps anything
+     * unknown to `OVERLAYS_OFF`, which {@see \FGTCLB\AcademicPersons\Domain\Repository\ProfileRepository::matchSelectedUidsAcrossLanguages()}
+     * lifts to `OVERLAYS_ON_WITH_FLOATING` (ACE-341). This case therefore exercises the same overlay
+     * path as the test above rather than a real "fallback" mode, and moves with it.
+     *
+     * @see https://review.typo3.org/c/Packages/TYPO3.CMS/+/66694
+     * @see https://review.typo3.org/c/Packages/TYPO3.CMS/+/94935
+     * @see https://forge.typo3.org/issues/88886
+     */
     #[Test]
     public function fullyLocalized_selectedProfiles_notAllProfilesLocalized_fallbackMode(): void
     {
+        if (version_compare((new Typo3Version())->getVersion(), '14.3.6', '<')) {
+            $this->markTestSkipped(
+                'Extbase honours the site language overlay type for untranslated selected profiles only '
+                . 'since TYPO3 v14.3.6 (core fix https://review.typo3.org/c/Packages/TYPO3.CMS/+/66694 and '
+                . 'its 14.3 backport https://review.typo3.org/c/Packages/TYPO3.CMS/+/94935, forge #88886; '
+                . 'not backported to v13.4).'
+            );
+        }
+        $this->importCSVDataSet(__DIR__ . '/Fixtures/AcademicPersonsSelectedProfilesPlugin/fullyLocalized_allProfilesSelected_notAllProfilesLocalized.csv');
+        $this->setUpFrontendRootPageForTestCase();
+        $this->writeFrontendPluginTestSite([
+            $this->buildDefaultLanguageConfiguration(
+                identifier: 'EN',
+                base: '/',
+            ),
+            $this->buildLanguageConfiguration(
+                identifier: 'DE',
+                base: '/de/',
+                fallbackIdentifiers: ['EN'],
+                fallbackType: 'content_fallback',
+            ),
+        ]);
+
+        $content = $this->renderFrontendPage('https://www.acme.com/de/home');
+        $this->assertStringContainsString('<h2>Selected Profiles</h2>', $content);
+        $this->assertStringContainsString('#0(1): [DE] Max Müllermann', $content);
+        $this->assertStringNotContainsString('[EN] Horst Huber', $content);
+        $this->assertStringNotContainsString('[DE] Horst Huber', $content);
+        $this->assertStringNotContainsString('[EN] Max Müllermann', $content);
+    }
+
+    /**
+     * The inverse of the test above: what TYPO3 v13.4 does, and what v14 did up to and including
+     * v14.3.5 - the untranslated selected profile is kept and rendered in the default language.
+     *
+     * @see https://forge.typo3.org/issues/88886
+     */
+    #[Test]
+    public function fullyLocalized_selectedProfiles_notAllProfilesLocalized_fallbackMode_beforeCoreFix(): void
+    {
+        if (version_compare((new Typo3Version())->getVersion(), '14.3.6', '>=')) {
+            $this->markTestSkipped(
+                'Core fix for forge #88886 is present, see the test above for the corrected behaviour.'
+            );
+        }
         $this->importCSVDataSet(__DIR__ . '/Fixtures/AcademicPersonsSelectedProfilesPlugin/fullyLocalized_allProfilesSelected_notAllProfilesLocalized.csv');
         $this->setUpFrontendRootPageForTestCase();
         $this->writeFrontendPluginTestSite([

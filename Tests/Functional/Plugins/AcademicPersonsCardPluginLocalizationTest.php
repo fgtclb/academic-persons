@@ -184,8 +184,6 @@ final class AcademicPersonsCardPluginLocalizationTest extends AbstractAcademicPe
      * behaviour and therefore only runs from v14.3.6 on; the test below states what
      * happens before it, so the action is covered on every supported core either way.
      *
-     * @todo Verify this assertion once TYPO3 v14.3.6 or newer is installable here - it
-     *       mirrors `AcademicPersonsListPluginTest`, which carries the same open `@todo`.
      * @see https://forge.typo3.org/issues/88886
      */
     #[Test]

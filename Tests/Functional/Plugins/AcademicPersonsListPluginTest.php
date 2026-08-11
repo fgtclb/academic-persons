@@ -273,7 +273,6 @@ final class AcademicPersonsListPluginTest extends AbstractAcademicPersonsTestCas
      * with TYPO3 v14.3.6 and the main line only (no TYPO3 v13.4 backport). The assertions below describe
      * the corrected v14.3.6+ behaviour, so the test only runs there.
      *
-     * @todo Verify these assertions once TYPO3 v14 support is added to this extension and the test runs.
      * @see https://review.typo3.org/c/Packages/TYPO3.CMS/+/66694
      * @see https://review.typo3.org/c/Packages/TYPO3.CMS/+/94935
      * @see https://forge.typo3.org/issues/88886

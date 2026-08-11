@@ -8,6 +8,7 @@ use FGTCLB\AcademicPersons\Tests\Functional\AbstractAcademicPersonsTestCase;
 use FGTCLB\TestingHelper\FunctionalTestCase\FrontendPluginRenderingTrait;
 use PHPUnit\Framework\Attributes\Test;
 use SBUERK\TYPO3\Testing\SiteHandling\SiteBasedTestTrait;
+use TYPO3\CMS\Core\Information\Typo3Version;
 
 final class AcademicPersonsDetailPluginTest extends AbstractAcademicPersonsTestCase
 {
@@ -151,11 +152,72 @@ final class AcademicPersonsDetailPluginTest extends AbstractAcademicPersonsTestC
     }
 
     /**
-     * @todo Really ?
+     * The profile argument is resolved by Extbase persistence, which did not honour the site language
+     * "fallbackType: strict" for untranslated records before TYPO3 v14.3.6: an untranslated profile was
+     * returned in its default language instead of being removed. This is a long-standing Extbase
+     * regression, fixed in core with change 66694 (14.3 backport 94935, forge #88886), released with
+     * TYPO3 v14.3.6 and the main line only (no TYPO3 v13.4 backport). From there on the argument maps to
+     * `null` and {@see \FGTCLB\AcademicPersons\Controller\ProfileController::detailAction()} answers with
+     * `404`. The assertion below describes the corrected v14.3.6+ behaviour, so the test only runs there;
+     * the test below states what happens before it, so the plugin is covered on every supported core.
+     *
+     * @see https://review.typo3.org/c/Packages/TYPO3.CMS/+/66694
+     * @see https://review.typo3.org/c/Packages/TYPO3.CMS/+/94935
+     * @see https://forge.typo3.org/issues/88886
      */
     #[Test]
-    public function localizedPagesAndTtContentWithNotLocalizedProfileDisplayDefaultLanguageWhenLanguageStrict(): void
+    public function localizedPagesAndTtContentWithNotLocalizedProfileIsNotFoundWhenLanguageStrict(): void
     {
+        if (version_compare((new Typo3Version())->getVersion(), '14.3.6', '<')) {
+            $this->markTestSkipped(
+                'Extbase honours "fallbackType: strict" for untranslated profiles only since '
+                . 'TYPO3 v14.3.6 (core fix https://review.typo3.org/c/Packages/TYPO3.CMS/+/66694 and its 14.3 '
+                . 'backport https://review.typo3.org/c/Packages/TYPO3.CMS/+/94935, forge #88886; not '
+                . 'backported to v13.4).'
+            );
+        }
+        $this->importCSVDataSet(__DIR__ . '/Fixtures/AcademicPersonsDetailPlugin/localizedPagesAndTtContent_notLocalizedProfile.csv');
+        $this->setUpFrontendRootPageForTestCase();
+        $this->writeFrontendPluginTestSite([
+            $this->buildDefaultLanguageConfiguration(
+                identifier: 'EN',
+                base: '/',
+            ),
+            $this->buildLanguageConfiguration(
+                identifier: 'DE',
+                base: '/de/',
+                fallbackIdentifiers: [],
+                fallbackType: 'strict',
+            ),
+        ]);
+
+        $response = $this->requestFrontendPage(
+            'https://www.acme.com/de/home?' . http_build_query([
+                'tx_academicpersons_detail' => [
+                    'controller' => 'Profile',
+                    'action' => 'detail',
+                    'profile' => 1,
+                ],
+                'cHash' => '008c1ca1df782f9191ecb45d4a4123e3',
+            ])
+        );
+        $this->assertSame(404, $response->getStatusCode());
+    }
+
+    /**
+     * The inverse of the test above: what TYPO3 v13.4 does, and what v14 did up to and including
+     * v14.3.5 - the untranslated profile is rendered in the default language on a strict site language.
+     *
+     * @see https://forge.typo3.org/issues/88886
+     */
+    #[Test]
+    public function localizedPagesAndTtContentWithNotLocalizedProfileDisplayDefaultLanguageWhenLanguageStrictBeforeCoreFix(): void
+    {
+        if (version_compare((new Typo3Version())->getVersion(), '14.3.6', '>=')) {
+            $this->markTestSkipped(
+                'Core fix for forge #88886 is present, see the test above for the corrected behaviour.'
+            );
+        }
         $this->importCSVDataSet(__DIR__ . '/Fixtures/AcademicPersonsDetailPlugin/localizedPagesAndTtContent_notLocalizedProfile.csv');
         $this->setUpFrontendRootPageForTestCase();
         $this->writeFrontendPluginTestSite([
