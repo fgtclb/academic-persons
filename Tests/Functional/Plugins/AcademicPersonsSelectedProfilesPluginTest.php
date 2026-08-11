@@ -114,7 +114,7 @@ final class AcademicPersonsSelectedProfilesPluginTest extends AbstractAcademicPe
                 identifier: 'DE',
                 base: '/de/',
                 fallbackIdentifiers: ['EN'],
-                fallbackType: 'content_fallback',
+                fallbackType: 'free',
             ),
         ]);
 
@@ -213,18 +213,18 @@ final class AcademicPersonsSelectedProfilesPluginTest extends AbstractAcademicPe
     /**
      * Same core defect as the strict-mode test above, reached over a different route.
      *
-     * Note: "content_fallback" is not a fallback type core knows -
-     * {@see \TYPO3\CMS\Core\Context\LanguageAspectFactory::createFromSiteLanguage()} maps anything
-     * unknown to `OVERLAYS_OFF`, which {@see \FGTCLB\AcademicPersons\Domain\Repository\ProfileRepository::matchSelectedUidsAcrossLanguages()}
-     * lifts to `OVERLAYS_ON_WITH_FLOATING` (ACE-341). This case therefore exercises the same overlay
-     * path as the test above rather than a real "fallback" mode, and moves with it.
+     * "free" maps to `OVERLAYS_OFF`, which
+     * {@see \FGTCLB\AcademicPersons\Domain\Repository\ProfileRepository::matchSelectedUidsAcrossLanguages()} lifts to
+     * `OVERLAYS_ON_WITH_FLOATING` (ACE-341) - so this exercises the same overlay decision as the
+     * strict test above, reached from a different site configuration. Genuine fallback mode is
+     * covered separately below and behaves differently: it keeps the untranslated profiles.
      *
      * @see https://review.typo3.org/c/Packages/TYPO3.CMS/+/66694
      * @see https://review.typo3.org/c/Packages/TYPO3.CMS/+/94935
      * @see https://forge.typo3.org/issues/88886
      */
     #[Test]
-    public function fullyLocalized_selectedProfiles_notAllProfilesLocalized_fallbackMode(): void
+    public function fullyLocalized_selectedProfiles_notAllProfilesLocalized_freeMode(): void
     {
         if (version_compare((new Typo3Version())->getVersion(), '14.3.6', '<')) {
             $this->markTestSkipped(
@@ -245,7 +245,7 @@ final class AcademicPersonsSelectedProfilesPluginTest extends AbstractAcademicPe
                 identifier: 'DE',
                 base: '/de/',
                 fallbackIdentifiers: ['EN'],
-                fallbackType: 'content_fallback',
+                fallbackType: 'free',
             ),
         ]);
 
@@ -264,7 +264,7 @@ final class AcademicPersonsSelectedProfilesPluginTest extends AbstractAcademicPe
      * @see https://forge.typo3.org/issues/88886
      */
     #[Test]
-    public function fullyLocalized_selectedProfiles_notAllProfilesLocalized_fallbackMode_beforeCoreFix(): void
+    public function fullyLocalized_selectedProfiles_notAllProfilesLocalized_freeMode_beforeCoreFix(): void
     {
         if (version_compare((new Typo3Version())->getVersion(), '14.3.6', '>=')) {
             $this->markTestSkipped(
@@ -282,7 +282,45 @@ final class AcademicPersonsSelectedProfilesPluginTest extends AbstractAcademicPe
                 identifier: 'DE',
                 base: '/de/',
                 fallbackIdentifiers: ['EN'],
-                fallbackType: 'content_fallback',
+                fallbackType: 'free',
+            ),
+        ]);
+
+        $content = $this->renderFrontendPage('https://www.acme.com/de/home');
+        $this->assertStringContainsString('<h2>Selected Profiles</h2>', $content);
+        $this->assertStringContainsString('#0(3): [EN] Horst Huber', $content);
+        $this->assertStringContainsString('#1(1): [DE] Max Müllermann', $content);
+        $this->assertStringNotContainsString('[DE] Horst Huber', $content);
+        $this->assertStringNotContainsString('[EN] Max Müllermann', $content);
+    }
+
+    /**
+     * Genuine fallback mode, which no test covered before: "fallback" maps to `OVERLAYS_MIXED`, and
+     * unlike `OVERLAYS_OFF` the repositories leave that untouched - {@see \FGTCLB\AcademicPersons\Domain\Repository\ProfileRepository::matchSelectedUidsAcrossLanguages()}
+     * only lifts `OVERLAYS_OFF`. The untranslated selected profile is therefore *kept* and rendered in
+     * the default language.
+     *
+     * This holds before and after the core fix for forge #88886: that change made the overlay honour
+     * the requested type, and the requested type here is already `OVERLAYS_MIXED`. So unlike the
+     * free-mode tests above, this one needs no core version guard.
+     *
+     * @see https://forge.typo3.org/issues/88886
+     */
+    #[Test]
+    public function fullyLocalized_selectedProfiles_notAllProfilesLocalized_fallbackMode(): void
+    {
+        $this->importCSVDataSet(__DIR__ . '/Fixtures/AcademicPersonsSelectedProfilesPlugin/fullyLocalized_allProfilesSelected_notAllProfilesLocalized.csv');
+        $this->setUpFrontendRootPageForTestCase();
+        $this->writeFrontendPluginTestSite([
+            $this->buildDefaultLanguageConfiguration(
+                identifier: 'EN',
+                base: '/',
+            ),
+            $this->buildLanguageConfiguration(
+                identifier: 'DE',
+                base: '/de/',
+                fallbackIdentifiers: ['EN'],
+                fallbackType: 'fallback',
             ),
         ]);
 
