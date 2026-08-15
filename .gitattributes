@@ -15,3 +15,8 @@
 /patches export-ignore
 /Tests export-ignore
 /Build export-ignore
+
+# Frontend build sources. They are compiled into "Resources/Public/",
+# which ships; the sources themselves do not.
+/Resources/Private/Scss export-ignore
+/Resources/Private/TypeScript export-ignore
