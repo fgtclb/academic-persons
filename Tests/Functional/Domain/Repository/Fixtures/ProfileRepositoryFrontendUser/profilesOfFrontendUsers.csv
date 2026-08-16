@@ -1,0 +1,44 @@
+"pages",
+,"uid","pid","sorting","doktype","title","slug","is_siteroot","sys_language_uid","hidden","deleted",
+,1,0,2,1,"Site Root (EN)","/",1,0,0,0,
+,20,1,2,254,"Profile Storage One","/profile-storage-one",0,0,0,0,
+,30,1,4,254,"Profile Storage Two","/profile-storage-two",0,0,0,0,
+"fe_users",
+,"uid","pid","username","deleted","disable","tx_extbase_type",
+# The user under test.
+,10,20,"owner",0,0,"Tx_Academicpersonsedit_Domain_Model_FrontendUser",
+# A second user - none of the profiles below may cross over to the user above.
+,11,20,"other",0,0,"Tx_Academicpersonsedit_Domain_Model_FrontendUser",
+# A user without any profile at all.
+,12,20,"stranger",0,0,"Tx_Academicpersonsedit_Domain_Model_FrontendUser",
+# A disabled user that still owns a visible profile.
+,13,20,"disabled",0,1,"Tx_Academicpersonsedit_Domain_Model_FrontendUser",
+"tx_academicpersons_domain_model_profile",
+,"uid","pid","sys_language_uid","l10n_parent","hidden","deleted","first_name","last_name",
+# Owner, visible.
+,1,20,0,0,0,0,"Anna","Abel",
+# Belongs to the other user only.
+,2,20,0,0,0,0,"Bruno","Brecht",
+# Owner, hidden.
+,3,20,0,0,1,0,"Clara","Curie",
+# Owner, deleted.
+,4,20,0,0,0,1,"Dora","Dahl",
+# Shared between the owner and the other user.
+,5,20,0,0,0,0,"Ellen","Engel",
+# Owner, on a second storage page.
+,6,30,0,0,0,0,"Frida","Fontane",
+# Translation of profile 1, carrying the same relation.
+,7,20,1,1,0,0,"Anna (DE)","Abel",
+# Belongs to the disabled user.
+,8,20,0,0,0,0,"Gustav","Grass",
+"tx_academicpersons_feuser_mm",
+,"uid_local","uid_foreign","sorting","sorting_foreign",
+,1,10,1,0,
+,2,11,1,0,
+,3,10,2,0,
+,4,10,3,0,
+,5,10,4,0,
+,5,11,2,0,
+,6,10,5,0,
+,7,10,1,0,
+,8,13,1,0,

@@ -1,0 +1,23 @@
+"pages",
+,"uid","pid","sorting","doktype","title","slug","is_siteroot","sys_language_uid","hidden","deleted",
+,1,0,2,1,"Site Root (EN)","/",1,0,0,0,
+,20,1,2,254,"Profile Storage One","/profile-storage-one",0,0,0,0,
+,30,1,4,254,"Profile Storage Two","/profile-storage-two",0,0,0,0,
+"tx_academicpersons_domain_model_profile",
+,"uid","pid","sys_language_uid","l10n_parent","hidden","deleted","first_name","last_name",
+,1,20,0,0,0,0,"Anna","Abel",
+,2,30,0,0,0,0,"Bruno","Brecht",
+"tx_academicpersons_domain_model_contract",
+,"uid","pid","sorting","sys_language_uid","l10n_parent","hidden","deleted","profile","position",
+# Visible contract on the first storage page.
+,1,20,1,0,0,0,0,1,"Professor",
+# Visible contract on a second storage page - only found when the storage page restriction is off.
+,2,30,1,0,0,0,0,2,"Research Assistant",
+# Hidden contract: excluded, findAll() has no "show hidden" switch.
+,3,20,2,0,0,1,0,1,"Hidden Lecturer",
+# Deleted contract: excluded.
+,4,20,3,0,0,0,1,1,"Deleted Lecturer",
+# Contract in "all languages" (-1): part of every language's result.
+,5,20,4,-1,0,0,0,1,"Dean",
+# Translation of contract 1 into language 1: not a record of its own for the default language.
+,6,20,1,1,1,0,0,1,"Professorin",
