@@ -9,3 +9,4 @@ Configuration
    :titlesonly:
 
    General/Index
+   Validations/Index
