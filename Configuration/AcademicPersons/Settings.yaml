@@ -1,7 +1,15 @@
 #-----------------------------------------------------------------------------------------------------------------------
-# EXT:academic_persons - Validation configuration for EXT:academic_persons_edit or custom implementation.
+# EXT:academic_persons - Profile information types and field validation configuration.
+#
+# The "validations" section below is the single source of truth for both editing contexts: the TYPO3
+# backend FormEngine, through TCA merged by the table files of this extension, and the frontend
+# editing forms of EXT:academic_persons_edit. It applies to the backend whether or not that extension
+# is installed.
+#
+# Documented at:
+# https://docs.typo3.org/p/fgtclb/academic-persons/main/en-us/Configuration/Validations/Index.html
 #-----------------------------------------------------------------------------------------------------------------------
-# @internal Syntax if this configuration file is considered experimental and will change until 2.1.0 release.
+# @internal The syntax of this configuration file is considered experimental and may still change.
 #-----------------------------------------------------------------------------------------------------------------------
 
 #-----------------------------------------------------------------------------------------------------------------------
@@ -44,12 +52,18 @@ profileInformationsTypes:
 validations:
   # @todo We either need a translation map (to TCA) or simply matching convention which resolves needs to be added.
   # @todo Syntax and build-up is more than sub-optimal and needs a complete redesign and implementation.
+  #
   # <identifier>:
   #   <propertyName>:
-  #      - required
-  #      - email
-  #      - disabled
-  #      - readonly
+  #      - required   # must not be empty; adds the "required" flag to the TCA column
+  #      - email      # must be an email address; renders an email input
+  #      - number     # renders a number input; adds no further validation
+  #      - disabled   # must not be edited; implies "readonly" and cancels "required"
+  #      - readonly   # shown but not writable; cancels "required"
+  #
+  # Flag names are matched case insensitively, anything not listed above is ignored. A "disabled" or
+  # "readonly" property is never written by the frontend transformation, which is what protects
+  # already stored data from being emptied by a submitted form.
   contract:
     position:
       - required
