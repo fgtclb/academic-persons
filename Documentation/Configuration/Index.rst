@@ -10,3 +10,4 @@ Configuration
 
    General/Index
    Validations/Index
+   RouteEnhancers/Index
