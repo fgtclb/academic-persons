@@ -1,0 +1,16 @@
+# The "standalone" flavour: everything the aggregate delivers, plus a page
+# object.
+#
+# It is meant for an installation without a site package of its own. The page
+# object is the only payload of this set, which is why "typoscript" points at a
+# folder of its own instead of at one of the component folders - the plugin
+# configuration arrives through the dependency below, and pointing at a
+# component folder here would parse it twice.
+#
+# It is an alternative to "fgtclb/academic-persons", not an addition to it: a
+# site package that ships its own page object must not include this set.
+name: fgtclb/academic-persons-standalone
+label: Academic Persons Standalone
+dependencies:
+  - fgtclb/academic-persons
+typoscript: 'EXT:academic_persons/Configuration/TypoScript/StandalonePage/'

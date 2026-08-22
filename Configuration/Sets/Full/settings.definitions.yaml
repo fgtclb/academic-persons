@@ -1,3 +1,14 @@
+# Site settings of the shared "plugin.tx_academicpersons" block.
+#
+# Every path below is also assigned in
+# "Configuration/TypoScript/Default/constants.typoscript", and the default has
+# to be the same in both files: a site that uses the site set and the static
+# template reads the constants after the site settings, so a differing default
+# resets what the integrator configured, silently.
+#
+# The file used to exist twice, once per set folder, byte for byte. It now lives
+# with the aggregate set only - see "config.yaml" next to it for what that means
+# for a site that depends on a single component.
 categories:
   academic:
     label: 'Academic'
@@ -20,7 +31,7 @@ settings:
     label: 'Sort by'
     category: academic.persons
     type: string
-    default: title
+    default: lastName
   plugin.tx_academicpersons.demand.sortByDirection:
     label: 'Sort by direction'
     category: academic.persons

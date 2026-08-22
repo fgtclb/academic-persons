@@ -1,0 +1,25 @@
+# The page object of the "standalone" flavour, and nothing else.
+#
+# It is meant for an installation that has no site package of its own and wants
+# the plugins of this extension rendered on a plain Bootstrap page - a demo, a
+# test instance, an integration sandbox. It carries no plugin configuration:
+# that is what "Configuration/TypoScript/Default/" holds, and the set
+# "fgtclb/academic-persons-standalone" pulls it in through its dependency on
+# "fgtclb/academic-persons". The static counterpart
+# "Configuration/TypoScript/Standalone" does the same through its
+# "include_static_file.txt".
+page = PAGE
+page {
+  typeNum = 0
+
+  10 < styles.content.get
+
+  includeCSS {
+    bootstrap = https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css
+    bootstrap.external = 1
+  }
+  includeJSFooter {
+    bootstrap = https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js
+    bootstrap.external = 1
+  }
+}

@@ -50,13 +50,13 @@ final class AcademicPersonsListAndDetailPluginTest extends AbstractAcademicPerso
             typoScriptFiles: [
                 'constants' => [
                     'EXT:fluid_styled_content/Configuration/TypoScript/constants.typoscript',
-                    'EXT:academic_persons/Configuration/TypoScript/constants.typoscript',
+                    'EXT:academic_persons/Configuration/TypoScript/Default/constants.typoscript',
                     'EXT:test_plugin_templates/Configuration/TypoScript/constants.typoscript',
                     'EXT:academic_persons/Tests/Functional/Plugins/Fixtures/TypoScript/Constants/PluginConfiguration.typoscript',
                 ],
                 'setup' => [
                     'EXT:fluid_styled_content/Configuration/TypoScript/setup.typoscript',
-                    'EXT:academic_persons/Configuration/TypoScript/setup.typoscript',
+                    'EXT:academic_persons/Configuration/TypoScript/Default/setup.typoscript',
                     'EXT:test_plugin_templates/Configuration/TypoScript/setup.typoscript',
                     'EXT:academic_persons/Tests/Functional/Plugins/Fixtures/TypoScript/Setup/Rendering.typoscript',
                 ],

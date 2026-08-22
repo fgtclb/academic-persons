@@ -1,4 +1,4 @@
-@import 'EXT:academic_persons/Configuration/TypoScript/constants.typoscript'
+@import 'EXT:academic_persons/Configuration/TypoScript/Default/constants.typoscript'
 
 plugin.tx_academicpersons {
   view {

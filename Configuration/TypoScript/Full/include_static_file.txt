@@ -1,0 +1,6 @@
+EXT:academic_persons/Configuration/TypoScript/List,
+EXT:academic_persons/Configuration/TypoScript/ListAndDetail,
+EXT:academic_persons/Configuration/TypoScript/Detail,
+EXT:academic_persons/Configuration/TypoScript/Card,
+EXT:academic_persons/Configuration/TypoScript/SelectedProfiles,
+EXT:academic_persons/Configuration/TypoScript/SelectedContracts

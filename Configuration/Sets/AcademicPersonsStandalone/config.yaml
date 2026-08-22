@@ -1,4 +1,0 @@
-name: fgtclb/academic-persons-standalone
-label: Academic Persons Standalone
-dependencies:
-  - fgtclb/academic-base-ctype-group

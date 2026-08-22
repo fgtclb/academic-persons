@@ -1,0 +1,21 @@
+# Aggregate set: everything this extension ships, in one dependency.
+#
+# It carries no TypoScript and no page TSconfig of its own - each component is
+# delivered by the set that owns it, and listing a payload here would parse the
+# same files a second time.
+#
+# What it does carry is "settings.definitions.yaml": the settings belong to the
+# shared "plugin.tx_academicpersons" block, not to any single content element,
+# and a set definition can only declare them next to its own "config.yaml". A
+# site that depends on a component set alone therefore still gets the defaults
+# of "Configuration/TypoScript/Default/constants.typoscript", but cannot
+# override them through site settings - depend on this set for that.
+name: fgtclb/academic-persons
+label: Academic Persons
+dependencies:
+  - fgtclb/academic-persons-list
+  - fgtclb/academic-persons-list-and-detail
+  - fgtclb/academic-persons-detail
+  - fgtclb/academic-persons-card
+  - fgtclb/academic-persons-selected-profiles
+  - fgtclb/academic-persons-selected-contracts

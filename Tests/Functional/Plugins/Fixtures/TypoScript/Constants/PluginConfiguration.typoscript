@@ -1,0 +1,16 @@
+# Plugin constants the rendering tests pin, loaded last so it wins over what the
+# extension ships.
+#
+# The extension defaults to grouping a profile list by the first letter of the last name.
+# The tests below this file are about ordering, localization and pagination, and their
+# templates render a different markup for a grouped list, so they turn grouping off and
+# assert the flat list. A test that is about grouping sets the constant itself.
+plugin.tx_academicpersons.demand.groupBy =
+
+# The extension defaults to sorting by last name. Before the defaults of the two
+# delivery mechanisms were reconciled, the shipped value was "title", which
+# "demand.allowedSortByValues" does not accept and
+# "ProfileRepository::getOrderingsFromDemand()" therefore discarded - these tests were
+# written against that unordered result. They are about localization, not ordering, so
+# they keep asserting it. A test that is about ordering sets the constant itself.
+plugin.tx_academicpersons.demand.sortBy =

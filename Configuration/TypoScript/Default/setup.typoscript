@@ -1,3 +1,12 @@
+# The setup of the plugin configuration all content elements of this extension share.
+#
+# See "constants.typoscript" next to it for why one shared block exists instead
+# of six copies. Every component folder reaches this file through its own
+# "include_static_file.txt", so a site that includes all six components parses
+# it six times. That is harmless on purpose: everything here is a plain
+# assignment, and the one list built with "addToList" - the
+# "ignoreFlexFormSettingsIfEmpty" block imported at the end - only ever gains
+# duplicates of its own entries, which Extbase resolves to the same result.
 plugin.tx_academicpersons {
   settings {
     detailPid = {$plugin.tx_academicpersons.detailPid}
