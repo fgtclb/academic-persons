@@ -49,7 +49,6 @@ mod.wizards.newContentElement.wizardItems.academic {
       }
     }
   }
-  show := addToList(academicpersons_list,academicpersons_detail,academicpersons_listanddetail,academicpersons_card,academicpersons_selectedprofiles,academicpersons_selectedcontracts)
 }
 
 TCEFORM.tt_content {
