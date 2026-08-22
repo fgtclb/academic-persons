@@ -1,0 +1,19 @@
+# The profile list content element.
+#
+# "typoscript" points at the folder that "Configuration/TCA/Overrides/sys_template.php"
+# registers as a static template, and "pagets" at the file that
+# "Configuration/TCA/Overrides/pages.php" registers - there is exactly one
+# physical copy of each, so the two delivery mechanisms can never drift apart.
+# Site sets arrived in TYPO3 v13.1, so on TYPO3 v12 this file is never read and
+# the static registration is the only mechanism there is.
+#
+# The TypoScript folder holds nothing but an "include_static_file.txt" naming
+# "Configuration/TypoScript/Default": all six content elements of this extension
+# are driven by the one plugin namespace "plugin.tx_academicpersons", and that
+# block is shipped once instead of six times.
+name: fgtclb/academic-persons-list
+label: 'Academic Persons: Profile list'
+dependencies:
+  - fgtclb/academic-base-ctype-group
+typoscript: 'EXT:academic_persons/Configuration/TypoScript/List/'
+pagets: 'EXT:academic_persons/Configuration/TSconfig/List/page.tsconfig'

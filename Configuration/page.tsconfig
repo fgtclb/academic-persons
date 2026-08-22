@@ -1,1 +1,20 @@
-@import 'EXT:academic_persons/Configuration/TSconfig/page.tsconfig'
+# Page TSconfig of this extension, auto-included for the whole installation.
+#
+# TYPO3 reads "Configuration/page.tsconfig" of every active extension since
+# v12.0 (Feature: #96614), so this file arrives on both core versions this
+# branch supports. It is loaded on every site, whatever the site configuration
+# says, which makes it the right place for exactly one thing: the content
+# elements of this extension are hidden here, and re-enabled per component by
+# the page TSconfig of that component.
+#
+# The order TYPO3 merges page TSconfig in is package files first, then - on
+# TYPO3 v13 - the files the site sets deliver, then the page field
+# "Page TSconfig" of the rootline, then the page record. Both ways to re-enable
+# a content element therefore come after this file and win over it. On TYPO3 v12
+# there is no set layer at all, so the page field is the only one of the two.
+TCEFORM.tt_content.CType.removeItems := addToList(academicpersons_list)
+TCEFORM.tt_content.CType.removeItems := addToList(academicpersons_listanddetail)
+TCEFORM.tt_content.CType.removeItems := addToList(academicpersons_detail)
+TCEFORM.tt_content.CType.removeItems := addToList(academicpersons_card)
+TCEFORM.tt_content.CType.removeItems := addToList(academicpersons_selectedprofiles)
+TCEFORM.tt_content.CType.removeItems := addToList(academicpersons_selectedcontracts)

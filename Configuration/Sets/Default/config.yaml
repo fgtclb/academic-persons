@@ -1,0 +1,10 @@
+# The name this extension published before the configuration was cut per
+# component, kept so that a site configuration depending on it keeps working.
+#
+# It is an alias with no payload: it delivers exactly what
+# "fgtclb/academic-persons" delivers. New site configurations should name the
+# aggregate, or the component sets they actually need.
+name: fgtclb/academic-persons-default
+label: Academic Persons Default
+dependencies:
+  - fgtclb/academic-persons

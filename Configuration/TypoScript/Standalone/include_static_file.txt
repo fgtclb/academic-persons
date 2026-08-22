@@ -1,0 +1,2 @@
+EXT:academic_persons/Configuration/TypoScript/Full,
+EXT:academic_persons/Configuration/TypoScript/StandalonePage

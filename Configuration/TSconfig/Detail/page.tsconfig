@@ -1,0 +1,31 @@
+# Page TSconfig of the profile detail content element.
+#
+# Delivered by the set "fgtclb/academic-persons-detail" and registered for the
+# page field "Page TSconfig" by "Configuration/TCA/Overrides/pages.php" - one
+# physical copy, two ways to it. Site sets exist on TYPO3 v13 only, so on v12
+# the page field is the only way to this file.
+#
+# The content element is hidden for the whole installation by
+# "Configuration/page.tsconfig"; this file is what makes it selectable again,
+# so it applies where the component is actually wanted instead of everywhere.
+#
+# The "show" entry below is what TYPO3 v12 reads to decide whether the wizard
+# element defined here is offered at all
+# ("NewContentElementController::getWizards()"). TYPO3 v13 builds the wizard
+# from TCA instead and ignores the key, so it travels with the element
+# definition rather than living in a file of its own.
+TCEFORM.tt_content.CType.removeItems := removeFromList(academicpersons_detail)
+
+mod.wizards.newContentElement.wizardItems.academic {
+  elements {
+    academicpersons_detail {
+      iconIdentifier = persons_icon
+      title = LLL:EXT:academic_persons/Resources/Private/Language/locallang_be.xlf:newContentElement.wizardItems.academic.detail.title
+      description = LLL:EXT:academic_persons/Resources/Private/Language/locallang_be.xlf:newContentElement.wizardItems.academic.detail.description
+      tt_content_defValues {
+        CType = academicpersons_detail
+      }
+    }
+  }
+  show := addToList(academicpersons_detail)
+}

@@ -88,12 +88,12 @@ final class UsingDefaultProfileFactoryOnlyTest extends AbstractAcademicPersonsTe
     ): void {
         $constants ??= [
             'EXT:fluid_styled_content/Configuration/TypoScript/constants.typoscript',
-            'EXT:academic_persons/Configuration/TypoScript/constants.typoscript',
+            'EXT:academic_persons/Configuration/TypoScript/Default/constants.typoscript',
             'EXT:academic_persons/Tests/Functional/Service/ProfileCreateCommandService/Fixtures/TypoScript/Constants/constants.typoscript',
         ];
         $setup ??= [
             'EXT:fluid_styled_content/Configuration/TypoScript/setup.typoscript',
-            'EXT:academic_persons/Configuration/TypoScript/setup.typoscript',
+            'EXT:academic_persons/Configuration/TypoScript/Default/setup.typoscript',
             'EXT:academic_persons/Tests/Functional/Service/ProfileCreateCommandService/Fixtures/TypoScript/Setup/setup.typoscript',
         ];
         $this->setUpFrontendRootPage(

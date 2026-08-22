@@ -1,11 +1,25 @@
+# The constants of the plugin configuration all content elements of this extension share.
+#
+# The six content elements are driven by one Extbase plugin namespace,
+# "plugin.tx_academicpersons", so there is one physical copy of this block and
+# every component folder names it in its own "include_static_file.txt" instead
+# of repeating it. The folder keeps the name "Default" because it is the value
+# stored in every "sys_template" record that selected it so far.
+#
+# Every default below is also declared in the "settings.definitions.yaml" of the
+# aggregate set, and the two have to stay identical: a site that uses the site
+# set and the static template reads this file after the site settings, so a
+# default that differs here silently resets what the integrator configured. Site
+# sets exist on TYPO3 v13 only, but the defaults have to match on both versions
+# anyway - an installation upgrades, the files do not.
 plugin.tx_academicpersons {
   # cat=plugin.tx_academicpersons//a; type=string; label=Detail page PID
-  detailPid =
+  detailPid = 0
   demand {
     # cat=plugin.tx_academicpersons//a; type=string; label=Group by
-    groupBy =
+    groupBy = lastNameAlpha
     # cat=plugin.tx_academicpersons//a; type=string; label=Sort by
-    sortBy =
+    sortBy = lastName
     # cat=plugin.tx_academicpersons//a; type=string; label=Sort by direction
     sortByDirection = asc
   }

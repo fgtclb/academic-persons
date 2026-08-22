@@ -1,0 +1,11 @@
+# Aggregate page TSconfig: every component this extension ships.
+#
+# The counterpart of the set "fgtclb/academic-persons" for installations that
+# include page TSconfig through the page field "Page TSconfig" instead of
+# through a site set - which on TYPO3 v12 is every installation.
+@import 'EXT:academic_persons/Configuration/TSconfig/List/page.tsconfig'
+@import 'EXT:academic_persons/Configuration/TSconfig/ListAndDetail/page.tsconfig'
+@import 'EXT:academic_persons/Configuration/TSconfig/Detail/page.tsconfig'
+@import 'EXT:academic_persons/Configuration/TSconfig/Card/page.tsconfig'
+@import 'EXT:academic_persons/Configuration/TSconfig/SelectedProfiles/page.tsconfig'
+@import 'EXT:academic_persons/Configuration/TSconfig/SelectedContracts/page.tsconfig'
