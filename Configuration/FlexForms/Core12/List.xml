@@ -212,7 +212,7 @@
                     <maxitems>99</maxitems>
                     <size>3</size>
                 </config>
-            </settings.organisationalUnits>s
+            </settings.organisationalUnits>
             <settings.functionTypes>
                 <label>LLL:EXT:academic_persons/Resources/Private/Language/locallang_be.xlf:flexform.el.functionTypes.label</label>
                 <config>
