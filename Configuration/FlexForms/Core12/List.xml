@@ -45,8 +45,8 @@
                     <renderType>selectSingle</renderType>
                     <items>
                         <numIndex index="0" type="array">
-                            <numIndex index="0">LLL:EXT:academic_persons/Resources/Private/Language/locallang_be.xlf:flexform.el.groupBy.items.none</numIndex>
-                            <numIndex index="1"></numIndex>
+                            <label>LLL:EXT:academic_persons/Resources/Private/Language/locallang_be.xlf:flexform.el.groupBy.items.none</label>
+                            <value></value>
                         </numIndex>
                     </items>
                     <itemsProcFunc>FGTCLB\AcademicPersons\Tca\DemandValues->getGroupByValues</itemsProcFunc>
@@ -59,8 +59,8 @@
                     <renderType>selectSingle</renderType>
                     <items>
                         <numIndex index="0" type="array">
-                            <numIndex index="0">LLL:EXT:academic_persons/Resources/Private/Language/locallang_be.xlf:flexform.el.sortBy.items.none</numIndex>
-                            <numIndex index="1"></numIndex>
+                            <label>LLL:EXT:academic_persons/Resources/Private/Language/locallang_be.xlf:flexform.el.sortBy.items.none</label>
+                            <value></value>
                         </numIndex>
                     </items>
                     <itemsProcFunc>FGTCLB\AcademicPersons\Tca\DemandValues->getSortByValues</itemsProcFunc>
@@ -73,12 +73,12 @@
                     <renderType>selectSingle</renderType>
                     <items>
                         <numIndex index="0" type="array">
-                            <numIndex index="0">LLL:EXT:academic_persons/Resources/Private/Language/locallang_be.xlf:flexform.el.sortByDirection.items.asc</numIndex>
-                            <numIndex index="1">asc</numIndex>
+                            <label>LLL:EXT:academic_persons/Resources/Private/Language/locallang_be.xlf:flexform.el.sortByDirection.items.asc</label>
+                            <value>asc</value>
                         </numIndex>
                         <numIndex index="1" type="array">
-                            <numIndex index="0">LLL:EXT:academic_persons/Resources/Private/Language/locallang_be.xlf:flexform.el.sortByDirection.items.desc</numIndex>
-                            <numIndex index="1">desc</numIndex>
+                            <label>LLL:EXT:academic_persons/Resources/Private/Language/locallang_be.xlf:flexform.el.sortByDirection.items.desc</label>
+                            <value>desc</value>
                         </numIndex>
                     </items>
                     <default>asc</default>
@@ -91,7 +91,7 @@
                     <renderType>checkboxToggle</renderType>
                     <items>
                         <numIndex index="0" type="array">
-                            <numIndex index="0">LLL:EXT:academic_persons/Resources/Private/Language/locallang_be.xlf:flexform.el.paginationEnabled.items.0.label</numIndex>
+                            <label>LLL:EXT:academic_persons/Resources/Private/Language/locallang_be.xlf:flexform.el.paginationEnabled.items.0.label</label>
                             <labelChecked>Enabled</labelChecked>
                             <labelUnchecked>Disabled</labelUnchecked>
                         </numIndex>
@@ -105,7 +105,7 @@
                     <renderType>checkboxToggle</renderType>
                     <items>
                         <numIndex index="0" type="array">
-                            <numIndex index="0">LLL:EXT:academic_persons/Resources/Private/Language/locallang_be.xlf:flexform.el.alphabetPaginationEnabled.items.0.label</numIndex>
+                            <label>LLL:EXT:academic_persons/Resources/Private/Language/locallang_be.xlf:flexform.el.alphabetPaginationEnabled.items.0.label</label>
                             <labelChecked>Enabled</labelChecked>
                             <labelUnchecked>Disabled</labelUnchecked>
                         </numIndex>
@@ -148,7 +148,7 @@
                     <renderType>checkboxToggle</renderType>
                     <items>
                         <numIndex index="0" type="array">
-                            <numIndex index="0">LLL:EXT:academic_persons/Resources/Private/Language/locallang_be.xlf:flexform.el.viewMode.enabled.items.0.label</numIndex>
+                            <label>LLL:EXT:academic_persons/Resources/Private/Language/locallang_be.xlf:flexform.el.viewMode.enabled.items.0.label</label>
                             <labelChecked>Enabled</labelChecked>
                             <labelUnchecked>Disabled</labelUnchecked>
                         </numIndex>
@@ -162,12 +162,12 @@
                     <renderType>selectSingle</renderType>
                     <items>
                         <numIndex index="1" type="array">
-                            <numIndex index="0">LLL:EXT:academic_persons/Resources/Private/Language/locallang_be.xlf:flexform.el.viewMode.default.I.list</numIndex>
-                            <numIndex index="1">list</numIndex>
+                            <label>LLL:EXT:academic_persons/Resources/Private/Language/locallang_be.xlf:flexform.el.viewMode.default.I.list</label>
+                            <value>list</value>
                         </numIndex>
                         <numIndex index="0" type="array">
-                            <numIndex index="0">LLL:EXT:academic_persons/Resources/Private/Language/locallang_be.xlf:flexform.el.viewMode.default.I.table</numIndex>
-                            <numIndex index="1">table</numIndex>
+                            <label>LLL:EXT:academic_persons/Resources/Private/Language/locallang_be.xlf:flexform.el.viewMode.default.I.table</label>
+                            <value>table</value>
                         </numIndex>
                     </items>
                     <default>list</default>
@@ -180,7 +180,7 @@
                     <renderType>checkboxToggle</renderType>
                     <items>
                         <numIndex index="0" type="array">
-                            <numIndex index="0">LLL:EXT:academic_persons/Resources/Private/Language/locallang_be.xlf:flexform.el.fallbackForNonTranslated.items.0.label</numIndex>
+                            <label>LLL:EXT:academic_persons/Resources/Private/Language/locallang_be.xlf:flexform.el.fallbackForNonTranslated.items.0.label</label>
                             <labelChecked>Enabled</labelChecked>
                             <labelUnchecked>Disabled</labelUnchecked>
                         </numIndex>
