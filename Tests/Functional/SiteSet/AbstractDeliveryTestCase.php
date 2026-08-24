@@ -16,7 +16,7 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
  * The classes are split by core version rather than by mechanism because only one of
  * the two mechanisms exists on both: site sets arrived in TYPO3 v13.1
  * (Feature: #103437), while the static template and the page field `Page TSconfig`
- * work identically on v12 and v13. `StaticDeliveryTest` therefore runs on both
+ * work identically on v12 and v13. `StaticTemplateDeliveryTest` therefore runs on both
  * versions and `Core13\SiteSet\SiteSetDeliveryTest` on v13 only.
  *
  * This extension adds one failure mode the reference implementation does not have. Its

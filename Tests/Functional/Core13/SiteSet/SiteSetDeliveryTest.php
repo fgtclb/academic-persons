@@ -30,7 +30,7 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
  * `Build/phpstan/Core12/phpstan.neon` excludes the `Core12` test folder through a glob
  * that allows exactly one directory level between `Tests` and `Core12`.
  *
- * The static half of the same contract is asserted by `SiteSet\StaticDeliveryTest`,
+ * The static half of the same contract is asserted by `SiteSet\StaticTemplateDeliveryTest`,
  * which runs on both core versions.
  */
 #[Group('not-core-12')]
