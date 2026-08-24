@@ -1,8 +1,6 @@
 <T3DataStructure>
     <ROOT>
-        <TCEforms>
-            <sheetTitle>LLL:EXT:academic_persons/Resources/Private/Language/locallang_be.xlf:flexform.tab.settings</sheetTitle>
-        </TCEforms>
+        <sheetTitle>LLL:EXT:academic_persons/Resources/Private/Language/locallang_be.xlf:flexform.tab.settings</sheetTitle>
         <type>array</type>
         <el>
             <settings.detailPid>
