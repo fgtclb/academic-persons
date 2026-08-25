@@ -45,8 +45,7 @@ What the files enhance
 Which file to import
 --------------------
 
-The three enhancers are bound to three different plugins, so they never collide
-and importing more than one is normal:
+Which of them you import follows from which plugins the site actually uses:
 
 *   A site that puts the :guilabel:`List` plugin on one page and the
     :guilabel:`Detail` plugin on another — the usual setup, where the list
@@ -55,24 +54,74 @@ and importing more than one is normal:
     :file:`Detail.yaml`.
 *   A site that puts the single :guilabel:`ListAndDetail` plugin on one page
     imports :file:`ListAndDetail.yaml` only.
-*   A site that uses both variants imports all three.
+*   A site that uses both variants imports all three, and then has to bound
+    each of them to its own pages — see the next section.
 
 The remaining plugins of this extension — :yaml:`SelectedProfiles`,
 :yaml:`SelectedContracts` and :yaml:`Card` — take no frontend arguments, so no
 enhancer is shipped for them.
 
-Importing into a site configuration
------------------------------------
+Limiting an enhancer to its pages
+---------------------------------
 
-Add the resources to the :yaml:`imports` of the site:
+An enhancer is offered to **every** page of the site unless it says otherwise,
+and TYPO3 takes the first candidate route whose path matches *and* whose
+aspects resolve. Two enhancers are not kept apart by belonging to different
+plugins, nor by carrying different keys — neither is what the matcher looks at.
+
+The three files of this extension describe the same two views, so their routes
+overlap by construction:
+
+..  list-table::
+    :header-rows: 1
+
+    *   -   Route
+        -   Declared in
+    *   -   :yaml:`/{profile_name}`
+        -   :file:`Detail.yaml` and :file:`ListAndDetail.yaml`
+    *   -   :yaml:`{localized_page}-{page}`
+        -   :file:`List.yaml` and :file:`ListAndDetail.yaml`
+    *   -   :yaml:`/{letter}`
+        -   :file:`List.yaml` and :file:`ListAndDetail.yaml`
+
+Each pair is identical down to the mapper, so importing more than one file
+without saying where it applies means the file imported first takes those URLs
+on every page of the site. The plugin on the other page then never receives its
+argument: the dedicated detail page answers ``404``, and the combined
+plugin renders the unfiltered list where a letter was asked for.
+
+Only resolving is ambiguous. Generating a URL is scoped to the plugin namespace
+being linked, so the links keep looking right, which is why this surfaces as a
+broken page rather than as a broken link.
+
+:yaml:`limitToPages` is the answer, and with it in place the import order no
+longer matters:
 
 ..  code-block:: yaml
     :caption: config/sites/my_site/config.yaml
 
     imports:
       - resource: 'EXT:academic_persons/Configuration/Routes/List.yaml'
-      - resource: 'EXT:academic_persons/Configuration/Routes/Detail.yaml'
       - resource: 'EXT:academic_persons/Configuration/Routes/ListAndDetail.yaml'
+      - resource: 'EXT:academic_persons/Configuration/Routes/Detail.yaml'
+
+    routeEnhancers:
+      ProfileListPlugin:
+        limitToPages: [12, 13]
+      ProfileListAndDetailPlugin:
+        limitToPages: [14]
+      ProfileDetailPlugin:
+        limitToPages: [15]
+
+The uids are those of the pages carrying the plugin in question, and they are
+the uids of the **default language**: matching derives the page as
+:php:`l10n_parent ?: uid`, so one list covers every translation of that page.
+Plain page uids work on every TYPO3 version this extension supports.
+
+A site that imports a single file needs no limitation for this extension, but
+adding it is still worth the two lines. What keeps a route path of the same
+shape from another extension apart is only that its mapper rejects the value —
+a slug that happens to exist in both tables is enough to make the two compete.
 
 What the URLs look like
 -----------------------
