@@ -289,6 +289,82 @@ final class RecordSynchronizerTest extends AbstractAcademicPersonsTestCase
     }
 
     /**
+     * ACE-487: exclude columns of already-translated CHILD records are re-propagated by
+     * the update path - the datamap covers the whole default-language inline tree, not
+     * just the profile row. The fixture holds stale values on both levels below the
+     * profile: the contract translation carries a stale `valid_from` against the
+     * default's value, and the address translation (a grandchild) carries type
+     * `private` against the default's `business`. Translatable columns of the same
+     * children stay untouched - the translated contract position survives.
+     *
+     * The fixture timestamps are midnight values on purpose: `valid_from` is
+     * `type=datetime, format=date`, and since TYPO3 v14 (#105549) the DataHandler
+     * normalizes such a value through `DateTimeImmutable` - a non-midnight timestamp
+     * would be rewritten, on v14 only, and the assertion would compare apples to
+     * normalized oranges.
+     */
+    #[Test]
+    public function synchronizeUpdatesExcludeColumnsOfExistingChildTranslations(): void
+    {
+        $this->importCSVDataSet(__DIR__ . '/Fixtures/ProfileWithStaleChildTranslations.csv');
+
+        $this->synchronizeProfile(1);
+
+        $translatedContract = $this->fetchTranslation(self::TABLE_CONTRACT, 1);
+        $this->assertNotNull($translatedContract);
+        $this->assertSame(1700006400, (int)$translatedContract['valid_from']);
+        $this->assertSame('Professorin', $translatedContract['position']);
+        $translatedAddress = $this->fetchTranslation(self::TABLE_ADDRESS, 1);
+        $this->assertNotNull($translatedAddress);
+        $this->assertSame('business', $translatedAddress['type']);
+    }
+
+    /**
+     * ACE-487 pin: a file reference added to the default record AFTER its translation
+     * exists IS carried over by the update path - core's `DataMapProcessor`
+     * synchronizes all `l10n_mode=exclude` columns of a record the datamap touches
+     * from its database row, the relational ones included. This was recorded as a gap
+     * by the ACE-483 report; the probe disproved it, and this test keeps it true.
+     */
+    #[Test]
+    public function synchronizeCarriesLateFileReferenceIntoExistingTranslation(): void
+    {
+        $this->importCSVDataSet(__DIR__ . '/Fixtures/ProfileWithTranslationAndLateRelations.csv');
+
+        $this->synchronizeProfile(1);
+
+        $translation = $this->fetchTranslation(self::TABLE_PROFILE, 1);
+        $this->assertNotNull($translation);
+        $this->assertSame(1, (int)$translation['image']);
+        $referenceRows = $this->fetchAllRecords('sys_file_reference');
+        $this->assertCount(2, $referenceRows);
+        $translatedReference = $referenceRows[1];
+        $this->assertSame(1, (int)$translatedReference['sys_language_uid']);
+        $this->assertSame(1, (int)$translatedReference['uid_local']);
+        $this->assertSame((int)$translation['uid'], (int)$translatedReference['uid_foreign']);
+    }
+
+    /**
+     * The MM counterpart of the pin above: an MM relation added to the default record
+     * after its translation exists reaches the translation as an own MM row.
+     */
+    #[Test]
+    public function synchronizeCarriesLateMmRelationIntoExistingTranslation(): void
+    {
+        $this->importCSVDataSet(__DIR__ . '/Fixtures/ProfileWithTranslationAndLateRelations.csv');
+
+        $this->synchronizeProfile(1);
+
+        $translation = $this->fetchTranslation(self::TABLE_PROFILE, 1);
+        $this->assertNotNull($translation);
+        $this->assertSame(1, (int)$translation['frontend_users']);
+        $mmRows = $this->fetchAllRecords('tx_academicpersons_feuser_mm', 'uid_local');
+        $this->assertCount(2, $mmRows);
+        $this->assertSame((int)$translation['uid'], (int)$mmRows[1]['uid_local']);
+        $this->assertSame(10, (int)$mmRows[1]['uid_foreign']);
+    }
+
+    /**
      * Flipped defect pin (ACE-483): MM relations are synchronised by the `localize`
      * command. The translation gets its own `tx_academicpersons_feuser_mm` row pointing
      * at the same frontend user, so its `frontend_users` counter of 1 is backed by a

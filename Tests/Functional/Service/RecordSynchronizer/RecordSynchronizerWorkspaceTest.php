@@ -210,6 +210,44 @@ final class RecordSynchronizerWorkspaceTest extends AbstractAcademicPersonsTestC
     }
 
     /**
+     * ACE-487: the update path in a workspace propagates the workspace-overlaid child
+     * values, not the live ones. On top of the shared fixture, a live profile
+     * translation and a live, stale contract translation exist, and the contract's
+     * workspace version (uid 103) gets a draft `valid_from`. The workspace run writes
+     * the DRAFT value into a versioned row of the contract translation; every live row
+     * - the stale translation included - stays byte-identical. Without the overlay the
+     * walk would submit the live contract's value (0) and revert the draft.
+     */
+    #[Test]
+    public function workspaceRunPropagatesDraftChildExcludeValuesIntoVersionedTranslationRows(): void
+    {
+        $this->importCSVDataSet(__DIR__ . '/Fixtures/WorkspaceProfileStaleTranslation.csv');
+        $this->getConnectionPool()->getConnectionForTable(self::TABLE_CONTRACT)
+            ->update(self::TABLE_CONTRACT, ['valid_from' => 1700006400], ['uid' => 103]);
+        $backendUser = $this->setUpBackendUser(1);
+        $backendUser->workspace = 1;
+
+        $this->synchronizeProfile(1);
+
+        $liveTranslation = null;
+        $versionedTranslationRows = [];
+        foreach ($this->fetchAllRecords(self::TABLE_CONTRACT) as $contractRow) {
+            if ((int)$contractRow['uid'] === 2) {
+                $liveTranslation = $contractRow;
+            }
+            if ((int)$contractRow['t3ver_oid'] === 2) {
+                $versionedTranslationRows[] = $contractRow;
+            }
+        }
+        $this->assertNotNull($liveTranslation);
+        $this->assertSame(946684800, (int)$liveTranslation['valid_from'], 'The live translation row changed.');
+        $this->assertSame(0, (int)$liveTranslation['t3ver_wsid']);
+        $this->assertCount(1, $versionedTranslationRows);
+        $this->assertSame(1, (int)$versionedTranslationRows[0]['t3ver_wsid']);
+        $this->assertSame(1700006400, (int)$versionedTranslationRows[0]['valid_from'], 'The draft value did not reach the versioned translation row.');
+    }
+
+    /**
      * @param array<int, string|int> $allowedLanguageIds
      */
     private function synchronizeProfile(int $uid, array $allowedLanguageIds = [1]): void

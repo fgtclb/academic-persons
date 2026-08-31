@@ -11,6 +11,7 @@ use Symfony\Component\DependencyInjection\Attribute\Autoconfigure;
 use TYPO3\CMS\Backend\Domain\Repository\Localization\LocalizationRepository;
 use TYPO3\CMS\Backend\Utility\BackendUtility;
 use TYPO3\CMS\Core\Authentication\BackendUserAuthentication;
+use TYPO3\CMS\Core\Database\RelationHandler;
 use TYPO3\CMS\Core\DataHandling\DataHandler;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
@@ -21,10 +22,13 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
  * A missing translation is created with a `localize` command, which carries the full
  * inline child tree, file references, MM relations, `l10n_diffsource`, the reference
  * index, history and all DataHandler hooks. For an existing translation, the current
- * values of the `l10n_mode=exclude` columns of the default record are re-submitted as
- * a datamap, so core's DataMapProcessor propagates them into every translation, and an
- * `inlineLocalizeSynchronize` command per TCA inline column carries children added to
- * the default record after the translation was created - including their own children.
+ * values of the `l10n_mode=exclude` columns of the default record *and of every
+ * default-language record in its inline child tree* are re-submitted as one datamap,
+ * so core's DataMapProcessor propagates them into every translation (ACE-487) - it
+ * also synchronizes the relational exclude columns (file references, MM) from the
+ * database rows on its own. An `inlineLocalizeSynchronize` command per TCA inline
+ * column carries children added to the default record after the translation was
+ * created - including their own children.
  *
  * Each command runs through its own DataHandler instance: a cmdmap can hold only one
  * command per record uid (the command name is the array key), so `localize` per
@@ -47,8 +51,13 @@ class RecordSynchronizer implements RecordSynchronizerInterface
     /**
      * TCA column types whose database value does not survive a verbatim datamap
      * re-submission: relational values are stored as counters or CSV uid lists the
-     * DataHandler would reinterpret. Their create-path synchronization is covered by
-     * `localize`; on the update path they are deliberately left alone.
+     * DataHandler would reinterpret. Only the value-like exclude columns are therefore
+     * re-submitted - which is enough for the relational ones too: `DataMapProcessor`
+     * synchronizes ALL `l10n_mode=exclude` columns of a record the datamap touches,
+     * reading their values from the database row (`populateTranslationItem()` -
+     * file/inline via `synchronizeReferences()`, MM via `synchronizeDirectRelations()`),
+     * so a file reference or MM relation added after the translation exists is carried
+     * over without ever being part of the submitted map (probed for ACE-487).
      */
     private const NON_PROPAGATABLE_COLUMN_TYPES = ['inline', 'file', 'group', 'category', 'folder', 'passthrough'];
 
@@ -162,6 +171,15 @@ class RecordSynchronizer implements RecordSynchronizerInterface
             // A record created in another workspace is invisible to the acting one.
             return null;
         }
+        // The guards above judge the RAW row; the VALUES the update path re-submits come
+        // from the workspace overlay, so a draft edit in the acting workspace is what
+        // gets propagated - consistent with the create path, where `localize` copies
+        // the overlaid state (ACE-487). In the live workspace this is a no-op.
+        BackendUtility::workspaceOL($context->tableName, $record, $backendUser->workspace);
+        if (!is_array($record)) {
+            // Deleted or moved away in the acting workspace.
+            return null;
+        }
         return $record;
     }
 
@@ -188,8 +206,11 @@ class RecordSynchronizer implements RecordSynchronizerInterface
 
     /**
      * Re-submits the current default-record values of all propagatable
-     * `l10n_mode=exclude` columns, so `DataMapProcessor` carries them into every
-     * translation of the record.
+     * `l10n_mode=exclude` columns - of the record itself and of every default-language
+     * record in its inline child tree - as one datamap, so `DataMapProcessor` carries
+     * them into every translation of every touched record at once (ACE-487: a child's
+     * exclude value changed after the child's translation exists stayed stale before,
+     * because only the root record was part of the map).
      *
      * @param array<string, mixed> $defaultRecord
      */
@@ -198,20 +219,106 @@ class RecordSynchronizer implements RecordSynchronizerInterface
         array $defaultRecord,
         BackendUserAuthentication $backendUser,
     ): void {
-        $values = [];
-        foreach ($this->getPropagatableExcludeColumnNames($context->tableName) as $columnName) {
-            if (array_key_exists($columnName, $defaultRecord)) {
-                $values[$columnName] = $defaultRecord[$columnName];
-            }
-        }
-        if ($values === []) {
+        $datamap = [];
+        $visited = [];
+        $this->collectExcludeColumnValues(
+            $context->tableName,
+            $defaultRecord,
+            $context->defaultLanguage->getLanguageId(),
+            $backendUser,
+            $datamap,
+            $visited,
+        );
+        if ($datamap === []) {
             return;
         }
-        $this->executeDataHandler($backendUser, datamap: [
-            $context->tableName => [
-                $context->uid => $values,
-            ],
-        ]);
+        $this->executeDataHandler($backendUser, datamap: $datamap);
+    }
+
+    /**
+     * Depth-first walk over the default-language inline tree, collecting each record's
+     * propagatable exclude values into the shared datamap.
+     *
+     * Children are resolved through the `RelationHandler` with the inline column's own
+     * TCA configuration in the acting workspace, so `foreign_field`,
+     * `foreign_match_fields` and workspace overlays all behave exactly as they do for
+     * the DataHandler itself. Rows that are not in the default language are skipped -
+     * a connected child translation is reached by `DataMapProcessor` as the dependent
+     * of its default record, never directly. The visited set guards against a cyclic
+     * relation chain recursing forever.
+     *
+     * @param array<string, mixed> $record
+     * @param array<string, array<int, array<string, mixed>>> $datamap
+     * @param array<string, true> $visited
+     */
+    private function collectExcludeColumnValues(
+        string $tableName,
+        array $record,
+        int $defaultLanguageId,
+        BackendUserAuthentication $backendUser,
+        array &$datamap,
+        array &$visited,
+    ): void {
+        $uid = (int)($record['uid'] ?? 0);
+        if ($uid <= 0 || isset($visited[$tableName . ':' . $uid])) {
+            return;
+        }
+        $visited[$tableName . ':' . $uid] = true;
+        $values = [];
+        foreach ($this->getPropagatableExcludeColumnNames($tableName) as $columnName) {
+            if (array_key_exists($columnName, $record)) {
+                $values[$columnName] = $record[$columnName];
+            }
+        }
+        if ($values !== []) {
+            $datamap[$tableName][$uid] = $values;
+        }
+        foreach ($this->getInlineColumnNames($tableName) as $inlineColumnName) {
+            $columnConfiguration = $this->getTcaColumns($tableName)[$inlineColumnName]['config'] ?? [];
+            $foreignTable = $columnConfiguration['foreign_table'] ?? '';
+            if (!is_string($foreignTable) || $foreignTable === '') {
+                continue;
+            }
+            $languageField = $this->getTcaCtrlField($foreignTable, 'languageField');
+            $relationHandler = GeneralUtility::makeInstance(RelationHandler::class);
+            $relationHandler->setWorkspaceId($backendUser->workspace);
+            $relationHandler->start(
+                (string)($record[$inlineColumnName] ?? ''),
+                $foreignTable,
+                '',
+                $uid,
+                $tableName,
+                $columnConfiguration,
+            );
+            $relationHandler->processDeletePlaceholder();
+            foreach ($relationHandler->itemArray as $item) {
+                $childRecord = BackendUtility::getRecord((string)$item['table'], (int)$item['id']);
+                if ($childRecord === null) {
+                    continue;
+                }
+                // Same value provenance as the root record: the walk addresses children
+                // by their live uid, but the values submitted are the acting workspace's
+                // overlay - a draft edit of a child's exclude column is what reaches the
+                // translations, not the live state it will replace on publish (ACE-487).
+                BackendUtility::workspaceOL((string)$item['table'], $childRecord, $backendUser->workspace);
+                if (!is_array($childRecord)) {
+                    continue;
+                }
+                if ($languageField !== null
+                    && (int)($childRecord[$languageField] ?? 0) !== $defaultLanguageId
+                ) {
+                    continue;
+                }
+                $this->collectExcludeColumnValues(
+                    (string)$item['table'],
+                    $childRecord,
+                    $defaultLanguageId,
+                    $backendUser,
+                    $datamap,
+                    $visited,
+                );
+            }
+        }
     }
 
     /**

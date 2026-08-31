@@ -1,0 +1,20 @@
+"pages",
+,"uid","pid","doktype","deleted","hidden","sys_language_uid","l10n_parent","slug","title"
+,1,0,1,0,0,0,0,"/","Site Root"
+,100,1,254,0,0,0,0,"/records","Record Storage"
+"fe_users",
+,"uid","pid","username","deleted","disable"
+,10,100,"owner",0,0
+"sys_file",
+,"uid","pid","storage","type","mime_type","missing","extension","name","identifier","identifier_hash","folder_hash","sha1","size","creation_date","modification_date"
+,1,0,1,2,"image/png",0,"png","portrait.png","/images/portrait.png","d82b65d423fe4a234ed73529a68b8262c1f763dc","ca306f2df2823c083069873158fd3b91fd4ebe01","0f4c7ac72a6360b0be1b82c2a9bc5837fafddd6c",1024,1700000000,1700000000
+"tx_academicpersons_domain_model_profile",
+,"uid","pid","tstamp","deleted","hidden","sys_language_uid","l10n_parent","l10n_source","first_name","last_name","frontend_users","image"
+,1,100,1000,0,0,0,0,0,"Erika","Musterfrau",1,1
+,2,100,1000,0,0,1,1,1,"Erika","Musterfrau",0,0
+"tx_academicpersons_feuser_mm",
+,"uid_local","uid_foreign","sorting","sorting_foreign"
+,1,10,1,0
+"sys_file_reference",
+,"uid","pid","deleted","hidden","sys_language_uid","l10n_parent","uid_local","uid_foreign","tablenames","fieldname","sorting_foreign"
+,1,100,0,0,0,0,1,1,"tx_academicpersons_domain_model_profile","image",1

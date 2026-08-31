@@ -1,0 +1,16 @@
+"pages",
+,"uid","pid","doktype","deleted","hidden","sys_language_uid","l10n_parent","slug","title"
+,1,0,1,0,0,0,0,"/","Site Root"
+,100,1,254,0,0,0,0,"/records","Record Storage"
+"tx_academicpersons_domain_model_profile",
+,"uid","pid","tstamp","deleted","hidden","sys_language_uid","l10n_parent","l10n_source","first_name","last_name","contracts"
+,1,100,1000,0,0,0,0,0,"Erika","Musterfrau",1
+,2,100,1000,0,0,1,1,1,"Erika","Musterfrau",1
+"tx_academicpersons_domain_model_contract",
+,"uid","pid","tstamp","sorting","deleted","hidden","sys_language_uid","l10n_parent","l10n_source","profile","position","valid_from","physical_addresses"
+,1,100,1000,1,0,0,0,0,0,1,"Professor",1700006400,1
+,2,100,1000,1,0,0,1,1,1,2,"Professorin",946684800,1
+"tx_academicpersons_domain_model_address",
+,"uid","pid","tstamp","sorting","deleted","hidden","sys_language_uid","l10n_parent","l10n_source","contract","street","city","type"
+,1,100,1000,1,0,0,0,0,0,1,"Main Street 1","Springfield","business"
+,2,100,1000,1,0,0,1,1,1,2,"Main Street 1","Springfield","private"
