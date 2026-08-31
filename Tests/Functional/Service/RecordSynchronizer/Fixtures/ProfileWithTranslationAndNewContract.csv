@@ -1,0 +1,11 @@
+"pages",
+,"uid","pid","doktype","deleted","hidden","sys_language_uid","l10n_parent","slug","title"
+,1,0,1,0,0,0,0,"/","Site Root"
+,100,1,254,0,0,0,0,"/records","Record Storage"
+"tx_academicpersons_domain_model_profile",
+,"uid","pid","tstamp","deleted","hidden","sys_language_uid","l10n_parent","l10n_source","first_name","last_name","title"
+,1,100,1000,0,0,0,0,0,"Erika","Musterfrau","Updated Title"
+,2,100,1000,0,0,1,1,1,"Stale-First","Stale-Last","Alter Titel"
+"tx_academicpersons_domain_model_contract",
+,"uid","pid","deleted","hidden","sys_language_uid","l10n_parent","l10n_source","profile","position","sorting"
+,1,100,0,0,0,0,0,1,"Contract added after translation",1

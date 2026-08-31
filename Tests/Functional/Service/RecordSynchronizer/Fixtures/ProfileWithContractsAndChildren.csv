@@ -1,0 +1,23 @@
+"pages",
+,"uid","pid","doktype","deleted","hidden","sys_language_uid","l10n_parent","slug","title"
+,1,0,1,0,0,0,0,"/","Site Root"
+,100,1,254,0,0,0,0,"/records","Record Storage"
+"tx_academicpersons_domain_model_profile",
+,"uid","pid","deleted","hidden","sys_language_uid","l10n_parent","l10n_source","first_name","last_name","title","slug"
+,1,100,0,0,0,0,0,"Erika","Musterfrau","Prof. Dr.","erika-musterfrau"
+"tx_academicpersons_domain_model_contract",
+,"uid","pid","deleted","hidden","sys_language_uid","l10n_parent","l10n_source","profile","position","room","sorting"
+,1,100,0,0,0,0,0,1,"Professor","A 101",1
+,2,100,0,0,0,0,0,1,"Lecturer","B 202",2
+"tx_academicpersons_domain_model_address",
+,"uid","pid","deleted","hidden","sys_language_uid","l10n_parent","l10n_source","contract","street","city","sorting"
+,1,100,0,0,0,0,0,1,"Main Street 1","Springfield",1
+,2,100,0,0,0,0,0,2,"Side Street 2","Shelbyville",1
+"tx_academicpersons_domain_model_email",
+,"uid","pid","deleted","hidden","sys_language_uid","l10n_parent","l10n_source","contract","email","sorting"
+,1,100,0,0,0,0,0,1,"erika@example.com",1
+,2,100,0,0,0,0,0,2,"lecturer@example.com",1
+"tx_academicpersons_domain_model_phone_number",
+,"uid","pid","deleted","hidden","sys_language_uid","l10n_parent","l10n_source","contract","type","phone_number","sorting"
+,1,100,0,0,0,0,0,1,"phone","+49123456781",1
+,2,100,0,0,0,0,0,2,"phone","+49123456782",1
