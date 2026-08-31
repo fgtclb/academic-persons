@@ -19,14 +19,14 @@ CREATE TABLE tx_academicpersons_domain_model_address (
 CREATE TABLE tx_academicpersons_domain_model_contract (
     profile int(11) unsigned DEFAULT '0' NOT NULL,
 
-    organisational_unit int(11) unsigned DEFAULT NULL,
-    function_type int(11) unsigned DEFAULT NULL,
+    organisational_unit int(11) unsigned DEFAULT '0' NOT NULL,
+    function_type int(11) unsigned DEFAULT '0' NOT NULL,
     valid_from int(11) DEFAULT NULL,
     valid_to int(11) DEFAULT NULL,
 
     employee_type int(11) unsigned DEFAULT '0' NOT NULL,
     position varchar(255) DEFAULT '' NOT NULL,
-    location int(11) unsigned DEFAULT NULL,
+    location int(11) unsigned DEFAULT '0' NOT NULL,
 
     room varchar(255) DEFAULT '' NOT NULL,
     office_hours text,

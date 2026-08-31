@@ -122,11 +122,12 @@ $tcaConfiguration = [
                 'items' => [
                     [
                         'label' => 'LLL:EXT:academic_persons/Resources/Private/Language/locallang_tca.xlf:tx_academicpersons_domain_model_contract.please_select',
-                        'value' => '',
+                        'value' => 0,
                     ],
                 ],
                 'foreign_table' => 'tx_academicpersons_domain_model_organisational_unit',
                 'foreign_table_where' => 'AND {#tx_academicpersons_domain_model_organisational_unit}.{#sys_language_uid} IN (-1, 0)',
+                'default' => 0,
                 'minitems' => 1,
             ],
         ],
@@ -140,11 +141,12 @@ $tcaConfiguration = [
                 'items' => [
                     [
                         'label' => 'LLL:EXT:academic_persons/Resources/Private/Language/locallang_tca.xlf:tx_academicpersons_domain_model_contract.please_select',
-                        'value' => '',
+                        'value' => 0,
                     ],
                 ],
                 'foreign_table' => 'tx_academicpersons_domain_model_function_type',
                 'foreign_table_where' => 'AND {#tx_academicpersons_domain_model_function_type}.{#sys_language_uid} IN (-1, 0)',
+                'default' => 0,
                 'minitems' => 1,
             ],
         ],
@@ -300,12 +302,12 @@ $tcaConfiguration = [
                 'items' => [
                     [
                         'label' => '',
-                        'value' => null,
+                        'value' => 0,
                     ],
                 ],
                 'foreign_table' => 'tx_academicpersons_domain_model_location',
                 'foreign_table_where' => 'AND {#tx_academicpersons_domain_model_location}.{#sys_language_uid} IN (-1, 0)',
-                'default' => null,
+                'default' => 0,
             ],
         ],
         'room' => [
