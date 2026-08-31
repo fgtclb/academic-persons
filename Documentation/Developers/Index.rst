@@ -39,9 +39,12 @@ The dispatch contract:
     `EXT:academic_persons_edit` determines the site from the request or from
     the pid and skips the event silently when it cannot.
 
-Note that updating an existing profile from its frontend user record
+Updating an existing profile from its frontend user record
 (:php:`AbstractProfileFactory::updateProfileForUser()`, command
-:bash:`academic:updateprofiles`) does **not** dispatch the event.
+:bash:`academic:updateprofiles`) dispatches the event per profile the update
+runs through — announced even when every value already matched, exactly like
+the frontend editing flow. A profile whose :sql:`skip_sync` flag is set is
+neither updated nor announced.
 
 ..  _developers-synchronisation:
 

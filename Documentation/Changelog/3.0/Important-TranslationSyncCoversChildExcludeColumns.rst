@@ -40,9 +40,9 @@ Affected Installations
 ======================
 
 Every installation using the translation synchronisation of this extension —
-through the frontend editing of :php:`academic_persons_edit`, or by
-dispatching :php:`AfterProfileUpdateEvent` from its own hooks.
-(:php:`academic:updateprofiles` does not dispatch the event and is therefore
-not affected — that gap is tracked separately.)
+through the frontend editing of :php:`academic_persons_edit`, through the
+:bash:`academic:updateprofiles` command (which dispatches
+:php:`AfterProfileUpdateEvent` since ACE-490), or by dispatching the event
+from its own hooks.
 
 .. index:: Frontend, Backend, PHP-API, ext:academic_persons

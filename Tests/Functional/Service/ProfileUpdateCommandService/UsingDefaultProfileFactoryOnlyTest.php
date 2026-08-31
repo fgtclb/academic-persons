@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace FGTCLB\AcademicPersons\Tests\Functional\Service\ProfileUpdateCommandService;
 
 use FGTCLB\AcademicPersons\Domain\Model\Dto\ProfileUpdateCommandDto;
+use FGTCLB\AcademicPersons\Event\AfterProfileUpdateEvent;
 use FGTCLB\AcademicPersons\Profile\ProfileFactory;
 use FGTCLB\AcademicPersons\Service\Event\ModifyProfileCommandEnvironmentStateBuildContextForFrontendUserEvent;
 use FGTCLB\AcademicPersons\Service\ProfileCreateCommandService;
@@ -789,6 +790,102 @@ final class UsingDefaultProfileFactoryOnlyTest extends AbstractAcademicPersonsTe
         ));
         $this->assertCSVDataSet(__DIR__ . '/Fixtures/Asserts/' . $assertCsvFileName);
         $this->assertCount($dispatchedEventCount, $dispatchedModifyEvents);
+    }
+
+    /**
+     * ACE-490: every profile the update runs through is announced through
+     * {@see AfterProfileUpdateEvent}, after `persistAll()`, carrying the persisted
+     * default language profile - the contract the frontend editing flow and
+     * `createProfileForUser()` already honour, both of which also announce a profile
+     * whose values already matched. Listeners regenerate the slug and synchronise the
+     * translations, so before this the command changed profiles without either
+     * happening.
+     */
+    #[Test]
+    public function executeDispatchesAfterProfileUpdateEventPerSynchronisedProfile(): void
+    {
+        $dispatchedProfileUids = $this->captureAfterProfileUpdateEvents($capturedEvents);
+
+        $profileUpdateCommandService = GeneralUtility::makeInstance(ProfileUpdateCommandService::class);
+        $profileUpdateCommandService->execute(new ProfileUpdateCommandDto(
+            includePids: [],
+            excludePids: [1100, 1110],
+        ));
+
+        $this->assertSame([1, 2, 3, 4], $dispatchedProfileUids());
+        foreach ($capturedEvents as $event) {
+            $this->assertNotNull($event->getProfile()->getUid());
+            $this->assertFalse($event->getProfile()->getIsTranslation());
+        }
+    }
+
+    /**
+     * ACE-490: `skip_sync` gates the update per PROFILE now. The provider query only
+     * filters on the user level, so a frontend user carrying a synchronisable profile
+     * next to a `skip_sync` one is still selected - previously the loop then updated
+     * the `skip_sync` profile through that side door. The mixed fixture pins both
+     * halves: profile 20 is updated and announced, profile 21 keeps every stale value,
+     * gets no contract created from the user's address data, and is not announced.
+     */
+    #[Test]
+    public function executeSkipsSkipSyncProfilesOfMixedUsers(): void
+    {
+        $this->importCSVDataSet(__DIR__ . '/Fixtures/DataSets/skip-sync-mixed.csv');
+        $dispatchedProfileUids = $this->captureAfterProfileUpdateEvents($capturedEvents);
+
+        $profileUpdateCommandService = GeneralUtility::makeInstance(ProfileUpdateCommandService::class);
+        $profileUpdateCommandService->execute(new ProfileUpdateCommandDto(
+            includePids: [],
+            excludePids: [1100, 1110],
+        ));
+
+        $this->assertSame([1, 2, 3, 4, 20], $dispatchedProfileUids());
+        $connection = $this->getConnectionPool()->getConnectionForTable('tx_academicpersons_domain_model_profile');
+        $syncedProfile = $connection->select(['*'], 'tx_academicpersons_domain_model_profile', ['uid' => 20])->fetchAssociative();
+        $this->assertIsArray($syncedProfile);
+        $this->assertSame('Mia', $syncedProfile['first_name']);
+        $this->assertSame('fe_users:19', $syncedProfile['import_identifier']);
+        $skippedProfile = $connection->select(['*'], 'tx_academicpersons_domain_model_profile', ['uid' => 21])->fetchAssociative();
+        $this->assertIsArray($skippedProfile);
+        $this->assertSame('Stale-Skip', $skippedProfile['first_name']);
+        $this->assertSame('https://stale-skip.example.com/', $skippedProfile['website']);
+        $this->assertSame('', $skippedProfile['import_identifier']);
+        $skippedProfileContracts = $this->getConnectionPool()->getConnectionForTable('tx_academicpersons_domain_model_contract')
+            ->select(['uid'], 'tx_academicpersons_domain_model_contract', ['profile' => 21])->fetchAllAssociative();
+        $this->assertSame([], $skippedProfileContracts, 'The skip_sync profile received a contract from the user data.');
+    }
+
+    /**
+     * Registers a capturing listener for {@see AfterProfileUpdateEvent} and returns a
+     * closure yielding the sorted profile uids of the captured events.
+     *
+     * @param array<int, AfterProfileUpdateEvent>|null $capturedEvents
+     * @return \Closure(): list<int>
+     */
+    private function captureAfterProfileUpdateEvents(?array &$capturedEvents): \Closure
+    {
+        $capturedEvents = [];
+        /** @var Container $container */
+        $container = $this->get('service_container');
+        $container->set(
+            'after-profile-update-event-capture-listener',
+            static function (AfterProfileUpdateEvent $event) use (&$capturedEvents): void {
+                $capturedEvents[] = $event;
+            }
+        );
+        $listenerProvider = $container->get(ListenerProvider::class);
+        $listenerProvider->addListener(
+            AfterProfileUpdateEvent::class,
+            'after-profile-update-event-capture-listener',
+        );
+        return static function () use (&$capturedEvents): array {
+            $uids = array_map(
+                static fn(AfterProfileUpdateEvent $event): int => (int)$event->getProfile()->getUid(),
+                $capturedEvents,
+            );
+            sort($uids);
+            return $uids;
+        };
     }
 
     // @toDo: Add tests for no record and no data returning early without creating a record

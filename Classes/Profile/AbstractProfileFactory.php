@@ -150,12 +150,35 @@ abstract class AbstractProfileFactory implements ProfileFactoryInterface
             return;
         }
 
+        $updatedProfiles = [];
         foreach ($profiles as $profile) {
+            if ($profile->getSkipSync()) {
+                // `skip_sync` excludes a profile from the fe_users data synchronisation. The
+                // provider query already filters it on the user level, but a frontend user
+                // carrying a second, synchronisable profile is still selected - without this
+                // guard the loop would update (and announce) the skip_sync profile through
+                // that side door (ACE-490).
+                continue;
+            }
             $this->updateProfileFromFrontendUser($userData, $profile);
             $this->persistenceManager->update($profile);
+            $updatedProfiles[] = $profile;
+        }
+        if ($updatedProfiles === []) {
+            return;
         }
 
         $this->persistenceManager->persistAll();
+
+        // Announce each profile the update ran through - whether or not a value differed,
+        // exactly as `createProfileForUser()` and the frontend editing flow do it:
+        // after `persistAll()`, carrying the persisted default language profile - the rows
+        // `findByFrontendUser()` returns are default language records, the MM relation points
+        // at them. Listeners regenerate the slug and synchronise the translations, so an
+        // `academic:updateprofiles` run keeps the whole aggregate consistent (ACE-490).
+        foreach ($updatedProfiles as $updatedProfile) {
+            $this->eventDispatcher->dispatch(new AfterProfileUpdateEvent($updatedProfile));
+        }
     }
 
     /**
