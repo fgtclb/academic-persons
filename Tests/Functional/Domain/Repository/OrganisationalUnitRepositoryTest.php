@@ -175,11 +175,14 @@ final class OrganisationalUnitRepositoryTest extends AbstractAcademicPersonsTest
      * `default_sortby` of `unit_name` — which orders the record list in the backend — does
      * **not** reach the select of the frontend edit form. The fixture names are
      * deliberately in reverse alphabetical order to make the difference visible: what comes
-     * back is the natural order of the table, not `Alpha, Beta, Mu, Zeta`.
+     * back is uid order, not `Alpha, Beta, Mu, Zeta`.
      *
-     * A failure here on another DBMS is the finding, not a flaky test: it would mean the
-     * order these three repositories return is not stable and has to be requested
-     * explicitly.
+     * That uid order is requested explicitly since ACE-482. It used to be left to the
+     * DBMS, and every one of them happened to return insertion order — until ACE-477 made
+     * the table workspace aware, which gave the PostgreSQL planner an index to satisfy
+     * Extbase's `t3ver_oid = 0` constraint with and reversed the result. The assertion
+     * below is unchanged; what changed is that it is now a promise rather than a
+     * coincidence.
      */
     #[Test]
     public function findAllDoesNotApplyTheTcaDefaultSortby(): void
