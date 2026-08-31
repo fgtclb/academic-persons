@@ -44,6 +44,18 @@ class ProfileRepository extends Repository
     private const SYNCHRONIZATION_IGNORED_ENABLE_FIELDS = ['disabled', 'starttime', 'endtime', 'fe_group'];
 
     /**
+     * Applied whenever nothing else asks for an order, so that an unordered result is
+     * reproducible rather than left to the DBMS. The plugin offers "none" as a sorting
+     * option, and "no sorting the editor chose" still has to mean the same list twice.
+     *
+     * "uid" ascending is what every DBMS returns in practice - PostgreSQL without
+     * promising it - so no installation sees its list change.
+     *
+     * @var array<string, string>
+     */
+    private const FALLBACK_ORDERINGS = ['uid' => QueryInterface::ORDER_ASCENDING];
+
+    /**
      * @return QueryResultInterface<int, Profile>
      */
     public function findAll(): QueryResultInterface
@@ -52,6 +64,7 @@ class ProfileRepository extends Repository
         // @todo Completely ignoring storage pages is a bad design, special for multi site instances.
         //       Needs a better way to deal with this hear and in other places.
         $query->getQuerySettings()->setRespectStoragePage(false);
+        $query->setOrderings(self::FALLBACK_ORDERINGS);
         return $query->execute();
     }
 
@@ -238,7 +251,7 @@ class ProfileRepository extends Repository
         if ($filters !== null) {
             $query->matching($filters);
         }
-        $query->setOrderings($this->getOrderingsFromDemand($demand));
+        $query->setOrderings($this->getOrderingsFromDemand($demand) ?: self::FALLBACK_ORDERINGS);
     }
 
     /**

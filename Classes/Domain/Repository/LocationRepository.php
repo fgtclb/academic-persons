@@ -12,6 +12,7 @@ declare(strict_types=1);
 namespace FGTCLB\AcademicPersons\Domain\Repository;
 
 use FGTCLB\AcademicPersons\Domain\Model\Location;
+use TYPO3\CMS\Extbase\Persistence\QueryInterface;
 use TYPO3\CMS\Extbase\Persistence\QueryResultInterface;
 use TYPO3\CMS\Extbase\Persistence\Repository;
 
@@ -29,6 +30,10 @@ class LocationRepository extends Repository
         // @todo Completely ignoring storage pages is a bad design, special for multi site instances.
         //       Needs a better way to deal with this hear and in other places.
         $query->getQuerySettings()->setRespectStoragePage(false);
+        // Without this the order is whatever the DBMS yields, which is not the same
+        // list twice once an index gives the planner an alternative. The TCA
+        // "default_sortby" deliberately does not apply here - see the test.
+        $query->setOrderings(['uid' => QueryInterface::ORDER_ASCENDING]);
         return $query->execute();
     }
 }
