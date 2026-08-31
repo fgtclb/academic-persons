@@ -4,17 +4,39 @@ declare(strict_types=1);
 
 namespace FGTCLB\AcademicPersons\Service;
 
-use Doctrine\DBAL\Result;
 use FGTCLB\AcademicPersons\Domain\Model\Dto\Syncronizer\SynchronizerContext;
+use Psr\Log\LoggerInterface;
 use Symfony\Component\DependencyInjection\Attribute\AsAlias;
 use Symfony\Component\DependencyInjection\Attribute\Autoconfigure;
-use TYPO3\CMS\Core\Database\Connection;
-use TYPO3\CMS\Core\Database\ConnectionPool;
-use TYPO3\CMS\Core\Database\Query\QueryBuilder;
-use TYPO3\CMS\Core\Database\Query\Restriction\DeletedRestriction;
+use TYPO3\CMS\Backend\Domain\Repository\Localization\LocalizationRepository;
+use TYPO3\CMS\Backend\Utility\BackendUtility;
+use TYPO3\CMS\Core\Authentication\BackendUserAuthentication;
+use TYPO3\CMS\Core\DataHandling\DataHandler;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
+ * Synchronizes a default-language record into the allowed site languages of a
+ * {@see SynchronizerContext} by routing every write through the TYPO3 DataHandler.
+ *
+ * A missing translation is created with a `localize` command, which carries the full
+ * inline child tree, file references, MM relations, `l10n_diffsource`, the reference
+ * index, history and all DataHandler hooks. For an existing translation, the current
+ * values of the `l10n_mode=exclude` columns of the default record are re-submitted as
+ * a datamap, so core's DataMapProcessor propagates them into every translation, and an
+ * `inlineLocalizeSynchronize` command per TCA inline column carries children added to
+ * the default record after the translation was created - including their own children.
+ *
+ * Each command runs through its own DataHandler instance: a cmdmap can hold only one
+ * command per record uid (the command name is the array key), so `localize` per
+ * language and `inlineLocalizeSynchronize` per inline column and language cannot be
+ * combined into a single map.
+ *
+ * Workspace behaviour falls out of the acting backend user provided by
+ * {@see DataHandlerExecutionContext}: in a non-live workspace DataHandler writes
+ * versioned rows (`t3ver_wsid`, `t3ver_state=1`) and never touches the live state. A
+ * frontend request acting in a non-live workspace is refused entirely - see
+ * {@see DataHandlerExecutionContext::isFrontendRequestInWorkspace()}.
+ *
  * @internal being experimental for now until implementation has been streamlined, tested and covered with tests.
  * @final not marked as final for functional testing reasons (for now). Class should not be extended otherwise.
  */
@@ -22,290 +44,256 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
 #[Autoconfigure(public: true)]
 class RecordSynchronizer implements RecordSynchronizerInterface
 {
+    /**
+     * TCA column types whose database value does not survive a verbatim datamap
+     * re-submission: relational values are stored as counters or CSV uid lists the
+     * DataHandler would reinterpret. Their create-path synchronization is covered by
+     * `localize`; on the update path they are deliberately left alone.
+     */
+    private const NON_PROPAGATABLE_COLUMN_TYPES = ['inline', 'file', 'group', 'category', 'folder', 'passthrough'];
+
     public function __construct(
-        private readonly ConnectionPool $connectionPool,
+        private readonly DataHandlerExecutionContext $executionContext,
+        private readonly LoggerInterface $logger,
     ) {}
 
     public function synchronize(SynchronizerContext $context): void
     {
-        $this->synchronizeRecord($context, []);
+        if ($context->allowedSiteLanguages === []) {
+            return;
+        }
+        if ($this->executionContext->isFrontendRequestInWorkspace()) {
+            $this->logger->notice(
+                'Refused translation synchronization of {tableName}:{uid}: frontend request acting in a non-live workspace.',
+                [
+                    'tableName' => $context->tableName,
+                    'uid' => $context->uid,
+                ],
+            );
+            return;
+        }
+        $this->executionContext->runAsBackendUser(
+            function (BackendUserAuthentication $backendUser) use ($context): void {
+                $this->synchronizeRecord($context, $backendUser);
+            },
+        );
     }
 
-    /**
-     * @param array<string, int|float|string|bool|null> $values
-     * @throws \Doctrine\DBAL\Exception
-     */
-    private function synchronizeRecord(SynchronizerContext $context, array $values): void
+    private function synchronizeRecord(SynchronizerContext $context, BackendUserAuthentication $backendUser): void
     {
-        $defaultRecord = $this->getDefaultRecord(
-            $context->tableName,
-            $context->uid,
-            $context->defaultLanguage->getLanguageId(),
-        );
+        $defaultRecord = $this->getSynchronizableDefaultRecord($context, $backendUser);
         if ($defaultRecord === null) {
             return;
         }
-        $tcaColumns = $GLOBALS['TCA'][$context->tableName]['columns'];
+        $languagesWithExistingTranslation = [];
         foreach ($context->allowedSiteLanguages as $allowedSiteLanguage) {
-            $translatedRecord = $this->getTranslatedRecord(
-                $context->tableName,
-                $context->uid,
-                $allowedSiteLanguage->getLanguageId(),
-            );
-            if ($translatedRecord !== null) {
-                $this->updateTranslation(
-                    $context,
-                    $defaultRecord,
-                    $translatedRecord,
-                );
+            $languageId = $allowedSiteLanguage->getLanguageId();
+            if ($this->hasTranslation($context->tableName, $context->uid, $languageId, $backendUser)) {
+                $languagesWithExistingTranslation[] = $languageId;
                 continue;
             }
-            $translatedRecord = $this->createTranslation(
-                $context->tableName,
-                $defaultRecord,
-                $allowedSiteLanguage->getLanguageId(),
-                $values,
-            );
-            if ($translatedRecord === null) {
-                // Failed to create translation record, skip relation synchronization.
-                continue;
-            }
-            foreach ($tcaColumns as $columnName => $columnDefinition) {
-                $columnType = $columnDefinition['type'] ?? 'unknown';
-                if (!($columnType === 'inline' && $columnName !== 'sys_file_reference')) {
-                    // Non inline fields or column `sys_file_reference` should be skipped.
-                    // @todo Column name `sys_file_reference` exclude does not make sense and should be most likely
-                    //       `foreign_table` and will investigated at a later point, kept for now during moving code
-                    //       around to prepare for better testability and avoiding a side task for now.
-                    continue;
-                }
-                $inlineTable = $columnDefinition['config']['foreign_table'];
-                $inlineField = $columnDefinition['config']['foreign_field'];
-                $inlineChilds = $this->getInlineChilds(
-                    $inlineTable,
-                    $inlineField,
-                    $defaultRecord['uid'],
-                    $context->defaultLanguage->getLanguageId(),
-                );
-                if ($inlineChilds === null) {
-                    // No inline children. Skip to next loop iteration.
-                    continue;
-                }
-                while ($inlineChild = $inlineChilds->fetchAssociative()) {
-                    $this->synchronizeRecord(
-                        $context->withRecord($inlineTable, $inlineChild['uid']),
-                        [
-                            (string)$inlineField => $translatedRecord['uid'],
-                        ],
-                    );
-                }
-            }
+            $this->executeDataHandler($backendUser, cmdmap: [
+                $context->tableName => [
+                    $context->uid => [
+                        'localize' => $languageId,
+                    ],
+                ],
+            ]);
         }
-    }
-
-    /**
-     * @return array<string, mixed>
-     */
-    private function getDefaultRecord(
-        string $table,
-        int $uid,
-        int $defaultLanguageId,
-    ): ?array {
-        $tcaCtrl = $GLOBALS['TCA'][$table]['ctrl'];
-
-        $queryBuilder = $this->getQueryBuilder($table);
-        $queryBuilder->select('*')
-            ->from($table)
-            ->where(
-                $queryBuilder->expr()->eq(
-                    'uid',
-                    $queryBuilder->createNamedParameter($uid, Connection::PARAM_INT)
-                ),
-                $queryBuilder->expr()->eq(
-                    $tcaCtrl['languageField'],
-                    $queryBuilder->createNamedParameter($defaultLanguageId, Connection::PARAM_INT)
-                )
-            )
-            ->setMaxResults(1);
-
-        $resultArray = $queryBuilder->executeQuery()->fetchAssociative();
-
-        return $resultArray ?: null;
-    }
-
-    /**
-     * @param string $table
-     * @param int $uid
-     * @param int $languageUid
-     * @return array<string, mixed>
-     */
-    private function getTranslatedRecord(
-        string $table,
-        int $uid,
-        int $languageUid
-    ): ?array {
-        $tcaCtrl = $GLOBALS['TCA'][$table]['ctrl'];
-
-        $queryBuilder = $this->getQueryBuilder($table);
-        $queryBuilder->select('*')
-            ->from($table)
-            ->where(
-                $queryBuilder->expr()->eq(
-                    $tcaCtrl['translationSource'] ?? $tcaCtrl['transOrigPointerField'],
-                    $queryBuilder->createNamedParameter($uid, Connection::PARAM_INT)
-                ),
-                $queryBuilder->expr()->eq(
-                    $tcaCtrl['languageField'],
-                    $queryBuilder->createNamedParameter((int)$languageUid, Connection::PARAM_INT)
-                )
-            )
-            ->setMaxResults(1);
-
-        $resultArray = $queryBuilder->executeQuery()->fetchAssociative();
-
-        return $resultArray ?: null;
-    }
-
-    /**
-     * @param string $tableName
-     * @param array<string, mixed> $defaultRecord
-     * @param int $languageUid
-     * @param array<string, mixed> $values
-     * @return array<string, mixed>|null
-     */
-    private function createTranslation(
-        string $tableName,
-        array $defaultRecord,
-        int $languageUid,
-        array $values = []
-    ): ?array {
-        $defaultRecoredUid = $defaultRecord['uid'];
-        $tcaColumns = $GLOBALS['TCA'][$tableName]['columns'];
-        $tcaCtrl = $GLOBALS['TCA'][$tableName]['ctrl'];
-
-        // Exclude inline columns from the default record
-        $excludeColumns = array_merge(
-            ['uid', 'l10n_diffsource', 't3ver_oid', 't3ver_wsid', 't3ver_state', 't3ver_stage'],
-            array_keys($values)
-        );
-        foreach ($tcaColumns as $columnName => $columnDefinition) {
-            if ($columnDefinition['config']['type'] === 'inline') {
-                $excludeColumns[] = $columnName;
-            }
-        }
-
-        // Merge default record values with the given values
-        foreach ($defaultRecord as $columnName => $value) {
-            if (!in_array($columnName, $excludeColumns)) {
-                $values[$columnName] = $value;
-            }
-        }
-
-        // Override language specific values
-        $values['sys_language_uid'] = $languageUid;
-        if (isset($tcaCtrl['transOrigPointerField'])) {
-            $values[$tcaCtrl['transOrigPointerField']] = $defaultRecoredUid;
-        }
-        if (isset($tcaCtrl['translationSource'])) {
-            $values[$tcaCtrl['translationSource']] = $defaultRecoredUid;
-        }
-        $values['crdate'] = $GLOBALS['EXEC_TIME'];
-        $values['tstamp'] = $GLOBALS['EXEC_TIME'];
-
-        $queryBuilder = $this->getQueryBuilder($tableName);
-        $queryBuilder->insert($tableName);
-        $queryBuilder->values($values);
-
-        $queryBuilder->executeStatement();
-
-        return $this->getTranslatedRecord($tableName, $defaultRecoredUid, $languageUid);
-    }
-
-    /**
-     * @param array<string, mixed> $defaultRecord
-     * @param array<string, mixed> $translatedRecord
-     */
-    private function updateTranslation(
-        SynchronizerContext $context,
-        array $defaultRecord,
-        array $translatedRecord
-    ): void {
-        $tcaColumns = $GLOBALS['TCA'][$context->tableName]['columns'];
-        $updateColumns = [];
-        foreach ($tcaColumns as $columnName => $columnDefinition) {
-            if (isset($columnDefinition['config']['type'])
-                && is_string($columnDefinition['config']['type'])
-                && $columnDefinition['config']['type'] !== 'inline'
-                && isset($columnDefinition['l10n_mode'])
-                && $columnDefinition['l10n_mode'] === 'exclude'
-            ) {
-                $updateColumns[] = $columnName;
-            }
-        }
-
-        // Skip if there are no columns to update
-        if (empty($updateColumns)) {
+        if ($languagesWithExistingTranslation === []) {
             return;
         }
-
-        $queryBuilder = $this->getQueryBuilder($context->tableName);
-        $queryBuilder->update($context->tableName)
-            ->where(
-                $queryBuilder->expr()->eq(
-                    'uid',
-                    $queryBuilder->createNamedParameter($translatedRecord['uid'], Connection::PARAM_INT)
-                ),
-            );
-
-        foreach ($updateColumns as $columnName) {
-            $queryBuilder->set($columnName, $defaultRecord[$columnName]);
+        $this->propagateExcludeColumnValues($context, $defaultRecord, $backendUser);
+        foreach ($languagesWithExistingTranslation as $languageId) {
+            foreach ($this->getInlineColumnNames($context->tableName) as $inlineColumnName) {
+                $this->executeDataHandler($backendUser, cmdmap: [
+                    $context->tableName => [
+                        $context->uid => [
+                            'inlineLocalizeSynchronize' => [
+                                'field' => $inlineColumnName,
+                                'language' => $languageId,
+                                'action' => 'synchronize',
+                            ],
+                        ],
+                    ],
+                ]);
+            }
         }
-
-        $queryBuilder->executeStatement();
     }
 
     /**
-     * @return Result|null
+     * Returns the record the context points at when it is synchronizable, null otherwise.
+     *
+     * The record must exist (deleted records are excluded), carry the default language
+     * of the context and be reachable in the acting workspace. A workspace version row
+     * (`t3ver_oid > 0`) is refused deliberately: DataHandler addresses versioned records
+     * through their live uid and overlays them itself, so accepting the version uid here
+     * would publish draft values as live translations.
+     *
+     * @return array<string, mixed>|null
      */
-    private function getInlineChilds(
-        string $tableName,
-        string $field,
-        int $uid,
-        int $defaultLanguageId,
-    ): ?Result {
-        $tcaCtrl = $GLOBALS['TCA'][$tableName]['ctrl'];
-        if (!isset($tcaCtrl['languageField'])) {
+    private function getSynchronizableDefaultRecord(
+        SynchronizerContext $context,
+        BackendUserAuthentication $backendUser,
+    ): ?array {
+        $record = BackendUtility::getRecord($context->tableName, $context->uid);
+        if ($record === null) {
             return null;
         }
-        $queryBuilder = $this->getQueryBuilder($tableName);
-        $queryBuilder->select('*')
-            ->from($tableName)
-            ->where(
-                $queryBuilder->expr()->eq(
-                    $field,
-                    $queryBuilder->createNamedParameter($uid, Connection::PARAM_INT)
-                ),
-                $queryBuilder->expr()->eq(
-                    $tcaCtrl['languageField'],
-                    $queryBuilder->createNamedParameter($defaultLanguageId, Connection::PARAM_INT)
-                )
+        $languageField = $this->getTcaCtrlField($context->tableName, 'languageField');
+        if ($languageField === null) {
+            return null;
+        }
+        if ((int)($record[$languageField] ?? 0) !== $context->defaultLanguage->getLanguageId()) {
+            return null;
+        }
+        if ((int)($record['t3ver_oid'] ?? 0) > 0) {
+            $this->logger->notice(
+                'Refused translation synchronization of {tableName}:{uid}: uid addresses a workspace version row, not a live record.',
+                [
+                    'tableName' => $context->tableName,
+                    'uid' => $context->uid,
+                ],
             );
-
-        return $queryBuilder->executeQuery();
+            return null;
+        }
+        $recordWorkspaceId = (int)($record['t3ver_wsid'] ?? 0);
+        if ($recordWorkspaceId !== 0 && $recordWorkspaceId !== $backendUser->workspace) {
+            // A record created in another workspace is invisible to the acting one.
+            return null;
+        }
+        return $record;
     }
 
     /**
-     * Get a query builder for a table.
-     *
-     * @param string $table Table name present in $GLOBALS['TCA']
-     * @return QueryBuilder
+     * Workspace-aware check whether a translation of the record exists, on both
+     * supported core versions: TYPO3 v14 deprecated
+     * `BackendUtility::getRecordLocalization()` (removed in v15) in favour of
+     * `LocalizationRepository::getRecordTranslation()`, which does not exist on v13 -
+     * the `method_exists()` gate selects the API the running core provides.
      */
-    private function getQueryBuilder(string $table): QueryBuilder
+    private function hasTranslation(
+        string $tableName,
+        int $uid,
+        int $languageId,
+        BackendUserAuthentication $backendUser,
+    ): bool {
+        $localizationRepository = GeneralUtility::makeInstance(LocalizationRepository::class);
+        if (method_exists($localizationRepository, 'getRecordTranslation')) {
+            return $localizationRepository->getRecordTranslation($tableName, $uid, $languageId, $backendUser->workspace) !== null;
+        }
+        $rows = BackendUtility::getRecordLocalization($tableName, $uid, $languageId);
+        return is_array($rows) && $rows !== [];
+    }
+
+    /**
+     * Re-submits the current default-record values of all propagatable
+     * `l10n_mode=exclude` columns, so `DataMapProcessor` carries them into every
+     * translation of the record.
+     *
+     * @param array<string, mixed> $defaultRecord
+     */
+    private function propagateExcludeColumnValues(
+        SynchronizerContext $context,
+        array $defaultRecord,
+        BackendUserAuthentication $backendUser,
+    ): void {
+        $values = [];
+        foreach ($this->getPropagatableExcludeColumnNames($context->tableName) as $columnName) {
+            if (array_key_exists($columnName, $defaultRecord)) {
+                $values[$columnName] = $defaultRecord[$columnName];
+            }
+        }
+        if ($values === []) {
+            return;
+        }
+        $this->executeDataHandler($backendUser, datamap: [
+            $context->tableName => [
+                $context->uid => $values,
+            ],
+        ]);
+    }
+
+    /**
+     * @return list<string>
+     */
+    private function getPropagatableExcludeColumnNames(string $tableName): array
     {
-        $queryBuilder = $this->connectionPool->getQueryBuilderForTable($table);
-        $queryBuilder->getRestrictions()
-            ->removeAll()
-            ->add(GeneralUtility::makeInstance(DeletedRestriction::class));
-        return $queryBuilder;
+        $columnNames = [];
+        foreach ($this->getTcaColumns($tableName) as $columnName => $columnDefinition) {
+            if (($columnDefinition['l10n_mode'] ?? '') !== 'exclude') {
+                continue;
+            }
+            $columnType = $columnDefinition['config']['type'] ?? '';
+            if (in_array($columnType, self::NON_PROPAGATABLE_COLUMN_TYPES, true)) {
+                continue;
+            }
+            if (($columnDefinition['config']['MM'] ?? '') !== '') {
+                continue;
+            }
+            $columnNames[] = $columnName;
+        }
+        return $columnNames;
+    }
+
+    /**
+     * @return list<string>
+     */
+    private function getInlineColumnNames(string $tableName): array
+    {
+        $columnNames = [];
+        foreach ($this->getTcaColumns($tableName) as $columnName => $columnDefinition) {
+            if (($columnDefinition['config']['type'] ?? '') === 'inline') {
+                $columnNames[] = $columnName;
+            }
+        }
+        return $columnNames;
+    }
+
+    /**
+     * @return array<string, array<string, mixed>>
+     */
+    private function getTcaColumns(string $tableName): array
+    {
+        $tcaColumns = $GLOBALS['TCA'][$tableName]['columns'] ?? null;
+        return is_array($tcaColumns) ? $tcaColumns : [];
+    }
+
+    private function getTcaCtrlField(string $tableName, string $ctrlField): ?string
+    {
+        $value = $GLOBALS['TCA'][$tableName]['ctrl'][$ctrlField] ?? null;
+        return is_string($value) && $value !== '' ? $value : null;
+    }
+
+    /**
+     * Runs one DataHandler pass. Deliberately one instance per call - see the class
+     * docblock for why commands cannot be combined into a single map.
+     *
+     * @param array<string, array<int|string, array<string, mixed>>> $datamap
+     * @param array<string, array<int|string, array<string, mixed>>> $cmdmap
+     */
+    private function executeDataHandler(
+        BackendUserAuthentication $backendUser,
+        array $datamap = [],
+        array $cmdmap = [],
+    ): void {
+        $dataHandler = GeneralUtility::makeInstance(DataHandler::class);
+        $dataHandler->start($datamap, $cmdmap, $backendUser);
+        if ($datamap !== []) {
+            $dataHandler->process_datamap();
+        }
+        if ($cmdmap !== []) {
+            $dataHandler->process_cmdmap();
+        }
+        if ($dataHandler->errorLog !== []) {
+            $this->logger->error(
+                'DataHandler reported errors during translation synchronization.',
+                [
+                    'errors' => $dataHandler->errorLog,
+                    'datamap' => $datamap,
+                    'cmdmap' => $cmdmap,
+                ],
+            );
+        }
     }
 }

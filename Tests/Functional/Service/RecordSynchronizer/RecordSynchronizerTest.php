@@ -14,16 +14,18 @@ use TYPO3\CMS\Core\Site\SiteFinder;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
- * Characterisation tests for {@see \FGTCLB\AcademicPersons\Service\RecordSynchronizer} (ACE-105).
+ * Tests for {@see \FGTCLB\AcademicPersons\Service\RecordSynchronizer} (ACE-105 / ACE-483).
  *
- * These tests pin the CURRENT behaviour of the synchroniser, defects included, so the
- * rework of its internals (ACE-483) has a precise before-picture. A test whose PHPDoc
- * names a defect asserts the wrong-but-current behaviour on purpose and is expected to
- * be inverted by the issue it names - it is a tripwire, not an endorsement.
+ * Since ACE-483 the synchroniser routes every write through the TYPO3 DataHandler. The
+ * tests in this class started as characterisation pins of the previous raw-SQL
+ * implementation; the ones that pinned its defects - dead inline recursion, missing MM
+ * and file reference synchronisation, empty `l10n_diffsource` - were flipped into
+ * positive assertions on the same fixtures when the rework landed. The no-op guards and
+ * the language filtering pin the unchanged interface contract.
  *
  * The service is exercised directly through its public interface with a
  * {@see SynchronizerContext} built the same way the production listener
- * `SyncChangesToTranslations` builds it. Workspace behaviour (ACE-480) is pinned in
+ * `SyncChangesToTranslations` builds it. Workspace behaviour (ACE-480) is covered in
  * {@see RecordSynchronizerWorkspaceTest}.
  */
 final class RecordSynchronizerTest extends AbstractAcademicPersonsTestCase
@@ -85,48 +87,53 @@ final class RecordSynchronizerTest extends AbstractAcademicPersonsTestCase
     }
 
     /**
-     * Defect pin (ACE-483): the create path does NOT recurse into inline children,
-     * although all the machinery for it exists in the class. The column-type guard in
-     * `synchronizeRecord()` reads `$columnDefinition['type'] ?? 'unknown'` - but TCA
-     * columns carry their type at `['config']['type']`, so the type is always
-     * `unknown`, the guard `continue`s on every column and the recursion block below
-     * it is dead code. Neither contract is translated, nor any address, email or
-     * phone number - the translated profile is created alone.
-     *
-     * Note this CONTRADICTS the inline-filter reading in the ACE-480 analysis
-     * (section 3, item 4), which assumed the guard recurses into every inline column:
-     * the misread key sits one line above the misdirected `sys_file_reference`
-     * comparison the `@todo` in the class talks about.
+     * Flipped defect pin (ACE-483): the DataHandler `localize` command carries the full
+     * inline child tree. Both contracts are translated and re-pointed to the translated
+     * profile through their `profile` foreign field, and each contract's address, email
+     * and phone number children follow the same way, re-pointed to the translated
+     * contract. The previous raw-SQL implementation translated the profile row alone -
+     * its inline recursion was dead code since the ACE-104 extraction.
      */
     #[Test]
-    public function synchronizeDoesNotRecurseIntoInlineChildrenOnCreate(): void
+    public function synchronizeRecursesIntoInlineChildrenOnCreate(): void
     {
         $this->importCSVDataSet(__DIR__ . '/Fixtures/ProfileWithContractsAndChildren.csv');
 
         $this->synchronizeProfile(1);
 
         $this->assertCount(2, $this->fetchAllRecords(self::TABLE_PROFILE));
-        foreach ([self::TABLE_CONTRACT, self::TABLE_ADDRESS, self::TABLE_EMAIL, self::TABLE_PHONE] as $childTable) {
-            $records = $this->fetchAllRecords($childTable);
-            $this->assertCount(2, $records, 'Unexpected record count in ' . $childTable);
-            foreach ($records as $record) {
+        $translatedProfile = $this->fetchTranslation(self::TABLE_PROFILE, 1);
+        $this->assertNotNull($translatedProfile);
+        foreach ([1, 2] as $contractUid) {
+            $translatedContract = $this->fetchTranslation(self::TABLE_CONTRACT, $contractUid);
+            $this->assertNotNull($translatedContract, 'Missing translation of contract ' . $contractUid);
+            $this->assertSame(
+                (int)$translatedProfile['uid'],
+                (int)$translatedContract['profile'],
+                'Translated contract ' . $contractUid . ' is not wired to the translated profile.',
+            );
+            foreach ([self::TABLE_ADDRESS, self::TABLE_EMAIL, self::TABLE_PHONE] as $childTable) {
+                $translatedChild = $this->fetchTranslation($childTable, $contractUid);
+                $this->assertNotNull($translatedChild, 'Missing translation in ' . $childTable . ' below contract ' . $contractUid);
                 $this->assertSame(
-                    0,
-                    (int)$record['sys_language_uid'],
-                    'Unexpected translated record in ' . $childTable,
+                    (int)$translatedContract['uid'],
+                    (int)$translatedChild['contract'],
+                    'Translated child in ' . $childTable . ' is not wired to the translated contract ' . $contractUid . '.',
                 );
             }
+        }
+        foreach ([self::TABLE_CONTRACT, self::TABLE_ADDRESS, self::TABLE_EMAIL, self::TABLE_PHONE] as $childTable) {
+            $this->assertCount(4, $this->fetchAllRecords($childTable), 'Unexpected record count in ' . $childTable);
         }
     }
 
     /**
-     * Defect pin (ACE-483): `createTranslation()` excludes `l10n_diffsource` from the
-     * insert, so the translation carries no diff source at all. A translation created
-     * through the DataHandler would carry the serialized default-language state, which
-     * is what makes the backend diff view work. The rework is expected to flip this.
+     * Flipped defect pin (ACE-483): a translation created through the DataHandler
+     * carries the serialized default-language state in `l10n_diffsource`, which is what
+     * makes the backend diff view work. The raw-SQL implementation left it empty.
      */
     #[Test]
-    public function synchronizeLeavesDiffsourceOfCreatedTranslationEmpty(): void
+    public function synchronizePopulatesDiffsourceOfCreatedTranslation(): void
     {
         $this->importCSVDataSet(__DIR__ . '/Fixtures/MinimalProfile.csv');
 
@@ -134,14 +141,17 @@ final class RecordSynchronizerTest extends AbstractAcademicPersonsTestCase
 
         $translation = $this->fetchTranslation(self::TABLE_PROFILE, 1);
         $this->assertNotNull($translation);
-        $this->assertSame('', (string)($translation['l10n_diffsource'] ?? ''));
+        $diffSource = (string)($translation['l10n_diffsource'] ?? '');
+        $this->assertNotSame('', $diffSource);
+        $this->assertStringContainsString('"first_name":"Erika"', $diffSource);
     }
 
     /**
-     * Defect pin (ACE-483): the create path copies EVERY non-inline column, not only
-     * the `l10n_mode=exclude` ones - a translatable column such as `title` starts out
-     * as a verbatim copy of the default language value. Not wrong per se for a fresh
-     * translation, but asymmetric to the update path, which never touches it again.
+     * A freshly localized record starts out as a copy of the default language record:
+     * DataHandler `localize` copies translatable columns such as `title` verbatim
+     * (no `prefixLangTitle` field is configured on the table). The update path never
+     * touches them again, so the translator's text survives later synchronisations -
+     * see {@see self::synchronizeLeavesTranslatableColumnsOfExistingTranslationUntouched()}.
      */
     #[Test]
     public function synchronizeCopiesTranslatableColumnsIntoCreatedTranslation(): void
@@ -213,10 +223,12 @@ final class RecordSynchronizerTest extends AbstractAcademicPersonsTestCase
     }
 
     /**
-     * The update path writes only non-inline `l10n_mode=exclude` columns (here:
-     * `first_name`, `last_name`, `website`) into the existing translation. It does not
-     * bump the translation's `tstamp` - the row changes without a trace, which the
-     * assertion on the fixture value 1000 pins deliberately (ACE-483).
+     * The update path re-submits the default record's `l10n_mode=exclude` columns
+     * (here: `first_name`, `last_name`, `website`) as a datamap, and core's
+     * DataMapProcessor propagates them into the existing translation. Because the write
+     * goes through the DataHandler it leaves a trace: the translation's `tstamp` is
+     * bumped past the fixture value 1000 (flipped ACE-483 pin - the raw-SQL
+     * implementation changed the row without touching `tstamp`).
      */
     #[Test]
     public function synchronizeUpdatesExcludeColumnsOfExistingTranslation(): void
@@ -230,7 +242,7 @@ final class RecordSynchronizerTest extends AbstractAcademicPersonsTestCase
         $this->assertSame('Erika', $translation['first_name']);
         $this->assertSame('Musterfrau', $translation['last_name']);
         $this->assertSame('https://new.example.com/', $translation['website']);
-        $this->assertSame(1000, (int)$translation['tstamp']);
+        $this->assertGreaterThan(1000, (int)$translation['tstamp']);
     }
 
     /**
@@ -250,14 +262,14 @@ final class RecordSynchronizerTest extends AbstractAcademicPersonsTestCase
     }
 
     /**
-     * Defect pin (ACE-483): once a translation exists, `synchronizeRecord()` `continue`s
-     * after `updateTranslation()` and never recurses. A contract added to the default
-     * profile AFTER the translation was created is therefore never translated - the
-     * update on the profile row itself still happens, which the first_name assertion
-     * proves.
+     * Flipped defect pin (ACE-483): a contract added to the default profile AFTER the
+     * translation was created is carried over by the `inlineLocalizeSynchronize`
+     * command (action `synchronize`) the update path issues per inline column. The
+     * exclude-column update on the profile row itself happens as well, which the
+     * first_name assertion proves.
      */
     #[Test]
-    public function synchronizeDoesNotRecurseIntoInlineChildrenOnUpdate(): void
+    public function synchronizeTranslatesContractAddedAfterTranslationExisted(): void
     {
         $this->importCSVDataSet(__DIR__ . '/Fixtures/ProfileWithTranslationAndNewContract.csv');
 
@@ -266,19 +278,24 @@ final class RecordSynchronizerTest extends AbstractAcademicPersonsTestCase
         $translation = $this->fetchTranslation(self::TABLE_PROFILE, 1);
         $this->assertNotNull($translation);
         $this->assertSame('Erika', $translation['first_name']);
-        $contracts = $this->fetchAllRecords(self::TABLE_CONTRACT);
-        $this->assertCount(1, $contracts);
-        $this->assertSame(0, (int)$contracts[0]['sys_language_uid']);
+        $this->assertCount(2, $this->fetchAllRecords(self::TABLE_CONTRACT));
+        $translatedContract = $this->fetchTranslation(self::TABLE_CONTRACT, 1);
+        $this->assertNotNull($translatedContract);
+        $this->assertSame(
+            (int)$translation['uid'],
+            (int)$translatedContract['profile'],
+            'The late contract translation is not wired to the translated profile.',
+        );
     }
 
     /**
-     * Defect pin (ACE-483): MM relations are not synchronised. The `frontend_users`
-     * counter column is copied verbatim into the translation, but no
-     * `tx_academicpersons_feuser_mm` row is created for the new record - the
-     * translation claims one related frontend user and has none.
+     * Flipped defect pin (ACE-483): MM relations are synchronised by the `localize`
+     * command. The translation gets its own `tx_academicpersons_feuser_mm` row pointing
+     * at the same frontend user, so its `frontend_users` counter of 1 is backed by a
+     * real relation.
      */
     #[Test]
-    public function synchronizeDoesNotSynchronizeMmRelations(): void
+    public function synchronizeSynchronizesMmRelations(): void
     {
         $this->importCSVDataSet(__DIR__ . '/Fixtures/ProfileWithRelations.csv');
 
@@ -288,18 +305,20 @@ final class RecordSynchronizerTest extends AbstractAcademicPersonsTestCase
         $this->assertNotNull($translation);
         $this->assertSame(1, (int)$translation['frontend_users']);
         $mmRows = $this->fetchAllRecords('tx_academicpersons_feuser_mm', 'uid_local');
-        $this->assertCount(1, $mmRows);
+        $this->assertCount(2, $mmRows);
         $this->assertSame(1, (int)$mmRows[0]['uid_local']);
+        $this->assertSame((int)$translation['uid'], (int)$mmRows[1]['uid_local']);
+        $this->assertSame(10, (int)$mmRows[1]['uid_foreign']);
     }
 
     /**
-     * Defect pin (ACE-483): file references are not synchronised either. The `image`
-     * counter column is copied verbatim, but no `sys_file_reference` row pointing at
-     * the translation is created - the translated profile claims one image and
-     * resolves none.
+     * Flipped defect pin (ACE-483): file references are synchronised by the `localize`
+     * command. A localized `sys_file_reference` row pointing at the same file and at
+     * the translated profile is created, so the translation's `image` counter of 1
+     * resolves to a real image.
      */
     #[Test]
-    public function synchronizeDoesNotSynchronizeFileReferences(): void
+    public function synchronizeSynchronizesFileReferences(): void
     {
         $this->importCSVDataSet(__DIR__ . '/Fixtures/ProfileWithRelations.csv');
 
@@ -309,8 +328,13 @@ final class RecordSynchronizerTest extends AbstractAcademicPersonsTestCase
         $this->assertNotNull($translation);
         $this->assertSame(1, (int)$translation['image']);
         $referenceRows = $this->fetchAllRecords('sys_file_reference');
-        $this->assertCount(1, $referenceRows);
+        $this->assertCount(2, $referenceRows);
         $this->assertSame(1, (int)$referenceRows[0]['uid_foreign']);
+        $translatedReference = $referenceRows[1];
+        $this->assertSame(1, (int)$translatedReference['sys_language_uid']);
+        $this->assertSame(1, (int)$translatedReference['l10n_parent']);
+        $this->assertSame(1, (int)$translatedReference['uid_local']);
+        $this->assertSame((int)$translation['uid'], (int)$translatedReference['uid_foreign']);
     }
 
     /**

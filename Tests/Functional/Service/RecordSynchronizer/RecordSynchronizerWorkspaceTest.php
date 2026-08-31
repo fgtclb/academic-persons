@@ -9,23 +9,28 @@ use FGTCLB\AcademicPersons\Service\RecordSynchronizerInterface;
 use FGTCLB\AcademicPersons\Tests\Functional\AbstractAcademicPersonsTestCase;
 use PHPUnit\Framework\Attributes\Test;
 use SBUERK\TYPO3\Testing\SiteHandling\SiteBasedTestTrait;
+use TYPO3\CMS\Core\Context\Context;
+use TYPO3\CMS\Core\Context\WorkspaceAspect;
+use TYPO3\CMS\Core\Core\SystemEnvironmentBuilder;
+use TYPO3\CMS\Core\Http\ServerRequest;
 use TYPO3\CMS\Core\Site\Entity\Site;
 use TYPO3\CMS\Core\Site\SiteFinder;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
- * Characterisation tests pinning the workspace behaviour of
- * {@see \FGTCLB\AcademicPersons\Service\RecordSynchronizer} (ACE-105 / ACE-480).
+ * Workspace behaviour of {@see \FGTCLB\AcademicPersons\Service\RecordSynchronizer}
+ * (ACE-480 / ACE-483).
  *
- * EVERY assertion in this class describes a DEFECT: the synchroniser is not workspace
- * aware. Its interface offers no way to pass a workspace, its reads carry only a
- * `DeletedRestriction` - so workspace version rows and workspace-only rows are treated
- * as ordinary default-language rows - and `createTranslation()` strips the `t3ver_*`
- * columns from the insert, so every row it writes is a LIVE row. ACE-480 is expected
- * to invert these tests; they exist so that flip is visible and deliberate.
+ * This class started as characterisation pins of the raw-SQL implementation, which
+ * wrote live rows from any workspace. Since the synchroniser routes through the
+ * DataHandler, workspace correctness falls out of the acting backend user: a live
+ * context writes live rows, a backend user acting in a workspace writes versioned
+ * rows only (`t3ver_wsid`, `t3ver_state=1`), and a frontend request acting in a
+ * non-live workspace is refused entirely.
  *
- * The fixture holds a live profile with a workspace version of it, a live contract
- * with a workspace version of it, and a contract that exists only in workspace 1.
+ * The fixture holds a live profile with a workspace version of it (uid 101), a live
+ * contract with a workspace version of it (uid 103), and a contract that exists only
+ * in workspace 1 (uid 102, `t3ver_state=1`).
  */
 final class RecordSynchronizerWorkspaceTest extends AbstractAcademicPersonsTestCase
 {
@@ -56,19 +61,19 @@ final class RecordSynchronizerWorkspaceTest extends AbstractAcademicPersonsTestC
 
     protected function tearDown(): void
     {
+        unset($GLOBALS['TYPO3_REQUEST'], $GLOBALS['BE_USER']);
         GeneralUtility::rmdir($this->instancePath . '/typo3conf/sites', true);
         parent::tearDown();
     }
 
     /**
-     * Defect pin (ACE-480): although a workspace version of the profile exists, the
-     * translation the synchroniser creates is a LIVE row (`t3ver_wsid = 0`,
-     * `t3ver_state = 0`, no `t3ver_oid`) - there is no way to run the sync inside a
-     * workspace, and an unpublished draft state leaks into the live site as soon as
-     * anything triggers a sync.
+     * A synchronisation in the live context (no backend user, workspace aspect 0)
+     * writes live rows - and only live rows: the translation of the profile is a
+     * plain record without any `t3ver_*` state, created from the LIVE values, not
+     * from the workspace version.
      */
     #[Test]
-    public function createdProfileTranslationIsALiveRow(): void
+    public function liveRunCreatesProfileTranslationAsALiveRow(): void
     {
         $this->synchronizeProfile(1);
 
@@ -81,46 +86,127 @@ final class RecordSynchronizerWorkspaceTest extends AbstractAcademicPersonsTestC
     }
 
     /**
-     * No contract is translated at all - not the live one, not the workspace-only one
-     * (uid 102, `t3ver_state = 1`), not the workspace version of the live one
-     * (uid 103, `t3ver_oid = 1`). This is the dead inline recursion pinned in
-     * {@see RecordSynchronizerTest::synchronizeDoesNotRecurseIntoInlineChildrenOnCreate()}
-     * (ACE-483): the misread TCA type key stops the recursion before the
-     * workspace-unaware child read (no `t3ver_wsid` constraint, ACE-480) could even
-     * run. Once ACE-483 revives child synchronisation, the workspace rows in this
-     * fixture become reachable and this pin has to be replaced by workspace-aware
-     * expectations.
+     * The inline cascade of the live run sees only the live contract: it is
+     * translated as a live row wired to the translated profile, while the
+     * workspace-only contract (uid 102) and the workspace version of the live one
+     * (uid 103) stay untouched - no draft state leaks into the live site (ACE-480).
      */
     #[Test]
-    public function contractRowsAreNotTranslatedRegardlessOfWorkspaceState(): void
+    public function liveRunTranslatesOnlyTheLiveContract(): void
     {
         $this->synchronizeProfile(1);
 
         $contracts = $this->fetchAllRecords(self::TABLE_CONTRACT);
-        $this->assertCount(3, $contracts);
-        foreach ($contracts as $contract) {
-            $this->assertSame(0, (int)$contract['sys_language_uid']);
+        $this->assertCount(4, $contracts);
+        $translatedContract = $this->fetchTranslation(self::TABLE_CONTRACT, 1);
+        $this->assertNotNull($translatedContract);
+        $this->assertSame(0, (int)$translatedContract['t3ver_wsid']);
+        $this->assertSame('Live Professor', $translatedContract['position']);
+        $translatedProfile = $this->fetchTranslation(self::TABLE_PROFILE, 1);
+        $this->assertNotNull($translatedProfile);
+        $this->assertSame((int)$translatedProfile['uid'], (int)$translatedContract['profile']);
+        // The workspace rows are exactly as the fixture created them: untranslated.
+        foreach ([102, 103] as $workspaceRowUid) {
+            $this->assertSame(0, (int)$contracts[$workspaceRowUid]['sys_language_uid']);
+            $this->assertNull($this->fetchTranslation(self::TABLE_CONTRACT, $workspaceRowUid));
         }
     }
 
     /**
-     * Defect pin (ACE-480): the default-record read constrains on uid and language
-     * only, so the uid of a workspace VERSION row (101, `t3ver_oid = 1`) is accepted
-     * as an ordinary default record - and its draft values are published as a live
-     * translation whose `l10n_parent` points at the version row instead of a live
-     * record.
+     * Flipped defect pin (ACE-480): a backend user acting in workspace 1 produces
+     * versioned rows only. Every row the run creates carries `t3ver_wsid=1` and
+     * `t3ver_state=1` (new placeholder), the live state is untouched, and the
+     * translation is created from the workspace-overlaid values: the profile version
+     * uid 101 supplies "Draft", the contract version uid 103 supplies
+     * "Draft Professor", and the workspace-only contract uid 102 is carried along.
      */
     #[Test]
-    public function workspaceVersionUidIsAcceptedAsDefaultRecord(): void
+    public function workspaceRunWritesOnlyVersionedRows(): void
+    {
+        $liveProfileUidsBefore = $this->fetchLiveRowUids(self::TABLE_PROFILE);
+        $liveContractUidsBefore = $this->fetchLiveRowUids(self::TABLE_CONTRACT);
+        $backendUser = $this->setUpBackendUser(1);
+        $backendUser->workspace = 1;
+
+        $this->synchronizeProfile(1);
+
+        $this->assertSame($liveProfileUidsBefore, $this->fetchLiveRowUids(self::TABLE_PROFILE), 'The live profile rows changed.');
+        $this->assertSame($liveContractUidsBefore, $this->fetchLiveRowUids(self::TABLE_CONTRACT), 'The live contract rows changed.');
+        $newProfileRows = $this->fetchRowsCreatedAfter(self::TABLE_PROFILE, 101);
+        $this->assertCount(1, $newProfileRows);
+        $profileTranslation = $newProfileRows[0];
+        $this->assertSame(1, (int)$profileTranslation['sys_language_uid']);
+        $this->assertSame(1, (int)$profileTranslation['l10n_parent']);
+        $this->assertSame(1, (int)$profileTranslation['t3ver_wsid']);
+        $this->assertSame(1, (int)$profileTranslation['t3ver_state']);
+        $this->assertSame('Draft', $profileTranslation['first_name']);
+        $newContractRows = $this->fetchRowsCreatedAfter(self::TABLE_CONTRACT, 103);
+        $this->assertNotSame([], $newContractRows);
+        $positions = [];
+        foreach ($newContractRows as $contractRow) {
+            $this->assertSame(1, (int)$contractRow['sys_language_uid']);
+            $this->assertSame(1, (int)$contractRow['t3ver_wsid']);
+            $this->assertSame(1, (int)$contractRow['t3ver_state']);
+            $positions[] = $contractRow['position'];
+        }
+        sort($positions);
+        $this->assertSame(['Draft Professor', 'Workspace Only Contract'], $positions);
+    }
+
+    /**
+     * Flipped defect pin (ACE-480): the uid of a workspace VERSION row (101,
+     * `t3ver_oid=1`) is refused as a synchronisation entry point. The raw-SQL
+     * implementation accepted it and published the draft values as a live
+     * translation; the reworked service requires a live record - DataHandler
+     * addresses versioned records through their live uid and overlays them itself -
+     * so nothing is written at all.
+     */
+    #[Test]
+    public function workspaceVersionUidIsRefusedAsSynchronizationEntryPoint(): void
     {
         $this->synchronizeProfile(101);
 
-        $translation = $this->fetchTranslation(self::TABLE_PROFILE, 101);
+        $this->assertCount(2, $this->fetchAllRecords(self::TABLE_PROFILE));
+        $this->assertCount(3, $this->fetchAllRecords(self::TABLE_CONTRACT));
+    }
+
+    /**
+     * The refusal policy (ACE-480): a frontend request acting in a non-live workspace
+     * must not synchronise anything - neither live rows (that would leak draft-time
+     * decisions into the live site) nor versioned rows (a frontend visitor must not
+     * create workspace content). The synchroniser returns without writing.
+     */
+    #[Test]
+    public function frontendRequestInWorkspaceIsRefused(): void
+    {
+        $GLOBALS['TYPO3_REQUEST'] = (new ServerRequest('https://www.acme.com/'))
+            ->withAttribute('applicationType', SystemEnvironmentBuilder::REQUESTTYPE_FE);
+        GeneralUtility::makeInstance(Context::class)->setAspect('workspace', new WorkspaceAspect(1));
+
+        $this->synchronizeProfile(1);
+
+        $this->assertCount(2, $this->fetchAllRecords(self::TABLE_PROFILE));
+        $this->assertCount(3, $this->fetchAllRecords(self::TABLE_CONTRACT));
+    }
+
+    /**
+     * The counterpart proving the policy checks the workspace, not the frontend: the
+     * same frontend request in the LIVE workspace synchronises normally and writes
+     * live rows.
+     */
+    #[Test]
+    public function frontendRequestInLiveWorkspaceSynchronizes(): void
+    {
+        $GLOBALS['TYPO3_REQUEST'] = (new ServerRequest('https://www.acme.com/'))
+            ->withAttribute('applicationType', SystemEnvironmentBuilder::REQUESTTYPE_FE);
+        GeneralUtility::makeInstance(Context::class)->setAspect('workspace', new WorkspaceAspect(0));
+
+        $this->synchronizeProfile(1);
+
+        $translation = $this->fetchTranslation(self::TABLE_PROFILE, 1);
         $this->assertNotNull($translation);
-        $this->assertSame('Draft', $translation['first_name']);
         $this->assertSame(0, (int)$translation['t3ver_wsid']);
-        $this->assertSame(101, (int)$translation['l10n_parent']);
-        $this->assertSame(101, (int)$translation['l10n_source']);
+        $this->assertSame('Live', $translation['first_name']);
     }
 
     /**
@@ -145,18 +231,51 @@ final class RecordSynchronizerWorkspaceTest extends AbstractAcademicPersonsTestC
     }
 
     /**
-     * @return list<array<string, mixed>>
+     * @return list<int>
+     */
+    private function fetchLiveRowUids(string $tableName): array
+    {
+        $uids = [];
+        foreach ($this->fetchAllRecords($tableName) as $record) {
+            if ((int)$record['t3ver_wsid'] === 0) {
+                $uids[] = (int)$record['uid'];
+            }
+        }
+        return $uids;
+    }
+
+    /**
+     * @return list<array<string, mixed>> All rows with a uid above the given fixture high-water mark.
+     */
+    private function fetchRowsCreatedAfter(string $tableName, int $highestFixtureUid): array
+    {
+        $rows = [];
+        foreach ($this->fetchAllRecords($tableName) as $record) {
+            if ((int)$record['uid'] > $highestFixtureUid) {
+                $rows[] = $record;
+            }
+        }
+        return $rows;
+    }
+
+    /**
+     * @return array<int, array<string, mixed>> All rows of the table, keyed and ordered by uid.
      */
     private function fetchAllRecords(string $tableName): array
     {
         $queryBuilder = $this->getConnectionPool()->getQueryBuilderForTable($tableName);
         $queryBuilder->getRestrictions()->removeAll();
-        return $queryBuilder
+        $rows = $queryBuilder
             ->select('*')
             ->from($tableName)
             ->orderBy('uid')
             ->executeQuery()
             ->fetchAllAssociative();
+        $rowsByUid = [];
+        foreach ($rows as $row) {
+            $rowsByUid[(int)$row['uid']] = $row;
+        }
+        return $rowsByUid;
     }
 
     /**
