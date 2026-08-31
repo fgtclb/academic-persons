@@ -19,6 +19,7 @@ $tcaConfiguration = [
         'label_userFunc' => ContractLabels::class . '->getTitle',
         'default_sortby' => 'sorting',
         'hideTable' => true,
+        'versioningWS' => true,
         'origUid' => 't3_origuid',
         'transOrigPointerField' => 'l10n_parent',
         'transOrigDiffSourceField' => 'l10n_diffsource',

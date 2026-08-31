@@ -22,6 +22,7 @@ $tcaConfiguration = [
         'tstamp' => 'tstamp',
         'title' => 'LLL:EXT:academic_persons/Resources/Private/Language/locallang_tca.xlf:tx_academicpersons_domain_model_profile.ctrl.label',
         'delete' => 'deleted',
+        'versioningWS' => true,
         'origUid' => 't3_origuid',
         'transOrigPointerField' => 'l10n_parent',
         'transOrigDiffSourceField' => 'l10n_diffsource',
