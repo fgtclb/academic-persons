@@ -63,6 +63,11 @@ created, edited and displayed in the front end and in different display modes.
 
         Override and customise the frontend templates.
 
+    ..  card:: :ref:`For developers <developers>`
+
+        The translation synchronisation surface: the trigger event, the
+        service interface and the workspace behaviour.
+
     ..  card:: :ref:`Known problems <known-problems>`
 
         Known issues and information about them.
@@ -81,6 +86,7 @@ created, edited and displayed in the front end and in different display modes.
     Installation/Index
     Configuration/Index
     Templates/Index
+    Developers/Index
     KnownProblems/Index
     Changelog/Changelog-3
     Changelog/Changelog-2
