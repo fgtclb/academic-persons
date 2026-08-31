@@ -48,6 +48,26 @@ final class ProfileRepositoryShowHiddenRecordsTest extends AbstractAcademicPerso
         $this->assertSame([1, 2, 3, 4], $this->resultUids($result));
     }
 
+    /**
+     * The result orders by `uid` ascending since ACE-491, whatever order the uids were
+     * requested in - `in()` does not preserve the argument order, and before the explicit
+     * ordering the result order belonged to the DBMS. The order of the editor's selection
+     * is deliberately not reproduced; that would be a behaviour change beyond making the
+     * list reproducible.
+     */
+    #[Test]
+    public function findByUidsReturnsUidOrderRegardlessOfTheRequestedOrder(): void
+    {
+        $this->importCSVDataSet(__DIR__ . '/Fixtures/ShowHiddenRecords/profiles.csv');
+
+        $uids = [];
+        foreach ($this->getProfileRepository()->findByUids([3, 1]) as $profile) {
+            $uids[] = (int)$profile->getUid();
+        }
+
+        $this->assertSame([1, 3], $uids);
+    }
+
     #[Test]
     public function findByDemandExcludesHiddenRecordsByDefault(): void
     {
@@ -63,6 +83,28 @@ final class ProfileRepositoryShowHiddenRecordsTest extends AbstractAcademicPerso
         $demand = (new ProfileDemand())->setShowHiddenRecords(true);
         $result = $this->getProfileRepository()->findByDemand($demand);
         $this->assertSame([1, 2, 3, 4], $this->resultUids($result));
+    }
+
+    /**
+     * The second fixture adds three profiles sharing one last name, so the default
+     * demanded ordering (`lastName` ascending) leaves their relative order undefined -
+     * and the DBMS resolved it, arbitrarily on PostgreSQL (ACE-491). The `uid` tiebreaker
+     * appended to the demanded ordering settles it, at the end of an otherwise
+     * name-ordered list. The tied records' first names are deliberately reversed against
+     * uid order, so a `first_name` accident cannot produce the expected list.
+     */
+    #[Test]
+    public function profilesEqualInTheDemandedOrderingFallBackToUidOrder(): void
+    {
+        $this->importCSVDataSet(__DIR__ . '/Fixtures/ShowHiddenRecords/profiles.csv');
+        $this->importCSVDataSet(__DIR__ . '/Fixtures/ShowHiddenRecords/profilesWithEqualLastNames.csv');
+
+        $uids = [];
+        foreach ($this->getProfileRepository()->findByDemand(new ProfileDemand()) as $profile) {
+            $uids[] = (int)$profile->getUid();
+        }
+
+        $this->assertSame([1, 3, 10, 11, 12], $uids);
     }
 
     #[Test]

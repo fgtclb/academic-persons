@@ -24,10 +24,10 @@ use TYPO3\CMS\Extbase\Persistence\QueryResultInterface;
  * therefore offer the contracts stored on page `0`, which in a real installation is none of
  * them.
  *
- * No orderings are set and `ContractRepository` declares no `$defaultOrderings`. The table's TCA
- * `sortby`/`default_sortby` is a backend concept Extbase does not read, so the statement carries
- * no `ORDER BY` and the result order belongs to the DBMS - the assertions compare sorted uid
- * sets rather than an order.
+ * The result orders by `uid` ascending since ACE-491 - before that the statement carried no
+ * `ORDER BY` and the order belonged to the DBMS. The table's TCA `sortby`/`default_sortby` is a
+ * backend concept Extbase does not read, so `uid` - the order every DBMS happened to return -
+ * is what keeps the select items stable without visibly reordering any installation.
  */
 final class ContractRepositoryFindAllTest extends AbstractAcademicPersonsTestCase
 {
@@ -107,6 +107,24 @@ final class ContractRepositoryFindAllTest extends AbstractAcademicPersonsTestCas
         sort($positions);
 
         $this->assertSame(['Dean', 'Professor', 'Research Assistant'], $positions);
+    }
+
+    /**
+     * SQLite cannot make this assertion fail - uid order is its natural order - so it pins
+     * the contract for the DBMS where the order was arbitrary before (ACE-491): PostgreSQL
+     * reversed comparable queries once an index gave its planner an alternative.
+     */
+    #[Test]
+    public function contractsAreReturnedInUidOrder(): void
+    {
+        $this->importCSVDataSet(__DIR__ . '/Fixtures/ContractRepositoryFindAll/contracts.csv');
+
+        $uids = [];
+        foreach ($this->subject()->findAll() as $contract) {
+            $uids[] = (int)$contract->getUid();
+        }
+
+        $this->assertSame([1, 2, 5], $uids);
     }
 
     #[Test]
