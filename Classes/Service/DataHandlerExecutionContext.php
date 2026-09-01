@@ -42,11 +42,11 @@ final class DataHandlerExecutionContext
     /**
      * Whether the current call acts from a frontend request inside a non-live workspace.
      *
-     * This is the (for now hardcoded) refusal policy of the record synchronization: a
-     * frontend-triggered synchronization must not write workspace versions, so callers
-     * are expected to skip the run entirely when this returns true. Backend and CLI
-     * contexts act in the workspace of the acting backend user, which DataHandler
-     * handles by itself.
+     * This is the refusal policy of the record synchronization, hardcoded by decision
+     * (ACE-492): a frontend-triggered synchronization must not write workspace versions,
+     * so callers are expected to skip the run entirely when this returns true. Backend
+     * and CLI contexts act in the workspace of the acting backend user, which
+     * DataHandler handles by itself.
      */
     public function isFrontendRequestInWorkspace(): bool
     {
