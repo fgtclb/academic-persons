@@ -1,0 +1,20 @@
+<html
+    data-namespace-typo3-fluid="true"
+    xmlns:f="http://typo3.org/ns/TYPO3/CMS/Fluid/ViewHelpers"
+>
+
+<f:for each="{publicProfile.details.profileImage}" as="fieldName">
+    <f:if condition="{profile.{fieldName}}">
+        <figure class="academic-persons-detail__figure">
+            <f:image
+                image="{profile.{fieldName}}"
+                maxWidth="1200"
+                class="academic-persons-detail__image img-fluid rounded-0"
+                alt="{profile.title} {profile.firstName} {profile.middleName} {profile.lastName}"
+                loading="lazy"
+            />
+        </figure>
+    </f:if>
+</f:for>
+
+</html>

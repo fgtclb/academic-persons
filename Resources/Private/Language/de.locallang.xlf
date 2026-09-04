@@ -55,6 +55,18 @@
 
       <!-- Detail -->
 
+      <trans-unit id="detail.subline" resname="detail.subline">
+        <source>Academic activities and publications</source>
+        <target>Akademische Tätigkeiten und Publikationen</target>
+      </trans-unit>
+      <trans-unit id="detail.contact" resname="detail.contact">
+        <source>Contact</source>
+        <target>Kontakt</target>
+      </trans-unit>
+      <trans-unit id="detail.navigation" resname="detail.navigation">
+        <source>Profile sections</source>
+        <target>Profilbereiche</target>
+      </trans-unit>
       <trans-unit id="detail.contracts" resname="detail.contracts">
         <source>Contracts</source>
         <target>Verträge</target>
@@ -69,7 +81,7 @@
       </trans-unit>
       <trans-unit id="detail.emailAddresses" resname="detail.emailAddresses">
         <source>Email address(es)</source>
-        <target>Email Adresse(n)</target>
+        <target>E-Mail-Adresse(n)</target>
       </trans-unit>
       <trans-unit id="detail.physicalAddress.private" resname="detail.physicalAddress.private">
         <source>Private</source>

@@ -146,10 +146,12 @@
 # content. On mobile, `left` is inserted again directly before `subline`, so
 # keep `subline` in `right` when mobile navigation is required.
 # Supported public elements are `menuSections`, `headline`, `position`,
-# `profileImage`, `contact`, `subline`, `profileEntries` and
+# `profileImage`, `contact`, `subline`, `profileEntries`, `links` and
 # `menuSectionsDatas`; unknown identifiers render nothing.
 # `profile.details` supplies each element's ordered Profile properties,
 # relation mapping, LLL label or special renderer. Empty data is skipped.
+# `links` lists link properties; each is rendered with its companion title
+# property (`website` with `websiteTitle`) and the label `detail.<property>`.
 # `position.special` and `contact.special` currently support only
 # `datasFromContracts`. `menuSections` contains stable navigation identifiers;
 # `menuSectionsDatas` maps each identifier to its Profile relation property.
@@ -165,6 +167,7 @@ profile:
       - contact
       - subline
       - profileEntries
+      - links
       - menuSectionsDatas
   details:
     menuSections:
@@ -193,6 +196,9 @@ profile:
       - supervisedThesis
       - supervisedDoctoralThesis
       - miscellaneous
+    links:
+      - website
+      - publicationsLink
     menuSectionsDatas:
       researchProjects: scientificResearch
       academicCareer: vita

@@ -1,0 +1,438 @@
+// The public profile detail view (`Templates/Profile/Detail.html` and the
+// partials below `Partials/Profile/PublicProfile/`).
+//
+// Written with native nesting, which SCSS understands unchanged. The layout
+// rests on the Bootstrap grid classes the templates carry; everything below is
+// the typography and spacing of the elements themselves, keyed by the BEM
+// classes `academic-persons-detail__*`. The icons are inlined SVGs drawn in
+// `currentColor` (see `Configuration/Icons.php`), so they take the colour of
+// the text and are sized here, not in the file.
+//
+// `--academic-persons-detail-scroll-offset` is written by `frontend/profile.ts`
+// from the height of the sticky page header, so an anchor jump lands below it.
+//
+// Nothing here reaches outside `.academic-persons-detail`. A theme that wraps
+// its content sections in `overflow: hidden` clips the sticky navigation of the
+// left column - that is the site's rule to lift, on its own wrapper, and it is
+// documented rather than overridden from here.
+//
+// The colours are custom properties on the root element: a site overrides them
+// by redeclaring them on `.academic-persons-detail`, which is the theming hook
+// of this view.
+
+.academic-persons-detail {
+    --academic-persons-detail-accent-start: #ff5820;
+    --academic-persons-detail-accent-end: #ff2a6a;
+    --academic-persons-detail-border: #dedede;
+    --academic-persons-detail-scroll-offset: 5rem;
+    --academic-persons-detail-text: #1c1b1f;
+
+    color: var(--academic-persons-detail-text);
+
+    * {
+        box-sizing: border-box;
+    }
+
+    // The inlined icons: the core markup is a span, a span and the svg, sized by
+    // the wrapper the partial puts around it.
+    .icon,
+    .icon-markup {
+        display: block;
+        height: 100%;
+        width: 100%;
+    }
+
+    .icon svg {
+        display: block;
+        height: 100%;
+        width: 100%;
+    }
+}
+
+.academic-persons-detail__layout {
+    margin-inline: auto;
+    max-width: 120rem;
+    padding-block: clamp(3rem, 7vw, 8rem);
+}
+
+.academic-persons-detail__aside {
+    min-width: 0;
+    padding-top: clamp(4rem, 10vw, 11rem);
+}
+
+.academic-persons-detail__sticky-navigation {
+    top: 1rem;
+    z-index: 900;
+}
+
+.academic-persons-detail__main {
+    min-width: 0;
+}
+
+// Navigation
+
+.academic-persons-detail__navigation-list {
+    counter-reset: academic-persons-navigation;
+    display: grid;
+    gap: clamp(1.4rem, 3vw, 3rem);
+    margin: 0;
+    padding: 0;
+}
+
+.academic-persons-detail__navigation-item {
+    counter-increment: academic-persons-navigation;
+    margin: 0;
+}
+
+.academic-persons-detail__navigation-link {
+    align-items: baseline;
+    color: inherit;
+    display: grid;
+    font-size: clamp(1.05rem, 1.55vw, 1.55rem);
+    gap: clamp(0.55rem, 1vw, 1.1rem);
+    grid-template-columns: 2.35rem minmax(0, 1fr);
+    line-height: 1.25;
+    text-decoration: underline;
+    text-decoration-thickness: 0.07em;
+    text-underline-offset: 0.12em;
+
+    &:hover,
+    &:focus-visible,
+    &.active {
+        color: inherit;
+        text-decoration-thickness: 0.11em;
+    }
+
+    &.active .academic-persons-detail__navigation-number {
+        color: var(--academic-persons-detail-accent-end);
+    }
+}
+
+.academic-persons-detail__navigation-number::before {
+    content: counter(academic-persons-navigation, decimal-leading-zero);
+}
+
+// Headline and positions
+
+.academic-persons-detail__headline {
+    font-size: clamp(3.5rem, 7vw, 8rem);
+    font-weight: 300;
+    letter-spacing: -0.035em;
+    line-height: 0.98;
+    margin: 0 0 clamp(2.5rem, 5vw, 5rem);
+    overflow-wrap: anywhere;
+}
+
+.academic-persons-detail__headline-part + .academic-persons-detail__headline-part::before {
+    content: " ";
+}
+
+.academic-persons-detail__positions {
+    margin: 0 0 clamp(1.75rem, 4vw, 3.5rem);
+    text-align: center;
+}
+
+.academic-persons-detail__position {
+    font-size: clamp(1.35rem, 2.4vw, 2rem);
+    font-weight: 300;
+    line-height: 1.3;
+    margin: 0.35rem 0;
+}
+
+// Image
+
+.academic-persons-detail__figure {
+    margin: 0;
+    width: 100%;
+}
+
+.academic-persons-detail__image {
+    display: block;
+    height: auto;
+    width: 100%;
+}
+
+// Contact
+
+.academic-persons-detail__contact {
+    margin-block: clamp(4rem, 8vw, 8rem);
+    max-width: 36rem;
+
+    &:not(:has(.academic-persons-detail__contact-row)) {
+        display: none;
+    }
+}
+
+.academic-persons-detail__contact-heading {
+    font-size: clamp(2rem, 3.4vw, 3rem);
+    font-weight: 400;
+    line-height: 1.15;
+    margin: 0 0 2.5rem;
+}
+
+.academic-persons-detail__contact-contract {
+    display: grid;
+    gap: 1.5rem;
+
+    + .academic-persons-detail__contact-contract {
+        margin-top: 2.5rem;
+    }
+}
+
+.academic-persons-detail__contact-row {
+    align-items: start;
+    display: grid;
+    gap: 0.85rem;
+    grid-template-columns: 1.45rem minmax(0, 1fr);
+}
+
+.academic-persons-detail__contact-icon {
+    display: block;
+    height: 1.25rem;
+    margin-top: 0.2rem;
+    width: 1.25rem;
+}
+
+.academic-persons-detail__contact-content {
+    display: grid;
+    font-size: clamp(1.05rem, 1.7vw, 1.45rem);
+    font-style: normal;
+    gap: 0.2rem;
+    line-height: 1.45;
+    margin: 0;
+}
+
+.academic-persons-detail__contact-link,
+.academic-persons-detail__timeline-link {
+    color: inherit;
+    overflow-wrap: anywhere;
+    text-decoration: underline;
+    text-decoration-thickness: 0.07em;
+    text-underline-offset: 0.12em;
+}
+
+.academic-persons-detail__contact-line {
+    display: block;
+}
+
+// The record type of a contact row - "work", "private" - next to its value.
+.academic-persons-detail__contact-type {
+    opacity: 0.75;
+}
+
+// Links
+
+.academic-persons-detail__links {
+    display: grid;
+    gap: 0.35rem;
+    margin-block: clamp(1.5rem, 3vw, 2.5rem);
+}
+
+.academic-persons-detail__link-row {
+    font-size: clamp(1.05rem, 1.7vw, 1.45rem);
+    line-height: 1.45;
+    margin: 0;
+}
+
+.academic-persons-detail__link-label {
+    font-weight: 500;
+
+    &::after {
+        content: ":";
+    }
+}
+
+.academic-persons-detail__link {
+    color: inherit;
+    overflow-wrap: anywhere;
+    text-decoration: underline;
+    text-decoration-thickness: 0.07em;
+    text-underline-offset: 0.12em;
+}
+
+// Subline
+
+.academic-persons-detail__subline {
+    font-size: clamp(2.6rem, 5vw, 4.8rem);
+    font-weight: 300;
+    line-height: 1.1;
+    margin: clamp(5rem, 10vw, 10rem) 0 clamp(2.5rem, 5vw, 5rem);
+    max-width: 18ch;
+}
+
+// Profile entries (fold-out list)
+
+.academic-persons-detail__profile-entries {
+    border-top: 1px solid var(--academic-persons-detail-border);
+    margin-top: clamp(2rem, 4vw, 4rem);
+}
+
+.academic-persons-detail__accordion-item {
+    border-bottom: 1px solid var(--academic-persons-detail-border);
+    margin: 0;
+}
+
+.academic-persons-detail__accordion-heading {
+    font-size: inherit;
+    margin: 0;
+}
+
+.academic-persons-detail__accordion-button {
+    align-items: center;
+    background: transparent;
+    border: 0;
+    box-shadow: none;
+    color: inherit;
+    cursor: pointer;
+    display: flex;
+    font: inherit;
+    font-size: clamp(1.15rem, 2vw, 1.6rem);
+    font-weight: 400;
+    gap: 1.5rem;
+    justify-content: space-between;
+    line-height: 1.25;
+    padding: 1.15rem 0.35rem;
+    text-align: left;
+    width: 100%;
+
+    &:focus-visible {
+        outline: 2px solid var(--academic-persons-detail-accent-end);
+        outline-offset: 3px;
+    }
+
+    // The plus is shown while collapsed, the minus while expanded.
+    .academic-persons-detail__accordion-icon-minus {
+        display: none;
+    }
+
+    &[aria-expanded="true"] {
+        .academic-persons-detail__accordion-icon-plus {
+            display: none;
+        }
+
+        .academic-persons-detail__accordion-icon-minus {
+            display: block;
+        }
+    }
+}
+
+.academic-persons-detail__accordion-icon {
+    flex: 0 0 auto;
+    height: clamp(1.5rem, 2.5vw, 2rem);
+    width: clamp(1.5rem, 2.5vw, 2rem);
+}
+
+.academic-persons-detail__accordion-icon-plus,
+.academic-persons-detail__accordion-icon-minus {
+    display: block;
+    height: 100%;
+    width: 100%;
+}
+
+.academic-persons-detail__accordion-panel {
+    padding: 0.5rem clamp(0.35rem, 3vw, 2rem) 2rem 0.35rem;
+
+    &[hidden] {
+        display: none;
+    }
+}
+
+.academic-persons-detail__accordion-panel > :last-child,
+.academic-persons-detail__timeline-copy > :last-child {
+    margin-bottom: 0;
+}
+
+// Timeline sections
+
+.academic-persons-detail__menu-section-data {
+    counter-reset: academic-persons-sections;
+    margin-top: clamp(6rem, 12vw, 12rem);
+}
+
+.academic-persons-detail__timeline-section {
+    counter-increment: academic-persons-sections;
+    scroll-margin-top: calc(var(--academic-persons-detail-scroll-offset) + 1rem);
+
+    + .academic-persons-detail__timeline-section {
+        margin-top: clamp(5rem, 10vw, 10rem);
+    }
+}
+
+.academic-persons-detail__timeline-heading {
+    align-items: baseline;
+    display: grid;
+    font-size: clamp(2rem, 4vw, 3.5rem);
+    font-weight: 400;
+    gap: clamp(1rem, 2vw, 2rem);
+    grid-template-columns: auto minmax(0, 1fr);
+    line-height: 1.12;
+    margin: 0 0 clamp(1.75rem, 4vw, 3.5rem);
+
+    &::before {
+        content: counter(academic-persons-sections, decimal-leading-zero);
+    }
+}
+
+.academic-persons-detail__timeline {
+    display: grid;
+    gap: clamp(1.5rem, 3vw, 2.75rem);
+}
+
+.academic-persons-detail__timeline-item {
+    margin: 0;
+}
+
+.academic-persons-detail__timeline-date {
+    font-size: clamp(1rem, 1.5vw, 1.3rem);
+    line-height: 1.3;
+    margin: 0 0 0.55rem;
+}
+
+.academic-persons-detail__timeline-title {
+    font-size: clamp(1.3rem, 2.25vw, 1.85rem);
+    font-weight: 500;
+    line-height: 1.25;
+    margin: 0;
+}
+
+.academic-persons-detail__timeline-copy {
+    font-size: 1rem;
+    line-height: 1.55;
+    margin-top: 0.65rem;
+}
+
+// Below the large breakpoint the navigation moves into the content column.
+
+@media (max-width: 991.98px) {
+    .academic-persons-detail__layout {
+        padding-block: 3rem;
+    }
+
+    .academic-persons-detail__mobile-navigation {
+        margin-top: clamp(4rem, 9vw, 7rem);
+    }
+
+    .academic-persons-detail__navigation-list {
+        gap: 1rem 2rem;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .academic-persons-detail__mobile-navigation + .academic-persons-detail__subline {
+        margin-top: clamp(3rem, 7vw, 5rem);
+    }
+}
+
+@media (max-width: 575.98px) {
+    .academic-persons-detail__navigation-list {
+        grid-template-columns: 1fr;
+    }
+
+    .academic-persons-detail__headline {
+        overflow-wrap: normal;
+        word-break: normal;
+    }
+
+    .academic-persons-detail__accordion-button {
+        padding-inline: 0;
+    }
+}

@@ -1,0 +1,50 @@
+<html
+    data-namespace-typo3-fluid="true"
+    xmlns:f="http://typo3.org/ns/TYPO3/CMS/Fluid/ViewHelpers"
+>
+
+<f:comment>
+    The rich text fields of the profile as a fold-out list. The panel is hidden until the
+    button is pressed; `frontend/profile.js` toggles `aria-expanded` and the `hidden` attribute,
+    and the stylesheet swaps the plus and minus icon on `aria-expanded`. Both icons are inlined,
+    so they may appear once per entry - they carry no `id`.
+</f:comment>
+
+<div class="academic-persons-detail__profile-entries rounded-0">
+    <f:for each="{publicProfile.details.profileEntries}" as="fieldName">
+        <f:if condition="{profile.{fieldName}}">
+            <section class="academic-persons-detail__accordion-item rounded-0">
+                <h4 class="academic-persons-detail__accordion-heading">
+                    <button
+                        class="academic-persons-detail__accordion-button rounded-0"
+                        type="button"
+                        aria-expanded="false"
+                        aria-controls="academic-persons-profile-entry-{data.uid}-{profile.uid}-{fieldName}"
+                        data-academic-persons-accordion-trigger="true"
+                    >
+                        <span class="academic-persons-detail__accordion-label">
+                            <f:translate key="detail.{fieldName}" extensionName="academic_persons" />
+                        </span>
+                        <span class="academic-persons-detail__accordion-icon" aria-hidden="true">
+                            <span class="academic-persons-detail__accordion-icon-plus">
+                                <core:icon identifier="academic-persons-detail-plus" alternativeMarkupIdentifier="inline" />
+                            </span>
+                            <span class="academic-persons-detail__accordion-icon-minus">
+                                <core:icon identifier="academic-persons-detail-minus" alternativeMarkupIdentifier="inline" />
+                            </span>
+                        </span>
+                    </button>
+                </h4>
+                <div
+                    class="academic-persons-detail__accordion-panel rounded-0"
+                    id="academic-persons-profile-entry-{data.uid}-{profile.uid}-{fieldName}"
+                    hidden="hidden"
+                >
+                    {profile.{fieldName} -> f:format.html()}
+                </div>
+            </section>
+        </f:if>
+    </f:for>
+</div>
+
+</html>

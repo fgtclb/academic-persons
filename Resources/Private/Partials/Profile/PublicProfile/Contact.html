@@ -1,0 +1,119 @@
+<html
+    data-namespace-typo3-fluid="true"
+    xmlns:f="http://typo3.org/ns/TYPO3/CMS/Fluid/ViewHelpers"
+>
+
+<f:comment>
+    The contact block of every contract: email addresses, phone numbers, postal addresses and
+    the location with its room. The icons are registered in `Configuration/Icons.php` with the
+    currentColor provider of EXT:academic_base and inlined here, so they follow the text colour
+    of the page; `core` is a global Fluid namespace, no declaration is needed for `core:icon`.
+</f:comment>
+
+<f:switch expression="{publicProfile.details.contact.special}">
+    <f:case value="datasFromContracts">
+        <f:if condition="{profile.contracts}">
+            <section class="academic-persons-detail__contact">
+                <h3 class="academic-persons-detail__contact-heading">
+                    <f:translate key="detail.contact" extensionName="academic_persons" />
+                </h3>
+                <f:for each="{profile.contracts}" as="contract">
+                    <div class="academic-persons-detail__contact-contract">
+                        <f:if condition="{contract.emailAddresses}">
+                            <div class="academic-persons-detail__contact-row">
+                                <span class="academic-persons-detail__contact-icon">
+                                    <core:icon identifier="academic-persons-envelope" alternativeMarkupIdentifier="inline" />
+                                </span>
+                                <div class="academic-persons-detail__contact-content">
+                                    <f:for each="{contract.emailAddresses}" as="emailAddress">
+                                        <span class="academic-persons-detail__contact-line">
+                                            <f:link.email email="{emailAddress.email}" class="academic-persons-detail__contact-link">{emailAddress.email}</f:link.email>
+                                            <f:if condition="{emailAddress.type}">
+                                                <span class="academic-persons-detail__contact-type">({emailAddress.type})</span>
+                                            </f:if>
+                                        </span>
+                                    </f:for>
+                                </div>
+                            </div>
+                        </f:if>
+                        <f:if condition="{contract.phoneNumbers}">
+                            <div class="academic-persons-detail__contact-row">
+                                <span class="academic-persons-detail__contact-icon">
+                                    <core:icon identifier="academic-persons-phone" alternativeMarkupIdentifier="inline" />
+                                </span>
+                                <div class="academic-persons-detail__contact-content">
+                                    <f:for each="{contract.phoneNumbers}" as="phoneNumber">
+                                        <span class="academic-persons-detail__contact-line">
+                                            <f:comment>
+                                                A `tel:` URI carries no spaces, while the stored number is written
+                                                for a reader - so the link target drops them and the label keeps them.
+                                            </f:comment>
+                                            <a
+                                                class="academic-persons-detail__contact-link"
+                                                href="tel:{f:replace(value: phoneNumber.phoneNumber, search: ' ', replace: '')}"
+                                            >{phoneNumber.phoneNumber}</a>
+                                            <f:if condition="{phoneNumber.type}">
+                                                <span class="academic-persons-detail__contact-type">({phoneNumber.type})</span>
+                                            </f:if>
+                                        </span>
+                                    </f:for>
+                                </div>
+                            </div>
+                        </f:if>
+                        <f:for each="{contract.physicalAddresses}" as="physicalAddress">
+                            <div class="academic-persons-detail__contact-row">
+                                <span class="academic-persons-detail__contact-icon">
+                                    <core:icon identifier="academic-persons-address" alternativeMarkupIdentifier="inline" />
+                                </span>
+                                <address class="academic-persons-detail__contact-content">
+                                    <f:if condition="{physicalAddress.type}">
+                                        <span class="academic-persons-detail__contact-type">
+                                            <f:translate
+                                                key="detail.physicalAddress.{physicalAddress.type}"
+                                                extensionName="academic_persons"
+                                            />
+                                        </span>
+                                    </f:if>
+                                    <f:if condition="{physicalAddress.street} || {physicalAddress.streetNumber}">
+                                        <span class="academic-persons-detail__contact-line">{physicalAddress.street} {physicalAddress.streetNumber}</span>
+                                    </f:if>
+                                    <f:if condition="{physicalAddress.additional}">
+                                        <span class="academic-persons-detail__contact-line">{physicalAddress.additional}</span>
+                                    </f:if>
+                                    <f:if condition="{physicalAddress.zip} || {physicalAddress.city}">
+                                        <span class="academic-persons-detail__contact-line">{physicalAddress.zip} {physicalAddress.city}</span>
+                                    </f:if>
+                                    <f:if condition="{physicalAddress.state}">
+                                        <span class="academic-persons-detail__contact-line">{physicalAddress.state}</span>
+                                    </f:if>
+                                    <f:if condition="{physicalAddress.country}">
+                                        <span class="academic-persons-detail__contact-line">{physicalAddress.country}</span>
+                                    </f:if>
+                                </address>
+                            </div>
+                        </f:for>
+                        <f:if condition="{contract.location} || {contract.room}">
+                            <div class="academic-persons-detail__contact-row">
+                                <span class="academic-persons-detail__contact-icon">
+                                    <core:icon identifier="academic-persons-room" alternativeMarkupIdentifier="inline" />
+                                </span>
+                                <div class="academic-persons-detail__contact-content">
+                                    <f:if condition="{contract.location}">
+                                        <strong class="academic-persons-detail__contact-line">{contract.location.title}</strong>
+                                    </f:if>
+                                    <f:if condition="{contract.room}">
+                                        <span class="academic-persons-detail__contact-line">
+                                            <f:translate key="detail.room" extensionName="academic_persons" />: {contract.room}
+                                        </span>
+                                    </f:if>
+                                </div>
+                            </div>
+                        </f:if>
+                    </div>
+                </f:for>
+            </section>
+        </f:if>
+    </f:case>
+</f:switch>
+
+</html>

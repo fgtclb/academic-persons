@@ -1,0 +1,20 @@
+<html
+    data-namespace-typo3-fluid="true"
+    xmlns:f="http://typo3.org/ns/TYPO3/CMS/Fluid/ViewHelpers"
+>
+
+<f:switch expression="{publicProfile.details.position.special}">
+    <f:case value="datasFromContracts">
+        <f:if condition="{profile.contracts}">
+            <div class="academic-persons-detail__positions">
+                <f:for each="{profile.contracts}" as="contract">
+                    <f:if condition="{contract.position}">
+                        <p class="academic-persons-detail__position">{contract.position}</p>
+                    </f:if>
+                </f:for>
+            </div>
+        </f:if>
+    </f:case>
+</f:switch>
+
+</html>

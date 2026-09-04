@@ -1,0 +1,55 @@
+<html
+    data-namespace-typo3-fluid="true"
+    xmlns:f="http://typo3.org/ns/TYPO3/CMS/Fluid/ViewHelpers"
+>
+
+<f:comment>
+    One timeline entry. `year`, `yearStart` and `yearEnd` are four digit integers (or null) and
+    are rendered as they are stored: a single year, a range "2018 – 2024", or an open range
+    prefixed with the "since" / "till" label. Nothing here is locale dependent, so no formatting
+    view helper is involved.
+</f:comment>
+
+<article class="academic-persons-detail__timeline-item">
+    <f:if condition="{item.year} || {item.yearStart} || {item.yearEnd}">
+        <p class="academic-persons-detail__timeline-date">
+            <f:if condition="{item.year}">
+                <f:then>{item.year}</f:then>
+                <f:else>
+                    <f:if condition="{item.yearStart}">
+                        <f:then>
+                            <f:if condition="{item.yearEnd}">
+                                <f:then>{item.yearStart} – {item.yearEnd}</f:then>
+                                <f:else>
+                                    <f:translate key="detail.since" extensionName="academic_persons" />
+                                    {item.yearStart}
+                                </f:else>
+                            </f:if>
+                        </f:then>
+                        <f:else>
+                            <f:translate key="detail.till" extensionName="academic_persons" />
+                            {item.yearEnd}
+                        </f:else>
+                    </f:if>
+                </f:else>
+            </f:if>
+        </p>
+    </f:if>
+    <f:if condition="{item.title}">
+        <h4 class="academic-persons-detail__timeline-title">
+            <f:if condition="{item.link}">
+                <f:then>
+                    <f:link.typolink parameter="{item.link}" class="academic-persons-detail__timeline-link">{item.title}</f:link.typolink>
+                </f:then>
+                <f:else>{item.title}</f:else>
+            </f:if>
+        </h4>
+    </f:if>
+    <f:if condition="{item.bodytext}">
+        <div class="academic-persons-detail__timeline-copy">
+            {item.bodytext -> f:format.html()}
+        </div>
+    </f:if>
+</article>
+
+</html>

@@ -106,6 +106,106 @@ Two keys describe the public layout, everything else is a field:
     stable navigation identifiers and :yaml:`menuSectionsDatas` maps each of
     them to the profile relation it shows.
 
+..  _configuration-sections-profile-rendering:
+
+How the layout is rendered
+--------------------------
+
+The shipped :file:`Resources/Private/Templates/Profile/Detail.html` receives
+the two keys as ``publicProfile`` and dispatches every identifier of
+:yaml:`structure` to a partial of the same name below
+:file:`Resources/Private/Partials/Profile/PublicProfile/`:
+
+..  list-table::
+    :header-rows: 1
+
+    *   -   Element
+        -   :yaml:`details` entry
+        -   Renders
+    *   -   :yaml:`menuSections`
+        -   Ordered navigation identifiers
+        -   One link per identifier whose relation has records
+    *   -   :yaml:`headline`
+        -   Ordered profile properties
+        -   The non-empty ones as the parts of the heading
+    *   -   :yaml:`position`
+        -   :yaml:`special: datasFromContracts`
+        -   The position of every contract
+    *   -   :yaml:`profileImage`
+        -   Ordered image properties
+        -   Every non-empty one, as a figure
+    *   -   :yaml:`contact`
+        -   :yaml:`special: datasFromContracts`
+        -   Email addresses, phone numbers, postal addresses and location with
+            room of every contract
+    *   -   :yaml:`subline`
+        -   A label reference
+        -   The translated heading, and the point before which the
+            :yaml:`left` elements are repeated below the large breakpoint
+    *   -   :yaml:`profileEntries`
+        -   Ordered rich text properties
+        -   The non-empty ones as fold-out entries
+    *   -   :yaml:`links`
+        -   Ordered link properties
+        -   The non-empty ones, each with its companion title property
+            (:yaml:`website` with ``websiteTitle``) as the link text
+    *   -   :yaml:`menuSectionsDatas`
+        -   Navigation identifier to relation map
+        -   One timeline section per identifier whose relation has records
+
+Overriding a partial changes how an element renders, overriding
+:yaml:`profile` changes what renders and where. The years of a timeline entry
+are printed as they are stored - a single year, a range, or an open range
+prefixed with a "since" or "till" label - and nothing about them is locale
+dependent.
+
+Below the large breakpoint the elements of the :yaml:`left` column are
+rendered a second time, directly before the :yaml:`subline` element of the
+:yaml:`right` column. A layout without :yaml:`subline` in :yaml:`right`
+therefore has no mobile navigation.
+
+The view is a content element and renders no ``<main>``, no ``<aside>`` and no
+``<h1>`` - a page may carry two profile plugins, and those belong to the page
+template. Its headings start at ``<h2>`` for the headline, with the block
+headings one level below it.
+
+The template loads the stylesheet
+:file:`Resources/Public/Css/frontend/profile-detail.css` and the module
+``@fgtclb/academic-persons/frontend/profile.js`` through the asset collector.
+The module toggles the fold-out entries, keeps the sticky navigation below a
+page header with the id ``page-header`` and, when the site loads Bootstrap,
+marks the section in view through its ScrollSpy. The icons of the contact rows
+and the fold-out entries are the identifiers ``academic-persons-envelope``,
+``academic-persons-phone``, ``academic-persons-address``,
+``academic-persons-room``, ``academic-persons-detail-plus`` and
+``academic-persons-detail-minus`` of :file:`Configuration/Icons.php`; a site
+package re-registers an identifier to replace the glyph. They are `Bootstrap
+Icons <https://icons.getbootstrap.com/>`__, and their MIT licence ships beside
+them in :file:`Resources/Public/Icons/LICENSE-bootstrap-icons.txt`.
+
+The colours of the view are custom properties declared on the
+``.academic-persons-detail`` root element - ``--academic-persons-detail-text``,
+``--academic-persons-detail-border`` and the two accents. Redeclaring them on
+that class in the site's own stylesheet is how the view is themed; the shipped
+stylesheet touches nothing outside that element.
+
+..  note::
+    The navigation of the :yaml:`left` column is sticky. A theme that wraps its
+    content sections in ``overflow: hidden`` clips it, and the extension
+    deliberately does not override that from its own stylesheet. Lift it in the
+    site's stylesheet on the wrapper that has it, for example:
+
+    ..  code-block:: css
+
+        body:has(.academic-persons-detail) .my-theme-section {
+            overflow: unset;
+        }
+
+..  _configuration-sections-fields:
+
+The fields
+----------
+
 Every other key is a field, and fields share one shape across
 :yaml:`profile`, :yaml:`contracts.fields` and
 :yaml:`contracts.contactSections.<section>.fields`:

@@ -24,7 +24,7 @@
       <trans-unit id="contracts.location">
         <source>Location</source>
       </trans-unit>
-      <trans-unit id="contracts.emailAdresses">
+      <trans-unit id="contracts.emailAddresses">
         <source>E-Mail</source>
       </trans-unit>
       <trans-unit id="contracts.phoneNumbers">
@@ -45,6 +45,15 @@
 
       <!-- Detail -->
 
+      <trans-unit id="detail.subline" resname="detail.subline">
+        <source>Academic activities and publications</source>
+      </trans-unit>
+      <trans-unit id="detail.contact" resname="detail.contact">
+        <source>Contact</source>
+      </trans-unit>
+      <trans-unit id="detail.navigation" resname="detail.navigation">
+        <source>Profile sections</source>
+      </trans-unit>
       <trans-unit id="detail.contracts" resname="detail.contracts">
         <source>Contracts</source>
       </trans-unit>

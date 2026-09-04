@@ -1,0 +1,17 @@
+# A site package override of the public profile layout, reduced to what the
+# test asserts: no navigation column, two elements on the right in an order
+# the shipped file does not use, and a headline that names the last name first.
+# The editable fields below `profile` are deliberately absent - the `profile`
+# map is replaced as a whole, so the editing frontend sees no field here.
+profile:
+  structure:
+    left: []
+    right:
+      - profileEntries
+      - headline
+  details:
+    profileEntries:
+      - miscellaneous
+    headline:
+      - lastName
+      - firstName

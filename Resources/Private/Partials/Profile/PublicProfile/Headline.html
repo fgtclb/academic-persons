@@ -1,0 +1,21 @@
+<html
+    data-namespace-typo3-fluid="true"
+    xmlns:f="http://typo3.org/ns/TYPO3/CMS/Fluid/ViewHelpers"
+>
+
+<f:comment>
+    An `h2`, not an `h1`: the plugin is a content element, so the page heading belongs to the
+    page template and every heading of this view is one level below it.
+</f:comment>
+
+<header class="academic-persons-detail__header">
+    <h2 class="academic-persons-detail__headline" id="academic-persons-detail-headline-{data.uid}-{profile.uid}">
+        <f:for each="{publicProfile.details.headline}" as="fieldName">
+            <f:if condition="{profile.{fieldName}}">
+                <span class="academic-persons-detail__headline-part">{profile.{fieldName}}</span>
+            </f:if>
+        </f:for>
+    </h2>
+</header>
+
+</html>

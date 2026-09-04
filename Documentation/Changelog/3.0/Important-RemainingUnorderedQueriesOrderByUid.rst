@@ -28,6 +28,15 @@ kept returning rows in whatever order the database yielded:
 The first four now order by :sql:`uid` ascending; the demanded ordering keeps
 winning and gets :sql:`uid` ascending appended as a tiebreaker.
 
+Three further methods ordered by :sql:`sorting` alone:
+:php:`AddressRepository::findByContractIncludingHidden()`,
+:php:`EmailRepository::findByContractIncludingHidden()` and
+:php:`PhoneNumberRepository::findByContractIncludingHidden()`, which list the
+contact records of a contract for the frontend editing. Records an editor
+never reordered share a :sql:`sorting` value, and their relative order was
+whatever the database yielded. All three now append :sql:`uid` ascending as
+the tiebreaker.
+
 Impact
 ======
 

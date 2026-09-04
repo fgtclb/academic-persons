@@ -1,0 +1,10 @@
+"tx_academicpersons_domain_model_contract",
+,"uid","pid","sys_language_uid","hidden","deleted","profile",
+,1,1,0,0,0,1,
+
+"tx_academicpersons_domain_model_phone_number",
+,"uid","pid","sys_language_uid","hidden","deleted","contract","sorting","type","phone_number",
+,1,1,0,0,0,1,2,"work","+49 1",
+,2,1,0,0,0,1,1,"work","+49 2",
+,3,1,0,0,0,1,1,"work","+49 3",
+,4,1,0,0,0,1,2,"work","+49 4",

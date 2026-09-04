@@ -3,278 +3,45 @@
     xmlns:f="http://typo3.org/ns/TYPO3/CMS/Fluid/ViewHelpers"
 >
 
-<div class="academic-persons-detail">
-    <f:render
-        partial="Profile/Header"
-        arguments="{
-            header: '{profile.title} {profile.firstName} {profile.middleName} {profile.lastName}',
-            layout: '{data.header_layout}',
-            subheader: '{data.subheader}',
-            detail: 'true'
-        }"
-    />
+<f:comment>
+    The public profile. Which elements render, in which column and in which order, comes from
+    the `profile.structure` map of `Configuration/AcademicPersons/Settings.yaml`, handed in as
+    `publicProfile`; every element is one partial below `Profile/PublicProfile/`, dispatched by
+    `Element.html`. The `left` column is the desktop navigation, the `right` column the content;
+    below the large breakpoint the `left` elements are rendered again directly before `subline`.
+</f:comment>
 
-    <f:if condition="{profile.image}">
-        <f:image
-            image="{profile.image}"
-            maxWidth="500"
-            maxHeight="500"
-            alt="{profile.title} {profile.firstName} {profile.middleName} {profile.lastName}"
-        />
-    </f:if>
+<f:asset.css
+    identifier="academic-persons-profile-detail"
+    href="EXT:academic_persons/Resources/Public/Css/frontend/profile-detail.css"
+/>
+<f:asset.module identifier="@fgtclb/academic-persons/frontend/profile.js" />
 
-    <f:if condition="{profile.contracts}">
-        <f:render
-            partial="Profile/SectionHeader"
-            arguments="{
-                header: '{f:translate(key: \'detail.contracts\', extensionName: \'academic_persons\')}',
-                layout: '{data.header_layout}',
-                subheader: '{data.subheader}',
-                detail: 'true'
-            }"
-        />
-
-        <ul class="list-group list-group-flush">
-            <f:for each="{profile.contracts}" as="contract">
-                <li class="accordion list-group-item" id="contract-accordion-{contract.uid}">
-                    <f:render
-                        partial="Profile/DataHeader"
-                        arguments="{
-                            header: '{f:render(
-                                section: \'AccordionHeader\',
-                                arguments: {uniqueId: contract.uid, header: contract.position}
-                            )}',
-                            layout: '{data.header_layout}',
-                            positionClass: 'accordion-header',
-                            subheader: '{data.subheader}'
-                        }"
-                    />
-
-                    <div
-                        id="collapse-{contract.uid}"
-                        class="accordion-collapse collapse"
-                        aria-labelledby="heading-{contract.uid}"
-                        data-bs-parent="#contract-accordion-{contract.uid}"
-                    >
-                        <ul class="accordion-body">
-                            <f:if condition="{contract.room}">
-                                <li>
-                                    <b>{f:translate(key: 'detail.room', extensionName: 'academic_persons')}:</b>
-
-                                    {contract.room}
-                                </li>
-                            </f:if>
-
-                            <f:if condition="{contract.phoneNumbers}">
-                                <li>
-                                    <b>{f:translate(key: 'detail.phoneNumbers', extensionName: 'academic_persons')}:</b>
-
-                                    <f:for each="{contract.phoneNumbers}" as="item" iteration="i">
-                                        <a href="tel:{item.phoneNumber}">
-                                            {item.phoneNumber}
-
-                                            {f:if(
-                                                condition: '{item.type}',
-                                                then: '({item.type})'
-                                            )}{f:if(condition: '!{i.isLast}', then: ', ')}
-                                        </a>
-                                    </f:for>
-                                </li>
-                            </f:if>
-
-                            <f:if condition="{contract.emailAddresses}">
-                                <li>
-                                    <b>{f:translate(key: 'detail.emailAddresses', extensionName: 'academic_persons')}:</b>
-
-                                    <f:for each="{contract.emailAddresses}" as="item" iteration="i">
-                                        <f:link.email email="{item.email}">
-                                            {item.email}
-
-                                            {f:if(
-                                                condition: '{item.type}',
-                                                then: '({item.type})'
-                                            )}{f:if(condition: '!{i.isLast}', then: ', ')}
-                                        </f:link.email>
-                                    </f:for>
-                                </li>
-                            </f:if>
-
-                            <f:for each="{contract.physicalAddresses}" as="item">
-                                <li>
-                                    <f:if condition="{item.type}">
-                                        <b>
-                                            {f:translate(
-                                                key: 'detail.physicalAddress.{item.type}',
-                                                extensionName: 'academic_persons'
-                                            )}:
-                                        </b>
-                                    </f:if>
-
-                                    <f:if condition="{item.street} || {item.streetNumber}">
-                                        {item.street} {item.streetNumber} {item.additional},
-                                    </f:if>
-
-                                    <f:if condition="{item.zip} || {item.city}">
-                                        {item.zip} {item.city} |
-                                    </f:if>
-
-                                    <f:if condition="{item.state}">
-                                        {item.state},
-                                    </f:if>
-
-                                    <f:if condition="{item.country}">
-                                        {item.country}
-                                    </f:if>
-                                </li>
-                            </f:for>
-                        </ul>
+<div class="container-fluid academic-persons-detail px-0" data-academic-persons-detail>
+    <div class="row gx-lg-5 gy-5 align-items-stretch academic-persons-detail__layout">
+        <div class="col-12 col-lg-4 d-none d-lg-block academic-persons-detail__aside">
+            <div class="sticky-top academic-persons-detail__sticky-navigation" data-academic-persons-sticky-navigation>
+                <f:for each="{publicProfile.structure.left}" as="element">
+                    <f:render partial="Profile/PublicProfile/Element" arguments="{_all}" />
+                </f:for>
+            </div>
+        </div>
+        <div class="col-12 col-lg-6 academic-persons-detail__main">
+            <f:for each="{publicProfile.structure.right}" as="element">
+                <f:if condition="{element} == 'subline'">
+                    <div class="d-lg-none academic-persons-detail__mobile-navigation">
+                        <f:for each="{publicProfile.structure.left}" as="mobileElement">
+                            <f:render
+                                partial="Profile/PublicProfile/Element"
+                                arguments="{profile: profile, data: data, publicProfile: publicProfile, element: mobileElement}"
+                            />
+                        </f:for>
                     </div>
-                </li>
+                </f:if>
+                <f:render partial="Profile/PublicProfile/Element" arguments="{_all}" />
             </f:for>
-        </ul>
-    </f:if>
-
-    <f:render
-        partial="Profile/SectionHeader"
-        arguments="{
-            header: '{f:translate(key: \'detail.additionalInformation\', extensionName: \'academic_persons\')}',
-            layout: '{data.header_layout}',
-            subheader: '{data.subheader}',
-            detail: 'true'
-        }"
-    />
-
-    <f:if condition="{profile.website}">
-        <p>
-            <b>{f:translate(key: 'detail.website', extensionName: 'academic_persons')}:</b>
-
-            <f:link.typolink parameter="{profile.website}" target="_blank" absolute="true">
-                {f:if(
-                    condition: '{profile.websiteTitle}',
-                    then: '{profile.websiteTitle}',
-                    else: '{profile.website}'
-                )}
-            </f:link.typolink>
-        </p>
-    </f:if>
-
-    <ul class="list-group list-group-flush">
-        <f:for
-             each="{
-                0:'{name: \'teachingArea\', type: \'text\'}',
-                1:'{name: \'coreCompetences\', type: \'text\'}',
-                2:'{name: \'supervisedThesis\', type: \'text\'}',
-                3:'{name: \'supervisedDoctoralThesis\', type: \'text\'}',
-                4:'{name: \'miscellaneous\', type: \'text\'}',
-                5:'{name: \'scientificResearch\', type: \'timeline\'}',
-                6:'{name: \'vita\', type: \'timeline\'}',
-                7:'{name: \'memberships\', type: \'timeline\'}',
-                8:'{name: \'cooperation\', type: \'timeline\'}',
-                9:'{name: \'publications\', type: \'timeline\'}',
-                10:'{name: \'lectures\', type: \'timeline\'}',
-                11:'{name: \'pressMedia\', type: \'timeline\'}'
-            }"
-            as="field"
-        >
-            <f:if condition="{profile.{field.name}}">
-                <li class="accordion list-group-item" id="{field.name}-accordion">
-                    <f:variable name="HeaderTitle">
-                        {f:translate(key: 'detail.{field.name}', extensionName: 'academic_persons')}
-                    </f:variable>
-
-                    <f:render
-                        partial="Profile/DataHeader"
-                        arguments="{
-                            header: '{f:render(
-                                section: \'AccordionHeader\',
-                                arguments: {uniqueId: field.name, header: HeaderTitle}
-                            )}',
-                            layout: '{data.header_layout}',
-                            positionClass: 'accordion-header',
-                            subheader: '{data.subheader}'
-                        }"
-                    />
-
-                    <div
-                        id="collapse-{field.name}"
-                        class="accordion-collapse collapse"
-                        aria-labelledby="heading-{field.name}"
-                        data-bs-parent="#{field.name}-accordion"
-                    >
-                        <div class="accordion-body">
-                            <f:if condition="{field.type} == 'text'">
-                                <f:then>
-                                    {profile.{field.name} -> f:format.html()}
-                                </f:then>
-                                <f:else>
-                                    <f:if condition="{field.name} == 'publications' && {profile.publicationsLink}">
-                                        <p>
-                                            <b>
-                                                {f:translate(key: 'detail.publicationsLink', extensionName: 'academic_persons')}:
-                                            </b>
-
-                                            <f:link.typolink parameter="{profile.publicationsLink}" target="_blank" absolute="true">
-                                                {f:if(
-                                                    condition: '{profile.publicationsLinkTitle}',
-                                                    then: '{profile.publicationsLinkTitle}',
-                                                    else: '{profile.publicationsLink}'
-                                                )}
-                                            </f:link.typolink>
-                                        </p>
-                                    </f:if>
-
-                                    <f:for each="{profile.{field.name}}" as="item">
-                                        <b>
-                                            <f:if condition="{item.yearStart} || {item.yearEnd}">
-                                                <f:then>
-                                                    <f:if condition="!{item.yearEnd} && {item.yearStart}">
-                                                        {f:translate(key: 'detail.since', extensionName: 'academic_persons')}
-                                                    </f:if>
-
-                                                    {f:if(condition: '{item.yearStart}', then: '{item.yearStart}')}
-
-                                                    <f:if condition="{item.yearEnd} && {item.yearStart}">
-                                                        -
-                                                    </f:if>
-
-                                                    <f:if condition="!{item.yearStart} && {item.yearEnd}">
-                                                        {f:translate(key: 'detail.till', extensionName: 'academic_persons')}
-                                                    </f:if>
-
-                                                    {f:if(condition: '{item.yearEnd}', then: '{item.yearEnd}')}:
-                                                </f:then>
-                                                <f:else if="{item.year}">
-                                                    {item.year}:
-                                                </f:else>
-                                            </f:if>
-
-                                            {item.title}
-                                        </b>
-
-                                        <span>{item.bodytext -> f:format.html()}</span>
-                                    </f:for>
-                                </f:else>
-                            </f:if>
-                        </div>
-                    </div>
-                </li>
-            </f:if>
-        </f:for>
-    </ul>
+        </div>
+    </div>
 </div>
-
-<f:section name="AccordionHeader">
-    <button
-        class="accordion-button collapsed"
-        type="button"
-        data-bs-toggle="collapse"
-        data-bs-target="#collapse-{uniqueId}"
-        aria-expanded="false"
-        aria-controls="collapse-{uniqueId}"
-        id="heading-{uniqueId}"
-    >
-        {header}
-    </button>
-</f:section>
 
 </html>

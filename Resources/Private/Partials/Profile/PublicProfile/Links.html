@@ -1,0 +1,33 @@
+<html
+    data-namespace-typo3-fluid="true"
+    xmlns:f="http://typo3.org/ns/TYPO3/CMS/Fluid/ViewHelpers"
+>
+
+<f:comment>
+    The link properties of the profile - `website` and `publicationsLink` in the shipped
+    configuration. Each of them has a companion title property named after it (`websiteTitle`,
+    `publicationsLinkTitle`); when it is empty the URL itself is the link text. The label of a
+    link is `detail.<property>`.
+</f:comment>
+
+<f:if condition="{publicProfile.details.links}">
+    <div class="academic-persons-detail__links">
+        <f:for each="{publicProfile.details.links}" as="fieldName">
+            <f:if condition="{profile.{fieldName}}">
+                <p class="academic-persons-detail__link-row">
+                    <span class="academic-persons-detail__link-label">
+                        <f:translate key="detail.{fieldName}" extensionName="academic_persons" />
+                    </span>
+                    <f:variable name="linkTitle" value="{profile.{fieldName}Title}" />
+                    <f:link.typolink
+                        parameter="{profile.{fieldName}}"
+                        target="_blank"
+                        class="academic-persons-detail__link"
+                    >{f:if(condition: linkTitle, then: linkTitle, else: '{profile.{fieldName}}')}</f:link.typolink>
+                </p>
+            </f:if>
+        </f:for>
+    </div>
+</f:if>
+
+</html>

@@ -1,0 +1,27 @@
+<html
+    data-namespace-typo3-fluid="true"
+    xmlns:f="http://typo3.org/ns/TYPO3/CMS/Fluid/ViewHelpers"
+>
+
+<div class="academic-persons-detail__menu-section-data">
+    <f:for each="{publicProfile.details.menuSections}" as="menuSection">
+        <f:variable name="fieldName" value="{publicProfile.details.menuSectionsDatas.{menuSection}}" />
+        <f:if condition="{profile.{fieldName}}">
+            <section
+                class="academic-persons-detail__timeline-section"
+                id="academic-persons-detail-section-{data.uid}-{menuSection}"
+            >
+                <h3 class="academic-persons-detail__timeline-heading">
+                    <f:translate key="detail.{fieldName}" extensionName="academic_persons" />
+                </h3>
+                <div class="academic-persons-detail__timeline">
+                    <f:for each="{profile.{fieldName}}" as="item">
+                        <f:render partial="Profile/PublicProfile/TimelineItem" arguments="{item: item}" />
+                    </f:for>
+                </div>
+            </section>
+        </f:if>
+    </f:for>
+</div>
+
+</html>

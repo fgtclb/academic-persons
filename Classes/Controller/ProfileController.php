@@ -21,6 +21,7 @@ use FGTCLB\AcademicPersons\Event\ModifyListProfilesEvent;
 use FGTCLB\AcademicPersons\Event\ModifySelectedContractsEvent;
 use FGTCLB\AcademicPersons\Event\ModifySelectedProfilesEvent;
 use FGTCLB\AcademicPersons\PageTitle\ProfileTitleProvider;
+use FGTCLB\AcademicPersons\Settings\AcademicPersonsSettings;
 use GeorgRinger\NumberedPagination\NumberedPagination;
 use Psr\Http\Message\ResponseInterface;
 use TYPO3\CMS\Core\Cache\CacheTag;
@@ -37,24 +38,12 @@ use TYPO3\CMS\Frontend\Page\PageAccessFailureReasons;
 
 final class ProfileController extends ActionController
 {
-    private ContractRepository $contractRepository;
-    private ProfileRepository $profileRepository;
-    private ProfileTitleProvider $profileTitleProvider;
-
-    public function injectContractRepository(ContractRepository $contractRepository): void
-    {
-        $this->contractRepository = $contractRepository;
-    }
-
-    public function injectProfileRepository(ProfileRepository $profileRepository): void
-    {
-        $this->profileRepository = $profileRepository;
-    }
-
-    public function injectProfileTitleProvider(ProfileTitleProvider $profileTitleProvider): void
-    {
-        $this->profileTitleProvider = $profileTitleProvider;
-    }
+    public function __construct(
+        private readonly ContractRepository $contractRepository,
+        private readonly ProfileRepository $profileRepository,
+        private readonly ProfileTitleProvider $profileTitleProvider,
+        private readonly AcademicPersonsSettings $academicPersonsSettings,
+    ) {}
 
     public function initializeListAction(): void
     {
@@ -286,6 +275,9 @@ final class ProfileController extends ActionController
         $this->view->assignMultiple([
             'data' => $this->getCurrentContentObjectRenderer()?->data,
             'profile' => $profile,
+            // The public layout: which elements the template renders, in which column and
+            // order, and what each of them shows. See `Templates/Profile/Detail.html`.
+            'publicProfile' => $this->academicPersonsSettings->publicProfile,
         ]);
         return $this->htmlResponse();
     }

@@ -68,6 +68,7 @@ final class AcademicPersonsSettingsFactoryTest extends UnitTestCase
                     'contact',
                     'subline',
                     'profileEntries',
+                    'links',
                     'menuSectionsDatas',
                 ],
             ],
@@ -76,6 +77,10 @@ final class AcademicPersonsSettingsFactoryTest extends UnitTestCase
         $this->assertSame(
             ['title', 'firstName', 'middleName', 'lastName'],
             $settings->publicProfile->details['headline'],
+        );
+        $this->assertSame(
+            ['website', 'publicationsLink'],
+            $settings->publicProfile->details['links'],
         );
         $this->assertSame(
             [
