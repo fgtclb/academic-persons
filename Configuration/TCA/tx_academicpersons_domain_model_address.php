@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
+use FGTCLB\AcademicBase\Settings\TcaValidationMerger;
 use FGTCLB\AcademicPersons\Settings\AcademicPersonsSettings;
 use FGTCLB\AcademicPersons\Tca\RecordTypes;
-use TYPO3\CMS\Core\Utility\ArrayUtility;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
@@ -219,9 +219,9 @@ $tcaConfiguration = [
 ];
 
 // @todo MAIN TCA Files should be kept without dynamic calls, and following should be done in override files.
-ArrayUtility::mergeRecursiveWithOverrule(
+$tcaConfiguration = (new TcaValidationMerger())->merge(
     $tcaConfiguration,
-    GeneralUtility::makeInstance(AcademicPersonsSettings::class)->getValidationTcaTableConfig('physicalAddress'),
+    GeneralUtility::makeInstance(AcademicPersonsSettings::class)->getValidationSet('physicalAddress'),
 );
 
 // The 'searchFields' TCA ctrl option was removed in TYPO3 v14 (Breaking #106972);

@@ -2,8 +2,8 @@
 
 declare(strict_types=1);
 
+use FGTCLB\AcademicBase\Settings\TcaValidationMerger;
 use FGTCLB\AcademicPersons\Settings\AcademicPersonsSettings;
-use TYPO3\CMS\Core\Utility\ArrayUtility;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
@@ -561,9 +561,9 @@ if ($settings->profileInformationTypes !== []) {
         ];
     }
 }
-ArrayUtility::mergeRecursiveWithOverrule(
+$tcaConfiguration = (new TcaValidationMerger())->merge(
     $tcaConfiguration,
-    $settings->getValidationTcaTableConfig('profile'),
+    $settings->getValidationSet('profile'),
 );
 
 // The 'searchFields' TCA ctrl option was removed in TYPO3 v14 (Breaking #106972);

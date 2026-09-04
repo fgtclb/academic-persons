@@ -4,20 +4,20 @@ declare(strict_types=1);
 
 namespace FGTCLB\AcademicPersons\Tests\Unit\Settings;
 
+use FGTCLB\AcademicBase\Settings\Validation;
+use FGTCLB\AcademicBase\Settings\ValidationSet;
 use FGTCLB\AcademicPersons\Settings\AcademicPersonsSettings;
 use FGTCLB\AcademicPersons\Settings\ProfileInformationType;
-use FGTCLB\AcademicPersons\Settings\Validation;
-use FGTCLB\AcademicPersons\Settings\ValidationSet;
 use PHPUnit\Framework\Attributes\Test;
 use TYPO3\TestingFramework\Core\Unit\UnitTestCase;
 
 /**
- * The settings object is what `AcademicPersonsSettingsFactory` hands to TCA overrides
- * and to the Extbase validation, and it is what the factory writes into the core cache
- * as `return <var_export>;`. Two things therefore have to hold: the lookups must fail
- * softly, because TCA files ask for identifiers that need not be configured, and the
- * object must survive `var_export()`/`require`, because that is how it is restored on
- * every request after the first.
+ * The settings object is what `AcademicPersonsSettingsFactory` hands to the TCA files
+ * and to the Extbase validation, and it is what `SettingsFileLoader` writes into the
+ * core cache as `return <var_export>;`. Two things therefore have to hold: the
+ * lookups must fail softly, because TCA files ask for identifiers that need not be
+ * configured, and the object must survive `var_export()`/`require`, because that is
+ * how it is restored on every request after the first.
  */
 final class AcademicPersonsSettingsTest extends UnitTestCase
 {
@@ -112,134 +112,6 @@ final class AcademicPersonsSettingsTest extends UnitTestCase
         );
 
         $this->assertSame($validationSet, $subject->getValidationSetWithFallback('profile'));
-    }
-
-    /**
-     * The result is merged into `$GLOBALS['TCA']`, so the array key is the column name
-     * - the `fieldName` of the validation, not the key it is registered under. Those
-     * two are deliberately different here, because a set is keyed by validation
-     * identifier and nothing enforces that it equals the column.
-     */
-    #[Test]
-    public function theTcaConfigIsKeyedByTheFieldNameOfEachValidation(): void
-    {
-        $subject = new AcademicPersonsSettings(
-            profileInformationTypes: [],
-            validations: [
-                'profile' => new ValidationSet(
-                    identifier: 'profile',
-                    validations: [
-                        'firstName' => $this->validation('first_name', ['type' => 'input', 'required' => true]),
-                        'lastName' => $this->validation('last_name', ['type' => 'input', 'max' => 60]),
-                    ],
-                ),
-            ],
-            raw: [],
-        );
-
-        $this->assertSame(
-            [
-                'columns' => [
-                    'first_name' => ['config' => ['type' => 'input', 'required' => true]],
-                    'last_name' => ['config' => ['type' => 'input', 'max' => 60]],
-                ],
-            ],
-            $subject->getValidationTcaTableConfig('profile'),
-        );
-    }
-
-    /**
-     * A validation may only exist to attach an Extbase validator, in which case it has
-     * nothing to say about TCA. Skipping it matters beyond tidiness: writing an empty
-     * `config` into `$GLOBALS['TCA']` would drop the column's own configuration.
-     */
-    #[Test]
-    public function aValidationWithoutTcaConfigContributesNothing(): void
-    {
-        $subject = new AcademicPersonsSettings(
-            profileInformationTypes: [],
-            validations: [
-                'profile' => new ValidationSet(
-                    identifier: 'profile',
-                    validations: [
-                        'firstName' => $this->validation('first_name', []),
-                        'lastName' => $this->validation('last_name', ['type' => 'input']),
-                    ],
-                ),
-            ],
-            raw: [],
-        );
-
-        $this->assertSame(
-            ['columns' => ['last_name' => ['config' => ['type' => 'input']]]],
-            $subject->getValidationTcaTableConfig('profile'),
-        );
-    }
-
-    /**
-     * Not even an empty `columns` key: the caller merges the result into the table TCA,
-     * and `['columns' => []]` is not the same neutral element as `[]` for every merge
-     * strategy.
-     */
-    #[Test]
-    public function aSetWithoutAnyTcaConfigProducesAnEmptyArray(): void
-    {
-        $subject = new AcademicPersonsSettings(
-            profileInformationTypes: [],
-            validations: [
-                'profile' => new ValidationSet(
-                    identifier: 'profile',
-                    validations: ['firstName' => $this->validation('first_name', [])],
-                ),
-            ],
-            raw: [],
-        );
-
-        $this->assertSame([], $subject->getValidationTcaTableConfig('profile'));
-    }
-
-    /**
-     * TCA override files call this for every table the extension knows, whether or not
-     * an integrator configured a validation set for it.
-     */
-    #[Test]
-    public function anUnknownIdentifierProducesAnEmptyArray(): void
-    {
-        $subject = new AcademicPersonsSettings(
-            profileInformationTypes: [],
-            validations: [],
-            raw: [],
-        );
-
-        $this->assertSame([], $subject->getValidationTcaTableConfig('profile'));
-    }
-
-    /**
-     * Two validations of one set naming the same column silently collapse into the last
-     * one - the earlier `config` is replaced, not merged. Pinned because the set is
-     * keyed by validation identifier, so nothing stops a configuration from doing it.
-     */
-    #[Test]
-    public function twoValidationsOnOneColumnKeepTheLastTcaConfig(): void
-    {
-        $subject = new AcademicPersonsSettings(
-            profileInformationTypes: [],
-            validations: [
-                'profile' => new ValidationSet(
-                    identifier: 'profile',
-                    validations: [
-                        'firstName' => $this->validation('first_name', ['type' => 'input']),
-                        'firstNameAgain' => $this->validation('first_name', ['type' => 'text']),
-                    ],
-                ),
-            ],
-            raw: [],
-        );
-
-        $this->assertSame(
-            ['columns' => ['first_name' => ['config' => ['type' => 'text']]]],
-            $subject->getValidationTcaTableConfig('profile'),
-        );
     }
 
     /**

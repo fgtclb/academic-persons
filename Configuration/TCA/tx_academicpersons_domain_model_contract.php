@@ -2,6 +2,7 @@
 
 declare(strict_types=1);
 
+use FGTCLB\AcademicBase\Settings\TcaValidationMerger;
 use FGTCLB\AcademicPersons\Settings\AcademicPersonsSettings;
 use FGTCLB\AcademicPersons\Tca\ContractLabels;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
@@ -377,7 +378,9 @@ $tcaConfiguration = [
 ];
 
 // @todo MAIN TCA Files should be kept without dynamic calls, and following should be done in override files.
-$validations = GeneralUtility::makeInstance(AcademicPersonsSettings::class)->getValidationTcaTableConfig('contract');
-$tcaConfiguration = array_replace_recursive($tcaConfiguration, $validations);
+$tcaConfiguration = (new TcaValidationMerger())->merge(
+    $tcaConfiguration,
+    GeneralUtility::makeInstance(AcademicPersonsSettings::class)->getValidationSet('contract'),
+);
 
 return $tcaConfiguration;

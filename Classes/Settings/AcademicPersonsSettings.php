@@ -4,9 +4,10 @@ declare(strict_types=1);
 
 namespace FGTCLB\AcademicPersons\Settings;
 
+use FGTCLB\AcademicBase\Settings\ValidationSet;
+
 /**
  * @internal not part of public API.
- * @todo Integrate basic interface(s) and traits into `EXT:academic_base` and adopt along with basic/shared factory.
  */
 final class AcademicPersonsSettings
 {
@@ -59,25 +60,5 @@ final class AcademicPersonsSettings
                 identifier: $identifier,
                 validations: [],
             );
-    }
-
-    /**
-     * @return array<string, mixed>
-     * @todo TCA Array should be handed over as argument and changes directly made, returning the array.
-     * @todo Should be called in TCA Override files OR as part of an event listener and not in main TCA files.
-     */
-    public function getValidationTcaTableConfig(string $identifier): array
-    {
-        $validationSet = $this->validations[$identifier] ?? null;
-        if (! $validationSet instanceof ValidationSet) {
-            return [];
-        }
-        $tableTca = [];
-        foreach ($validationSet->validations as $validation) {
-            if ($validation->tcaConfig !== []) {
-                $tableTca['columns'][$validation->fieldName]['config'] = $validation->tcaConfig;
-            }
-        }
-        return $tableTca;
     }
 }
