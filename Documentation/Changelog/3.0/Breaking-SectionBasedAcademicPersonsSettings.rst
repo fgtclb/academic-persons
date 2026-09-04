@@ -44,6 +44,17 @@ What an integrator sees:
     column; they now exist whatever the settings say. The same seven appear as
     :yaml:`documentSections`, which carry their label, record type, relation
     field, row fields, actions and validators.
+
+    **The record type and the relation field of a timeline type are no longer
+    configurable.** They used to be one value each, generating the backend
+    column and selecting the frontend records together; since the column is
+    TCA, a changed :yaml:`type` or :yaml:`fieldName` would move the frontend
+    half alone and every record created through it would be invisible in the
+    backend. An override of either is therefore not applied, and the legacy
+    mapping reports it per key instead of copying it, see
+    :ref:`feature-legacy-settings-overlay-and-migration-command`. A timeline
+    type of a project's own needs its own column in a TCA override of the
+    profile table, and a :yaml:`documentSections` entry that names it.
 *   :yaml:`validations` is gone. The flags of a field are declared on the field:
     :yaml:`profile.<field>.validators` for the profile,
     :yaml:`contracts.fields.<field>.validators` for the contract,
@@ -124,10 +135,14 @@ Impact
 ======
 
 **Every site package that overrides the file has to be migrated.** The old
-maps are not read any more: a file that still declares :yaml:`validations` or
-:yaml:`profileInformationsTypes` contributes nothing, and the installation runs
-on the shipped defaults - locked name fields, the required contact fields, and
-the seven shipped timeline sections.
+maps are not read as such any more. A file that still declares
+:yaml:`validations` or :yaml:`profileInformationsTypes` is mapped onto the
+section maps at runtime with a logged warning, until 4.0 - see the Feature
+entry on the legacy settings overlay and the migration command, and the
+:ref:`migration section <configuration-validations-migration>` of the
+validation settings page. Without that mapping the installation would run on
+the shipped defaults: locked name fields, the required contact fields, and the
+seven shipped timeline sections.
 
 An eighth timeline entry type that an override declared under
 :yaml:`profileInformationsTypes` used to get a backend inline column for free.
@@ -170,6 +185,14 @@ Migration
     saveable, restore :yaml:`number` on :yaml:`streetNumber` and :yaml:`zip`
     if numeric values are to be enforced, and add :yaml:`required` back to
     the two :yaml:`<section>Type` fields if a contact type is mandatory.
+#.  Re-declare a renamed timeline relation in TCA. An override that changed
+    :yaml:`profileInformationsTypes.<type>.type` or
+    :yaml:`...fieldName` no longer reaches the profile table, and the value it
+    named is reported by :bash:`vendor/bin/typo3 academic:persons:settings:migrate`
+    rather than applied. Either accept the shipped record type and relation, or
+    declare the column in a TCA override of
+    :sql:`tx_academicpersons_domain_model_profile` and give it a
+    :yaml:`documentSections` entry.
 #.  Flush all TYPO3 caches.
 
 ..  index:: Configuration, TCA, Frontend, PHP-API, ext:academic_persons

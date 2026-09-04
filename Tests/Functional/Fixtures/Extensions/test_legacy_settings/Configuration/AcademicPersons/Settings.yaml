@@ -1,0 +1,25 @@
+# The override example of the 2.x manual: "making the profile names editable
+# again" (Documentation/Configuration/Validations/Index.rst of 2.4).
+# The three name fields are not listed and are therefore editable; the other
+# five sets repeat the shipped 2.x flags, shortened.
+validations:
+  profile:
+    # The three name fields are no longer listed and are therefore editable.
+    website:
+      - required
+  contract:
+    position:
+      - required
+  emailAddress:
+    email:
+      - required
+      - email
+  phoneNumber:
+    phoneNumber:
+      - required
+  physicalAddress:
+    street:
+      - required
+  profileInformation:
+    title:
+      - required

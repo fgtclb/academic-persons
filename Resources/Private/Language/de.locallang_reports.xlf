@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xliff version="1.2" xmlns="urn:oasis:names:tc:xliff:document:1.2">
+  <file source-language="en" target-language="de" datatype="plaintext" original="EXT:academic_persons/Resources/Private/Language/locallang_reports.xlf" date="2026-09-04T00:00:00Z" product-name="academic_persons">
+    <header/>
+    <body>
+      <trans-unit id="status.label" resname="status.label" approved="yes">
+        <source>Academic Persons</source>
+        <target>Academic Persons</target>
+      </trans-unit>
+      <trans-unit id="status.legacySettings.title" resname="status.legacySettings.title" approved="yes">
+        <source>Settings overrides</source>
+        <target>Konfigurationsüberschreibungen</target>
+      </trans-unit>
+      <trans-unit id="status.legacySettings.message" resname="status.legacySettings.message" approved="yes">
+        <source>The package still ships the legacy keys "%s" in %s. They are mapped onto the section maps at runtime until academic_persons 4.0. Run "academic:persons:settings:migrate" and replace them with the printed maps.</source>
+        <target>Das Paket liefert weiterhin die veralteten Schlüssel "%s" in %s aus. Diese werden bis academic_persons 4.0 zur Laufzeit auf die Abschnittskonfiguration abgebildet. Führen Sie "academic:persons:settings:migrate" aus und ersetzen Sie sie durch die ausgegebene Konfiguration.</target>
+      </trans-unit>
+      <trans-unit id="status.legacySettings.none.value" resname="status.legacySettings.none.value" approved="yes">
+        <source>Section maps</source>
+        <target>Abschnittskonfiguration</target>
+      </trans-unit>
+      <trans-unit id="status.legacySettings.none.message" resname="status.legacySettings.none.message" approved="yes">
+        <source>No active package ships the pre-3.0 "validations" or "profileInformationsTypes" keys.</source>
+        <target>Kein aktives Paket liefert die vor 3.0 verwendeten Schlüssel "validations" oder "profileInformationsTypes" aus.</target>
+      </trans-unit>
+    </body>
+  </file>
+</xliff>

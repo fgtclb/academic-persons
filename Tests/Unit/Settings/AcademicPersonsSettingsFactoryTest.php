@@ -8,9 +8,11 @@ use FGTCLB\AcademicBase\Settings\SettingsFileLoader;
 use FGTCLB\AcademicBase\Settings\ValidationNormalizer;
 use FGTCLB\AcademicPersons\Settings\AcademicPersonsSettings;
 use FGTCLB\AcademicPersons\Settings\AcademicPersonsSettingsFactory;
+use FGTCLB\AcademicPersons\Settings\LegacySettingsMigrator;
 use PHPUnit\Framework\Attributes\Test;
 use Symfony\Component\Yaml\Yaml;
 use TYPO3\CMS\Core\Cache\Frontend\PhpFrontend;
+use TYPO3\CMS\Core\Package\PackageInterface;
 use TYPO3\CMS\Core\Package\PackageManager;
 use TYPO3\CMS\Extbase\Validation\Validator\EmailAddressValidator;
 use TYPO3\CMS\Extbase\Validation\Validator\NotEmptyValidator;
@@ -51,6 +53,42 @@ final class AcademicPersonsSettingsFactoryTest extends UnitTestCase
         $settings = $this->factory($cache)->get();
 
         $this->assertSame([], $settings->profileSections);
+    }
+
+    /**
+     * A site package still shipping the pre-3.0 `validations` map - here the
+     * override example of the 2.x manual, which unlocks the name fields by not
+     * listing them - is mapped onto the section maps on a cache miss, before the
+     * graph is built, and the legacy key does not survive into `raw`. This is the
+     * wiring of the overlay; the mapping itself is covered by
+     * LegacySettingsMigratorTest.
+     */
+    #[Test]
+    public function aLegacyOverrideOfAnActivePackageIsOverlaidOnLoad(): void
+    {
+        $cache = $this->createMock(PhpFrontend::class);
+        $cache->method('require')->willReturn(false);
+        $packageManager = $this->createMock(PackageManager::class);
+        $packageManager->method('getActivePackages')->willReturn([
+            $this->package('academic_persons', __DIR__ . '/../../../'),
+            $this->package(
+                'test_legacy_settings',
+                __DIR__ . '/../../Functional/Fixtures/Extensions/test_legacy_settings/',
+            ),
+        ]);
+
+        $settings = $this->factory($cache, $packageManager)->get();
+
+        $firstName = $settings->getProfileField('firstName');
+        $this->assertNotNull($firstName);
+        $this->assertFalse($firstName->validation->readOnly);
+        $this->assertFalse($firstName->validation->disabled);
+        $this->assertSame([], $firstName->validation->validatorClassNames);
+        $website = $settings->getProfileField('website');
+        $this->assertNotNull($website);
+        $this->assertSame([NotEmptyValidator::class, UrlValidator::class], $website->validation->validatorClassNames);
+        $this->assertArrayNotHasKey('validations', $settings->raw);
+        $this->assertSame(['profile', 'special', 'contracts', 'documentSections'], array_keys($settings->raw));
     }
 
     #[Test]
@@ -731,11 +769,20 @@ final class AcademicPersonsSettingsFactoryTest extends UnitTestCase
         return $this->factory($this->createMock(PhpFrontend::class))->normalize($configuration);
     }
 
-    private function factory(PhpFrontend $cache): AcademicPersonsSettingsFactory
+    private function factory(PhpFrontend $cache, ?PackageManager $packageManager = null): AcademicPersonsSettingsFactory
     {
         return new AcademicPersonsSettingsFactory(
-            new SettingsFileLoader($cache, $this->createMock(PackageManager::class)),
+            new SettingsFileLoader($cache, $packageManager ?? $this->createMock(PackageManager::class)),
             new ValidationNormalizer(),
+            new LegacySettingsMigrator(),
         );
+    }
+
+    private function package(string $packageKey, string $packagePath): PackageInterface
+    {
+        $package = $this->createMock(PackageInterface::class);
+        $package->method('getPackageKey')->willReturn($packageKey);
+        $package->method('getPackagePath')->willReturn($packagePath);
+        return $package;
     }
 }

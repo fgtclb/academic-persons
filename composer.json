@@ -63,6 +63,7 @@
         "georgringer/numbered-pagination": "<2.1.0 || >= 3.0.0"
     },
     "suggest": {
-        "georgringer/numbered-pagination": "Install to use numbered pagination. (~2.1)"
+        "georgringer/numbered-pagination": "Install to use numbered pagination. (~2.1)",
+        "typo3/cms-reports": "Install to see the status report naming site packages that still ship the pre-3.0 settings keys."
     }
 }

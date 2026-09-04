@@ -6,7 +6,11 @@ services:
 
   FGTCLB\AcademicPersons\:
     resource: '../Classes/*'
-    exclude: '../Classes/Domain/Model/*.php'
+    exclude:
+      # The status provider implements an interface of EXT:reports and is
+      # registered by Services.php only when that extension is loaded.
+      - '../Classes/Domain/Model/*.php'
+      - '../Classes/Report/*'
 
   FGTCLB\AcademicPersons\Domain\Model\Dto\DemandInterface:
     alias: FGTCLB\AcademicPersons\Domain\Model\Dto\ProfileDemand
@@ -30,3 +34,9 @@ services:
         command: 'academic:updateprofiles'
         description: 'This command updates profiles for all frontend users that have a profile.'
 
+  FGTCLB\AcademicPersons\Command\MigrateSettingsCommand:
+    tags:
+      - name: console.command
+        command: 'academic:persons:settings:migrate'
+        description: 'Prints the section maps a package still shipping the pre-3.0 "validations" or "profileInformationsTypes" keys of Configuration/AcademicPersons/Settings.yaml should replace them with; exits with 1 when such a package exists.'
+        schedulable: false

@@ -22,6 +22,7 @@ $EM_CONF[$_EXTKEY] = [
         ],
         'suggests' => [
             'numbered_pagination' => '2.1.0-2.99.99',
+            'reports' => '13.4.0-14.3.99',
         ],
     ],
 ];

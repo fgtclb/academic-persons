@@ -311,3 +311,88 @@ are copied unchanged and are shortened here for readability:
     frontend also makes those columns writable in the backend record editor.
 
 There is no TypoScript and no site set equivalent for these settings.
+
+..  _configuration-validations-migration:
+
+Migrating a pre-3.0 override
+============================
+
+Before 3.0 the file had two top-level maps, :yaml:`validations` with one flag
+list per record type and :yaml:`profileInformationsTypes` with the seven
+timeline entry types, and the manual told integrators to restate the complete
+:yaml:`validations` block in the site package. Such a file keeps working after
+the update: the two keys are mapped onto the section maps at runtime, before
+the settings graph is built, and a warning naming the package and the key is
+logged once per cache build. The mapping is transitional and is removed in
+academic_persons 4.0, so the override should be rewritten.
+
+The console command prints the replacement:
+
+..  code-block:: bash
+
+    vendor/bin/typo3 academic:persons:settings:migrate
+
+For every active package that still ships a legacy key it prints the package,
+the keys it found, one comment line per entry that could not be mapped, and
+the four maps :yaml:`profile`, :yaml:`special`, :yaml:`contracts` and
+:yaml:`documentSections` as the runtime mapping produces them - the complete
+document that replaces the legacy keys in that package's file. It exits with
+1 when such a package exists and with 0 otherwise, so a deployment pipeline
+can run it as a check. The command never writes the file: the override lives
+in a site package that is under version control and usually deployed read
+only, so the printed maps are pasted into the file after review, and the
+TYPO3 caches are flushed afterwards. When EXT:reports is installed, the
+:guilabel:`Status` report lists the same packages under
+:guilabel:`Academic Persons` as a warning.
+
+How the legacy keys map:
+
+..  list-table::
+    :header-rows: 1
+
+    *   -   Legacy key
+        -   Mapped onto
+    *   -   :yaml:`validations.profile.<property>`
+        -   :yaml:`profile.<field>.validators`
+    *   -   :yaml:`validations.contract.<property>`
+        -   :yaml:`contracts.fields.<field>.validators`
+    *   -   :yaml:`validations.emailAddress.{email, type}`
+        -   :yaml:`contracts.contactSections.emailAddresses.fields.{emailAddress, emailAddressType}.validators`
+    *   -   :yaml:`validations.phoneNumber.{phoneNumber, type}`
+        -   :yaml:`contracts.contactSections.phoneNumbers.fields.{phoneNumber, phoneNumberType}.validators`
+    *   -   :yaml:`validations.physicalAddress.<property>`
+        -   :yaml:`contracts.contactSections.physicalAddresses.fields.<field>.validators`,
+            :yaml:`type` onto :yaml:`physicalAddressType`
+    *   -   :yaml:`validations.profileInformation.<property>`
+        -   :yaml:`documentSections.<section>.validators.<field>` of every
+            timeline section; :yaml:`yearStart`, :yaml:`yearEnd` and
+            :yaml:`bodytext` onto :yaml:`from`, :yaml:`to` and
+            :yaml:`description`
+    *   -   :yaml:`profileInformationsTypes.<section>`
+        -   :yaml:`label` of :yaml:`documentSections.<section>`;
+            :yaml:`type` and :yaml:`fieldName` are reported, not applied
+
+A field is matched by its key or by the property it names, so
+:yaml:`emailAddress.email` reaches the :yaml:`emailAddress` field whose
+:yaml:`propertyName` is :yaml:`email`. A legacy set decides the five flags the
+old shape knew - :yaml:`required`, :yaml:`readonly`, :yaml:`disabled`,
+:yaml:`email` and :yaml:`number` - for **every** field of its target: a field
+the set does not list has none of them, exactly as an unlisted property was
+unconfigured before, which is what made the 2.x example above unlock the
+profile names by not listing them. The flags the old shape could not express
+- :yaml:`url`, :yaml:`date`, :yaml:`tel`, :yaml:`textarea`, :yaml:`html` -
+stay as the section maps declare them.
+
+Two things are not mapped and are reported by the command and in the log:
+
+*   A property the section maps do not know, and an eighth timeline entry
+    type declared under :yaml:`profileInformationsTypes`, are skipped. The
+    type needs a profile relation and a TCA column the settings never
+    created; the Breaking entry on the section based settings describes how
+    to keep one.
+*   The :yaml:`type` and :yaml:`fieldName` of a timeline entry type are not
+    applied. Since 3.0.0 the seven profile relations are declared by the TCA
+    of the profile table, so applying the override would move the editing
+    frontend alone and leave it and the backend column addressing different
+    record types. The section keeps the values that match the TCA, and the
+    value the override named is printed as a note.

@@ -7,6 +7,7 @@ namespace FGTCLB\AcademicPersons\Tests\Unit\Settings;
 use FGTCLB\AcademicBase\Settings\SettingsFileLoader;
 use FGTCLB\AcademicBase\Settings\ValidationNormalizer;
 use FGTCLB\AcademicPersons\Settings\AcademicPersonsSettingsFactory;
+use FGTCLB\AcademicPersons\Settings\LegacySettingsMigrator;
 use PHPUnit\Framework\Attributes\Test;
 use Symfony\Component\Yaml\Yaml;
 use TYPO3\CMS\Core\Cache\Frontend\PhpFrontend;
@@ -92,6 +93,7 @@ final class SettingsSourceTest extends UnitTestCase
         $factory = new AcademicPersonsSettingsFactory(
             new SettingsFileLoader($this->createMock(PhpFrontend::class), $this->createMock(PackageManager::class)),
             new ValidationNormalizer(),
+            new LegacySettingsMigrator(),
         );
 
         $settings = $factory->normalize($configuration);

@@ -17,12 +17,17 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
  * The loader of `academic_base` does the package walk and the cache round
  * trip; this class owns the persons shape - which top-level maps exist and
  * how their entries become sections and fields - and hands every flag list
- * to the shared normaliser.
+ * to the shared normaliser. A site package still shipping the pre-3.0 keys
+ * is overlaid by {@see LegacySettingsMigrator} before the graph is built;
+ * that step is transitional and goes with 4.0.
  *
  * @internal not part of public API.
  */
 class AcademicPersonsSettingsFactory
 {
+    public const SETTINGS_FILE = 'Configuration/AcademicPersons/Settings.yaml';
+    public const CACHE_IDENTIFIER = 'AcademicPersons_Settings_v3';
+
     /**
      * The document validators of a profile information section address the
      * fields under the names an editor sees. The DTO and domain properties
@@ -59,16 +64,43 @@ class AcademicPersonsSettingsFactory
     public function __construct(
         protected readonly SettingsFileLoader $settingsFileLoader,
         protected readonly ValidationNormalizer $validationNormalizer,
+        protected readonly LegacySettingsMigrator $legacySettingsMigrator,
     ) {}
 
     public function get(): AcademicPersonsSettings
     {
         return $this->settingsFileLoader->load(
-            'Configuration/AcademicPersons/Settings.yaml',
-            'AcademicPersons_Settings_v3',
+            self::SETTINGS_FILE,
+            self::CACHE_IDENTIFIER,
             AcademicPersonsSettings::class,
-            $this->normalize(...),
+            fn(array $settings): AcademicPersonsSettings => $this->normalize($this->overlayLegacySettings($settings)),
         );
+    }
+
+    /**
+     * Maps the `validations` and `profileInformationsTypes` keys a package
+     * still ships onto the section maps of the merged array, and drops them.
+     * The merged array carries the last package's value of each legacy key,
+     * which is the value the flat shape applied too; the packages that ship
+     * one are looked up again so every one of them is named in the log.
+     *
+     * Transitional (ACE-504): removed in 4.0 together with the migrator.
+     *
+     * @param array<string, mixed> $settings
+     * @return array<string, mixed>
+     */
+    private function overlayLegacySettings(array $settings): array
+    {
+        if ($this->legacySettingsMigrator->getLegacyKeys($settings) === []) {
+            return $settings;
+        }
+        $legacyPackages = [];
+        foreach ($this->settingsFileLoader->loadPackageArrays(self::SETTINGS_FILE) as $packageKey => $packageSettings) {
+            if ($this->legacySettingsMigrator->getLegacyKeys($packageSettings) !== []) {
+                $legacyPackages[$packageKey] = $packageSettings;
+            }
+        }
+        return $this->legacySettingsMigrator->migrate($settings, $legacyPackages)->settings;
     }
 
     /**
