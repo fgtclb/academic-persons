@@ -320,11 +320,13 @@ final class RecordSynchronizerTest extends AbstractAcademicPersonsTestCase
     }
 
     /**
-     * ACE-487 pin: a file reference added to the default record AFTER its translation
-     * exists IS carried over by the update path - core's `DataMapProcessor`
-     * synchronizes all `l10n_mode=exclude` columns of a record the datamap touches
-     * from its database row, the relational ones included. This was recorded as a gap
-     * by the ACE-483 report; the probe disproved it, and this test keeps it true.
+     * ACE-506: the profile image is an `allowLanguageSynchronization` column. A
+     * translation without an `l10n_state` for it is in the `parent` state, so an
+     * image added to the default record AFTER the translation exists is carried over
+     * by the update path - `DataMapProcessor` synchronizes the parent-state columns of
+     * every translation the datamap reaches, from the database row, exactly as it
+     * does the exclude columns (the ACE-487 pin of the latter lives in
+     * {@see RecordSynchronizerExcludeFileColumnTest} now).
      */
     #[Test]
     public function synchronizeCarriesLateFileReferenceIntoExistingTranslation(): void
@@ -340,8 +342,67 @@ final class RecordSynchronizerTest extends AbstractAcademicPersonsTestCase
         $this->assertCount(2, $referenceRows);
         $translatedReference = $referenceRows[1];
         $this->assertSame(1, (int)$translatedReference['sys_language_uid']);
+        $this->assertSame(1, (int)$translatedReference['l10n_parent']);
         $this->assertSame(1, (int)$translatedReference['uid_local']);
         $this->assertSame((int)$translation['uid'], (int)$translatedReference['uid_foreign']);
+    }
+
+    /**
+     * The other direction of the same state, and its limit. The default record lost
+     * its image *outside the DataHandler* - the reference row is soft-deleted, the
+     * counter is 0, the way an Extbase `remove()` leaves it - while the translation
+     * still holds the localized reference. The update path resets the translation's
+     * counter, but the localized row stays attached: core's `synchronizeReferences()`
+     * returns before its `$removeIds` when the default record has no children left.
+     * Removal is complete only when the deletion itself goes through the DataHandler,
+     * whose delete command cascades into the localizations
+     * (`deleteL10nOverlayRecords()`) - which is what `ProfileImageRelationWriter`
+     * relies on, pinned in `ProfileImageRelationWriterTest`.
+     */
+    #[Test]
+    public function synchronizeResetsTheImageCounterOfAFollowingTranslationWhenTheDefaultLostIt(): void
+    {
+        $this->importCSVDataSet(__DIR__ . '/Fixtures/ProfileWithTranslationAndRemovedImage.csv');
+
+        $this->synchronizeProfile(1);
+
+        $translation = $this->fetchTranslation(self::TABLE_PROFILE, 1);
+        $this->assertNotNull($translation);
+        $this->assertSame(0, (int)$translation['image']);
+        $referenceRows = $this->fetchAllRecords('sys_file_reference');
+        $this->assertCount(2, $referenceRows);
+        $this->assertSame(1, (int)$referenceRows[0]['deleted']);
+        $this->assertSame(0, (int)$referenceRows[1]['deleted']);
+    }
+
+    /**
+     * A translation whose image is in the `custom` localization state keeps it: the
+     * default record's late image is not carried over, and the translation's own
+     * counter and reference rows stay as they are. This is the state the profile
+     * editing writes when a translation gets an image of its own (ACE-506).
+     */
+    #[Test]
+    public function synchronizeKeepsCustomProfileImageIndependent(): void
+    {
+        $this->importCSVDataSet(__DIR__ . '/Fixtures/ProfileWithTranslationAndLateRelations.csv');
+        $this->getConnectionPool()
+            ->getConnectionForTable(self::TABLE_PROFILE)
+            ->update(
+                self::TABLE_PROFILE,
+                ['l10n_state' => json_encode(['image' => 'custom'], JSON_THROW_ON_ERROR)],
+                ['uid' => 2],
+            );
+
+        $this->synchronizeProfile(1);
+
+        $translation = $this->fetchTranslation(self::TABLE_PROFILE, 1);
+        $this->assertNotNull($translation);
+        $this->assertSame(0, (int)$translation['image']);
+        $referenceRows = $this->fetchAllRecords('sys_file_reference');
+        $this->assertCount(1, $referenceRows);
+        $this->assertSame(0, (int)$referenceRows[0]['sys_language_uid']);
+        $this->assertSame(1, (int)$referenceRows[0]['uid_local']);
+        $this->assertSame(1, (int)$referenceRows[0]['uid_foreign']);
     }
 
     /**

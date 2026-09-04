@@ -249,12 +249,16 @@ $tcaConfiguration = [
         ],
         'image' => [
             'label' => 'LLL:EXT:academic_persons/Resources/Private/Language/locallang_tca.xlf:tx_academicpersons_domain_model_profile.columns.image.label',
-            'l10n_mode' => 'exclude',
-            'l10n_display' => 'defaultAsReadonly',
             'config' => [
                 'type' => 'file',
                 'maxitems' => 1,
                 'allowed' => 'common-image-types',
+                // A translation follows the default-language image until it gets an
+                // image of its own (`l10n_state` parent/custom, ACE-506). Writers of the
+                // relation go through ProfileImageRelationWriter, which maintains the state.
+                'behaviour' => [
+                    'allowLanguageSynchronization' => true,
+                ],
             ],
         ],
         'contracts' => [

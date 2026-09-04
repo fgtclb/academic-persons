@@ -24,7 +24,11 @@ Two things did **not** change, and are now pinned by tests:
     translation exists were *always* carried over — the core synchronizes all
     exclude columns of a touched record from its database row, including the
     relational ones. The previously documented gap was design-inferred and did
-    not exist.
+    not exist. The profile image stopped being an exclude column with
+    :ref:`breaking-profile-image-is-translatable`; the same core pass carries it
+    into every translation whose image follows the default language, so the
+    pin of the exclude behaviour moved to a test column of the test suite and
+    the synchronisation itself has no image-specific code.
 *   :php:`enableLogging` stays on: :sql:`sys_log` rows with ``userid=0`` are
     the audit trail of what the synchronisation wrote.
 

@@ -26,9 +26,11 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
  * default-language record in its inline child tree* are re-submitted as one datamap,
  * so core's DataMapProcessor propagates them into every translation (ACE-487) - it
  * also synchronizes the relational exclude columns (file references, MM) from the
- * database rows on its own. An `inlineLocalizeSynchronize` command per TCA inline
- * column carries children added to the default record after the translation was
- * created - including their own children.
+ * database rows on its own, and the `allowLanguageSynchronization` columns of every
+ * translation whose `l10n_state` for the column is `parent` (the profile image,
+ * ACE-506) - a translation in the `custom` state keeps its own value. An
+ * `inlineLocalizeSynchronize` command per TCA inline column carries children added to
+ * the default record after the translation was created - including their own children.
  *
  * Each command runs through its own DataHandler instance: a cmdmap can hold only one
  * command per record uid (the command name is the array key), so `localize` per
@@ -57,7 +59,9 @@ class RecordSynchronizer implements RecordSynchronizerInterface
      * reading their values from the database row (`populateTranslationItem()` -
      * file/inline via `synchronizeReferences()`, MM via `synchronizeDirectRelations()`),
      * so a file reference or MM relation added after the translation exists is carried
-     * over without ever being part of the submitted map (probed for ACE-487).
+     * over without ever being part of the submitted map (probed for ACE-487). The same
+     * pass handles the `allowLanguageSynchronization` columns, honouring each
+     * translation's `l10n_state`, which is why the profile image needs no code here.
      */
     private const NON_PROPAGATABLE_COLUMN_TYPES = ['inline', 'file', 'group', 'category', 'folder', 'passthrough'];
 

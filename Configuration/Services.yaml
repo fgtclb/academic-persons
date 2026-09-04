@@ -16,6 +16,17 @@ services:
     alias: FGTCLB\AcademicPersons\Domain\Model\Dto\ProfileDemand
     public: true
 
+  # Instantiated by the DataHandler through GeneralUtility::makeInstance(), which
+  # resolves a public service from the container - constructor injection needs it.
+  FGTCLB\AcademicPersons\Hook\DataHandlerHooks:
+    public: true
+
+  FGTCLB\AcademicPersons\EventListener\UpdateProfileImageMetadata:
+    tags:
+      - name: event.listener
+        identifier: academicPersonsUpdateProfileImageMetadata
+        event: FGTCLB\AcademicPersons\Event\AfterProfileUpdateEvent
+
   FGTCLB\AcademicPersons\Settings\AcademicPersonsSettings:
     public: true
     factory:

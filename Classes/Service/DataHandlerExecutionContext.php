@@ -25,7 +25,8 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
  * admin flag set (bypasses all permission and workspace access checks), acting in the
  * workspace of the current {@see Context} workspace aspect. The `workspace` property
  * default of {@see BackendUserAuthentication} is -99 ("offline"), so it is always set
- * explicitly.
+ * explicitly. {@see runAsLiveBackendUser()} is the variant for a run that is
+ * installation wide rather than request bound: it never reuses the acting user.
  *
  * This service is stateless: all run state lives in local variables and callback arguments.
  *
@@ -91,7 +92,35 @@ final class DataHandlerExecutionContext
         }
     }
 
-    private function createSyntheticBackendUser(): BackendUserAuthentication
+    /**
+     * Executes $action with a synthetic backend user acting in the live workspace,
+     * whatever workspace the acting user selected.
+     *
+     * An installation-wide repair - an upgrade wizard - fixes live data. Run from the
+     * Install Tool it inherits `$GLOBALS['BE_USER']` of whoever is logged in, and
+     * {@see runAsBackendUser()} would honour that user's workspace: every repair
+     * would become a draft version, the live records would stay broken, and the
+     * wizard would keep reporting that an update is necessary. Such a run has no
+     * business writing into anyone's workspace, so the workspace is forced here
+     * rather than left to the session.
+     *
+     * @param \Closure(BackendUserAuthentication): void $action
+     */
+    public function runAsLiveBackendUser(\Closure $action): void
+    {
+        $previousBackendUser = $GLOBALS['BE_USER'] ?? null;
+        $GLOBALS['BE_USER'] = $this->createSyntheticBackendUser(0);
+        try {
+            $this->runAsBackendUser($action);
+        } finally {
+            $GLOBALS['BE_USER'] = $previousBackendUser;
+            if ($previousBackendUser === null) {
+                unset($GLOBALS['BE_USER']);
+            }
+        }
+    }
+
+    private function createSyntheticBackendUser(?int $workspaceId = null): BackendUserAuthentication
     {
         $backendUser = GeneralUtility::makeInstance(BackendUserAuthentication::class);
         $backendUser->user = [
@@ -99,7 +128,7 @@ final class DataHandlerExecutionContext
             'admin' => 1,
             'username' => '_record_synchronizer_',
         ];
-        $backendUser->workspace = $this->getActingWorkspaceId();
+        $backendUser->workspace = $workspaceId ?? $this->getActingWorkspaceId();
         return $backendUser;
     }
 
