@@ -100,9 +100,9 @@ CREATE TABLE tx_academicpersons_domain_model_profile_information (
     title varchar(255) DEFAULT '' NOT NULL,
     bodytext text,
     link varchar(2048) DEFAULT '' NOT NULL,
-    year int(11)  DEFAULT NULL,
-    year_start int(11)  DEFAULT NULL,
-    year_end int(11)  DEFAULT NULL,
+    year int(11) unsigned DEFAULT NULL,
+    year_start int(11) unsigned DEFAULT NULL,
+    year_end int(11) unsigned DEFAULT NULL,
 
     sorting int(11) unsigned DEFAULT '0' NOT NULL,
 );

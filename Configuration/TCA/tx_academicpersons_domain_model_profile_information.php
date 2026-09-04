@@ -121,14 +121,21 @@ $tcaConfiguration = [
                 'max' => 2048,
             ],
         ],
+        // Four digit years. `type=number` reads its bounds from `range`, so
+        // `range.lower`/`range.upper` are what renders the HTML min/max, what
+        // DataHandler clamps against and what makes the derived column
+        // unsigned.
         'year' => [
             'label' => 'LLL:EXT:academic_persons/Resources/Private/Language/locallang_tca.xlf:tx_academicpersons_domain_model_profile_information.columns.year.label',
             'l10n_mode' => 'exclude',
             'l10n_display' => 'defaultAsReadonly',
             'config' => [
                 'type' => 'number',
-                'min' => 0,
-                'max' => 9999,
+                'format' => 'integer',
+                'range' => [
+                    'lower' => 0,
+                    'upper' => 9999,
+                ],
                 'nullable' => true,
             ],
         ],
@@ -138,8 +145,11 @@ $tcaConfiguration = [
             'l10n_display' => 'defaultAsReadonly',
             'config' => [
                 'type' => 'number',
-                'min' => 0,
-                'max' => 9999,
+                'format' => 'integer',
+                'range' => [
+                    'lower' => 0,
+                    'upper' => 9999,
+                ],
                 'nullable' => true,
             ],
         ],
@@ -149,8 +159,12 @@ $tcaConfiguration = [
             'l10n_display' => 'defaultAsReadonly',
             'config' => [
                 'type' => 'number',
-                'min' => 0,
-                'max' => 9999,
+                'format' => 'integer',
+                'range' => [
+                    'lower' => 0,
+                    'upper' => 9999,
+                ],
+                'nullable' => true,
             ],
         ],
         'sorting' => [

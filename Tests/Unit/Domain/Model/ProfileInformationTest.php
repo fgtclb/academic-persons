@@ -65,6 +65,19 @@ final class ProfileInformationTest extends UnitTestCase
     }
 
     #[Test]
+    public function yearsRoundTripAsNullableIntegers(): void
+    {
+        $subject = (new ProfileInformation())
+            ->setYear(2026)
+            ->setYearStart(2024)
+            ->setYearEnd(2028);
+        $this->assertSame(2026, $subject->getYear());
+        $this->assertSame(2024, $subject->getYearStart());
+        $this->assertSame(2028, $subject->getYearEnd());
+        $this->assertNull($subject->setYear(null)->getYear());
+    }
+
+    #[Test]
     public function getSortingReturnsIntegerZeroForNewModel(): void
     {
         $this->assertSame(0, (new ProfileInformation())->getSorting());
