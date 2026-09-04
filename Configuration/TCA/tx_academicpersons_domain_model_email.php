@@ -154,9 +154,10 @@ $tcaConfiguration = [
 ];
 
 // @todo MAIN TCA Files should be kept without dynamic calls, and following should be done in override files.
+// The `emailAddresses` contact section of `contracts.contactSections` in Settings.yaml.
 $tcaConfiguration = (new TcaValidationMerger())->merge(
     $tcaConfiguration,
-    GeneralUtility::makeInstance(AcademicPersonsSettings::class)->getValidationSet('emailAddress'),
+    GeneralUtility::makeInstance(AcademicPersonsSettings::class)->getContractContactValidationSet('emailAddresses'),
 );
 
 // The 'searchFields' TCA ctrl option was removed in TYPO3 v14 (Breaking #106972);

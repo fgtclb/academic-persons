@@ -26,7 +26,9 @@ TCA merge that :php:`AcademicPersonsSettingsFactory` and
         -   :php:`FGTCLB\AcademicBase\ViewHelpers\ValidationEnsureViewHelper`
     *   -   :php:`AcademicPersonsSettings::getValidationTcaTableConfig()`
         -   :php:`FGTCLB\AcademicBase\Settings\TcaValidationMerger::merge()`,
-            applied by the six TCA files of this extension
+            applied by five of the six TCA files of this extension; the
+            profile information table merges a :php:`types` fragment built
+            from the same value objects instead
 
 All of them are :php:`@internal`. **No class aliases are registered** for the
 old names: the classes never were public API, and no extension of this set

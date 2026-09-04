@@ -378,9 +378,10 @@ $tcaConfiguration = [
 ];
 
 // @todo MAIN TCA Files should be kept without dynamic calls, and following should be done in override files.
+// The `contracts` document section validates against `contracts.fields` of Settings.yaml.
 $tcaConfiguration = (new TcaValidationMerger())->merge(
     $tcaConfiguration,
-    GeneralUtility::makeInstance(AcademicPersonsSettings::class)->getValidationSet('contract'),
+    GeneralUtility::makeInstance(AcademicPersonsSettings::class)->getDocumentValidationSet('contracts'),
 );
 
 return $tcaConfiguration;

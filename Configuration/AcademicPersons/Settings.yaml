@@ -1,108 +1,752 @@
-#-----------------------------------------------------------------------------------------------------------------------
-# EXT:academic_persons - Profile information types and field validation configuration.
-#
-# The "validations" section below is the single source of truth for both editing contexts: the TYPO3
-# backend FormEngine, through TCA merged by the table files of this extension, and the frontend
-# editing forms of EXT:academic_persons_edit. It applies to the backend whether or not that extension
-# is installed.
+# Academic Persons settings reference
+# ===================================
+# This file is the single source for the public profile layout, the fields
+# the editing frontend of EXT:academic_persons_edit offers, and the validation
+# metadata applied to frontend requests and to the backend TCA. It contains
+# four top-level maps: `profile`, `special`, `contracts` and
+# `documentSections`.
 #
 # Documented at:
+# https://docs.typo3.org/p/fgtclb/academic-persons/main/en-us/Configuration/Sections/Index.html
 # https://docs.typo3.org/p/fgtclb/academic-persons/main/en-us/Configuration/Validations/Index.html
-#-----------------------------------------------------------------------------------------------------------------------
-# @internal The syntax of this configuration file is considered experimental and may still change.
-#-----------------------------------------------------------------------------------------------------------------------
-
-#-----------------------------------------------------------------------------------------------------------------------
-# Profile information types
-#-----------------------------------------------------------------------------------------------------------------------
-profileInformationsTypes:
+#
+# Loading and overriding
+# ----------------------
+# Settings.yaml files from all active packages are loaded and merged by their
+# top-level keys. A later package replaces an entire top-level map; nested maps
+# are not merged recursively. An extension which overrides `contracts`, for
+# example, must therefore provide the complete `contracts` map. Flush TYPO3
+# caches after every change so the typed settings graph is rebuilt.
+#
+# Identifiers describe existing domain/DTO/TCA properties and renderers. This
+# configuration can expose, hide, order and validate supported fields, but it
+# does not create database columns, domain properties or new renderers. Keep
+# identifiers stable unless the corresponding PHP, Fluid and TCA code changes
+# with them.
+#
+# Ordering and visibility
+# -----------------------
+# YAML map and list order is significant and is preserved:
+# - `profile.structure.<column>` orders the public profile elements in that
+#   column. `profile.details.*` orders the properties rendered by an element.
+# - Regular entries below `profile` are grouped by `section`; their map order
+#   controls field order inside the generated editor section. The first field
+#   of a section establishes that section's position in the settings graph.
+# - `special.<component>.fields` orders fields inside a grouped component.
+# - `contracts.fields` orders the Contract form fields.
+# - `contracts.contactSections` orders the Address, Email and Phone sections;
+#   each nested `fields` map orders that section's form controls.
+# - `documentSections` orders the complete document sections. `rowFields` and
+#   `actions` independently select and order compact-row columns and buttons.
+#
+# Move an existing map entry or list value to change its position. Remove a
+# regular field or document section to omit it from the settings-driven UI.
+# Removing configuration never removes persisted data. A document action is
+# available only when listed under `actions`; `readonly: true` additionally
+# disables creation and every mutating action while still allowing `view`.
+# Listing both `up` and `down` also enables drag sorting for that section.
+#
+# Regular field configuration
+# ---------------------------
+# Fields below `profile`, `contracts.fields` and
+# `contracts.contactSections.<section>.fields` use the same basic shape:
+#
+#   fieldIdentifier:
+#     propertyName: domainProperty       # optional; defaults to identifier
+#     fieldName: database_field          # optional; derived from propertyName
+#     fieldType: input                   # input, select, textarea or check
+#     renderType: text                   # supported renderer for this context
+#     validators:
+#       - required
+#     autocomplete: email                # Contract/contact fields only
+#     helptext: 'LLL:EXT:...:key'        # LLL key or literal text
+#
+# `propertyName` and `fieldName` are only necessary when the public identifier
+# differs from the DTO/domain property or database column. `fieldType` and
+# `renderType` describe the frontend control only; the backend TCA column
+# keeps the type its TCA file declares. A profile `select` reads its choices
+# from that Profile TCA field. Contract `select` fields use `options`;
+# supported sources are `organisationalUnits`, `functionTypes` and
+# `locations`. Contract-contact selects are resolved from the known property:
+# `country` uses TYPO3 countries and `type` uses the matching contact types.
+# `autocomplete` accepts a standard HTML autocomplete token and is passed to
+# the generated control. Field labels come from the existing language keys;
+# `label` configures the Contract or document-section heading, not individual
+# field labels.
+#
+# Validator syntax and effects
+# ----------------------------
+# Profile, Contract and Contract-contact fields declare validators as a list.
+# A direct-property `special` field can use the same list:
+#
+#   validators:
+#     - required
+#     - email
+#
+# The same list syntax can combine these supported, case-insensitive flags:
+# - `required`: applies Extbase NotEmpty validation plus HTML/TCA required.
+# - `email`: applies Extbase EmailAddress validation and an email input/TCA.
+# - `url`: applies Extbase URL validation and an URL input.
+# - `readonly`: displays the value as read-only and ignores submitted changes.
+# - `disabled`: disables the control, implies read-only and ignores `required`.
+# - `date`: uses a date control; the TCA column keeps its own date type.
+# - `number`: uses a number control and the number TCA type.
+# - `tel`: uses a telephone control. It does not enforce a phone-number format.
+# - `textarea`: uses a multiline text control.
+# - `html`: marks multiline input as rich text for sanitizing/rendering.
+#
+# Only `required`, `email` and `url` create Extbase validator instances. The
+# remaining flags control editability, input type or rendering as described
+# above. Validator class names and validator options cannot be put in this
+# list. Unknown strings have no validation effect and should not be used.
+# Server-side validation remains authoritative; the generated HTML attributes
+# only provide the matching browser behavior.
+#
+# A rich-text Profile or Contract field can additionally set a non-negative
+# `characterLimit`. It is effective only together with `renderType: ckeditor`:
+#
+#   renderType: ckeditor
+#   characterLimit: 1000
+#   validators:
+#     - html
+#
+# The limit counts readable text, not HTML markup, and is checked server-side.
+# It is never copied into the TCA. Contract-contact fields do not support
+# `characterLimit`.
+#
+# Document-section validators use a field map instead of a field-local list:
+#
+#   validators:
+#     title:
+#       - required
+#     description:
+#       validators:
+#         - required
+#       editor:
+#         type: ckeditor
+#         limit: 500
+#
+# A document field accepts either the short list shown for `title`, or an
+# expanded map. In the expanded map, flags can be listed below `validators` or
+# enabled individually as `required: true`, `url: true`, and so on. Supported
+# boolean names are the same ten flags documented above. `editor.type` accepts
+# `ckeditor` or `textarea`; `ckeditor` automatically enables `html` and its
+# non-negative `limit` is enforced server-side. `limit` is ignored for other
+# editor types. Document validation stays local to its containing section and
+# reaches the backend as `columnsOverrides` of that section's record type.
+# Supported ProfileInformation field keys are `title`, `link`, `year`, `from`,
+# `to` and `description`. The aliases `from`, `to` and `description` are
+# mapped to `yearStart`, `yearEnd` and `bodytext`. Contract
+# validation is intentionally configured only below `contracts.fields`.
+#
+# Public profile
+# --------------
+# `profile.structure` lists element identifiers for every layout column. The
+# shipped template renders `left` as desktop navigation and `right` as the main
+# content. On mobile, `left` is inserted again directly before `subline`, so
+# keep `subline` in `right` when mobile navigation is required.
+# Supported public elements are `menuSections`, `headline`, `position`,
+# `profileImage`, `contact`, `subline`, `profileEntries` and
+# `menuSectionsDatas`; unknown identifiers render nothing.
+# `profile.details` supplies each element's ordered Profile properties,
+# relation mapping, LLL label or special renderer. Empty data is skipped.
+# `position.special` and `contact.special` currently support only
+# `datasFromContracts`. `menuSections` contains stable navigation identifiers;
+# `menuSectionsDatas` maps each identifier to its Profile relation property.
+#
+profile:
+  structure:
+    left:
+      - menuSections
+    right:
+      - headline
+      - position
+      - profileImage
+      - contact
+      - subline
+      - profileEntries
+      - menuSectionsDatas
+  details:
+    menuSections:
+      - researchProjects
+      - academicCareer
+      - membershipsCommitteeActivities
+      - networkCooperation
+      - publications
+      - lectures
+      - pressMedia
+    headline:
+      - title
+      - firstName
+      - middleName
+      - lastName
+    position:
+      special: datasFromContracts
+    profileImage:
+      - image
+    contact:
+      special: datasFromContracts
+    subline: 'LLL:EXT:academic_persons/Resources/Private/Language/locallang.xlf:detail.subline'
+    profileEntries:
+      - teachingArea
+      - coreCompetences
+      - supervisedThesis
+      - supervisedDoctoralThesis
+      - miscellaneous
+    menuSectionsDatas:
+      researchProjects: scientificResearch
+      academicCareer: vita
+      membershipsCommitteeActivities: memberships
+      networkCooperation: cooperation
+      publications: publications
+      lectures: lectures
+      pressMedia: pressMedia
+  gender:
+    section: information
+    fieldType: select
+    renderType: select
+    validators:
+      - required
+  # Academic or honorific prefix. Do not confuse this direct Profile property
+  # with `special.title`, which is the composed display name.
+  title:
+    section: information
+    fieldType: input
+    renderType: text
+    helptext: 'LLL:EXT:academic_persons/Resources/Private/Language/locallang.xlf:helptext.title'
+  # These name fields are normally synchronized from the frontend user and
+  # are deliberately not writable through the editing frontend.
+  firstName:
+    section: information
+    fieldType: input
+    renderType: text
+    validators:
+      - readonly
+      - disabled
+    helptext: 'LLL:EXT:academic_persons/Resources/Private/Language/locallang.xlf:helptext.firstName'
+  middleName:
+    section: information
+    fieldType: input
+    renderType: text
+    validators:
+      - readonly
+      - disabled
+    helptext: 'LLL:EXT:academic_persons/Resources/Private/Language/locallang.xlf:helptext.middleName'
+  lastName:
+    section: information
+    fieldType: input
+    renderType: text
+    validators:
+      - readonly
+      - disabled
+    helptext: 'LLL:EXT:academic_persons/Resources/Private/Language/locallang.xlf:helptext.lastName'
+  # `combinedLink` edits the URL together with its companion title property
+  # (`websiteTitle` or `publicationsLinkTitle`).
+  website:
+    section: information
+    fieldType: input
+    renderType: combinedLink
+    validators:
+      - url
+    helptext: 'LLL:EXT:academic_persons/Resources/Private/Language/locallang.xlf:helptext.website'
+  publicationsLink:
+    section: information
+    fieldType: input
+    renderType: combinedLink
+    validators:
+      - url
+    helptext: 'LLL:EXT:academic_persons/Resources/Private/Language/locallang.xlf:helptext.publicationsLink'
+  # The `ckeditor` render type selects sanitized rich-text handling; the `html`
+  # flag keeps the matching validation/input metadata explicit.
+  coreCompetences:
+    section: information
+    fieldType: textarea
+    renderType: ckeditor
+    validators:
+      - html
+    helptext: 'LLL:EXT:academic_persons/Resources/Private/Language/locallang.xlf:helptext.coreCompetences'
+  supervisedThesis:
+    section: information
+    fieldType: textarea
+    renderType: ckeditor
+    validators:
+      - html
+    helptext: 'LLL:EXT:academic_persons/Resources/Private/Language/locallang.xlf:helptext.supervisedThesis'
+  supervisedDoctoralThesis:
+    section: information
+    fieldType: textarea
+    renderType: ckeditor
+    validators:
+      - html
+    helptext: 'LLL:EXT:academic_persons/Resources/Private/Language/locallang.xlf:helptext.supervisedDoctoralThesis'
+  teachingArea:
+    section: information
+    fieldType: textarea
+    renderType: ckeditor
+    validators:
+      - html
+    helptext: 'LLL:EXT:academic_persons/Resources/Private/Language/locallang.xlf:helptext.teachingArea'
+  # `aboutme` is rendered as a section of its own by the editing frontend.
+  miscellaneous:
+    section: aboutme
+    fieldType: textarea
+    renderType: ckeditor
+    characterLimit: 1000
+    validators:
+      - html
+    helptext: 'LLL:EXT:academic_persons/Resources/Private/Language/locallang.xlf:helptext.miscellaneous'
+# Special components
+# ------------------
+# These entries are not ordinary rows generated from one Profile property.
+# The editing frontend decides where they are placed. Their render type
+# selects the dedicated renderer; no layout information belongs here.
+special:
+  # The page title is the composed profile name. `fields` is the ordered
+  # source of the properties it is composed from.
+  title:
+    type: special
+    renderType: title
+    fields:
+      - title
+      - firstName
+      - middleName
+      - lastName
+  image:
+    type: special
+    renderType: cropper
+    settings:
+      ratio: 3x4
+  skipSync:
+    type: special
+    fieldType: check
+    renderType: checkbox
+    helptext: 'LLL:EXT:academic_persons/Resources/Private/Language/locallang.xlf:helptext.skipSync'
+# Contract section
+# ----------------
+# `documentSections.contracts` references this type. `fields` is the ordered
+# source for the Contract editor. Contract-owned Address, Email and PhoneNumber
+# records are grouped below `contactSections`; their nested `fields` maps drive
+# the respective editors. `propertyName` is only needed where the public field
+# identifier differs from the DTO/domain property.
+contracts:
+  label: 'LLL:EXT:academic_persons/Resources/Private/Language/locallang_tca.xlf:tx_academicpersons_domain_model_profile.columns.contracts.label'
+  type: contracts
+  fieldName: contracts
+  rowFields:
+    - position
+  actions:
+    - view
+    - down
+    - up
+    - delete
+    - edit
+  fields:
+    position:
+      fieldType: input
+      renderType: text
+      validators:
+        - required
+      helptext: 'LLL:EXT:academic_persons/Resources/Private/Language/locallang.xlf:helptext.contracts.position'
+    organisationalUnit:
+      fieldType: select
+      renderType: select
+      options: organisationalUnits
+      helptext: 'LLL:EXT:academic_persons/Resources/Private/Language/locallang.xlf:helptext.contracts.organisationalUnit'
+    functionType:
+      fieldType: select
+      renderType: select
+      options: functionTypes
+      helptext: 'LLL:EXT:academic_persons/Resources/Private/Language/locallang.xlf:helptext.contracts.functionType'
+    validFrom:
+      fieldType: input
+      renderType: date
+      validators:
+        - required
+        - date
+      helptext: 'LLL:EXT:academic_persons/Resources/Private/Language/locallang.xlf:helptext.contracts.validFrom'
+    validTo:
+      fieldType: input
+      renderType: date
+      validators:
+        - date
+      helptext: 'LLL:EXT:academic_persons/Resources/Private/Language/locallang.xlf:helptext.contracts.validTo'
+    location:
+      fieldType: select
+      renderType: select
+      options: locations
+      helptext: 'LLL:EXT:academic_persons/Resources/Private/Language/locallang.xlf:helptext.contracts.location'
+    room:
+      fieldType: input
+      renderType: text
+      helptext: 'LLL:EXT:academic_persons/Resources/Private/Language/locallang.xlf:helptext.contracts.room'
+    officeHours:
+      fieldType: textarea
+      renderType: ckeditor
+      validators:
+        - html
+      helptext: 'LLL:EXT:academic_persons/Resources/Private/Language/locallang.xlf:helptext.contracts.officeHours'
+    publish:
+      fieldType: check
+      renderType: checkbox
+      helptext: 'LLL:EXT:academic_persons/Resources/Private/Language/locallang.xlf:helptext.contracts.publish'
+  contactSections:
+    physicalAddresses:
+      fields:
+        street:
+          fieldType: input
+          renderType: text
+          autocomplete: street-address
+          helptext: 'LLL:EXT:academic_persons/Resources/Private/Language/locallang.xlf:helptext.contractContact.street'
+          validators:
+            - required
+        streetNumber:
+          fieldType: input
+          renderType: text
+          helptext: 'LLL:EXT:academic_persons/Resources/Private/Language/locallang.xlf:helptext.contractContact.streetNumber'
+          validators:
+            - required
+        additional:
+          fieldType: input
+          renderType: text
+          helptext: 'LLL:EXT:academic_persons/Resources/Private/Language/locallang.xlf:helptext.contractContact.additional'
+        zip:
+          fieldType: input
+          renderType: text
+          autocomplete: postal-code
+          helptext: 'LLL:EXT:academic_persons/Resources/Private/Language/locallang.xlf:helptext.contractContact.zip'
+          validators:
+            - required
+        city:
+          fieldType: input
+          renderType: text
+          autocomplete: address-level2
+          helptext: 'LLL:EXT:academic_persons/Resources/Private/Language/locallang.xlf:helptext.contractContact.city'
+          validators:
+            - required
+        state:
+          fieldType: input
+          renderType: text
+          helptext: 'LLL:EXT:academic_persons/Resources/Private/Language/locallang.xlf:helptext.contractContact.state'
+        country:
+          fieldType: input
+          renderType: select
+          autocomplete: country
+          helptext: 'LLL:EXT:academic_persons/Resources/Private/Language/locallang.xlf:helptext.contractContact.country'
+          validators:
+            - required
+        physicalAddressType:
+          propertyName: type
+          fieldName: type
+          fieldType: select
+          renderType: select
+          helptext: 'LLL:EXT:academic_persons/Resources/Private/Language/locallang.xlf:helptext.contractContact.physicalAddressType'
+    emailAddresses:
+      fields:
+        emailAddress:
+          propertyName: email
+          fieldName: email
+          fieldType: input
+          renderType: email
+          autocomplete: email
+          helptext: 'LLL:EXT:academic_persons/Resources/Private/Language/locallang.xlf:helptext.contractContact.emailAddress'
+          validators:
+            - required
+            - email
+        emailAddressType:
+          propertyName: type
+          fieldName: type
+          fieldType: select
+          renderType: select
+          helptext: 'LLL:EXT:academic_persons/Resources/Private/Language/locallang.xlf:helptext.contractContact.emailAddressType'
+    phoneNumbers:
+      fields:
+        phoneNumber:
+          fieldType: input
+          renderType: phone
+          autocomplete: tel
+          helptext: 'LLL:EXT:academic_persons/Resources/Private/Language/locallang.xlf:helptext.contractContact.phoneNumber'
+          validators:
+            - required
+            - tel
+        phoneNumberType:
+          propertyName: type
+          fieldName: type
+          fieldType: select
+          renderType: select
+          helptext: 'LLL:EXT:academic_persons/Resources/Private/Language/locallang.xlf:helptext.contractContact.phoneNumberType'
+# Document sections
+# -----------------
+# Each key is a stable section identifier and the order is the display order.
+# - `label` is the LLL reference used for the section heading.
+# - `type` is the ProfileInformation discriminator. `contracts` is the reserved
+#   marker for the special Contract entity section.
+# - `fieldName` is the exact Profile relation/database field. Collection
+#   relations are plural; underscored names are converted to their getter.
+# - `readonly` disables all mutating frontend actions for the section.
+# - `rowFields` selects and orders the values rendered in each compact row.
+#   ProfileInformation supports `from`, `to`, `year`, `title` and
+#   `description`; Contract supports `from`, `to` and `position`.
+# - `actions` selects and orders the available per-row actions. Supported
+#   values are `view`, `down`, `up`, `delete` and `edit`.
+# - `validators` belongs exclusively to ProfileInformation records of the
+#   containing section. Contract validators live on `contracts.fields`.
+# Profile-information validation aliases:
+# - `from` -> DTO `yearStart` -> integer field `year_start`
+# - `to` -> DTO `yearEnd` -> integer field `year_end`
+# - `year` -> DTO `year` -> integer field `year`
+# - `description` -> DTO `bodytext` -> database field `bodytext`
+documentSections:
+  # Contracts use their own Contract model rather than ProfileInformation.
+  # The relation is Profile::$contracts / Profile::getContracts(), whereas
+  # `contract` denotes one individual item or form argument.
+  contracts:
+    type: contracts
+  # All following sections contain ProfileInformation records. Their `type`
+  # selects the records and their `fieldName` selects the Profile collection.
   cooperation:
     label: 'LLL:EXT:academic_persons/Resources/Private/Language/locallang_tca.xlf:tx_academicpersons_domain_model_profile.columns.cooperation.label'
     type: cooperation
     fieldName: cooperation
+    rowFields:
+      - from
+      - to
+      - title
+    actions:
+      - view
+      - down
+      - up
+      - delete
+      - edit
+    validators:
+      title:
+        - required
+      from:
+        - number
+      to:
+        - number
+      year:
+        - required
+        - number
+      description:
+        editor:
+          limit: 500
+          type: ckeditor
+    helptext:
+      title: 'LLL:EXT:academic_persons/Resources/Private/Language/locallang.xlf:helptext.documentSections.title'
+      from: 'LLL:EXT:academic_persons/Resources/Private/Language/locallang.xlf:helptext.documentSections.from'
+      to: 'LLL:EXT:academic_persons/Resources/Private/Language/locallang.xlf:helptext.documentSections.to'
+      year: 'LLL:EXT:academic_persons/Resources/Private/Language/locallang.xlf:helptext.documentSections.year'
+      description: 'LLL:EXT:academic_persons/Resources/Private/Language/locallang.xlf:helptext.documentSections.description'
   lectures:
     label: 'LLL:EXT:academic_persons/Resources/Private/Language/locallang_tca.xlf:tx_academicpersons_domain_model_profile.columns.lectures.label'
     type: lecture
     fieldName: lectures
+    rowFields:
+      - year
+      - from
+      - to
+      - title
+    actions:
+      - view
+      - down
+      - up
+      - delete
+      - edit
+    validators:
+      title:
+        - required
+      link:
+        - url
+      from:
+        - number
+      to:
+        - number
+      year:
+        - required
+        - number
+      description:
+        editor:
+          limit: 500
+          type: ckeditor
+    helptext:
+      title: 'LLL:EXT:academic_persons/Resources/Private/Language/locallang.xlf:helptext.documentSections.title'
+      from: 'LLL:EXT:academic_persons/Resources/Private/Language/locallang.xlf:helptext.documentSections.from'
+      to: 'LLL:EXT:academic_persons/Resources/Private/Language/locallang.xlf:helptext.documentSections.to'
+      year: 'LLL:EXT:academic_persons/Resources/Private/Language/locallang.xlf:helptext.documentSections.year'
+      description: 'LLL:EXT:academic_persons/Resources/Private/Language/locallang.xlf:helptext.documentSections.description'
   memberships:
     label: 'LLL:EXT:academic_persons/Resources/Private/Language/locallang_tca.xlf:tx_academicpersons_domain_model_profile.columns.memberships.label'
     type: membership
     fieldName: memberships
+    rowFields:
+      - from
+      - to
+      - title
+    actions:
+      - view
+      - down
+      - up
+      - delete
+      - edit
+    validators:
+      title:
+        - required
+      link:
+        - url
+      from:
+        - number
+      to:
+        - number
+      year:
+        - required
+        - number
+      description:
+        editor:
+          limit: 500
+          type: ckeditor
+    helptext:
+      title: 'LLL:EXT:academic_persons/Resources/Private/Language/locallang.xlf:helptext.documentSections.title'
+      from: 'LLL:EXT:academic_persons/Resources/Private/Language/locallang.xlf:helptext.documentSections.from'
+      to: 'LLL:EXT:academic_persons/Resources/Private/Language/locallang.xlf:helptext.documentSections.to'
+      year: 'LLL:EXT:academic_persons/Resources/Private/Language/locallang.xlf:helptext.documentSections.year'
+      description: 'LLL:EXT:academic_persons/Resources/Private/Language/locallang.xlf:helptext.documentSections.description'
   pressMedia:
     label: 'LLL:EXT:academic_persons/Resources/Private/Language/locallang_tca.xlf:tx_academicpersons_domain_model_profile.columns.press_media.label'
     type: press_media
     fieldName: press_media
+    rowFields:
+      - year
+      - title
+    actions:
+      - view
+      - down
+      - up
+      - delete
+      - edit
+    validators:
+      title:
+        - required
+      link:
+        - url
+      from:
+        - number
+      to:
+        - number
+      year:
+        - required
+        - number
+      description:
+        editor:
+          limit: 500
+          type: ckeditor
+    helptext:
+      title: 'LLL:EXT:academic_persons/Resources/Private/Language/locallang.xlf:helptext.documentSections.title'
+      from: 'LLL:EXT:academic_persons/Resources/Private/Language/locallang.xlf:helptext.documentSections.from'
+      to: 'LLL:EXT:academic_persons/Resources/Private/Language/locallang.xlf:helptext.documentSections.to'
+      year: 'LLL:EXT:academic_persons/Resources/Private/Language/locallang.xlf:helptext.documentSections.year'
+      description: 'LLL:EXT:academic_persons/Resources/Private/Language/locallang.xlf:helptext.documentSections.description'
   publications:
     label: 'LLL:EXT:academic_persons/Resources/Private/Language/locallang_tca.xlf:tx_academicpersons_domain_model_profile.columns.publications.label'
     type: publication
     fieldName: publications
+    rowFields:
+      - year
+      - title
+    actions:
+      - view
+      - down
+      - up
+      - delete
+      - edit
+    validators:
+      title:
+        - required
+      link:
+        - url
+      from:
+        - number
+      to:
+        - number
+      year:
+        - required
+        - number
+      description:
+        editor:
+          limit: 500
+          type: ckeditor
+    helptext:
+      title: 'LLL:EXT:academic_persons/Resources/Private/Language/locallang.xlf:helptext.documentSections.title'
+      from: 'LLL:EXT:academic_persons/Resources/Private/Language/locallang.xlf:helptext.documentSections.from'
+      to: 'LLL:EXT:academic_persons/Resources/Private/Language/locallang.xlf:helptext.documentSections.to'
+      year: 'LLL:EXT:academic_persons/Resources/Private/Language/locallang.xlf:helptext.documentSections.year'
+      description: 'LLL:EXT:academic_persons/Resources/Private/Language/locallang.xlf:helptext.documentSections.description'
   scientificResearch:
     label: 'LLL:EXT:academic_persons/Resources/Private/Language/locallang_tca.xlf:tx_academicpersons_domain_model_profile.columns.scientific_research.label'
     type: scientific_research
     fieldName: scientific_research
+    rowFields:
+      - year
+      - title
+    actions:
+      - view
+      - down
+      - up
+      - delete
+      - edit
+    validators:
+      title:
+        - required
+      link:
+        - url
+      from:
+        - number
+      to:
+        - number
+      year:
+        - required
+        - number
+      description:
+        editor:
+          limit: 500
+          type: ckeditor
+    helptext:
+      title: 'LLL:EXT:academic_persons/Resources/Private/Language/locallang.xlf:helptext.documentSections.title'
+      from: 'LLL:EXT:academic_persons/Resources/Private/Language/locallang.xlf:helptext.documentSections.from'
+      to: 'LLL:EXT:academic_persons/Resources/Private/Language/locallang.xlf:helptext.documentSections.to'
+      year: 'LLL:EXT:academic_persons/Resources/Private/Language/locallang.xlf:helptext.documentSections.year'
+      description: 'LLL:EXT:academic_persons/Resources/Private/Language/locallang.xlf:helptext.documentSections.description'
   vita:
     label: 'LLL:EXT:academic_persons/Resources/Private/Language/locallang_tca.xlf:tx_academicpersons_domain_model_profile.columns.vita.label'
     type: curriculum_vitae
     fieldName: vita
-#-----------------------------------------------------------------------------------------------------------------------
-
-#-----------------------------------------------------------------------------------------------------------------------
-# Validation configuration for frontend fluid forms and backend formengine configured using TCA adoption.
-#-----------------------------------------------------------------------------------------------------------------------
-validations:
-  # @todo We either need a translation map (to TCA) or simply matching convention which resolves needs to be added.
-  # @todo Syntax and build-up is more than sub-optimal and needs a complete redesign and implementation.
-  #
-  # <identifier>:
-  #   <propertyName>:
-  #      - required   # must not be empty; adds the "required" flag to the TCA column
-  #      - email      # must be an email address; renders an email input
-  #      - number     # renders a number input; adds no further validation
-  #      - disabled   # must not be edited; implies "readonly" and cancels "required"
-  #      - readonly   # shown but not writable; cancels "required"
-  #
-  # Flag names are matched case insensitively, anything not listed above is ignored. A "disabled" or
-  # "readonly" property is never written by the frontend transformation, which is what protects
-  # already stored data from being emptied by a submitted form.
-  contract:
-    position:
-      - required
-  emailAddress:
-    email:
-      - required
-      - email
-    type:
-      - required
-  phoneNumber:
-    phoneNumber:
-      - required
-    type:
-      - required
-  physicalAddress:
-    street:
-      - required
-    streetNumber:
-      - required
-      - number
-    zip:
-      - required
-      - number
-    city:
-      - required
-    country:
-      - required
-  profile:
-    firstName:
-      - disabled
-      - required
-    middleName:
-      - disabled
-    lastName:
-      - disabled
-  profileInformation:
-    year:
-      - required
-      - number
-    title:
-      - required
-#-----------------------------------------------------------------------------------------------------------------------
+    rowFields:
+      - from
+      - title
+    actions:
+      - view
+      - down
+      - up
+      - delete
+      - edit
+    validators:
+      title:
+        - required
+      link:
+        - url
+      from:
+        - number
+      to:
+        - number
+      year:
+        - required
+        - number
+      description:
+        editor:
+          limit: 500
+          type: ckeditor
+    helptext:
+      title: 'LLL:EXT:academic_persons/Resources/Private/Language/locallang.xlf:helptext.documentSections.title'
+      from: 'LLL:EXT:academic_persons/Resources/Private/Language/locallang.xlf:helptext.documentSections.from'
+      to: 'LLL:EXT:academic_persons/Resources/Private/Language/locallang.xlf:helptext.documentSections.to'
+      year: 'LLL:EXT:academic_persons/Resources/Private/Language/locallang.xlf:helptext.documentSections.year'
+      description: 'LLL:EXT:academic_persons/Resources/Private/Language/locallang.xlf:helptext.documentSections.description'

@@ -507,63 +507,72 @@ $tcaConfiguration = [
     ],
 ];
 
-// @todo MAIN TCA Files should be kept without dynamic calls, and following should be done in override files.
-$settings = GeneralUtility::makeInstance(AcademicPersonsSettings::class);
-if ($settings->profileInformationTypes !== []) {
-    foreach ($settings->profileInformationTypes as $type => $typeSettings) {
-        $columnIdentifier = $typeSettings->fieldName;
-        $tcaConfiguration['columns'][$columnIdentifier] = [
-            'label' => $typeSettings->label ?: $columnIdentifier,
-            'exclude' => true,
-            'config' => [
-                'type' => 'inline',
-                'appearance' => [
-                    'collapseAll' => true,
-                    'expandSingle' => false,
-                    'showNewRecordLink' => true,
-                    'newRecordLinkAddTitle' => true,
-                    'levelLinksPosition' => 'top',
-                    'useCombination' => false,
-                    'suppressCombinationWarning' => false,
-                    'useSortable' => true,
-                    'showPossibleLocalizationRecords' => true,
-                    'showAllLocalizationLink' => true,
-                    'showSynchronizationLink' => true,
-                    'enabledControls' => [
-                        'info' => true,
-                        'new' => true,
-                        'dragdrop' => true,
-                        'sort' => false,
-                        'hide' => true,
-                        'delete' => true,
-                        'localize' => true,
-                    ],
-                    'showPossibleRecordsSelector' => false,
-                    'elementBrowserEnabled' => false,
+// The seven profile information relations are part of the domain model and are no
+// longer generated from Settings.yaml; the record type of each column is fixed here.
+$profileInformationRelations = [
+    'scientific_research' => 'scientific_research',
+    'vita' => 'curriculum_vitae',
+    'memberships' => 'membership',
+    'cooperation' => 'cooperation',
+    'publications' => 'publication',
+    'lectures' => 'lecture',
+    'press_media' => 'press_media',
+];
+foreach ($profileInformationRelations as $columnIdentifier => $recordType) {
+    $tcaConfiguration['columns'][$columnIdentifier] = [
+        'label' => 'LLL:EXT:academic_persons/Resources/Private/Language/locallang_tca.xlf:tx_academicpersons_domain_model_profile.columns.' . $columnIdentifier . '.label',
+        'exclude' => true,
+        'config' => [
+            'type' => 'inline',
+            'appearance' => [
+                'collapseAll' => true,
+                'expandSingle' => false,
+                'showNewRecordLink' => true,
+                'newRecordLinkAddTitle' => true,
+                'levelLinksPosition' => 'top',
+                'useCombination' => false,
+                'suppressCombinationWarning' => false,
+                'useSortable' => true,
+                'showPossibleLocalizationRecords' => true,
+                'showAllLocalizationLink' => true,
+                'showSynchronizationLink' => true,
+                'enabledControls' => [
+                    'info' => true,
+                    'new' => true,
+                    'dragdrop' => true,
+                    'sort' => false,
+                    'hide' => true,
+                    'delete' => true,
+                    'localize' => true,
                 ],
-                'enableCascadingDelete' => true,
-                'foreign_field' => 'profile',
-                'foreign_sortby' => 'sorting',
-                'foreign_table' => 'tx_academicpersons_domain_model_profile_information',
-                'foreign_match_fields' => [
-                    'type' => $typeSettings->type,
-                ],
-                'overrideChildTca' => [
-                    'columns' => [
-                        'type' => [
-                            'config' => [
-                                'default' => $typeSettings->type ?: '',
-                            ],
+                'showPossibleRecordsSelector' => false,
+                'elementBrowserEnabled' => false,
+            ],
+            'enableCascadingDelete' => true,
+            'foreign_field' => 'profile',
+            'foreign_sortby' => 'sorting',
+            'foreign_table' => 'tx_academicpersons_domain_model_profile_information',
+            'foreign_match_fields' => [
+                'type' => $recordType,
+            ],
+            'overrideChildTca' => [
+                'columns' => [
+                    'type' => [
+                        'config' => [
+                            'default' => $recordType,
                         ],
                     ],
                 ],
             ],
-        ];
-    }
+        ],
+    ];
 }
+
+// @todo MAIN TCA Files should be kept without dynamic calls, and following should be done in override files.
+// Every profile section of Settings.yaml plus the special fields addressing a profile column.
 $tcaConfiguration = (new TcaValidationMerger())->merge(
     $tcaConfiguration,
-    $settings->getValidationSet('profile'),
+    GeneralUtility::makeInstance(AcademicPersonsSettings::class)->getProfileUpdateValidationSet(),
 );
 
 // The 'searchFields' TCA ctrl option was removed in TYPO3 v14 (Breaking #106972);

@@ -147,6 +147,159 @@
         <source>Till</source>
         <target>Bis</target>
       </trans-unit>
+      <!-- Help texts of the editing frontend, referenced from Configuration/AcademicPersons/Settings.yaml -->
+      <trans-unit id="helptext.firstName" resname="helptext.firstName">
+        <source>Unfortunately, you can't change your first name here.</source>
+        <target>Leider können Sie Ihren Vornamen hier nicht ändern.</target>
+      </trans-unit>
+      <trans-unit id="helptext.middleName" resname="helptext.middleName">
+        <source>Unfortunately, you can't change your middle name here.</source>
+        <target>Leider können Sie Ihren zweiten Vornamen hier nicht ändern.</target>
+      </trans-unit>
+      <trans-unit id="helptext.lastName" resname="helptext.lastName">
+        <source>Unfortunately, you can't change your last name here.</source>
+        <target>Leider können Sie Ihren Nachnamen hier nicht ändern.</target>
+      </trans-unit>
+      <trans-unit id="helptext.title" resname="helptext.title">
+        <source>Here you can change a title.</source>
+        <target>Hier können Sie einen Titel ändern.</target>
+      </trans-unit>
+      <trans-unit id="helptext.website" resname="helptext.website">
+        <source>Here you can enter a website.</source>
+        <target>Hier können Sie eine Website eintragen.</target>
+      </trans-unit>
+      <trans-unit id="helptext.publicationsLink" resname="helptext.publicationsLink">
+        <source>Here you can enter a link to a publication.</source>
+        <target>Hier können Sie einen Link zu einer Publikation eintragen.</target>
+      </trans-unit>
+      <trans-unit id="helptext.coreCompetences" resname="helptext.coreCompetences">
+        <source>Here you can enter your core competences.</source>
+        <target>Hier können Sie Ihre Kernkompetenzen eintragen.</target>
+      </trans-unit>
+      <trans-unit id="helptext.supervisedThesis" resname="helptext.supervisedThesis">
+        <source>Here you can list your supervised theses.</source>
+        <target>Hier können Sie die von Ihnen betreuten Abschlussarbeiten auflisten.</target>
+      </trans-unit>
+      <trans-unit id="helptext.supervisedDoctoralThesis" resname="helptext.supervisedDoctoralThesis">
+        <source>Here you can list your supervised doctoral theses.</source>
+        <target>Hier können Sie die von Ihnen betreuten Doktorarbeiten auflisten.</target>
+      </trans-unit>
+      <trans-unit id="helptext.teachingArea" resname="helptext.teachingArea">
+        <source>Here you can enter your teaching area.</source>
+        <target>Hier können Sie Ihr Lehrgebiet eintragen.</target>
+      </trans-unit>
+      <trans-unit id="helptext.miscellaneous" resname="helptext.miscellaneous">
+        <source>Here you can enter miscellaneous information.</source>
+        <target>Hier können Sie sonstige Informationen eintragen.</target>
+      </trans-unit>
+      <trans-unit id="helptext.skipSync" resname="helptext.skipSync">
+        <source>If you do not want to sync your profile, you can adjust this setting here. When this setting is enabled, your profile will not be synced.</source>
+        <target>Wenn Sie Ihr Profil nicht synchronisieren möchten, können Sie diese Einstellung hier anpassen. Ist diese Einstellung aktiviert, wird Ihr Profil nicht synchronisiert.</target>
+      </trans-unit>
+      <trans-unit id="helptext.contracts.position" resname="helptext.contracts.position">
+        <source>Enter the position or role associated with this employment contract.</source>
+        <target>Geben Sie die Position oder Rolle an, die mit diesem Beschäftigungsvertrag verbunden ist.</target>
+      </trans-unit>
+      <trans-unit id="helptext.contracts.organisationalUnit" resname="helptext.contracts.organisationalUnit">
+        <source>Select the organisational unit to which this employment contract belongs.</source>
+        <target>Wählen Sie die Organisationseinheit aus, zu der dieser Beschäftigungsvertrag gehört.</target>
+      </trans-unit>
+      <trans-unit id="helptext.contracts.functionType" resname="helptext.contracts.functionType">
+        <source>Select the function performed under this employment contract.</source>
+        <target>Wählen Sie die Funktion aus, die im Rahmen dieses Beschäftigungsvertrags ausgeübt wird.</target>
+      </trans-unit>
+      <trans-unit id="helptext.contracts.validFrom" resname="helptext.contracts.validFrom">
+        <source>Enter the date from which this employment contract is valid.</source>
+        <target>Geben Sie das Datum an, ab dem dieser Beschäftigungsvertrag gültig ist.</target>
+      </trans-unit>
+      <trans-unit id="helptext.contracts.validTo" resname="helptext.contracts.validTo">
+        <source>Enter the date until which this employment contract is valid. Leave this field blank for an open-ended contract.</source>
+        <target>Geben Sie das Datum an, bis zu dem dieser Beschäftigungsvertrag gültig ist. Lassen Sie dieses Feld bei einem unbefristeten Vertrag leer.</target>
+      </trans-unit>
+      <trans-unit id="helptext.contracts.location" resname="helptext.contracts.location">
+        <source>Select the location associated with this employment contract.</source>
+        <target>Wählen Sie den Standort aus, der diesem Beschäftigungsvertrag zugeordnet ist.</target>
+      </trans-unit>
+      <trans-unit id="helptext.contracts.room" resname="helptext.contracts.room">
+        <source>Enter the room or office number shown with this employment contract.</source>
+        <target>Geben Sie die Raum- oder Büronummer an, die bei diesem Beschäftigungsvertrag angezeigt wird.</target>
+      </trans-unit>
+      <trans-unit id="helptext.contracts.officeHours" resname="helptext.contracts.officeHours">
+        <source>Enter the office hours and, if useful, instructions for arranging an appointment.</source>
+        <target>Geben Sie die Sprechzeiten und bei Bedarf Hinweise zur Terminvereinbarung an.</target>
+      </trans-unit>
+      <trans-unit id="helptext.contracts.publish" resname="helptext.contracts.publish">
+        <source>Control whether this employment contract and its contact details are shown on the public profile.</source>
+        <target>Legen Sie fest, ob dieser Beschäftigungsvertrag und seine Kontaktdaten im öffentlichen Profil angezeigt werden.</target>
+      </trans-unit>
+      <trans-unit id="helptext.contractContact.street" resname="helptext.contractContact.street">
+        <source>Enter the street name without the building number.</source>
+        <target>Geben Sie den Straßennamen ohne Hausnummer an.</target>
+      </trans-unit>
+      <trans-unit id="helptext.contractContact.streetNumber" resname="helptext.contractContact.streetNumber">
+        <source>Enter the building number, including a suffix where applicable.</source>
+        <target>Geben Sie die Hausnummer gegebenenfalls einschließlich eines Zusatzes an.</target>
+      </trans-unit>
+      <trans-unit id="helptext.contractContact.additional" resname="helptext.contractContact.additional">
+        <source>Optionally add information such as the building, floor, department or care-of name.</source>
+        <target>Ergänzen Sie optional Angaben wie Gebäude, Etage, Abteilung oder einen Zustellhinweis.</target>
+      </trans-unit>
+      <trans-unit id="helptext.contractContact.zip" resname="helptext.contractContact.zip">
+        <source>Enter the postal code for this address.</source>
+        <target>Geben Sie die Postleitzahl dieser Adresse an.</target>
+      </trans-unit>
+      <trans-unit id="helptext.contractContact.city" resname="helptext.contractContact.city">
+        <source>Enter the city or locality for this address.</source>
+        <target>Geben Sie den Ort dieser Adresse an.</target>
+      </trans-unit>
+      <trans-unit id="helptext.contractContact.state" resname="helptext.contractContact.state">
+        <source>Optionally enter the state, province or region.</source>
+        <target>Geben Sie optional das Bundesland, die Provinz oder die Region an.</target>
+      </trans-unit>
+      <trans-unit id="helptext.contractContact.country" resname="helptext.contractContact.country">
+        <source>Select the country for this address.</source>
+        <target>Wählen Sie das Land dieser Adresse aus.</target>
+      </trans-unit>
+      <trans-unit id="helptext.contractContact.physicalAddressType" resname="helptext.contractContact.physicalAddressType">
+        <source>Select whether this is a business or private address.</source>
+        <target>Wählen Sie aus, ob es sich um eine geschäftliche oder private Adresse handelt.</target>
+      </trans-unit>
+      <trans-unit id="helptext.contractContact.emailAddress" resname="helptext.contractContact.emailAddress">
+        <source>Enter the complete email address.</source>
+        <target>Geben Sie die vollständige E-Mail-Adresse an.</target>
+      </trans-unit>
+      <trans-unit id="helptext.contractContact.emailAddressType" resname="helptext.contractContact.emailAddressType">
+        <source>Select whether this is a business or private email address.</source>
+        <target>Wählen Sie aus, ob es sich um eine geschäftliche oder private E-Mail-Adresse handelt.</target>
+      </trans-unit>
+      <trans-unit id="helptext.contractContact.phoneNumber" resname="helptext.contractContact.phoneNumber">
+        <source>Enter the phone number, preferably in international format.</source>
+        <target>Geben Sie die Telefonnummer vorzugsweise im internationalen Format an.</target>
+      </trans-unit>
+      <trans-unit id="helptext.contractContact.phoneNumberType" resname="helptext.contractContact.phoneNumberType">
+        <source>Select the type of phone number, for example business, private or mobile.</source>
+        <target>Wählen Sie die Art der Telefonnummer aus, zum Beispiel geschäftlich, privat oder mobil.</target>
+      </trans-unit>
+      <trans-unit id="helptext.documentSections.title" resname="helptext.documentSections.title">
+        <source>Here you can enter a title.</source>
+        <target>Hier können Sie einen Titel eintragen.</target>
+      </trans-unit>
+      <trans-unit id="helptext.documentSections.from" resname="helptext.documentSections.from">
+        <source>Please enter a start year. You may also leave this field blank.</source>
+        <target>Bitte geben Sie ein Startjahr ein. Sie können dieses Feld auch leer lassen.</target>
+      </trans-unit>
+      <trans-unit id="helptext.documentSections.to" resname="helptext.documentSections.to">
+        <source>Please enter an end year. You may also leave this field blank.</source>
+        <target>Bitte geben Sie ein Endjahr ein. Sie können dieses Feld auch leer lassen.</target>
+      </trans-unit>
+      <trans-unit id="helptext.documentSections.year" resname="helptext.documentSections.year">
+        <source>Please enter a year. This will be displayed to visitors to your profile.</source>
+        <target>Bitte geben Sie ein Jahr ein. Dieses wird den Besuchern Ihres Profils angezeigt.</target>
+      </trans-unit>
+      <trans-unit id="helptext.documentSections.description" resname="helptext.documentSections.description">
+        <source>You can enter free-form text here.</source>
+        <target>Hier können Sie einen frei formulierten Text eingeben.</target>
+      </trans-unit>
     </body>
   </file>
 </xliff>

@@ -62,6 +62,16 @@ The following profile data is available to users after installation:
 The extension also provides some plugins to display the persons in the frontend
 as a list view and detail view for each person.
 
+`Configuration/AcademicPersons/Settings.yaml` describes the profile in four
+maps: `profile` (the public detail layout and the editable fields with their
+validators), `special` (the composed name, the image and the sync switch),
+`contracts` (the contract fields and the address, email and phone sections a
+contract owns) and `documentSections` (the timeline entries and the contracts
+as sortable lists). The same file drives the backend record editor and the
+editing frontend of `academic_persons_edit`; see the
+[Configuration](https://docs.typo3.org/p/fgtclb/academic-persons/main/en-us/Configuration/Index.html)
+chapter of the manual.
+
 > [!NOTE]
 > This extension is currently in beta state - please notice that there might be changes to the structure
 
