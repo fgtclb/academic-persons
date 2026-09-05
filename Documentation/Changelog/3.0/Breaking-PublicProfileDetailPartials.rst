@@ -4,6 +4,9 @@
 Breaking: The partials of the detail view change
 ================================================
 
+..  seealso::
+    :ref:`upgrade` is the order in which the 3.0 changes have to be applied.
+
 Description
 ===========
 

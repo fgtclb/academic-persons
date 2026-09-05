@@ -22,6 +22,7 @@ final class SpecialField
     /**
      * @param list<string> $fieldIdentifiers
      * @param array<string, string> $settings Renderer options, e.g. the crop `ratio` of the image
+     * @param string $helptext The label reference or text rendered next to the control
      */
     public function __construct(
         public readonly string $identifier,
@@ -32,6 +33,7 @@ final class SpecialField
         public readonly Validation $validation,
         public readonly int $position,
         public readonly array $settings = [],
+        public readonly string $helptext = '',
     ) {}
 
     /**
@@ -44,6 +46,7 @@ final class SpecialField
      *     validation: Validation,
      *     position: int,
      *     settings?: array<string, string>,
+     *     helptext?: string,
      * } $array
      */
     public static function __set_state(array $array): self
@@ -57,6 +60,7 @@ final class SpecialField
             validation: $array['validation'],
             position: $array['position'],
             settings: $array['settings'] ?? [],
+            helptext: $array['helptext'] ?? '',
         );
     }
 

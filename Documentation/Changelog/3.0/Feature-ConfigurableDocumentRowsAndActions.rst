@@ -48,6 +48,13 @@ and :php:`allowsDragSorting()` - so the editing frontend of
 :composer:`fgtclb/academic-persons-edit` renders and offers exactly what the
 file declares.
 
+The lists are enforced on both sides. The rendered buttons come from them, and
+so does the answer of every write endpoint of the editing frontend: an action a
+section does not list is refused with HTTP 403 no matter how the request was
+made. That includes the addresses, e-mail addresses and phone numbers of a
+contract, which have no section of their own and follow the :yaml:`actions`
+list and the :yaml:`readonly` flag of the ``contracts`` section.
+
 The shipped timeline descriptions declare ``editor.type: ckeditor``, which
 marks the field as rich text (the ``html`` flag) and carries a readable-text
 limit of 500 characters, so the editing frontend renders the rich text editor

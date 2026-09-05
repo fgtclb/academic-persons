@@ -266,12 +266,6 @@ final class AcademicPersonsSettings
             ?? new ValidationSet(identifier: $sectionIdentifier, validations: []);
     }
 
-    public function getDocumentValidationSetByType(string $type): ValidationSet
-    {
-        return $this->getDocumentSectionByType($type)?->validationSet
-            ?? new ValidationSet(identifier: $type, validations: []);
-    }
-
     /**
      * The `types.<record type>.columnsOverrides` fragment for the profile
      * information table: the validation of a document section applies to

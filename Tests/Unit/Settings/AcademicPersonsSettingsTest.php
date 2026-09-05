@@ -77,7 +77,7 @@ final class AcademicPersonsSettingsTest extends UnitTestCase
         $this->assertSame('emailAddresses', $subject->getContractContactValidationSet('emailAddresses')->identifier);
         $this->assertSame('emailAddresses', $subject->getContractContactValidationSetForFields(['email'], 'emailAddresses')->identifier);
         $this->assertSame('vita', $subject->getDocumentValidationSet('vita')->identifier);
-        $this->assertSame('curriculum_vitae', $subject->getDocumentValidationSetByType('curriculum_vitae')->identifier);
+        $this->assertNull($subject->getDocumentSectionByType('curriculum_vitae'));
         $this->assertNull($subject->getDocumentValidationSet('vita')->get('title'));
     }
 
@@ -241,9 +241,9 @@ final class AcademicPersonsSettingsTest extends UnitTestCase
         $subject = new AcademicPersonsSettings(documentSections: ['publications' => $publication]);
 
         $this->assertSame($publication->validationSet, $subject->getDocumentValidationSet('publications'));
-        $this->assertSame($publication->validationSet, $subject->getDocumentValidationSetByType('publication'));
+        $this->assertSame($publication->validationSet, $subject->getDocumentSectionByType('publication')?->validationSet);
         $this->assertSame([], $subject->getDocumentValidationSet('lectures')->validations);
-        $this->assertSame([], $subject->getDocumentValidationSetByType('lecture')->validations);
+        $this->assertNull($subject->getDocumentSectionByType('lecture'));
     }
 
     /**

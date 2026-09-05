@@ -4,6 +4,9 @@
 Breaking: Section-based AcademicPersons settings
 ================================================
 
+..  seealso::
+    :ref:`upgrade` is the order in which the 3.0 changes have to be applied.
+
 Description
 ===========
 
@@ -73,8 +76,10 @@ What an integrator sees:
     ``required`` and ``minitems``, so the backend record editor refuses to
     save a profile without a gender, and the editing frontend runs its *not
     empty* validation - and the contract's :yaml:`validFrom`. **Newly
-    validated**: :yaml:`website`, :yaml:`publicationsLink` and every
-    timeline entry's :yaml:`link` carry the :yaml:`url` flag. **Relaxed**:
+    validated**: :yaml:`website`, :yaml:`publicationsLink` and the
+    :yaml:`link` of six of the seven timeline sections carry the :yaml:`url`
+    flag - :yaml:`cooperation` offers no link field and therefore no flag on
+    one. **Relaxed**:
     the :yaml:`type` of an email address or phone number is no longer
     required, and the address's :yaml:`streetNumber` and :yaml:`zip` lose
     the :yaml:`number` flag - their columns return from the ``number`` TCA

@@ -7,7 +7,7 @@ Important: Unordered profile queries now order by uid
 Description
 ===========
 
-Four query paths of this extension executed without any ordering, so the order
+Five query paths of this extension executed without any ordering, so the order
 of their result was whatever the database happened to yield:
 
 *   :php:`ProfileRepository::findAll()`
@@ -20,7 +20,8 @@ of their result was whatever the database happened to yield:
     function type and organisational unit selects of the contract form in
     :php:`academic_persons_edit`
 
-All four now order by :sql:`uid` ascending when nothing else asks for an order.
+All five now order by :sql:`uid` ascending when nothing else asks for an
+order.
 
 Impact
 ======

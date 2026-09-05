@@ -54,18 +54,23 @@ Impact
 Code that type hints or instantiates the old classes fails with a class not
 found error and has to import the `EXT:academic_base` names.
 
-A project that overrides one of the form partials of
-`EXT:academic_persons_edit` and declares the ViewHelper namespace itself has
-to point it at the new location, or the editing form no longer renders:
+A project that declares the ViewHelper namespace in a template of its own has
+to point it at the new location, or the template no longer renders:
 
 ..  code-block:: html
 
     xmlns:p="http://typo3.org/ns/FGTCLB/AcademicBase/ViewHelpers"
 
-The ``p:validationEnsure`` calls in the template stay as they are. The five
-partials are listed in the `EXT:academic_persons_edit` changelog entry
-"Adapted frontend editing Fluid files"
-(https://docs.typo3.org/p/fgtclb/academic-persons-edit/main/en-us/Changelog/3.0/Breaking-AdaptedFrontendEditingFluidFiles.html).
+The ``p:validationEnsure`` calls in the template stay as they are.
+
+A project that overrides one of the frontend editing form partials of
+`EXT:academic_persons_edit` has nothing to repoint and nothing to keep: the
+Extbase form flow those partials belonged to is replaced in 3.0, the
+:file:`Partials/Profile/Forms/` directory is gone with it, and no template of
+either extension declares the namespace any more. Delete the override and
+start from what the new editing view renders - the changelog entry *Breaking:
+Replaced the profile editing view* of `EXT:academic_persons_edit` lists the
+removed templates and the partials that took their place.
 
 No cache flush is required for the settings themselves - see the cache
 identifier above - but flushing all caches after the update is harmless and

@@ -4,6 +4,9 @@
 Breaking: Person records are workspace aware
 ============================================
 
+..  seealso::
+    :ref:`upgrade` is the order in which the 3.0 changes have to be applied.
+
 Description
 ===========
 

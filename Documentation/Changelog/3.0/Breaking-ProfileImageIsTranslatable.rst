@@ -4,6 +4,9 @@
 Breaking: The profile image translates
 ======================================
 
+..  seealso::
+    :ref:`upgrade` is the order in which the 3.0 changes have to be applied.
+
 Description
 ===========
 
@@ -41,7 +44,10 @@ frontend profile update all rewrite the :sql:`title` and :sql:`alternative` of
 the profile's own :sql:`sys_file_reference` row from that record's title and
 names. Only the reference row is written; the :sql:`sys_file_metadata` row of
 the file, which a file may share between the languages of a profile, stays the
-backend editor's.
+backend editor's. The one write of that record is the frontend upload that
+creates the file, which fills its empty required attributes once — see the
+changelog entry *Important: An uploaded profile image carries its metadata* of
+:composer:`fgtclb/academic-persons-edit`.
 
 Impact
 ======
@@ -61,7 +67,7 @@ Impact
     a localization, or a profile update announced through
     :php:`AfterProfileUpdateEvent`. A title or alternative text maintained on
     the reference row by hand is overwritten then; text maintained on the
-    file's metadata is not.
+    file's metadata is never touched by it.
 
 *   Workspaces are unchanged for an edit: the writer addresses live records and
     lets the DataHandler produce the versioned rows, so a draft edit of a

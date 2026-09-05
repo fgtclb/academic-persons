@@ -14,6 +14,8 @@ namespace FGTCLB\AcademicPersons\Tests\Functional\Service;
 use FGTCLB\AcademicPersons\Service\ProfileImageMetadataService;
 use FGTCLB\AcademicPersons\Tests\Functional\AbstractAcademicPersonsTestCase;
 use PHPUnit\Framework\Attributes\Test;
+use TYPO3\CMS\Core\Resource\File;
+use TYPO3\CMS\Core\Resource\ResourceFactory;
 use TYPO3\TestingFramework\Core\Testbase;
 
 /**
@@ -132,6 +134,63 @@ final class ProfileImageMetadataServiceTest extends AbstractAcademicPersonsTestC
     }
 
     /**
+     * The upload half: the file the frontend editing just stored has an empty metadata
+     * record, and the required fields of an installation that has any are filled from
+     * the profile name - once, and without touching the reference row, which
+     * {@see ProfileImageMetadataService::updateForProfileUid()} owns.
+     */
+    #[Test]
+    public function initializeFileMetadataFillsTheRecordOfAnUploadedFile(): void
+    {
+        $metadata = $this->get(ProfileImageMetadataService::class)
+            ->initializeFileMetadata($this->getFile(1), 1);
+
+        $this->assertSame(['title' => 'Erika Musterfrau', 'alternative' => 'Erika Musterfrau'], $metadata);
+        $this->assertSame(
+            ['title' => 'Erika Musterfrau', 'alternative' => 'Erika Musterfrau'],
+            $this->fetchFileMetadata(1),
+        );
+        $this->assertSame([['uid' => 1, 'title' => '', 'alternative' => '']], $this->fetchReferenceMetadata());
+    }
+
+    /**
+     * A file that is indexed already carries what a backend editor maintained on it,
+     * and an upload never overwrites that - it only fills what is empty.
+     */
+    #[Test]
+    public function initializeFileMetadataKeepsTextTheRecordAlreadyCarries(): void
+    {
+        $this->insertRecord('sys_file_metadata', [
+            'uid' => 1,
+            'pid' => 0,
+            'file' => 1,
+            'title' => 'Editor title',
+            'alternative' => '',
+        ]);
+
+        $metadata = $this->get(ProfileImageMetadataService::class)
+            ->initializeFileMetadata($this->getFile(1), 1);
+
+        $this->assertSame(['alternative' => 'Erika Musterfrau'], $metadata);
+        $this->assertSame(
+            ['title' => 'Editor title', 'alternative' => 'Erika Musterfrau'],
+            $this->fetchFileMetadata(1),
+        );
+    }
+
+    #[Test]
+    public function initializeFileMetadataWritesNothingWithoutAProfileToNameTheFileAfter(): void
+    {
+        $this->assertNull(
+            $this->get(ProfileImageMetadataService::class)->initializeFileMetadata($this->getFile(1), 4711),
+        );
+        $this->assertNull(
+            $this->get(ProfileImageMetadataService::class)->initializeFileMetadata($this->getFile(1), 0),
+        );
+        $this->assertSame([], $this->fetchFileMetadata(1));
+    }
+
+    /**
      * Inserts a row with an explicit uid and re-aligns the table's sequence. An
      * explicitly inserted uid does not advance the PostgreSQL sequence, so the next
      * row the DataHandler writes would collide with it - `importCSVDataSet()` does
@@ -163,5 +222,22 @@ final class ProfileImageMetadataServiceTest extends AbstractAcademicPersonsTestC
             ],
             $rows,
         );
+    }
+
+    private function getFile(int $uid): File
+    {
+        return $this->get(ResourceFactory::class)->getFileObject($uid);
+    }
+
+    /**
+     * @return array{title: string, alternative: string}|array{}
+     */
+    private function fetchFileMetadata(int $fileUid): array
+    {
+        $row = $this->getConnectionPool()
+            ->getConnectionForTable('sys_file_metadata')
+            ->select(['title', 'alternative'], 'sys_file_metadata', ['file' => $fileUid])
+            ->fetchAssociative();
+        return $row === false ? [] : ['title' => (string)$row['title'], 'alternative' => (string)$row['alternative']];
     }
 }

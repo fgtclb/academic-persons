@@ -369,7 +369,7 @@ How the legacy keys map:
             :yaml:`bodytext` onto :yaml:`from`, :yaml:`to` and
             :yaml:`description`
     *   -   :yaml:`profileInformationsTypes.<section>`
-        -   :yaml:`label` of :yaml:`documentSections.<section>`;
+        -   the :yaml:`label` of :yaml:`documentSections.<section>`; its
             :yaml:`type` and :yaml:`fieldName` are reported, not applied
 
 A field is matched by its key or by the property it names, so
@@ -391,8 +391,14 @@ Two things are not mapped and are reported by the command and in the log:
     created; the Breaking entry on the section based settings describes how
     to keep one.
 *   The :yaml:`type` and :yaml:`fieldName` of a timeline entry type are not
-    applied. Since 3.0.0 the seven profile relations are declared by the TCA
-    of the profile table, so applying the override would move the editing
-    frontend alone and leave it and the backend column addressing different
-    record types. The section keeps the values that match the TCA, and the
-    value the override named is printed as a note.
+    applied. Until 2.4 the two generated the inline column of the profile
+    table, so overriding one moved the backend relation and the frontend
+    selection together; since 3.0.0 the seven relations are declared by the
+    TCA of the profile table, and applying the override would move the
+    frontend half alone - records created in the editing frontend would be
+    invisible in the backend, and the other way round. The section keeps the
+    record type and the relation field that match the TCA, and the value the
+    override named is printed as a note. Act on that note: a timeline type of
+    your own needs its own column in a TCA override of the profile table, as
+    :ref:`configuration-sections-documents` and the :ref:`upgrade` page
+    describe.

@@ -4,6 +4,9 @@
 Breaking: Extbase plugins require `CType` on TYPO3 v14
 ======================================================
 
+..  seealso::
+    :ref:`upgrade` is the order in which the 3.0 changes have to be applied.
+
 Description
 ===========
 

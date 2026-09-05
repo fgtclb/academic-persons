@@ -7,6 +7,8 @@
  * several profiles. Bootstrap is optional: without "globalThis.bootstrap" the
  * navigation is plain anchor links, everything else works the same.
  */
+import { observePageHeaderOffset } from '@fgtclb/academic-persons/frontend/sticky-offset.js';
+
 const profileSelector = '[data-academic-persons-detail]';
 const accordionTriggerSelector = '[data-academic-persons-accordion-trigger]';
 const stickyNavigationSelector = '[data-academic-persons-sticky-navigation]';
@@ -70,34 +72,20 @@ const initializeProfileAccordions = (root: HTMLElement): void => {
  * Keeps the sticky navigation below a sticky page header and tells the
  * stylesheet the same offset, so an anchor jump lands below the header too.
  */
-const updateStickyNavigationOffset = (root: HTMLElement, stickyNavigation: HTMLElement, pageHeader: HTMLElement): void => {
-    const headerOuterHeight = Math.max(0, Math.ceil(pageHeader.getBoundingClientRect().height));
-    const offset = headerOuterHeight + 10;
-    stickyNavigation.style.setProperty('top', `${offset}px`, 'important');
-    root.style.setProperty('--academic-persons-detail-scroll-offset', `${offset}px`);
-};
-
 const initializeStickyNavigationOffset = (root: HTMLElement): void => {
     const stickyNavigation = root.querySelector(stickyNavigationSelector);
-    const pageHeader = document.querySelector(pageHeaderSelector);
     if (!(stickyNavigation instanceof HTMLElement)) {
         return;
     }
-    if (!(pageHeader instanceof HTMLElement)) {
-        stickyNavigation.style.removeProperty('top');
-        root.style.removeProperty('--academic-persons-detail-scroll-offset');
-        return;
-    }
-    const updateOffset = (): void => updateStickyNavigationOffset(root, stickyNavigation, pageHeader);
-    updateOffset();
-    if (typeof ResizeObserver === 'function') {
-        const resizeObserver = new ResizeObserver(updateOffset);
-        resizeObserver.observe(pageHeader, { box: 'border-box' });
-        globalThis.addEventListener('pagehide', (): void => resizeObserver.disconnect(), { once: true });
-        return;
-    }
-    globalThis.addEventListener('resize', updateOffset);
-    globalThis.addEventListener('pagehide', (): void => globalThis.removeEventListener('resize', updateOffset), { once: true });
+    observePageHeaderOffset(pageHeaderSelector, (offset): void => {
+        if (offset === null) {
+            stickyNavigation.style.removeProperty('top');
+            root.style.removeProperty('--academic-persons-detail-scroll-offset');
+            return;
+        }
+        stickyNavigation.style.setProperty('top', `${offset}px`, 'important');
+        root.style.setProperty('--academic-persons-detail-scroll-offset', `${offset}px`);
+    });
 };
 
 const synchronizeScrollSpyLinks = (root: HTMLElement, relatedTarget: Element | string | undefined): void => {

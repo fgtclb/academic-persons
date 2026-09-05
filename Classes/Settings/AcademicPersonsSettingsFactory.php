@@ -303,6 +303,7 @@ class AcademicPersonsSettingsFactory
                     renderType: $renderType,
                 ),
                 position: count($fields),
+                helptext: trim((string)($options['helptext'] ?? '')),
                 settings: $this->normalizePublicProfileMap(
                     is_array($options['settings'] ?? null) ? $options['settings'] : [],
                 ),

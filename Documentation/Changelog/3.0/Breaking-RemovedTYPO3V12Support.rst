@@ -4,6 +4,9 @@
 Breaking: Removed TYPO3 v12 support
 ===================================
 
+..  seealso::
+    :ref:`upgrade` is the order in which the 3.0 changes have to be applied.
+
 Description
 ===========
 
