@@ -9,41 +9,50 @@ use TYPO3\CMS\Core\Imaging\IconProvider\SvgIconProvider;
  * For the full copyright and license information, please read the
  * LICENSE file that was distributed with this source code.
  */
+
+/*
+ * The record icons of the nine tables this extension ships are registered with the
+ * provider of EXT:academic_base, which inlines the file in both markups instead of
+ * rendering an <img>. An <img> is opaque to CSS and keeps the colours of its file, so
+ * a record icon drawn in a dark ink stays dark on the dark cards of the backend colour
+ * scheme. Inlined and drawn in `currentColor` it follows the text colour. The plugin
+ * icon `persons_icon` is a brand mark and keeps the core provider.
+ */
 return [
     'tx_academicpersons_domain_model_address' => [
-        'provider' => SvgIconProvider::class,
+        'provider' => CurrentColorSvgIconProvider::class,
         'source' => 'EXT:academic_persons/Resources/Public/Icons/tx_academicpersons_domain_model_address.svg',
     ],
     'tx_academicpersons_domain_model_contract' => [
-        'provider' => SvgIconProvider::class,
+        'provider' => CurrentColorSvgIconProvider::class,
         'source' => 'EXT:academic_persons/Resources/Public/Icons/tx_academicpersons_domain_model_contract.svg',
     ],
     'tx_academicpersons_domain_model_email' => [
-        'provider' => SvgIconProvider::class,
+        'provider' => CurrentColorSvgIconProvider::class,
         'source' => 'EXT:academic_persons/Resources/Public/Icons/tx_academicpersons_domain_model_email.svg',
     ],
     'tx_academicpersons_domain_model_function_type' => [
-        'provider' => SvgIconProvider::class,
+        'provider' => CurrentColorSvgIconProvider::class,
         'source' => 'EXT:academic_persons/Resources/Public/Icons/tx_academicpersons_domain_model_function_type.svg',
     ],
     'tx_academicpersons_domain_model_organisational_unit' => [
-        'provider' => SvgIconProvider::class,
+        'provider' => CurrentColorSvgIconProvider::class,
         'source' => 'EXT:academic_persons/Resources/Public/Icons/tx_academicpersons_domain_model_organisational_unit.svg',
     ],
     'tx_academicpersons_domain_model_phone_number' => [
-        'provider' => SvgIconProvider::class,
+        'provider' => CurrentColorSvgIconProvider::class,
         'source' => 'EXT:academic_persons/Resources/Public/Icons/tx_academicpersons_domain_model_phone_number.svg',
     ],
     'tx_academicpersons_domain_model_profile' => [
-        'provider' => SvgIconProvider::class,
+        'provider' => CurrentColorSvgIconProvider::class,
         'source' => 'EXT:academic_persons/Resources/Public/Icons/tx_academicpersons_domain_model_profile.svg',
     ],
     'tx_academicpersons_domain_model_location' => [
-        'provider' => SvgIconProvider::class,
+        'provider' => CurrentColorSvgIconProvider::class,
         'source' => 'EXT:academic_persons/Resources/Public/Icons/tx_academicpersons_domain_model_location.svg',
     ],
     'tx_academicpersons_domain_model_profile_information' => [
-        'provider' => SvgIconProvider::class,
+        'provider' => CurrentColorSvgIconProvider::class,
         'source' => 'EXT:academic_persons/Resources/Public/Icons/tx_academicpersons_domain_model_profile_information.svg',
     ],
     'persons_icon' => [
