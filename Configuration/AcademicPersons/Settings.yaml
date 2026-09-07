@@ -341,6 +341,7 @@ contracts:
   rowFields:
     - position
   actions:
+    - hide
     - view
     - down
     - up
@@ -518,6 +519,7 @@ documentSections:
       - to
       - title
     actions:
+      - hide
       - view
       - down
       - up
@@ -553,6 +555,7 @@ documentSections:
       - to
       - title
     actions:
+      - hide
       - view
       - down
       - up
@@ -589,6 +592,7 @@ documentSections:
       - to
       - title
     actions:
+      - hide
       - view
       - down
       - up
@@ -624,6 +628,7 @@ documentSections:
       - year
       - title
     actions:
+      - hide
       - view
       - down
       - up
@@ -659,6 +664,7 @@ documentSections:
       - year
       - title
     actions:
+      - hide
       - view
       - down
       - up
@@ -694,6 +700,7 @@ documentSections:
       - year
       - title
     actions:
+      - hide
       - view
       - down
       - up
@@ -729,6 +736,7 @@ documentSections:
       - from
       - title
     actions:
+      - hide
       - view
       - down
       - up

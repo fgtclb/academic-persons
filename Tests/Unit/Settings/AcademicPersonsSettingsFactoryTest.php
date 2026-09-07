@@ -262,7 +262,7 @@ final class AcademicPersonsSettingsFactoryTest extends UnitTestCase
             $this->assertSame($type, $section->type, $identifier);
             $this->assertSame($fieldName, $section->fieldName, $identifier);
             $this->assertFalse($section->readOnly, $identifier);
-            $this->assertSame(['view', 'down', 'up', 'delete', 'edit'], $section->actions, $identifier);
+            $this->assertSame(['hide', 'view', 'down', 'up', 'delete', 'edit'], $section->actions, $identifier);
             $this->assertSame(
                 $identifier === 'cooperation'
                     ? ['title', 'yearStart', 'yearEnd', 'year', 'bodytext']
@@ -362,7 +362,7 @@ final class AcademicPersonsSettingsFactoryTest extends UnitTestCase
         $this->assertSame('contracts', $contracts->fieldName);
         $this->assertStringStartsWith('LLL:EXT:academic_persons/', $contracts->label);
         $this->assertSame(['position'], $contracts->rowFields);
-        $this->assertSame(['view', 'down', 'up', 'delete', 'edit'], $contracts->actions);
+        $this->assertSame(['hide', 'view', 'down', 'up', 'delete', 'edit'], $contracts->actions);
         $this->assertSame(array_keys($settings->contractFields), array_keys($contracts->validationSet->validations));
         $position = $contracts->validationSet->get('position');
         $validFrom = $contracts->validationSet->get('validFrom');

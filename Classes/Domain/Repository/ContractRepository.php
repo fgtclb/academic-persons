@@ -12,6 +12,7 @@ declare(strict_types=1);
 namespace FGTCLB\AcademicPersons\Domain\Repository;
 
 use FGTCLB\AcademicPersons\Domain\Model\Contract;
+use FGTCLB\AcademicPersons\Domain\Model\Profile;
 use TYPO3\CMS\Core\Context\LanguageAspect;
 use TYPO3\CMS\Core\Site\Entity\Site;
 use TYPO3\CMS\Extbase\Persistence\QueryInterface;
@@ -77,6 +78,29 @@ class ContractRepository extends Repository
     public function getContractItemsForTcaItemsProcFunc(array $parameters): QueryResultInterface
     {
         return $this->findAll();
+    }
+
+    /**
+     * Returns the contracts of the given profile, including the ones disabled (hidden) via the
+     * frontend visibility toggle. Used by the frontend editing UI which must always list hidden
+     * records so they can be shown again - the public views keep reading the relation, which
+     * respects the enable fields.
+     *
+     * @return QueryResultInterface<int, Contract>
+     */
+    public function findByProfileIncludingHidden(Profile $profile): QueryResultInterface
+    {
+        $query = $this->createQuery();
+        $query->getQuerySettings()->setRespectStoragePage(false);
+        $query->getQuerySettings()->setIgnoreEnableFields(true);
+        $query->getQuerySettings()->setEnableFieldsToBeIgnored(['disabled']);
+        $query->matching($query->equals('profile', $profile));
+        // `sorting` with `uid` breaking ties - see docs/architecture/database-queries.md.
+        $query->setOrderings([
+            'sorting' => QueryInterface::ORDER_ASCENDING,
+            'uid' => QueryInterface::ORDER_ASCENDING,
+        ]);
+        return $query->execute();
     }
 
     /**

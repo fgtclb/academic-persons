@@ -24,6 +24,7 @@ class ProfileInformation extends AbstractEntity
     protected ?int $yearStart = null;
     protected ?int $yearEnd = null;
     protected int $sorting = 0;
+    protected bool $hidden = false;
 
     public function __construct()
     {
@@ -132,5 +133,16 @@ class ProfileInformation extends AbstractEntity
     public function getSorting(): int
     {
         return $this->sorting;
+    }
+
+    public function getHidden(): bool
+    {
+        return $this->hidden;
+    }
+
+    public function setHidden(bool $hidden): self
+    {
+        $this->hidden = $hidden;
+        return $this;
     }
 }

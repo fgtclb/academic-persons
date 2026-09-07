@@ -183,6 +183,26 @@ final class SectionSettingsTest extends UnitTestCase
      * `readonly` wins over the list: a read-only section offers viewing and
      * nothing else, whatever an override left in `actions`.
      */
+    /**
+     * `hide` is an action of the list like any other: offered when listed,
+     * withdrawn with the others by `readonly`, and never implied.
+     */
+    #[Test]
+    public function theHideActionIsOfferedOnlyWhenListedAndNeverOnAReadOnlySection(): void
+    {
+        $listed = $this->documentSection('lectures', 'lecture', actions: ['hide', 'view', 'edit']);
+        $this->assertTrue($listed->allowsAction('hide'));
+        $this->assertSame(['hide', 'view', 'edit'], $listed->getAllowedActions());
+
+        $unlisted = $this->documentSection('lectures', 'lecture', actions: ['view', 'edit']);
+        $this->assertFalse($unlisted->allowsAction('hide'));
+
+        $readOnly = $this->documentSection('lectures', 'lecture', readOnly: true, actions: ['hide', 'view']);
+        $this->assertFalse($readOnly->allowsAction('hide'));
+        $this->assertSame(['view'], $readOnly->getAllowedActions());
+        $this->assertContains('hide', DocumentSection::SUPPORTED_ACTIONS);
+    }
+
     #[Test]
     public function aReadOnlyDocumentSectionKeepsOnlyItsViewCapability(): void
     {

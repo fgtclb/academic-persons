@@ -31,6 +31,7 @@ class Contract extends AbstractEntity
     protected string $officeHours = '';
     protected bool $publish = false;
     protected int $sorting = 0;
+    protected bool $hidden = false;
     protected string $importIdentifier = '';
 
     /**
@@ -204,6 +205,17 @@ class Contract extends AbstractEntity
     public function getSorting(): int
     {
         return $this->sorting;
+    }
+
+    public function getHidden(): bool
+    {
+        return $this->hidden;
+    }
+
+    public function setHidden(bool $hidden): self
+    {
+        $this->hidden = $hidden;
+        return $this;
     }
 
     /**

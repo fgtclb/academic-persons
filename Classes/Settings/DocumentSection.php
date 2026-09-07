@@ -24,7 +24,7 @@ final class DocumentSection
     public const SUPPORTED_ROW_FIELDS = ['from', 'to', 'year', 'title', 'description', 'position'];
     public const SUPPORTED_CONTRACT_ROW_FIELDS = ['from', 'to', 'position'];
     public const SUPPORTED_PROFILE_INFORMATION_ROW_FIELDS = ['from', 'to', 'year', 'title', 'description'];
-    public const SUPPORTED_ACTIONS = ['view', 'down', 'up', 'delete', 'edit'];
+    public const SUPPORTED_ACTIONS = ['hide', 'view', 'down', 'up', 'delete', 'edit'];
 
     /**
      * @param list<string> $rowFields

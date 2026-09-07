@@ -23,6 +23,7 @@ which actions it offers:
           - year
           - title
         actions:
+          - hide
           - view
           - down
           - up
@@ -32,8 +33,8 @@ which actions it offers:
 :yaml:`rowFields` is the ordered list of values a row renders. Timeline
 entries support ``from``, ``to``, ``year``, ``title`` and ``description``;
 the contracts support ``from``, ``to`` and ``position``. :yaml:`actions` is
-the ordered list of per-row actions: ``view``, ``down``, ``up``, ``delete``
-and ``edit``. An action that is not listed is not offered, and listing both
+the ordered list of per-row actions: ``hide``, ``view``, ``down``, ``up``,
+``delete`` and ``edit``. An action that is not listed is not offered, and listing both
 ``up`` and ``down`` is what enables drag-and-drop sorting of the list.
 
 A section marked :yaml:`readonly: true` offers ``view`` and nothing else,

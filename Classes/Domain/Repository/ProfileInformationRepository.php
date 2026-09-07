@@ -55,4 +55,32 @@ class ProfileInformationRepository extends Repository
             ])
             ->execute();
     }
+
+    /**
+     * The same list including the records disabled (hidden) via the frontend visibility
+     * toggle. Used by the frontend editing UI which must always list hidden records so they
+     * can be shown again; every public view keeps `findByProfileAndType()` and the relation.
+     *
+     * @return QueryResultInterface<int, ProfileInformation>
+     */
+    public function findByProfileAndTypeIncludingHidden(Profile $profile, string $type): QueryResultInterface
+    {
+        $query = $this->createQuery();
+        $query->getQuerySettings()->setRespectStoragePage(false);
+        $query->getQuerySettings()->setIgnoreEnableFields(true);
+        $query->getQuerySettings()->setEnableFieldsToBeIgnored(['disabled']);
+
+        return $query
+            ->matching(
+                $query->logicalAnd(
+                    $query->equals('profile', $profile),
+                    $query->equals('type', $type)
+                )
+            )
+            ->setOrderings([
+                'sorting' => QueryInterface::ORDER_ASCENDING,
+                'uid' => QueryInterface::ORDER_ASCENDING,
+            ])
+            ->execute();
+    }
 }
