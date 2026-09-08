@@ -33,6 +33,12 @@
       <trans-unit id="extension_configuration.profile.createProfileForUserGroups.label">
         <source>Create for user groups: Create profiles only if current user is in one of these user group IDs.</source>
       </trans-unit>
+      <trans-unit id="extension_configuration.profile.feuser.telephoneNumberType.label">
+        <source>Frontend user telephone type: Type assigned to imported telephone numbers</source>
+      </trans-unit>
+      <trans-unit id="extension_configuration.profile.feuser.faxNumberType.label">
+        <source>Frontend user fax type: Type assigned to imported fax numbers</source>
+      </trans-unit>
 
       <trans-unit id="plugin.list.label">
         <source>Persons List</source>

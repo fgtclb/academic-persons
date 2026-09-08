@@ -1,0 +1,18 @@
+"fe_users"
+,"uid","pid","username","deleted","usergroup","disable","tx_extbase_type","first_name","middle_name","last_name","www","address","zip","city","country","email","telephone","fax"
+,30,100,"telephone-new-contract",0,"10",0,"Tx_Academicpersonsedit_Domain_Model_FrontendUser","Telephone","","New","","","","","","","+49 711 123456",""
+,31,100,"telephone-existing-contract",0,"10",0,"Tx_Academicpersonsedit_Domain_Model_FrontendUser","Telephone","","Existing","","","","","","","+49 711 654321",""
+"tx_academicpersons_feuser_mm"
+,"uid_local","uid_foreign","sorting","sorting_foreign"
+,30,30,1,0
+,31,31,1,0
+"tx_academicpersons_domain_model_profile"
+,"uid","pid","first_name","last_name","import_identifier"
+,30,100,"Telephone","New","fe_users:30"
+,31,100,"Telephone","Existing","fe_users:31"
+"tx_academicpersons_domain_model_contract"
+,"uid","pid","profile","phone_numbers","import_identifier"
+,31,100,31,1,"fe_users:31"
+"tx_academicpersons_domain_model_phone_number"
+,"uid","pid","contract","type","phone_number","import_identifier"
+,31,100,31,"phone","Old telephone","phone:fe_users:31"

@@ -11,10 +11,13 @@ use FGTCLB\AcademicPersons\Service\Event\ModifyProfileCommandEnvironmentStateBui
 use FGTCLB\AcademicPersons\Service\ProfileCreateCommandService;
 use FGTCLB\AcademicPersons\Service\ProfileUpdateCommandService;
 use FGTCLB\AcademicPersons\Tests\Functional\AbstractAcademicPersonsTestCase;
+use FGTCLB\AcademicPersons\Types\PhoneNumberTypes;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\Attributes\Test;
 use SBUERK\TYPO3\Testing\SiteHandling\SiteBasedTestTrait;
 use Symfony\Component\DependencyInjection\Container;
+use TYPO3\CMS\Core\Configuration\ExtensionConfiguration;
+use TYPO3\CMS\Core\Database\Connection;
 use TYPO3\CMS\Core\EventDispatcher\ListenerProvider;
 use TYPO3\CMS\Core\Utility\ArrayUtility;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
@@ -49,6 +52,10 @@ final class UsingDefaultProfileFactoryOnlyTest extends AbstractAcademicPersonsTe
                         'profile' => [
                             'autoCreateProfiles' => 1,
                             'createProfileForUserGroups' => '',
+                            'feuser' => [
+                                'faxNumberType' => 'business',
+                                'telephoneNumberType' => 'business',
+                            ],
                         ],
                         'demand' => [
                             'allowedGroupByValues' => 'firstNameAlpha=LLL:EXT:academic_persons/Resources/Private/Language/locallang_be.xlf:flexform.el.groupBy.items.first_name,lastNameAlpha=LLL:EXT:academic_persons/Resources/Private/Language/locallang_be.xlf:flexform.el.groupBy.items.last_name',
@@ -856,6 +863,254 @@ final class UsingDefaultProfileFactoryOnlyTest extends AbstractAcademicPersonsTe
     }
 
     /**
+     * ACE-365: both contract-data guards of `updateProfileFromFrontendUser()` tested
+     * `$frontendUserData['phone']`, and `fe_users` has no such column - it is `telephone`,
+     * which is why the method one level down already read that key. `empty()` on an
+     * undefined key is always true, so a user whose only contact datum was a telephone
+     * number had its existing contract deleted on every run and never got one created.
+     * Both directions are asserted here against the record set rather than a count.
+     */
+    #[Test]
+    public function executeKeepsAndCreatesContractsWhenTelephoneIsTheirOnlyData(): void
+    {
+        $this->importCSVDataSet(__DIR__ . '/Fixtures/DataSets/telephone-only-contracts.csv');
+
+        $profileUpdateCommandService = GeneralUtility::makeInstance(ProfileUpdateCommandService::class);
+        $profileUpdateCommandService->execute(new ProfileUpdateCommandDto(includePids: [100], excludePids: []));
+
+        $contractQueryBuilder = $this->getConnectionPool()
+            ->getQueryBuilderForTable('tx_academicpersons_domain_model_contract');
+        $contractQueryBuilder->getRestrictions()->removeAll();
+        $contracts = $contractQueryBuilder
+            ->select('profile', 'import_identifier', 'deleted')
+            ->from('tx_academicpersons_domain_model_contract')
+            ->where(
+                $contractQueryBuilder->expr()->in(
+                    'profile',
+                    $contractQueryBuilder->quoteArrayBasedValueListToIntegerList([30, 31]),
+                ),
+            )
+            ->orderBy('profile')
+            ->executeQuery()
+            ->fetchAllAssociative();
+        $this->assertSame(
+            [
+                ['profile' => 30, 'import_identifier' => 'fe_users:30', 'deleted' => 0],
+                ['profile' => 31, 'import_identifier' => 'fe_users:31', 'deleted' => 0],
+            ],
+            $contracts,
+        );
+
+        $phoneNumberQueryBuilder = $this->getConnectionPool()
+            ->getQueryBuilderForTable('tx_academicpersons_domain_model_phone_number');
+        $phoneNumberQueryBuilder->getRestrictions()->removeAll();
+        $phoneNumbers = $phoneNumberQueryBuilder
+            ->select('phone_number')
+            ->from('tx_academicpersons_domain_model_phone_number')
+            ->where(
+                $phoneNumberQueryBuilder->expr()->in(
+                    'phone_number',
+                    $phoneNumberQueryBuilder->quoteArrayBasedValueListToStringList([
+                        '+49 711 123456',
+                        '+49 711 654321',
+                    ]),
+                ),
+            )
+            ->orderBy('phone_number')
+            ->executeQuery()
+            ->fetchAllAssociative();
+        $this->assertSame(
+            [
+                ['phone_number' => '+49 711 123456'],
+                ['phone_number' => '+49 711 654321'],
+            ],
+            $phoneNumbers,
+        );
+    }
+
+    /**
+     * The identifier carries the source field and never the configured type, so changing
+     * the configuration updates a record instead of writing a second one. This is the
+     * trap ACE-365 reproduced before the change: with the type inside the identifier, a
+     * reconfiguration made both halves of the match fail and duplicated every imported
+     * number. Contract 40 pins the collision policy (canonical wins, legacy untouched),
+     * 41 the reuse of a legacy identifier, 42 the plain new import - asserted
+     * exhaustively, because a duplicate is invisible to a per-uid CSV assertion.
+     */
+    #[Test]
+    public function executeSynchronisesConfiguredAndLegacyPhoneNumberImportsWithoutDuplicates(): void
+    {
+        $this->reconfigureAcademicPersons([
+            'profile' => [
+                'feuser' => [
+                    'faxNumberType' => 'private',
+                    'telephoneNumberType' => 'mobile',
+                ],
+            ],
+        ]);
+        $this->importCSVDataSet(__DIR__ . '/Fixtures/DataSets/phone-number-import-behaviour.csv');
+
+        $profileUpdateCommandService = GeneralUtility::makeInstance(ProfileUpdateCommandService::class);
+        $profileUpdateCommandService->execute(new ProfileUpdateCommandDto(includePids: [100], excludePids: []));
+
+        $queryBuilder = $this->getConnectionPool()
+            ->getQueryBuilderForTable('tx_academicpersons_domain_model_phone_number');
+        $queryBuilder->getRestrictions()->removeAll();
+        $rows = $queryBuilder
+            ->select('contract', 'type', 'phone_number', 'import_identifier')
+            ->from('tx_academicpersons_domain_model_phone_number')
+            ->where(
+                $queryBuilder->expr()->in(
+                    'contract',
+                    $queryBuilder->quoteArrayBasedValueListToIntegerList([40, 41, 42]),
+                ),
+            )
+            ->orderBy('contract')
+            ->addOrderBy('import_identifier')
+            ->executeQuery()
+            ->fetchAllAssociative();
+
+        $this->assertSame(
+            [
+                [
+                    'contract' => 40,
+                    'type' => 'business',
+                    'phone_number' => 'Fax valid updated',
+                    'import_identifier' => 'fax:fe_users:40',
+                ],
+                [
+                    'contract' => 40,
+                    'type' => 'phone',
+                    'phone_number' => 'Legacy collision',
+                    'import_identifier' => 'phone:fe_users:40',
+                ],
+                [
+                    'contract' => 40,
+                    'type' => 'private',
+                    'phone_number' => 'Canonical updated',
+                    'import_identifier' => 'telephone:fe_users:40',
+                ],
+                [
+                    'contract' => 41,
+                    'type' => 'private',
+                    'phone_number' => 'Fax migrated',
+                    'import_identifier' => 'fax:fe_users:41',
+                ],
+                [
+                    'contract' => 41,
+                    'type' => 'mobile',
+                    'phone_number' => 'Legacy updated',
+                    'import_identifier' => 'telephone:fe_users:41',
+                ],
+                [
+                    'contract' => 42,
+                    'type' => 'private',
+                    'phone_number' => 'New fax',
+                    'import_identifier' => 'fax:fe_users:42',
+                ],
+                [
+                    'contract' => 42,
+                    'type' => 'mobile',
+                    'phone_number' => 'New telephone',
+                    'import_identifier' => 'telephone:fe_users:42',
+                ],
+            ],
+            $rows,
+        );
+    }
+
+    /**
+     * The invariant of the feature: this synchronization never writes a type the backend
+     * cannot resolve. A configured value that is not in `types.phoneNumberTypes` has to
+     * reach the record as the empty `undefined` type the TCA ships as its first item -
+     * proven here against the database, because the resolver's own coverage runs against
+     * a mocked configuration and cannot show what is stored. The fax half configures a
+     * valid, non-default type in the same run, so the fallback is not mistaken for
+     * "nothing was configured at all".
+     */
+    #[Test]
+    public function executeStoresTheUndefinedTypeWhenTheConfiguredOneIsNotSelectable(): void
+    {
+        $this->reconfigureAcademicPersons([
+            'profile' => [
+                'feuser' => [
+                    'faxNumberType' => 'mobile',
+                    'telephoneNumberType' => 'no-such-type',
+                ],
+            ],
+        ]);
+        $this->importCSVDataSet(__DIR__ . '/Fixtures/DataSets/phone-number-import-behaviour.csv');
+
+        $profileUpdateCommandService = GeneralUtility::makeInstance(ProfileUpdateCommandService::class);
+        $profileUpdateCommandService->execute(new ProfileUpdateCommandDto(includePids: [100], excludePids: []));
+
+        $queryBuilder = $this->getConnectionPool()
+            ->getQueryBuilderForTable('tx_academicpersons_domain_model_phone_number');
+        $queryBuilder->getRestrictions()->removeAll();
+        $rows = $queryBuilder
+            ->select('type', 'import_identifier')
+            ->from('tx_academicpersons_domain_model_phone_number')
+            ->where(
+                $queryBuilder->expr()->eq(
+                    'contract',
+                    $queryBuilder->createNamedParameter(42, Connection::PARAM_INT),
+                ),
+            )
+            ->orderBy('import_identifier')
+            ->addOrderBy('uid')
+            ->executeQuery()
+            ->fetchAllAssociative();
+
+        $this->assertSame(
+            [
+                ['type' => 'mobile', 'import_identifier' => 'fax:fe_users:42'],
+                ['type' => '', 'import_identifier' => 'telephone:fe_users:42'],
+            ],
+            $rows,
+        );
+    }
+
+    /**
+     * `phone` and `fax` are only corrected because a default installation cannot select
+     * them. An installation that offers them as real types has editors who may have chosen
+     * them deliberately, so the correction has to stand down - the invariant is "never
+     * write an unselectable type", not "never write phone".
+     */
+    #[Test]
+    public function executePreservesLegacyTypeValuesWhenTheyAreSelectable(): void
+    {
+        $this->reconfigureAcademicPersons([
+            'types' => ['phoneNumberTypes' => 'business=Business,phone=Phone,fax=Fax'],
+        ]);
+        $this->importCSVDataSet(__DIR__ . '/Fixtures/DataSets/phone-number-import-behaviour.csv');
+
+        $profileUpdateCommandService = GeneralUtility::makeInstance(ProfileUpdateCommandService::class);
+        $profileUpdateCommandService->execute(new ProfileUpdateCommandDto(includePids: [100], excludePids: []));
+
+        $connection = $this->getConnectionPool()
+            ->getConnectionForTable('tx_academicpersons_domain_model_phone_number');
+        $telephone = $connection->select(
+            ['type', 'import_identifier'],
+            'tx_academicpersons_domain_model_phone_number',
+            ['uid' => 43],
+        )->fetchAssociative();
+        $fax = $connection->select(
+            ['type', 'import_identifier'],
+            'tx_academicpersons_domain_model_phone_number',
+            ['uid' => 44],
+        )->fetchAssociative();
+
+        $this->assertSame(
+            ['type' => 'phone', 'import_identifier' => 'telephone:fe_users:41'],
+            $telephone,
+        );
+        $this->assertSame(
+            ['type' => 'fax', 'import_identifier' => 'fax:fe_users:41'],
+            $fax,
+        );
+    }
+
+    /**
      * Registers a capturing listener for {@see AfterProfileUpdateEvent} and returns a
      * closure yielding the sorted profile uids of the captured events.
      *
@@ -886,6 +1141,29 @@ final class UsingDefaultProfileFactoryOnlyTest extends AbstractAcademicPersonsTe
             sort($uids);
             return $uids;
         };
+    }
+
+    /**
+     * The selectable type list is a construction-time snapshot on a shared service, so a
+     * configuration written inside a test method reaches it only once that snapshot is
+     * rebuilt. Without this, whether an assertion sees the new list depends on whether
+     * something instantiated the service earlier in the same method - and this suite runs
+     * in random order.
+     *
+     * @param array<string, mixed> $overrides
+     */
+    private function reconfigureAcademicPersons(array $overrides): void
+    {
+        ArrayUtility::mergeRecursiveWithOverrule(
+            $GLOBALS['TYPO3_CONF_VARS']['EXTENSIONS']['academic_persons'],
+            $overrides,
+        );
+        $container = $this->get('service_container');
+        $this->assertInstanceOf(Container::class, $container);
+        $container->set(
+            PhoneNumberTypes::class,
+            new PhoneNumberTypes(GeneralUtility::makeInstance(ExtensionConfiguration::class)),
+        );
     }
 
     // @toDo: Add tests for no record and no data returning early without creating a record

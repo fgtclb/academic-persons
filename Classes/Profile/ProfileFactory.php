@@ -29,6 +29,10 @@ final class ProfileFactory extends AbstractProfileFactory
     protected EmailRepository $emailRepository;
     protected PhoneNumberRepository $phoneNumberRepository;
 
+    public function __construct(
+        private readonly FrontendUserPhoneNumberTypeResolver $frontendUserPhoneNumberTypeResolver,
+    ) {}
+
     #[Required]
     public function injectAddressRepository(AddressRepository $addressRepository): void
     {
@@ -98,7 +102,7 @@ final class ProfileFactory extends AbstractProfileFactory
             && empty($frontendUserData['city'])
             && empty($frontendUserData['country'])
             && empty($frontendUserData['email'])
-            && empty($frontendUserData['phone'])
+            && empty($frontendUserData['telephone'])
             && empty($frontendUserData['fax'])
         ) {
             // No contract data, remove previous attached contract.
@@ -114,7 +118,7 @@ final class ProfileFactory extends AbstractProfileFactory
             && empty($frontendUserData['city'])
             && empty($frontendUserData['country'])
             && empty($frontendUserData['email'])
-            && empty($frontendUserData['phone'])
+            && empty($frontendUserData['telephone'])
             && empty($frontendUserData['fax'])
         ) {
             // No contract and no contract data, nothing to do.
@@ -151,8 +155,22 @@ final class ProfileFactory extends AbstractProfileFactory
     {
         $this->applyPhysicalAddress($frontendUserData, $contract, $pid);
         $this->applyEmailAddress($frontendUserData, $contract, $pid);
-        $this->applyPhoneNumber($frontendUserData, $contract, $pid, 'phone', 'telephone');
-        $this->applyPhoneNumber($frontendUserData, $contract, $pid, 'fax', 'fax');
+        $this->applyPhoneNumber(
+            $frontendUserData,
+            $contract,
+            $pid,
+            'telephone',
+            $this->frontendUserPhoneNumberTypeResolver->getTelephoneNumberType(),
+            'phone',
+        );
+        $this->applyPhoneNumber(
+            $frontendUserData,
+            $contract,
+            $pid,
+            'fax',
+            $this->frontendUserPhoneNumberTypeResolver->getFaxNumberType(),
+            'fax',
+        );
     }
 
     /**
@@ -276,24 +294,40 @@ final class ProfileFactory extends AbstractProfileFactory
         array $frontendUserData,
         Contract $contract,
         int $pid,
-        string $type,
-        string $dataKey
+        string $sourceField,
+        string $configuredType,
+        string $legacyInvalidType,
     ): void {
-        $importIdentifier = sprintf('%s:%s:%s', $type, 'fe_users', $frontendUserData['uid']);
+        $importIdentifier = sprintf('%s:%s:%s', $sourceField, 'fe_users', $frontendUserData['uid']);
+        $legacyImportIdentifier = $sourceField === 'telephone'
+            ? sprintf('%s:%s:%s', 'phone', 'fe_users', $frontendUserData['uid'])
+            : null;
         // Match including hidden records, otherwise a record hidden in the frontend would not be
         // found and a duplicate would be created on the next synchronization. The visibility status
         // is intentionally never changed here, so manually hidden records stay hidden.
         $phoneNumber = null;
+        $legacyPhoneNumber = null;
         $contractUid = (int)$contract->getUid();
         if ($contractUid > 0) {
             foreach ($this->phoneNumberRepository->findByContractIncludingHidden($contractUid) as $checkPhoneNumber) {
-                if ($checkPhoneNumber->getType() === $type && $checkPhoneNumber->getImportIdentifier() === $importIdentifier) {
+                if ($checkPhoneNumber->getImportIdentifier() === $importIdentifier) {
                     $phoneNumber = $checkPhoneNumber;
                     break;
                 }
+                if ($legacyImportIdentifier !== null
+                    && $legacyPhoneNumber === null
+                    && $checkPhoneNumber->getImportIdentifier() === $legacyImportIdentifier
+                ) {
+                    // First match, like the canonical one above: an installation whose
+                    // pre-ACE-365 synchronization wrote a second record under the same
+                    // legacy identifier must adopt one of them deterministically, and the
+                    // ordering of the query decides which - not the position in the loop.
+                    $legacyPhoneNumber = $checkPhoneNumber;
+                }
             }
         }
-        if (empty($frontendUserData[$dataKey]) && $phoneNumber !== null) {
+        $phoneNumber ??= $legacyPhoneNumber;
+        if (empty($frontendUserData[$sourceField]) && $phoneNumber !== null) {
             // PhoneNumber<type> no longer set, remove previous imported PhoneNumber<type> to clean it up.
             // Note that $phoneNumbers->detach() would only remove the relation and making the record
             // orphan (unconnected) and removing (deleting) it is used keep the database clean
@@ -301,7 +335,7 @@ final class ProfileFactory extends AbstractProfileFactory
             $this->persistenceManager->remove($phoneNumber);
             return;
         }
-        if (empty($frontendUserData[$dataKey]) && $phoneNumber === null) {
+        if (empty($frontendUserData[$sourceField]) && $phoneNumber === null) {
             // No PhoneNumber<type> and no PhoneNumber<type> record, nothing to do.
             return;
         }
@@ -310,11 +344,20 @@ final class ProfileFactory extends AbstractProfileFactory
             // No PhoneNumber<type> record yet but PhoneNumber<type> exists, create new PhoneNumber<type> record and attach it.
             $phoneNumber = new PhoneNumber();
             $phoneNumber->setPid($pid);
-            $phoneNumber->setType($type);
+            $phoneNumber->setType($configuredType);
             $phoneNumber->setImportIdentifier($importIdentifier);
             $contract->getPhoneNumbers()->attach($phoneNumber);
+        } else {
+            if ($phoneNumber->getImportIdentifier() === $legacyImportIdentifier) {
+                $phoneNumber->setImportIdentifier($importIdentifier);
+            }
+            if ($phoneNumber->getType() === $legacyInvalidType
+                && !$this->frontendUserPhoneNumberTypeResolver->isSelectable($legacyInvalidType)
+            ) {
+                $phoneNumber->setType($configuredType);
+            }
         }
-        $phoneNumber->setPhoneNumber((string)($frontendUserData[$dataKey]));
+        $phoneNumber->setPhoneNumber((string)($frontendUserData[$sourceField]));
         if (!$isNewPhoneNumber) {
             // Existing record was matched via the repository (outside the profile aggregate),
             // so its changes have to be persisted explicitly.
