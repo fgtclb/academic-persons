@@ -196,17 +196,32 @@ final readonly class ProfileImageRelationWriter
     }
 
     /**
-     * Writes the title and alternative text of one image reference. Both columns of
-     * `sys_file_reference` override the file metadata for this reference only, so the
+     * Writes metadata columns of one image reference. Every column of
+     * `sys_file_reference` overrides the file metadata for this reference only, so the
      * file itself - which may be shared between profiles or languages - is never touched.
+     *
+     * A field the table's TCA does not declare is dropped rather than submitted: the
+     * fields can come from a listener of {@see \FGTCLB\AcademicPersons\Event\ModifyProfileImageMetadataEvent}, and the
+     * DataHandler would silently ignore an unknown one anyway.
+     *
+     * @param array<string, string> $metadata
      */
-    public function updateReferenceMetadata(int $referenceUid, string $title, string $alternative): void
+    public function updateReferenceMetadata(int $referenceUid, array $metadata): void
     {
+        $schema = $this->tcaSchemaFactory->get(self::REFERENCE_TABLE);
+        $metadata = array_filter(
+            $metadata,
+            static fn(string $fieldName): bool => $schema->hasField($fieldName),
+            ARRAY_FILTER_USE_KEY,
+        );
+        if ($metadata === []) {
+            return;
+        }
         $this->executionContext->runAsBackendUser(
-            function (BackendUserAuthentication $backendUser) use ($referenceUid, $title, $alternative): void {
+            function (BackendUserAuthentication $backendUser) use ($referenceUid, $metadata): void {
                 $this->executeDataHandler($backendUser, [
                     self::REFERENCE_TABLE => [
-                        $referenceUid => ['title' => $title, 'alternative' => $alternative],
+                        $referenceUid => $metadata,
                     ],
                 ]);
             },

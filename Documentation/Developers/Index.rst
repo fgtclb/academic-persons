@@ -6,7 +6,9 @@ For developers
 
 This chapter documents the programmatic surface of the translation
 synchronisation this extension ships: the event that triggers it, the service
-interface behind it, and how it behaves in workspaces.
+interface behind it, and how it behaves in workspaces. It also documents the
+event that lets a project decide what is written as the metadata of a profile
+image.
 
 ..  warning::
 
@@ -102,6 +104,102 @@ Two refusals protect the live state:
     refused: the DataHandler addresses versioned records through their live
     uid, and accepting the version uid would publish draft values as live
     translations.
+
+..  _developers-image-metadata:
+
+Image metadata: ModifyProfileImageMetadataEvent
+===============================================
+
+:php:`\FGTCLB\AcademicPersons\Event\ModifyProfileImageMetadataEvent` is
+dispatched immediately before this extension writes the metadata of a profile
+image, and a listener decides what is written: whatever it leaves in
+:php:`getMetadata()` is the field map that goes to the database, and an empty
+map writes nothing at all.
+
+It is dispatched for each of the two records that carry image metadata, and
+:php:`getTargetTable()` says which one:
+
+..  list-table::
+    :header-rows: 1
+
+    *   - :php:`getTargetTable()`
+        - Written when
+        - Fields
+    *   - :sql:`sys_file_metadata`
+        - a profile image is uploaded in the frontend, once, for the file that
+          upload created — and only for the fields that record has empty
+        - :sql:`title`, :sql:`alternative` and, with
+          :composer:`typo3/cms-filemetadata`, :sql:`copyright`
+    *   - :sql:`sys_file_reference`
+        - the name of a profile record changes, from a backend save, a
+          localization or a frontend edit
+        - :sql:`title` and :sql:`alternative`
+
+**Both records are handed over, whichever of them is written.**
+:php:`getFile()` is the file — its own metadata record is
+:php:`$event->getFile()->getMetaData()` — and :php:`getFileReference()` is the
+image relation of the profile, :php:`null` only for a profile that has none.
+:php:`getProfileUid()` is the profile record the image belongs to, a
+translation for an image of its own, and :php:`getRequest()` the request the
+write happens in: the frontend request for an upload or a frontend edit, the
+backend request for a save, and :php:`null` on the command line or where the
+caller has no request to pass on.
+
+Fields the target table does not declare are dropped before the write, so a
+listener may set a column unconditionally: where the installation does not have
+it, the value goes nowhere. :sql:`copyright` is one such column — it belongs to
+:sql:`sys_file_metadata` and :composer:`typo3/cms-filemetadata`, and the
+relation row has no equivalent.
+
+..  warning::
+
+    **System fields are refused.** The identity of the record, the relation it
+    is part of, its localization, its workspace columns and its enable columns —
+    :sql:`uid`, :sql:`pid`, :sql:`file`, :sql:`uid_local`, :sql:`uid_foreign`,
+    :sql:`tablenames`, :sql:`fieldname`, :sql:`sys_language_uid`,
+    :sql:`l10n_parent`, :sql:`t3ver_*`, :sql:`deleted`, :sql:`hidden` and the
+    rest of their kind — are dropped and a warning is written to the log. This
+    event writes metadata; repointing a relation or moving a record is the
+    :php:`DataHandler`'s business.
+
+The two dispatches are not interchangeable. The metadata record of the file is
+written **once**, which makes it the place for a value that has to survive —
+the required attributes of :composer:`typo3/cms-filemetadata` or
+:composer:`fgtclb/file-required-attributes`, for instance. The reference row is
+rewritten on **every** save of the profile, so a listener that wants to own a
+field there has to set it on every dispatch.
+
+..  code-block:: php
+    :caption: EXT:my_extension/Classes/EventListener/AddImageRightOfUse.php
+
+    <?php
+
+    declare(strict_types=1);
+
+    namespace MyVendor\MyExtension\EventListener;
+
+    use FGTCLB\AcademicPersons\Event\ModifyProfileImageMetadataEvent;
+    use TYPO3\CMS\Core\Attribute\AsEventListener;
+
+    final class AddImageRightOfUse
+    {
+        #[AsEventListener(identifier: 'my-extension/add-image-right-of-use')]
+        public function __invoke(ModifyProfileImageMetadataEvent $event): void
+        {
+            if ($event->getTargetTable() !== 'sys_file_metadata') {
+                return;
+            }
+            $metadata = $event->getMetadata();
+            $metadata['right_of_use'] = 'Portrait, own use only';
+            $event->setMetadata($metadata);
+        }
+    }
+
+..  warning::
+
+    A listener runs inside the write of the profile record — for a backend save
+    from within a :php:`DataHandler` hook. Keep it short and do not write
+    profile records from it.
 
 ..  _developers-see-also:
 

@@ -397,13 +397,34 @@ final class ProfileImageRelationWriterTest extends AbstractAcademicPersonsTestCa
     {
         $this->insertReference(uid: 10, profileUid: 1, fileUid: 1);
 
-        $this->getWriter()->updateReferenceMetadata(10, 'Title', 'Alternative');
+        $this->getWriter()->updateReferenceMetadata(10, ['title' => 'Title', 'alternative' => 'Alternative']);
 
         $row = $this->getConnectionPool()
             ->getConnectionForTable(self::TABLE_REFERENCE)
             ->select(['title', 'alternative'], self::TABLE_REFERENCE, ['uid' => 10])
             ->fetchAssociative();
         $this->assertSame(['title' => 'Title', 'alternative' => 'Alternative'], $row);
+    }
+
+    /**
+     * A listener of `ModifyProfileImageMetadataEvent` may set a field the installation
+     * does not have. It is dropped here rather than submitted to the DataHandler.
+     */
+    #[Test]
+    public function updateReferenceMetadataDropsFieldsTheTableDoesNotDeclare(): void
+    {
+        $this->insertReference(uid: 10, profileUid: 1, fileUid: 1);
+
+        $this->getWriter()->updateReferenceMetadata(10, [
+            'description' => 'Kept',
+            'copyright' => 'A column of sys_file_metadata, not of the reference',
+        ]);
+
+        $row = $this->getConnectionPool()
+            ->getConnectionForTable(self::TABLE_REFERENCE)
+            ->select(['description'], self::TABLE_REFERENCE, ['uid' => 10])
+            ->fetchAssociative();
+        $this->assertSame(['description' => 'Kept'], $row);
     }
 
     private function getWriter(): ProfileImageRelationWriter

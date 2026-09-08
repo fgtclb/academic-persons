@@ -11,9 +11,12 @@ declare(strict_types=1);
 
 namespace FGTCLB\AcademicPersons\Tests\Functional\Service;
 
+use FGTCLB\AcademicPersons\Event\ModifyProfileImageMetadataEvent;
 use FGTCLB\AcademicPersons\Service\ProfileImageMetadataService;
 use FGTCLB\AcademicPersons\Tests\Functional\AbstractAcademicPersonsTestCase;
 use PHPUnit\Framework\Attributes\Test;
+use TYPO3\CMS\Core\EventDispatcher\ListenerProvider;
+use TYPO3\CMS\Core\Http\ServerRequest;
 use TYPO3\CMS\Core\Resource\File;
 use TYPO3\CMS\Core\Resource\ResourceFactory;
 use TYPO3\TestingFramework\Core\Testbase;
@@ -188,6 +191,208 @@ final class ProfileImageMetadataServiceTest extends AbstractAcademicPersonsTestC
             $this->get(ProfileImageMetadataService::class)->initializeFileMetadata($this->getFile(1), 0),
         );
         $this->assertSame([], $this->fetchFileMetadata(1));
+    }
+
+    /**
+     * Both writes announce themselves, and a listener sees which record is about to be
+     * written and gets both records either way: the file, whose own metadata record
+     * hangs off it, and the image relation of the profile.
+     */
+    #[Test]
+    public function bothWritesAnnounceThemselvesWithTheRecordTheyWrite(): void
+    {
+        $seen = [];
+        $this->addMetadataListener(static function (ModifyProfileImageMetadataEvent $event) use (&$seen): void {
+            $seen[] = [
+                'table' => $event->getTargetTable(),
+                'file' => $event->getFile()->getUid(),
+                'reference' => $event->getFileReference()?->getUid(),
+                'profile' => $event->getProfileUid(),
+                'metadata' => $event->getMetadata(),
+            ];
+        });
+
+        $subject = $this->get(ProfileImageMetadataService::class);
+        $subject->initializeFileMetadata($this->getFile(1), 1);
+        $subject->updateForProfileUid(1);
+
+        $this->assertSame(
+            [
+                [
+                    'table' => 'sys_file_metadata',
+                    'file' => 1,
+                    'reference' => 1,
+                    'profile' => 1,
+                    'metadata' => ['title' => 'Erika Musterfrau', 'alternative' => 'Erika Musterfrau'],
+                ],
+                [
+                    'table' => 'sys_file_reference',
+                    'file' => 1,
+                    'reference' => 1,
+                    'profile' => 1,
+                    'metadata' => ['title' => 'Erika Musterfrau', 'alternative' => 'Erika Musterfrau'],
+                ],
+            ],
+            $seen,
+        );
+    }
+
+    /**
+     * The request the write happens in is handed over where the caller has one, and is
+     * null where it has none - a command line run, for instance.
+     */
+    #[Test]
+    public function theRequestOfTheWriteIsHandedOver(): void
+    {
+        $seen = [];
+        $this->addMetadataListener(static function (ModifyProfileImageMetadataEvent $event) use (&$seen): void {
+            $seen[] = $event->getRequest()?->getAttribute('probe');
+        });
+        $request = (new ServerRequest('https://example.test/profile'))->withAttribute('probe', 'the request');
+
+        $subject = $this->get(ProfileImageMetadataService::class);
+        $subject->initializeFileMetadata($this->getFile(1), 1, $request);
+        $subject->updateForProfileUid(1, $request);
+        $subject->updateForProfileUid(1);
+
+        $this->assertSame(['the request', 'the request', null], $seen);
+    }
+
+    /**
+     * A listener may add metadata columns, and nothing else: the identity of the
+     * record, the relation it is part of and its localization stay the DataHandler's.
+     */
+    #[Test]
+    public function systemFieldsAListenerSetsAreRefused(): void
+    {
+        $this->addMetadataListener(static function (ModifyProfileImageMetadataEvent $event): void {
+            $metadata = $event->getMetadata();
+            $metadata['description'] = 'A metadata column, written';
+            $metadata['uid'] = '4711';
+            $metadata['pid'] = '99';
+            $metadata['file'] = '99';
+            $metadata['uid_local'] = '99';
+            $metadata['uid_foreign'] = '99';
+            $metadata['tablenames'] = 'tt_content';
+            $metadata['fieldname'] = 'assets';
+            $metadata['sys_language_uid'] = '3';
+            $metadata['l10n_parent'] = '99';
+            $metadata['deleted'] = '1';
+            $metadata['hidden'] = '1';
+            $event->setMetadata($metadata);
+        });
+
+        $subject = $this->get(ProfileImageMetadataService::class);
+        $subject->initializeFileMetadata($this->getFile(1), 1);
+        $subject->updateForProfileUid(1);
+
+        $this->assertSame(
+            ['file' => '1', 'pid' => '0', 'sys_language_uid' => '0', 'description' => 'A metadata column, written'],
+            $this->fetchRow(
+                'sys_file_metadata',
+                ['file', 'pid', 'sys_language_uid', 'description'],
+                ['file' => 1],
+            ),
+        );
+        $this->assertSame(
+            [
+                'uid' => '1',
+                'pid' => '100',
+                'uid_local' => '1',
+                'uid_foreign' => '1',
+                'tablenames' => 'tx_academicpersons_domain_model_profile',
+                'fieldname' => 'image',
+                'sys_language_uid' => '0',
+                'hidden' => '0',
+                'deleted' => '0',
+                'description' => 'A metadata column, written',
+            ],
+            $this->fetchRow(
+                self::TABLE_REFERENCE,
+                ['uid', 'pid', 'uid_local', 'uid_foreign', 'tablenames', 'fieldname', 'sys_language_uid', 'hidden', 'deleted', 'description'],
+                ['uid' => 1],
+            ),
+        );
+    }
+
+    /**
+     * What a listener leaves in the event is what is written - including a field this
+     * extension does not write itself.
+     */
+    #[Test]
+    public function aListenerDecidesWhatIsWritten(): void
+    {
+        $this->addMetadataListener(static function (ModifyProfileImageMetadataEvent $event): void {
+            $metadata = $event->getMetadata();
+            $metadata['alternative'] = 'Portrait of ' . $metadata['alternative'];
+            $metadata['description'] = 'Written by a listener';
+            $event->setMetadata($metadata);
+        });
+
+        $subject = $this->get(ProfileImageMetadataService::class);
+        $subject->initializeFileMetadata($this->getFile(1), 1);
+        $subject->updateForProfileUid(1);
+
+        $this->assertSame(
+            [
+                'title' => 'Erika Musterfrau',
+                'alternative' => 'Portrait of Erika Musterfrau',
+                'description' => 'Written by a listener',
+            ],
+            $this->fetchRow('sys_file_metadata', ['title', 'alternative', 'description'], ['file' => 1]),
+        );
+        $this->assertSame(
+            [
+                'title' => 'Erika Musterfrau',
+                'alternative' => 'Portrait of Erika Musterfrau',
+                'description' => 'Written by a listener',
+            ],
+            $this->fetchRow(self::TABLE_REFERENCE, ['title', 'alternative', 'description'], ['uid' => 1]),
+        );
+    }
+
+    /**
+     * A listener that empties the field map stops the write - the record keeps what it
+     * has and the caller is told that nothing was written.
+     */
+    #[Test]
+    public function aListenerCanStopTheWrite(): void
+    {
+        $this->addMetadataListener(static function (ModifyProfileImageMetadataEvent $event): void {
+            $event->setMetadata([]);
+        });
+
+        $subject = $this->get(ProfileImageMetadataService::class);
+
+        $this->assertNull($subject->initializeFileMetadata($this->getFile(1), 1));
+        $this->assertNull($subject->updateForProfileUid(1));
+        $this->assertSame([], $this->fetchFileMetadata(1));
+        $this->assertSame([['uid' => 1, 'title' => '', 'alternative' => '']], $this->fetchReferenceMetadata());
+    }
+
+    /**
+     * @param \Closure(ModifyProfileImageMetadataEvent): void $listener
+     */
+    private function addMetadataListener(\Closure $listener): void
+    {
+        $container = $this->get('service_container');
+        $container->set('profile-image-metadata-listener', $listener);
+        $container->get(ListenerProvider::class)
+            ->addListener(ModifyProfileImageMetadataEvent::class, 'profile-image-metadata-listener');
+    }
+
+    /**
+     * @param list<string> $fields
+     * @param array<string, mixed> $identifiers
+     * @return array<string, string>
+     */
+    private function fetchRow(string $tableName, array $fields, array $identifiers): array
+    {
+        $row = $this->getConnectionPool()
+            ->getConnectionForTable($tableName)
+            ->select($fields, $tableName, $identifiers)
+            ->fetchAssociative();
+        return $row === false ? [] : array_map(static fn(mixed $value): string => (string)$value, $row);
     }
 
     /**

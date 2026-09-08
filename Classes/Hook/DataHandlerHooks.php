@@ -12,6 +12,7 @@ declare(strict_types=1);
 namespace FGTCLB\AcademicPersons\Hook;
 
 use FGTCLB\AcademicPersons\Service\ProfileImageMetadataService;
+use Psr\Http\Message\ServerRequestInterface;
 use TYPO3\CMS\Core\Cache\CacheManager;
 use TYPO3\CMS\Core\DataHandling\DataHandler;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
@@ -74,7 +75,14 @@ final class DataHandlerHooks
         if (array_intersect(self::NAME_COLUMNS, $touchedColumns) !== []
             || in_array(self::IMAGE_COLUMN, $touchedColumns, true)
         ) {
-            $this->profileImageMetadataService->updateForProfileUid($profileUid);
+            // A DataHandler hook gets no request; this is the boundary that resolves
+            // it, so a listener of `ModifyProfileImageMetadataEvent` sees the backend
+            // request a save happens in. There is none in a command line run.
+            $request = $GLOBALS['TYPO3_REQUEST'] ?? null;
+            $this->profileImageMetadataService->updateForProfileUid(
+                $profileUid,
+                $request instanceof ServerRequestInterface ? $request : null,
+            );
         }
         $cacheManager = GeneralUtility::makeInstance(CacheManager::class);
         $cacheManager->flushCachesByTags([

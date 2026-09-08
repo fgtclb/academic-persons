@@ -13,6 +13,7 @@ namespace FGTCLB\AcademicPersons\EventListener;
 
 use FGTCLB\AcademicPersons\Event\AfterProfileUpdateEvent;
 use FGTCLB\AcademicPersons\Service\ProfileImageMetadataService;
+use Psr\Http\Message\ServerRequestInterface;
 
 /**
  * Rewrites the image reference metadata after a frontend profile update. The
@@ -30,6 +31,14 @@ final readonly class UpdateProfileImageMetadata
 
     public function __invoke(AfterProfileUpdateEvent $event): void
     {
-        $this->profileImageMetadataService->update($event->getProfile());
+        // `AfterProfileUpdateEvent` carries no request, and this listener is the
+        // boundary: the request is resolved here, once, so that the service stays a
+        // service and a listener of `ModifyProfileImageMetadataEvent` still gets the
+        // request the write happens in. There is none on the command line.
+        $request = $GLOBALS['TYPO3_REQUEST'] ?? null;
+        $this->profileImageMetadataService->update(
+            $event->getProfile(),
+            $request instanceof ServerRequestInterface ? $request : null,
+        );
     }
 }
