@@ -42,6 +42,14 @@
 				<source>Create for user groups: Create profiles only if current user is in one of these user group IDs.</source>
 				<target>Für Benutzergruppen erstellen: Legt Profile an, wenn der aktuelle Benutzer Teil dieser Gruppen-IDs ist</target>
 			</trans-unit>
+			<trans-unit id="extension_configuration.profile.feuser.telephoneNumberType.label">
+				<source>Frontend user telephone type: Type assigned to imported telephone numbers</source>
+				<target>Frontend-Benutzer-Telefontyp: Typ für importierte Telefonnummern</target>
+			</trans-unit>
+			<trans-unit id="extension_configuration.profile.feuser.faxNumberType.label">
+				<source>Frontend user fax type: Type assigned to imported fax numbers</source>
+				<target>Frontend-Benutzer-Faxtyp: Typ für importierte Faxnummern</target>
+			</trans-unit>
 
 			<trans-unit id="plugin.list.label">
 				<source>Persons List</source>

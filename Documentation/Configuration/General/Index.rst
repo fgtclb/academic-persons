@@ -25,9 +25,28 @@ There are some options for global extension configuration:
 ..  confval:: types.phoneNumberTypes
 
     :type: string
-    :Default: private=Private,business=Business
+    :Default: private=Private,business=Business,mobile=Mobile
 
-    The available types for phone numbers that can be chosen when adding a phone numbers to a profile.
+    The available types for phone numbers that can be chosen when adding a phone number to a profile.
+
+..  confval:: profile.feuser.telephoneNumberType
+
+    :type: string
+    :Default: business
+
+    The type assigned to telephone numbers imported from frontend users. The
+    value must be one of :confval:`types.phoneNumberTypes`. An unavailable
+    value is stored as the undefined type ``''``.
+
+..  confval:: profile.feuser.faxNumberType
+
+    :type: string
+    :Default: business
+
+    The type assigned to fax numbers imported from frontend users. It is
+    validated independently from
+    :confval:`profile.feuser.telephoneNumberType`; an unavailable value is
+    stored as the undefined type ``''``.
 
 ..  confval:: demand.allowedGroupByValues
 

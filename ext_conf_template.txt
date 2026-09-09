@@ -4,6 +4,12 @@ profile.autoCreateProfiles = 0
 # cat=Types; type=string; label=LLL:EXT:academic_persons/Resources/Private/Language/locallang_be.xlf:extension_configuration.profile.createProfileForUserGroups.label
 profile.createProfileForUserGroups =
 
+# cat=Types; type=string; label=LLL:EXT:academic_persons/Resources/Private/Language/locallang_be.xlf:extension_configuration.profile.feuser.telephoneNumberType.label
+profile.feuser.telephoneNumberType = business
+
+# cat=Types; type=string; label=LLL:EXT:academic_persons/Resources/Private/Language/locallang_be.xlf:extension_configuration.profile.feuser.faxNumberType.label
+profile.feuser.faxNumberType = business
+
 # cat=Types; type=string; label=LLL:EXT:academic_persons/Resources/Private/Language/locallang_be.xlf:extension_configuration.types.physicalAddressTypes.label
 types.physicalAddressTypes = private=Private,business=Business
 

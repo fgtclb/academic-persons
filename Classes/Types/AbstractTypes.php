@@ -11,6 +11,8 @@ declare(strict_types=1);
 
 namespace FGTCLB\AcademicPersons\Types;
 
+use TYPO3\CMS\Core\Configuration\Exception\ExtensionConfigurationExtensionNotConfiguredException;
+use TYPO3\CMS\Core\Configuration\Exception\ExtensionConfigurationPathDoesNotExistException;
 use TYPO3\CMS\Core\Configuration\ExtensionConfiguration;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
@@ -41,8 +43,16 @@ abstract class AbstractTypes implements TypesInterface
             return;
         }
 
-        $typesString = $this->extensionConfiguration->get('academic_persons', $property);
-        $typesArray = GeneralUtility::trimExplode(',', $typesString);
+        try {
+            $typesString = $this->extensionConfiguration->get('academic_persons', $property);
+        } catch (ExtensionConfigurationExtensionNotConfiguredException | ExtensionConfigurationPathDoesNotExistException) {
+            // `get()` repairs a missing path from `ext_conf_template.txt` itself and only
+            // throws when it could not - an unwritable `system/settings.php`, for instance.
+            // An empty list degrades the select to its shipped `undefined` item; throwing
+            // here would abort the backend form while it renders.
+            return;
+        }
+        $typesArray = GeneralUtility::trimExplode(',', is_string($typesString) ? $typesString : '');
 
         foreach ($typesArray as $type) {
             $typeValue = $typeLabel = $type;

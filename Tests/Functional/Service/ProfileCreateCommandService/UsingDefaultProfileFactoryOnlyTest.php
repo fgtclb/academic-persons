@@ -47,6 +47,10 @@ final class UsingDefaultProfileFactoryOnlyTest extends AbstractAcademicPersonsTe
                         'profile' => [
                             'autoCreateProfiles' => 1,
                             'createProfileForUserGroups' => '',
+                            'feuser' => [
+                                'faxNumberType' => 'business',
+                                'telephoneNumberType' => 'business',
+                            ],
                         ],
                         'demand' => [
                             'allowedGroupByValues' => 'firstNameAlpha=LLL:EXT:academic_persons/Resources/Private/Language/locallang_be.xlf:flexform.el.groupBy.items.first_name,lastNameAlpha=LLL:EXT:academic_persons/Resources/Private/Language/locallang_be.xlf:flexform.el.groupBy.items.last_name',
@@ -797,6 +801,64 @@ final class UsingDefaultProfileFactoryOnlyTest extends AbstractAcademicPersonsTe
             3,
             $this->countProfiles(),
             'Profiles must be created for the visible and the disabled frontend users of pid 100.',
+        );
+    }
+
+    /**
+     * The create path attaches a contract unconditionally, so this does not cover the
+     * guard ACE-365 fixed - that one is on the update path and is asserted there. What it
+     * pins is that a frontend user whose only contact datum is a telephone number is
+     * imported at all, with the configured type and the source-field identifier, which
+     * every other case in this class only asserts for users carrying several fields.
+     */
+    #[Test]
+    public function executeCreatesContractWhenTelephoneIsItsOnlyData(): void
+    {
+        $this->importCSVDataSet(__DIR__ . '/Fixtures/telephone-only-frontend-user.csv');
+        $profileCreateCommandService = GeneralUtility::makeInstance(ProfileCreateCommandService::class);
+
+        $profileCreateCommandService->execute(new ProfileCreateCommandDto(includePids: [100], excludePids: []));
+
+        $profile = $this->getConnectionPool()
+            ->getConnectionForTable('tx_academicpersons_domain_model_profile')
+            ->select(
+                ['uid'],
+                'tx_academicpersons_domain_model_profile',
+                ['import_identifier' => 'fe_users:30'],
+                [],
+                ['uid' => 'ASC'],
+            )
+            ->fetchAssociative();
+        $this->assertIsArray($profile);
+        $contract = $this->getConnectionPool()
+            ->getConnectionForTable('tx_academicpersons_domain_model_contract')
+            ->select(
+                ['uid', 'import_identifier'],
+                'tx_academicpersons_domain_model_contract',
+                ['profile' => (int)$profile['uid']],
+                [],
+                ['uid' => 'ASC'],
+            )
+            ->fetchAssociative();
+        $this->assertIsArray($contract);
+        $this->assertSame('fe_users:30', $contract['import_identifier']);
+        $phoneNumbers = $this->getConnectionPool()
+            ->getConnectionForTable('tx_academicpersons_domain_model_phone_number')
+            ->select(
+                ['type', 'phone_number', 'import_identifier'],
+                'tx_academicpersons_domain_model_phone_number',
+                ['contract' => (int)$contract['uid']],
+                [],
+                ['uid' => 'ASC'],
+            )
+            ->fetchAllAssociative();
+        $this->assertSame(
+            [[
+                'type' => 'business',
+                'phone_number' => '+49 711 123456',
+                'import_identifier' => 'telephone:fe_users:30',
+            ]],
+            $phoneNumbers,
         );
     }
 

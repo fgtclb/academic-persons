@@ -47,7 +47,14 @@ class PhoneNumberRepository extends Repository
         $query->getQuerySettings()->setIgnoreEnableFields(true);
         $query->getQuerySettings()->setEnableFieldsToBeIgnored(['disabled']);
         $query->matching($query->equals('contract', $contractUid));
-        $query->setOrderings(['sorting' => QueryInterface::ORDER_ASCENDING]);
+        // `sorting` with `uid` breaking ties: synchronized records are never reordered by
+        // an editor and therefore all share one `sorting` value, and the import match
+        // below adopts the first row of this result - so without the tiebreaker which
+        // record it adopts would be whatever the DBMS happens to return.
+        $query->setOrderings([
+            'sorting' => QueryInterface::ORDER_ASCENDING,
+            'uid' => QueryInterface::ORDER_ASCENDING,
+        ]);
         return $query->execute();
     }
 
