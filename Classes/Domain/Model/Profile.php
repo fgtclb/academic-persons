@@ -535,7 +535,10 @@ class Profile extends AbstractEntity
 
     public function getIsTranslation(): bool
     {
-        return $this->_localizedUid !== $this->uid;
+        if ($this->_isNew()) {
+            return false;
+        }
+        return $this->getLanguageUid() > 0;
     }
 
     /**

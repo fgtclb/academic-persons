@@ -42,4 +42,30 @@ final class ProfileTest extends AbstractAcademicPersonsTestCase
         $persistenceManager->persistAll();
         $this->assertCSVDataSet(__DIR__ . '/Fixtures/Profile/persistingNewProfileCreatesValidSlug.csv');
     }
+
+    /**
+     * `_localizedUid` is written by the Extbase `DataMapper` while hydrating a database row,
+     * and by nothing else - persisting a model built in PHP assigns `uid` and leaves
+     * `_localizedUid` at its `null` default. A record in the default language therefore has
+     * to be recognised from that state too, not only from the mapped one where both values
+     * are equal (ACE-610).
+     */
+    #[Test]
+    public function persistingNewProfileDoesNotMarkItAsTranslation(): void
+    {
+        $this->importCSVDataSet(__DIR__ . '/../../Fixtures/PageTree.csv');
+        $profile = new Profile();
+        $profile->setPid(2);
+        $profile
+            ->setFirstName('James')
+            ->setLastName('Kirk');
+        /** @var PersistenceManager $persistenceManager */
+        $persistenceManager = $this->get(PersistenceManagerInterface::class);
+        $persistenceManager->add($profile);
+        $persistenceManager->persistAll();
+
+        $this->assertNotNull($profile->getUid());
+        $this->assertSame(0, $profile->getLanguageUid());
+        $this->assertFalse($profile->getIsTranslation());
+    }
 }

@@ -357,9 +357,8 @@ final class ProfileTest extends UnitTestCase
     }
 
     /**
-     * A record that was never mapped has neither uid nor localized uid, and both being
-     * `null` must not read as "the two differ". The comparison is strict, so this is
-     * only true as long as both properties keep the same nullable type.
+     * A record without a uid was never persisted, so there is nothing it could be a
+     * translation of - whatever else is set on it.
      */
     #[Test]
     public function aProfileThatWasNeverPersistedIsNotATranslation(): void
@@ -368,30 +367,78 @@ final class ProfileTest extends UnitTestCase
     }
 
     /**
+     * Until the object is inserted, `_languageUid` is not the language of any row:
+     * `Backend::insertObject()` writes `0` onto the object when it carries none, and leaves a
+     * language it does carry untouched although the inserted row does not get it. `_isNew()`
+     * keeps the answer from depending on that state.
+     */
+    #[Test]
+    public function anUnpersistedProfileCarryingALanguageIsNotATranslation(): void
+    {
+        $profile = new Profile();
+        $profile->_setProperty('_languageUid', 1);
+
+        $this->assertFalse($profile->getIsTranslation());
+    }
+
+    /**
      * What Extbase maps for a record in the default language.
      */
     #[Test]
-    public function aRecordWhoseLocalizedUidEqualsItsUidIsNotATranslation(): void
+    public function aRecordInTheDefaultLanguageIsNotATranslation(): void
     {
         $profile = new Profile();
         $profile->_setProperty('uid', 42);
         $profile->_setProperty('_localizedUid', 42);
+        $profile->_setProperty('_languageUid', 0);
+
+        $this->assertFalse($profile->getIsTranslation());
+    }
+
+    /**
+     * What persisting a model built in PHP leaves behind: the extbase backend assigns `uid`
+     * and touches neither `_languageUid` nor `_localizedUid`, both of which only the data
+     * mapper writes. The row it wrote is a default language one, so the model has to say so
+     * rather than read its own unset properties as a translation (ACE-610).
+     */
+    #[Test]
+    public function aPersistedRecordThatWasNeverMappedIsNotATranslation(): void
+    {
+        $profile = new Profile();
+        $profile->_setProperty('uid', 42);
 
         $this->assertFalse($profile->getIsTranslation());
     }
 
     /**
      * What Extbase maps for an overlaid record: `uid` stays the default language row,
-     * `_localizedUid` is the translated row that was actually read.
+     * `_localizedUid` is the translated row that was actually read, and `_languageUid` is
+     * the language that row is in.
      */
     #[Test]
-    public function aRecordWhoseLocalizedUidDiffersFromItsUidIsATranslation(): void
+    public function aRecordReadAsLanguageOverlayIsATranslation(): void
     {
         $profile = new Profile();
         $profile->_setProperty('uid', 42);
         $profile->_setProperty('_localizedUid', 43);
+        $profile->_setProperty('_languageUid', 1);
 
         $this->assertTrue($profile->getIsTranslation());
+    }
+
+    /**
+     * A record kept in every language is not a translation of anything either, and `-1`
+     * would pass a "differs from the default language" test.
+     */
+    #[Test]
+    public function aRecordForAllLanguagesIsNotATranslation(): void
+    {
+        $profile = new Profile();
+        $profile->_setProperty('uid', 42);
+        $profile->_setProperty('_localizedUid', 42);
+        $profile->_setProperty('_languageUid', -1);
+
+        $this->assertFalse($profile->getIsTranslation());
     }
 
     /**
