@@ -246,6 +246,17 @@ still renders it fails at render time. See
 :ref:`configuration-sections-detail-override` and
 :ref:`breaking-public-profile-detail-partials`.
 
+The profile image
+-----------------
+
+The profile card and the detail view render the profile image as a
+:html:`<picture>` through the responsive image partial of
+:guilabel:`academic_base`, and a card of a profile without an image shows a
+placeholder. CSS that addressed the image directly, and a project that
+replaces the partial root paths of the plugin, need an adjustment; an empty
+`plugin.tx_academicpersons.image.placeholder.default` keeps those cards
+without an image. See :ref:`breaking-profile-images-render-as-picture`.
+
 The profile editing view
 ------------------------
 

@@ -1,0 +1,23 @@
+"pages",
+,"uid","pid","doktype","deleted","hidden","sys_language_uid","l10n_parent","l18n_cfg","slug","title"
+,1,0,1,0,0,0,0,0,"/","Site Root"
+,2,1,1,0,0,0,0,0,"/home","Home (EN)"
+,100,1,254,0,0,0,0,0,"/sysfolder-records","Recordcollection"
+"tt_content",
+,"uid","pid","deleted","hidden","sys_language_uid","l18n_parent","CType","header","pi_flexform"
+,1,2,0,0,0,0,"academicpersons_detail","Profiles","<?xml version=""1.0"" encoding=""utf-8"" standalone=""yes"" ?><T3FlexForms><data><sheet index=""sDEF""><language index=""lDEF""><field index=""settings.demand.profileList""><value index=""vDEF""></value></field><field index=""settings.fallbackForNonTranslated""><value index=""vDEF"">0</value></field></language></sheet></data></T3FlexForms>"
+"tx_academicpersons_domain_model_profile",
+,"uid","pid","deleted","hidden","sys_language_uid","l10n_parent","title","first_name","middle_name","last_name","slug","image"
+,1,100,0,0,0,0,"Prof. Dr.","Max","","Müllermann","max-muellermann",1
+"sys_file_storage",
+,"uid","pid","name","driver","configuration","is_browsable","is_public","is_writable","is_online","is_default","processingfolder"
+,1,0,"fileadmin","Local","<?xml version=""1.0"" encoding=""utf-8"" standalone=""yes"" ?><T3FlexForms><data><sheet index=""sDEF""><language index=""lDEF""><field index=""basePath""><value index=""vDEF"">fileadmin/</value></field><field index=""pathType""><value index=""vDEF"">relative</value></field><field index=""caseSensitive""><value index=""vDEF"">1</value></field></language></sheet></data></T3FlexForms>",1,1,1,1,1,""
+"sys_file",
+,"uid","pid","storage","type","mime_type","missing","extension","name","identifier","identifier_hash","folder_hash","sha1","size","creation_date","modification_date"
+,1,0,1,2,"image/jpeg",0,"jpg","portrait.jpg","/images/portrait.jpg","3f1d2a9c7b6e5d4c3b2a19f8e7d6c5b4a3928170","ca306f2df2823c083069873158fd3b91fd4ebe01","5eceb01b1b6a203480483a46f6c2f854796d3c0a",9734,1700000000,1700000000
+"sys_file_metadata",
+,"uid","pid","file","sys_language_uid","width","height"
+,1,0,1,0,600,800
+"sys_file_reference",
+,"uid","pid","deleted","hidden","sys_language_uid","l10n_parent","uid_local","uid_foreign","tablenames","fieldname","sorting_foreign","alternative"
+,1,100,0,0,0,0,1,1,"tx_academicpersons_domain_model_profile","image",1,"Portrait of Max Müllermann"

@@ -47,3 +47,9 @@ settings:
     category: academic.persons
     type: int
     default: 5
+  plugin.tx_academicpersons.image.placeholder.default:
+    label: 'Image | Placeholder of a profile without image'
+    description: 'An EXT: path to a public file. Empty shows no image.'
+    category: academic.persons
+    type: string
+    default: 'EXT:academic_persons/Resources/Public/Images/ProfilePlaceholder.svg'

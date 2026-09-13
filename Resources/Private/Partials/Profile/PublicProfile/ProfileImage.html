@@ -5,13 +5,17 @@
 
 <f:for each="{publicProfile.details.profileImage}" as="fieldName">
     <f:if condition="{profile.{fieldName}}">
+        <f:variable name="image" value="{profile.{fieldName}}" />
+        <f:variable name="alt" value="{profile.title} {profile.firstName} {profile.middleName} {profile.lastName}" />
         <figure class="academic-persons-detail__figure">
-            <f:image
-                image="{profile.{fieldName}}"
-                maxWidth="1200"
-                class="academic-persons-detail__image img-fluid rounded-0"
-                alt="{profile.title} {profile.firstName} {profile.middleName} {profile.lastName}"
-                loading="lazy"
+            <f:render
+                partial="Academic/Image"
+                arguments="{
+                    image: image,
+                    preset: 'detail',
+                    alt: alt,
+                    class: 'academic-persons-detail__image img-fluid rounded-0'
+                }"
             />
         </figure>
     </f:if>

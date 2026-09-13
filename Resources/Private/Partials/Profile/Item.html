@@ -72,19 +72,33 @@
         />
     </div>
 
-    <f:if condition="{profile.image}">
-        <f:if condition="{settings.showFields}">
-            <f:then>
-                <f:for each="{settings.showFields}" as="field">
-                    <f:if condition="{field} == 'profile.image'">
-                        <f:image image="{profile.image}" class="card-img-top img-fluid"/>
-                    </f:if>
-                </f:for>
-            </f:then>
-            <f:else>
-                <f:image image="{profile.image}" class="card-img-top img-fluid"/>
-            </f:else>
-        </f:if>
+    <f:if condition="{settings.showFields}">
+        <f:then>
+            <f:variable name="showImage" value="0" />
+            <f:for each="{settings.showFields}" as="field">
+                <f:if condition="{field} == 'profile.image'">
+                    <f:variable name="showImage" value="1" />
+                </f:if>
+            </f:for>
+        </f:then>
+        <f:else>
+            <f:variable name="showImage" value="1" />
+        </f:else>
+    </f:if>
+    <f:if condition="{showImage}">
+        <f:comment>
+            The shared partial of EXT:academic_base: the image, or the placeholder for a
+            profile without one.
+        </f:comment>
+        <f:render
+            partial="Academic/Image"
+            arguments="{
+                image: profile.image,
+                preset: 'card',
+                placeholder: settings.image.placeholder.default,
+                class: 'card-img-top img-fluid'
+            }"
+        />
     </f:if>
 </div>
 

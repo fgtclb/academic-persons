@@ -1,0 +1,2 @@
+# An installation that wants no image for a profile without one empties the placeholder.
+plugin.tx_academicpersons.image.placeholder.default =

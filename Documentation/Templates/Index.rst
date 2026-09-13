@@ -12,3 +12,4 @@ This chapter is all about templating EXT:academic_persons
     :titlesonly:
 
     Override/Index
+    ProfileImage/Index

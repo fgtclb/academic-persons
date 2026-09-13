@@ -27,6 +27,12 @@ plugin.tx_academicpersons {
     # cat=plugin.tx_academicpersons//a; type=string; label=Number of links
     numberOfLinks = 5
   }
+  image {
+    placeholder {
+      # cat=plugin.tx_academicpersons//a; type=string; label=Placeholder of a profile without image: an EXT: path to a public file, empty for none
+      default = EXT:academic_persons/Resources/Public/Images/ProfilePlaceholder.svg
+    }
+  }
   view {
     # cat=plugin.tx_academicpersons/file; type=string; label=Path to template root (FE)
     templateRootPath = EXT:academic_persons/Resources/Private/Templates/

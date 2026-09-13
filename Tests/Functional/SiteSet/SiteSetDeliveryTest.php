@@ -423,6 +423,7 @@ final class SiteSetDeliveryTest extends AbstractAcademicPersonsTestCase
                 'plugin.tx_academicpersons.demand.sortByDirection' => 'asc',
                 'plugin.tx_academicpersons.pagination.resultsPerPage' => 1,
                 'plugin.tx_academicpersons.pagination.numberOfLinks' => 5,
+                'plugin.tx_academicpersons.image.placeholder.default' => 'EXT:academic_persons/Resources/Public/Images/ProfilePlaceholder.svg',
             ],
             $definitions,
         );
