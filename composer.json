@@ -1,6 +1,6 @@
 {
     "name": "fgtclb/academic-persons",
-    "description": "Adds a person database to TYPO3 with plugins to show them in the frontend.",
+    "description": "FGTCLB: Academic Persons - Adds a person database to TYPO3 with plugins to show them in the frontend.",
     "type": "typo3-cms-extension",
     "license": "GPL-2.0-or-later",
     "authors": [
