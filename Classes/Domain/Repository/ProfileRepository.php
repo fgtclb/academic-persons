@@ -37,6 +37,13 @@ class ProfileRepository extends Repository
     }
 
     /**
+     * The enable fields the frontend user synchronization lifts, as Extbase names them.
+     *
+     * @var list<string>
+     */
+    private const SYNCHRONIZATION_IGNORED_ENABLE_FIELDS = ['disabled', 'starttime', 'endtime', 'fe_group'];
+
+    /**
      * @return QueryResultInterface<int, Profile>
      */
     public function findAll(): QueryResultInterface
@@ -156,6 +163,34 @@ class ProfileRepository extends Repository
     {
         $query->getQuerySettings()->setIgnoreEnableFields(true);
         $query->getQuerySettings()->setEnableFieldsToBeIgnored(['disabled']);
+    }
+
+    /**
+     * Include every profile the frontend user synchronization has to keep up to date: the
+     * hidden flag, start time, end time and frontend user group are ignored, as far as the
+     * profile table declares them as enable columns. They decide when and to whom a profile
+     * is shown, not whether the person behind it exists - and a command-line run has no
+     * frontend user group to match anyway. Deleted profiles stay excluded, and an enable
+     * field added later beyond these four stays in effect. The enable columns are read from
+     * the TCA directly, the TCA schema API does not exist on TYPO3 v12.
+     *
+     * Synchronization only. Display paths use {@see self::includeHiddenRecords()}, which
+     * keeps the visibility window in place.
+     *
+     * @param QueryInterface<Profile> $query
+     */
+    private function includeRestrictedRecordsForSynchronization(QueryInterface $query): void
+    {
+        $enableColumns = $GLOBALS['TCA']['tx_academicpersons_domain_model_profile']['ctrl']['enablecolumns'] ?? [];
+        if (!is_array($enableColumns)) {
+            $enableColumns = [];
+        }
+        $enableFieldsToBeIgnored = array_values(array_filter(
+            self::SYNCHRONIZATION_IGNORED_ENABLE_FIELDS,
+            static fn(string $enableField): bool => isset($enableColumns[$enableField]),
+        ));
+        $query->getQuerySettings()->setIgnoreEnableFields(true);
+        $query->getQuerySettings()->setEnableFieldsToBeIgnored($enableFieldsToBeIgnored);
     }
 
     /**
@@ -289,10 +324,11 @@ class ProfileRepository extends Repository
     }
 
     /**
-     * Find profiles for a frontend user. With `$showHidden` enabled the hidden (disabled) profiles
-     * are included as well, which is required by the synchronization: it must keep updating the data
-     * of a hidden profile without ever changing its visibility. The frontend display keeps the
-     * default (`$showHidden = false`) so that hidden profiles stay hidden there.
+     * Find profiles for a frontend user. `$showHidden` exists for the synchronization and lifts
+     * every enable field of the profile - hidden flag, start time, end time and frontend user
+     * group - so that the data of a hidden, scheduled, expired or group restricted profile keeps
+     * being updated, without its visibility ever being changed. It is not meant for display: the
+     * frontend keeps the default (`$showHidden = false`), which respects all of them.
      *
      * @param int $frontendUserUid
      * @param bool $showHidden
@@ -303,7 +339,7 @@ class ProfileRepository extends Repository
         $query = $this->createQuery();
         $query->getQuerySettings()->setRespectStoragePage(false);
         if ($showHidden === true) {
-            $this->includeHiddenRecords($query);
+            $this->includeRestrictedRecordsForSynchronization($query);
         }
 
         return $query

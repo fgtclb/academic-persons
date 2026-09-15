@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace FGTCLB\AcademicPersons\Tests\Functional\Service\ProfileUpdateCommandService;
 
 use FGTCLB\AcademicPersons\Domain\Model\Dto\ProfileUpdateCommandDto;
+use FGTCLB\AcademicPersons\Domain\Repository\ProfileRepository;
 use FGTCLB\AcademicPersons\Profile\ProfileFactory;
 use FGTCLB\AcademicPersons\Service\Event\ModifyProfileCommandEnvironmentStateBuildContextForFrontendUserEvent;
 use FGTCLB\AcademicPersons\Service\ProfileCreateCommandService;
@@ -796,6 +797,129 @@ final class UsingDefaultProfileFactoryOnlyTest extends AbstractAcademicPersonsTe
         ));
         $this->assertCSVDataSet(__DIR__ . '/Fixtures/Asserts/' . $assertCsvFileName);
         $this->assertCount($dispatchedEventCount, $dispatchedModifyEvents);
+    }
+
+    /**
+     * The visibility window of a profile - start time, end time and frontend user group - is
+     * as much a display concern as its `hidden` flag, so the synchronization lifts all of it
+     * (ACE-242 lifted the flag only). Profile 46 is visible, but its frontend user's own end
+     * time has passed, which the provider query has to select all the same.
+     */
+    public static function executeSynchronisesProfilesOutsideTheirVisibilityWindowDataSets(): \Generator
+    {
+        yield 'profile end time has passed' => [
+            'profileUid' => 40,
+            'expectedLastName' => 'Endtime-Current',
+        ];
+        yield 'profile start time lies in the future' => [
+            'profileUid' => 42,
+            'expectedLastName' => 'Starttime-Current',
+        ];
+        yield 'profile restricted to a frontend user group' => [
+            'profileUid' => 44,
+            'expectedLastName' => 'Group-Current',
+        ];
+        yield 'frontend user end time has passed' => [
+            'profileUid' => 46,
+            'expectedLastName' => 'Userend-Current',
+        ];
+    }
+
+    #[DataProvider(methodName: 'executeSynchronisesProfilesOutsideTheirVisibilityWindowDataSets')]
+    #[Test]
+    public function executeSynchronisesProfilesOutsideTheirVisibilityWindow(int $profileUid, string $expectedLastName): void
+    {
+        $this->importCSVDataSet(__DIR__ . '/Fixtures/DataSets/visibility-window.csv');
+        $visibilityBefore = $this->fetchProfileVisibility($profileUid);
+
+        GeneralUtility::makeInstance(ProfileUpdateCommandService::class)->execute(new ProfileUpdateCommandDto(
+            includePids: [],
+            excludePids: [1100, 1110],
+        ));
+
+        $this->assertSame($expectedLastName, $this->fetchProfileRow($profileUid)['last_name']);
+        $this->assertSame($visibilityBefore, $this->fetchProfileVisibility($profileUid), 'The synchronization changed the visibility of the profile.');
+    }
+
+    #[Test]
+    public function executeUpdatesTheImportedEmailAddressOfAProfileWhoseStartTimeLiesInTheFuture(): void
+    {
+        $this->importCSVDataSet(__DIR__ . '/Fixtures/DataSets/visibility-window.csv');
+
+        GeneralUtility::makeInstance(ProfileUpdateCommandService::class)->execute(new ProfileUpdateCommandDto(
+            includePids: [],
+            excludePids: [1100, 1110],
+        ));
+
+        $queryBuilder = $this->getConnectionPool()->getQueryBuilderForTable('tx_academicpersons_domain_model_email');
+        $emails = $queryBuilder
+            ->select('email')
+            ->from('tx_academicpersons_domain_model_email')
+            ->where($queryBuilder->expr()->eq('contract', $queryBuilder->createNamedParameter(42, Connection::PARAM_INT)))
+            ->orderBy('uid')
+            ->executeQuery()
+            ->fetchFirstColumn();
+        $this->assertSame(['starttime-current@email.org'], $emails);
+    }
+
+    /**
+     * The enable fields the synchronization lifts are derived from the profile TCA, not
+     * hard-coded: an installation that removes the frontend user group from the enable
+     * columns of the profile gets a list without it, and its expired profiles still
+     * synchronize. The list assertion is the one that tells a derived list from a fixed one;
+     * the update assertion guards the behaviour and holds for either.
+     */
+    #[Test]
+    public function synchronisationLiftsOnlyTheEnableFieldsTheProfileTableDeclares(): void
+    {
+        $this->importCSVDataSet(__DIR__ . '/Fixtures/DataSets/visibility-window.csv');
+        $originalTca = $GLOBALS['TCA'];
+        unset($GLOBALS['TCA']['tx_academicpersons_domain_model_profile']['ctrl']['enablecolumns']['fe_group']);
+        try {
+            $profileRepository = $this->get(ProfileRepository::class);
+            $query = $profileRepository->createQuery();
+            (new \ReflectionMethod($profileRepository, 'includeRestrictedRecordsForSynchronization'))
+                ->invoke($profileRepository, $query);
+            $this->assertTrue($query->getQuerySettings()->getIgnoreEnableFields());
+            $this->assertSame(['disabled', 'starttime', 'endtime'], $query->getQuerySettings()->getEnableFieldsToBeIgnored());
+
+            GeneralUtility::makeInstance(ProfileUpdateCommandService::class)->execute(new ProfileUpdateCommandDto(
+                includePids: [],
+                excludePids: [1100, 1110],
+            ));
+
+            $this->assertSame('Endtime-Current', $this->fetchProfileRow(40)['last_name']);
+        } finally {
+            $GLOBALS['TCA'] = $originalTca;
+        }
+    }
+
+    /**
+     * Reads a profile row without any restriction: the rows of interest here are exactly the
+     * ones the default restrictions would hide.
+     *
+     * @return array<string, mixed>
+     */
+    private function fetchProfileRow(int $uid): array
+    {
+        $queryBuilder = $this->getConnectionPool()->getQueryBuilderForTable('tx_academicpersons_domain_model_profile');
+        $queryBuilder->getRestrictions()->removeAll();
+        $row = $queryBuilder
+            ->select('last_name', 'hidden', 'starttime', 'endtime', 'fe_group')
+            ->from('tx_academicpersons_domain_model_profile')
+            ->where($queryBuilder->expr()->eq('uid', $queryBuilder->createNamedParameter($uid, Connection::PARAM_INT)))
+            ->executeQuery()
+            ->fetchAssociative();
+        $this->assertIsArray($row);
+        return $row;
+    }
+
+    /**
+     * @return array<string, mixed>
+     */
+    private function fetchProfileVisibility(int $uid): array
+    {
+        return array_diff_key($this->fetchProfileRow($uid), ['last_name' => true]);
     }
 
     /**

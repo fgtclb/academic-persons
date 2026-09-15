@@ -805,6 +805,41 @@ final class UsingDefaultProfileFactoryOnlyTest extends AbstractAcademicPersonsTe
     }
 
     /**
+     * The start and end time of a frontend user limit when the account may log in, not whether
+     * the person gets a profile - like the disabled flag above. A deleted frontend user stays
+     * out.
+     *
+     * @throws \Doctrine\DBAL\Exception
+     */
+    #[Test]
+    public function executeCreatesProfilesForFrontendUsersOutsideTheirVisibilityWindow(): void
+    {
+        $this->importCSVDataSet(__DIR__ . '/Fixtures/frontend-users-outside-visibility-window-without-profile.csv');
+        $profileCreateCommandService = GeneralUtility::makeInstance(ProfileCreateCommandService::class);
+
+        // pid 100 has the visible frontend users 10 and 14, the expired user 50, the scheduled
+        // user 52 and the deleted user 54, all without a profile.
+        $profileCreateCommandService->execute(new ProfileCreateCommandDto(includePids: [100], excludePids: []));
+
+        $this->assertSame(
+            1,
+            $this->countProfiles(['import_identifier' => 'fe_users:50']),
+            'A profile must be created for the frontend user whose end time has passed.',
+        );
+        $this->assertSame(
+            1,
+            $this->countProfiles(['import_identifier' => 'fe_users:52']),
+            'A profile must be created for the frontend user whose start time lies in the future.',
+        );
+        $this->assertSame(
+            0,
+            $this->countProfiles(['import_identifier' => 'fe_users:54']),
+            'A deleted frontend user must not get a profile.',
+        );
+        $this->assertSame(4, $this->countProfiles());
+    }
+
+    /**
      * The create path attaches a contract unconditionally, so this does not cover the
      * guard ACE-365 fixed - that one is on the update path and is asserted there. What it
      * pins is that a frontend user whose only contact datum is a telephone number is
