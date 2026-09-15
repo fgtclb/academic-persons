@@ -1,0 +1,28 @@
+"fe_users",
+,"uid","pid","username","deleted","usergroup","disable","starttime","endtime","tx_extbase_type","first_name","middle_name","last_name","www","address","zip","city","country","email","telephone","fax",
+# profile end time has passed
+,40,100,"profileendtime",0,"10",0,0,0,"Tx_Academicpersonsedit_Domain_Model_FrontendUser","Ella","E","Endtime-Current","https://www.endtime.example.com/","Street 40","73240","Wernau","Germany","endtime@email.org","+4917521122340","+4917521122341",
+# profile start time lies in the future, the e-mail address changed
+,42,100,"profilestarttime",0,"10",0,0,0,"Tx_Academicpersonsedit_Domain_Model_FrontendUser","Stella","S","Starttime-Current","https://www.starttime.example.com/","Street 42","73242","Wernau","Germany","starttime-current@email.org","+4917521122342","+4917521122343",
+# profile restricted to a frontend user group the user is no member of
+,44,100,"profilefegroup",0,"10",0,0,0,"Tx_Academicpersonsedit_Domain_Model_FrontendUser","Greta","G","Group-Current","https://www.group.example.com/","Street 44","73244","Wernau","Germany","group@email.org","+4917521122344","+4917521122345",
+# frontend user end time has passed, profile visible
+,46,100,"userendtime",0,"10",0,0,946684800,"Tx_Academicpersonsedit_Domain_Model_FrontendUser","Udo","U","Userend-Current","https://www.userend.example.com/","Street 46","73246","Wernau","Germany","userend@email.org","+4917521122346","+4917521122347",
+"tx_academicpersons_feuser_mm",
+,"uid_local","uid_foreign","sorting","sorting_foreign",
+,40,40,1,0,
+,42,42,1,0,
+,44,44,1,0,
+,46,46,1,0,
+"tx_academicpersons_domain_model_profile",
+,"uid","pid","title","first_name","middle_name","last_name","website","hidden","starttime","endtime","fe_group","import_identifier",
+,40,100,"","Ella","E","Endtime-Stale","https://stale.example.com/",0,0,946684800,"","fe_users:40",
+,42,100,"","Stella","S","Starttime-Stale","https://stale.example.com/",0,2145916800,0,"","fe_users:42",
+,44,100,"","Greta","G","Group-Stale","https://stale.example.com/",0,0,0,"11","fe_users:44",
+,46,100,"","Udo","U","Userend-Stale","https://stale.example.com/",0,0,0,"","fe_users:46",
+"tx_academicpersons_domain_model_contract",
+,"uid","pid","profile","physical_addresses","email_addresses","phone_numbers","import_identifier",
+,42,100,42,0,1,0,"fe_users:42",
+"tx_academicpersons_domain_model_email",
+,"uid","pid","contract","email","import_identifier",
+,42,100,42,"starttime-stale@email.org","fe_users:42",

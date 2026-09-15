@@ -18,6 +18,8 @@ use FGTCLB\AcademicPersons\Domain\Model\Profile;
 use FGTCLB\AcademicPersons\Event\ModifyProfileDemandEvent;
 use Psr\EventDispatcher\EventDispatcherInterface;
 use TYPO3\CMS\Core\Context\LanguageAspect;
+use TYPO3\CMS\Core\Schema\Capability\TcaSchemaCapability;
+use TYPO3\CMS\Core\Schema\TcaSchemaFactory;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Extbase\Persistence\Generic\Qom\ConstraintInterface;
 use TYPO3\CMS\Extbase\Persistence\QueryInterface;
@@ -31,10 +33,30 @@ class ProfileRepository extends Repository
 {
     protected EventDispatcherInterface $eventDispatcher;
 
+    protected TcaSchemaFactory $tcaSchemaFactory;
+
     public function injectEventDispatcher(EventDispatcherInterface $eventDispatcher): void
     {
         $this->eventDispatcher = $eventDispatcher;
     }
+
+    public function injectTcaSchemaFactory(TcaSchemaFactory $tcaSchemaFactory): void
+    {
+        $this->tcaSchemaFactory = $tcaSchemaFactory;
+    }
+
+    /**
+     * The enable fields the frontend user synchronization lifts, keyed by the name Extbase
+     * takes, each with the capability telling whether the profile table declares it.
+     *
+     * @var array<string, TcaSchemaCapability>
+     */
+    private const SYNCHRONIZATION_IGNORED_ENABLE_FIELDS = [
+        'disabled' => TcaSchemaCapability::RestrictionDisabledField,
+        'starttime' => TcaSchemaCapability::RestrictionStartTime,
+        'endtime' => TcaSchemaCapability::RestrictionEndTime,
+        'fe_group' => TcaSchemaCapability::RestrictionUserGroup,
+    ];
 
     /**
      * Applied whenever nothing else asks for an order, so that an unordered result is
@@ -175,6 +197,32 @@ class ProfileRepository extends Repository
     }
 
     /**
+     * Include every profile the frontend user synchronization has to keep up to date: the
+     * hidden flag, start time, end time and frontend user group are ignored, as far as the
+     * profile table declares them. They decide when and to whom a profile is shown, not
+     * whether the person behind it exists - and a command-line run has no frontend user
+     * group to match anyway. Deleted profiles stay excluded, and an enable field added later
+     * beyond these four stays in effect.
+     *
+     * Synchronization only. Display paths use {@see self::includeHiddenRecords()}, which
+     * keeps the visibility window in place.
+     *
+     * @param QueryInterface<Profile> $query
+     */
+    private function includeRestrictedRecordsForSynchronization(QueryInterface $query): void
+    {
+        $schema = $this->tcaSchemaFactory->get('tx_academicpersons_domain_model_profile');
+        $enableFieldsToBeIgnored = [];
+        foreach (self::SYNCHRONIZATION_IGNORED_ENABLE_FIELDS as $enableField => $capability) {
+            if ($schema->hasCapability($capability)) {
+                $enableFieldsToBeIgnored[] = $enableField;
+            }
+        }
+        $query->getQuerySettings()->setIgnoreEnableFields(true);
+        $query->getQuerySettings()->setEnableFieldsToBeIgnored($enableFieldsToBeIgnored);
+    }
+
+    /**
      * Prepare a query that matches records by uid taken from a manual selection.
      *
      * FormEngine persists such a selection as **default language** uids, so the language
@@ -309,10 +357,11 @@ class ProfileRepository extends Repository
     }
 
     /**
-     * Find profiles for a frontend user. With `$showHidden` enabled the hidden (disabled) profiles
-     * are included as well, which is required by the synchronization: it must keep updating the data
-     * of a hidden profile without ever changing its visibility. The frontend display keeps the
-     * default (`$showHidden = false`) so that hidden profiles stay hidden there.
+     * Find profiles for a frontend user. `$showHidden` exists for the synchronization and lifts
+     * every enable field of the profile - hidden flag, start time, end time and frontend user
+     * group - so that the data of a hidden, scheduled, expired or group restricted profile keeps
+     * being updated, without its visibility ever being changed. It is not meant for display: the
+     * frontend keeps the default (`$showHidden = false`), which respects all of them.
      *
      * @param int $frontendUserUid
      * @param bool $showHidden
@@ -323,7 +372,7 @@ class ProfileRepository extends Repository
         $query = $this->createQuery();
         $query->getQuerySettings()->setRespectStoragePage(false);
         if ($showHidden === true) {
-            $this->includeHiddenRecords($query);
+            $this->includeRestrictedRecordsForSynchronization($query);
         }
 
         $query->setOrderings(self::FALLBACK_ORDERINGS);

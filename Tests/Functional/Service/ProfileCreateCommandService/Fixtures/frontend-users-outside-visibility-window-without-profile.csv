@@ -1,0 +1,8 @@
+"fe_users",
+,"uid","pid","username","deleted","usergroup","disable","starttime","endtime","tx_extbase_type","first_name","middle_name","last_name","www","address","zip","city","country","email","telephone","fax",
+# end time has passed
+,50,100,"userendtimenoprofile",0,"10",0,0,946684800,"Tx_Academicpersonsedit_Domain_Model_FrontendUser","Ella","E","Endtime","https://www.example.com/","Street 1","73249","Wernau","Germany","endtime@email.org","+4917521122334","+4917521122339",
+# start time lies in the future
+,52,100,"userstarttimenoprofile",0,"10",0,2145916800,0,"Tx_Academicpersonsedit_Domain_Model_FrontendUser","Stella","S","Starttime","https://www.example.com/","Street 1","73249","Wernau","Germany","starttime@email.org","+4917521122334","+4917521122339",
+# deleted
+,54,100,"userdeletednoprofile",1,"10",0,0,0,"Tx_Academicpersonsedit_Domain_Model_FrontendUser","Dora","D","Deleted","https://www.example.com/","Street 1","73249","Wernau","Germany","deleted@email.org","+4917521122334","+4917521122339",

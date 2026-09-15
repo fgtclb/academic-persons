@@ -206,6 +206,9 @@ final class AcademicPersonsCardPluginTest extends AbstractAcademicPersonsTestCas
         $content = $this->renderHomePage();
         $this->assertRendersProfileName($content, 'Max', 'Müllermann');
         $this->assertRendersProfileName($content, 'Erika', 'Beispiel');
+        // "Show hidden records" lifts the hidden flag only: profile 4 is selected, but its end
+        // time has passed, and that keeps it out of the frontend.
+        $this->assertStringNotContainsString('Abgelaufen', $content);
     }
 
     #[Test]
