@@ -255,11 +255,17 @@ class ProfileRepository extends Repository
      */
     private function applyDemandForQuery(QueryInterface $query, DemandInterface $demand): void
     {
-        // Direct selected profiles make all other filters and orderings obsolete and is handled first.
+        // Direct selected profiles make all filters and the demanded ordering obsolete and are
+        // handled first. The order of the selection is not reproducible in the query - `in()`
+        // does not preserve it - so `ProfileController::listAction()` restores it in PHP and
+        // paginates the restored list. The query still gets the deterministic fallback
+        // ordering, because the result is what listeners of `ModifyListProfilesEvent` receive
+        // and an unordered result is not the same list twice (ACE-482, ACE-491).
         if ($demand->getProfileList() !== '') {
             $profileUidArray = GeneralUtility::intExplode(',', $demand->getProfileList(), true);
             $this->matchSelectedUidsAcrossLanguages($query);
             $query->matching($query->in('uid', $profileUidArray));
+            $query->setOrderings(self::FALLBACK_ORDERINGS);
             return;
         }
 

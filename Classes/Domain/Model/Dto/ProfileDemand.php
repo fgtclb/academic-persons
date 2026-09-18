@@ -85,7 +85,8 @@ class ProfileDemand implements DemandInterface
     }
 
     /**
-     * Does not have any effect when {@see self::getProfileList()} is not empty.
+     * Applies to a manual selection as well: a selected list is paginated in the order
+     * {@see self::getProfileList()} carries.
      */
     public function getCurrentPage(): int
     {
@@ -93,7 +94,8 @@ class ProfileDemand implements DemandInterface
     }
 
     /**
-     * Does not have any effect when {@see self::getProfileList()} is not empty.
+     * Applies to a manual selection as well: a selected list is paginated in the order
+     * {@see self::getProfileList()} carries.
      */
     public function setCurrentPage(int $currentPage): self
     {

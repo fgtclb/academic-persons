@@ -25,6 +25,7 @@ use FGTCLB\AcademicPersons\Settings\AcademicPersonsSettings;
 use GeorgRinger\NumberedPagination\NumberedPagination;
 use Psr\Http\Message\ResponseInterface;
 use TYPO3\CMS\Core\Cache\CacheTag;
+use TYPO3\CMS\Core\Pagination\ArrayPaginator;
 use TYPO3\CMS\Core\Pagination\SimplePagination;
 use TYPO3\CMS\Core\Utility\ExtensionManagementUtility;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
@@ -85,10 +86,26 @@ final class ProfileController extends ActionController
             $this->settings['paginationEnabled'] = '0';
         }
 
+        // If profiles were selected manually, sort them by order in selection. This has to
+        // happen before the pagination below, which splits exactly this list into pages.
+        $manualSelection = !empty($demand->getProfileList());
+        if ($manualSelection) {
+            $profiles = $this->sortBySelectionOrder(
+                $profiles,
+                GeneralUtility::intExplode(',', $demand->getProfileList(), true),
+            );
+        }
+
         if (($this->settings['paginationEnabled'] ?? null) === '1') {
             $resultsPerPage = (int)($this->settings['pagination']['resultsPerPage'] ?? 10);
             $numberOfPaginationLinks = (int)($this->settings['pagination']['numberOfLinks'] ?? 5);
-            $paginator = new QueryResultPaginator($profiles, $demand->getCurrentPage(), $resultsPerPage);
+            // A manual selection is ordered in PHP and not by the database, so its pages are
+            // cut out of that ordered array. A QueryResultPaginator would page the query
+            // result instead - in database order, and with a LIMIT/OFFSET that carries no
+            // ORDER BY, which lets two pages overlap on PostgreSQL.
+            $paginator = $manualSelection
+                ? new ArrayPaginator($profiles, $demand->getCurrentPage(), $resultsPerPage)
+                : new QueryResultPaginator($profiles, $demand->getCurrentPage(), $resultsPerPage);
             if (ExtensionManagementUtility::isLoaded('numbered_pagination')
                 && class_exists(NumberedPagination::class)
             ) {
@@ -100,14 +117,6 @@ final class ProfileController extends ActionController
                 'paginator' => $paginator,
                 'pagination' => $pagination,
             ]);
-        }
-
-        // If profiles were selected manually, sort them by order in selection
-        if (!empty($demand->getProfileList())) {
-            $profiles = $this->sortBySelectionOrder(
-                $profiles,
-                GeneralUtility::intExplode(',', $demand->getProfileList(), true),
-            );
         }
 
         $this->view->assignMultiple([
@@ -124,9 +133,9 @@ final class ProfileController extends ActionController
      * Bring records into the order the editor put them in.
      *
      * A selection is an ordered list in the FlexForm, but the query that fetches it
-     * matches `uid IN (...)` and returns whatever order the DBMS yields - the
-     * `profileList` branch of `ProfileRepository::applyDemandForQuery()` returns before
-     * any `setOrderings()` at all. So the order has to be restored here.
+     * matches `uid IN (...)`, which does not preserve that order - the `profileList` branch
+     * of `ProfileRepository::applyDemandForQuery()` orders by uid, for a reproducible result
+     * and nothing more. So the order the editor chose has to be restored here.
      *
      * Records not in the selection are dropped and a uid listed twice yields the record
      * twice, which is what the three hand written copies of this loop did before it was

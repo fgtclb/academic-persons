@@ -64,6 +64,19 @@ final class AcademicPersonsListPluginTest extends AbstractAcademicPersonsTestCas
         );
     }
 
+    /**
+     * The pagination partial of `EXT:test_plugin_templates` renders the target of every
+     * page as `PAGELINK <n>: "<uri>"`, so a test follows the link the plugin built -
+     * including its cHash - instead of assembling a URL and a hash of its own.
+     */
+    private function pageLink(string $content, int $page): string
+    {
+        $pattern = sprintf('#PAGELINK %d: "([^"]+)"#', $page);
+        $this->assertMatchesRegularExpression($pattern, $content);
+        preg_match($pattern, $content, $matches);
+        return htmlspecialchars_decode($matches[1]);
+    }
+
     #[Test]
     public function defaultLanguageListDisplaysAllProfiles(): void
     {
@@ -391,5 +404,55 @@ final class AcademicPersonsListPluginTest extends AbstractAcademicPersonsTestCas
         $this->assertStringContainsString('#1(1): [DE] Max Müllermann', $content);
         $this->assertStringNotContainsString('[DE] Horst Huber', $content);
         $this->assertStringNotContainsString('[EN] Max Müllermann', $content);
+    }
+    /**
+     * A manual selection is ordered in PHP and not in the database: the `profileList`
+     * branch of `ProfileRepository::applyDemandForQuery()` returns before any
+     * `setOrderings()`, and `ProfileController::listAction()` restores the editor's order
+     * afterwards. With pagination switched on, the paginator used to be built from the
+     * query result, so the pages carried the database order while the restored order only
+     * reached the `profiles` variable the template does not render in that case.
+     */
+    #[Test]
+    public function paginatedSelectionRendersTheFirstPageInSelectedOrder(): void
+    {
+        $this->importCSVDataSet(__DIR__ . '/Fixtures/AcademicPersonsListPlugin/defaultLanguageOnly_selectedProfilesPaginated.csv');
+        $this->setUpFrontendRootPageForTestCase();
+        $this->writeFrontendPluginTestSite([
+            $this->buildDefaultLanguageConfiguration(
+                identifier: 'EN',
+                base: '/',
+            ),
+        ]);
+
+        $content = $this->renderFrontendPage('https://www.acme.com/home');
+        $this->assertStringContainsString('<h2>Profilelist</h2>', $content);
+        $this->assertStringContainsString('PAGINATION: page 1 of 2', $content);
+        // The selection is "3,1,2" and two profiles fit on a page.
+        $this->assertStringContainsString('#0(3): Erika Beispiel', $content);
+        $this->assertStringContainsString('#1(1): Max Müllermann', $content);
+        $this->assertStringNotContainsString('Horst Huber', $content);
+    }
+
+    #[Test]
+    public function paginatedSelectionRendersTheRestOfTheSelectionOnTheSecondPage(): void
+    {
+        $this->importCSVDataSet(__DIR__ . '/Fixtures/AcademicPersonsListPlugin/defaultLanguageOnly_selectedProfilesPaginated.csv');
+        $this->setUpFrontendRootPageForTestCase();
+        $this->writeFrontendPluginTestSite([
+            $this->buildDefaultLanguageConfiguration(
+                identifier: 'EN',
+                base: '/',
+            ),
+        ]);
+
+        $firstPage = $this->renderFrontendPage('https://www.acme.com/home');
+        $secondPage = $this->renderFrontendPage('https://www.acme.com' . $this->pageLink($firstPage, 2));
+
+        $this->assertStringContainsString('PAGINATION: page 2 of 2', $secondPage);
+        $this->assertStringContainsString('#0(2): Horst Huber', $secondPage);
+        // The two profiles of page one, and no profile on both pages.
+        $this->assertStringNotContainsString('Erika Beispiel', $secondPage);
+        $this->assertStringNotContainsString('Max Müllermann', $secondPage);
     }
 }
