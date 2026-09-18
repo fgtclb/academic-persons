@@ -31,7 +31,8 @@
                         partial="Profile/Contract/Field"
                         arguments="{
                             fieldName: fieldName.1,
-                            contract: contract
+                            contract: contract,
+                            telPrefix: settings.phoneNumbers.telPrefix
                         }"
                     />
                 </f:for>
@@ -53,7 +54,8 @@
                         partial="Profile/Contract/Field"
                         arguments="{
                             fieldName: field,
-                            contract: contract
+                            contract: contract,
+                            telPrefix: settings.phoneNumbers.telPrefix
                         }"
                     />
                 </f:for>

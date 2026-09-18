@@ -47,10 +47,11 @@
                                             <f:comment>
                                                 A `tel:` URI carries no spaces, while the stored number is written
                                                 for a reader - so the link target drops them and the label keeps them.
+                                                The configured prefix is part of the target only.
                                             </f:comment>
                                             <a
                                                 class="academic-persons-detail__contact-link"
-                                                href="tel:{f:replace(value: phoneNumber.phoneNumber, search: ' ', replace: '')}"
+                                                href="tel:{f:replace(value: '{settings.phoneNumbers.telPrefix}{phoneNumber.phoneNumber}', search: ' ', replace: '')}"
                                             >{phoneNumber.phoneNumber}</a>
                                             <f:if condition="{phoneNumber.type}">
                                                 <span class="academic-persons-detail__contact-type">({phoneNumber.type})</span>

@@ -53,3 +53,9 @@ settings:
     category: academic.persons
     type: string
     default: 'EXT:academic_persons/Resources/Public/Images/ProfilePlaceholder.svg'
+  plugin.tx_academicpersons.phoneNumbers.telPrefix:
+    label: 'Phone numbers | Prefix of a phone link target'
+    description: 'Prepended to the "tel:" target of every phone number, never to its visible text. For an installation that stores extensions only.'
+    category: academic.persons
+    type: string
+    default: ''

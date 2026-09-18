@@ -75,6 +75,13 @@ final class SiteSetDeliveryTest extends AbstractAcademicPersonsTestCase
     private const SHARED_IMPORT = '<div id="import">detailPid,pageTitleFormat,showFields';
 
     /**
+     * A setting the shared setup maps out of a constant the probe record assigns. It proves
+     * more than the two above: a setting whose shipped default is empty renders nothing, so
+     * the constant is set to a value the assertion can see.
+     */
+    private const SHARED_SETTING = '<div id="setting">+49 6241 509</div>';
+
+    /**
      * @return \Generator<string, array{0: string, 1: string, 2: string, 3: string}>
      */
     public static function componentDataProvider(): \Generator
@@ -146,6 +153,11 @@ final class SiteSetDeliveryTest extends AbstractAcademicPersonsTestCase
             $body,
             'The site set did not deliver "setup.typoscript" of the shared block.',
         );
+        $this->assertStringContainsString(
+            self::SHARED_SETTING,
+            $body,
+            'The site set did not deliver a setting of the shared block.',
+        );
     }
 
     /**
@@ -201,6 +213,11 @@ final class SiteSetDeliveryTest extends AbstractAcademicPersonsTestCase
             self::SHARED_SETUP,
             $body,
             'The aggregate static template did not deliver the setup of the shared block.',
+        );
+        $this->assertStringContainsString(
+            self::SHARED_SETTING,
+            $body,
+            'The aggregate static template did not deliver a setting of the shared block.',
         );
     }
 
@@ -424,6 +441,7 @@ final class SiteSetDeliveryTest extends AbstractAcademicPersonsTestCase
                 'plugin.tx_academicpersons.pagination.resultsPerPage' => 1,
                 'plugin.tx_academicpersons.pagination.numberOfLinks' => 5,
                 'plugin.tx_academicpersons.image.placeholder.default' => 'EXT:academic_persons/Resources/Public/Images/ProfilePlaceholder.svg',
+                'plugin.tx_academicpersons.phoneNumbers.telPrefix' => '',
             ],
             $definitions,
         );
@@ -505,7 +523,7 @@ final class SiteSetDeliveryTest extends AbstractAcademicPersonsTestCase
                 // Not "3": a clear flag discards everything the site sets contributed.
                 'clear' => 0,
                 'title' => 'Probe',
-                'constants' => '',
+                'constants' => 'plugin.tx_academicpersons.phoneNumbers.telPrefix = +49 6241 509',
                 'config' => '@import \'EXT:academic_persons/Tests/Functional/SiteSet/Fixtures/TypoScript/Probe.typoscript\'',
                 'include_static_file' => $includeStaticFile,
             ],

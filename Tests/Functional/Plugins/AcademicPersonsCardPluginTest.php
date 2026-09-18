@@ -51,16 +51,22 @@ final class AcademicPersonsCardPluginTest extends AbstractAcademicPersonsTestCas
         parent::tearDown();
     }
 
-    private function setUpTestCase(string $dataSet): void
+    /**
+     * @param list<string> $additionalConstantFiles Constants loaded after the shipped ones.
+     */
+    private function setUpTestCase(string $dataSet, array $additionalConstantFiles = []): void
     {
         $this->importCSVDataSet(__DIR__ . '/Fixtures/AcademicPersonsCardPlugin/' . $dataSet . '.csv');
         $this->setUpFrontendRootPage(
             pageId: 1,
             typoScriptFiles: [
-                'constants' => [
-                    'EXT:fluid_styled_content/Configuration/TypoScript/constants.typoscript',
-                    'EXT:academic_persons/Configuration/TypoScript/Default/constants.typoscript',
-                ],
+                'constants' => array_merge(
+                    [
+                        'EXT:fluid_styled_content/Configuration/TypoScript/constants.typoscript',
+                        'EXT:academic_persons/Configuration/TypoScript/Default/constants.typoscript',
+                    ],
+                    $additionalConstantFiles,
+                ),
                 'setup' => [
                     'EXT:fluid_styled_content/Configuration/TypoScript/setup.typoscript',
                     'EXT:academic_persons/Configuration/TypoScript/Default/setup.typoscript',
@@ -244,6 +250,23 @@ final class AcademicPersonsCardPluginTest extends AbstractAcademicPersonsTestCas
         $content = $this->renderHomePage();
         $this->assertStringContainsString('href="tel:+496241509123"', $content);
         $this->assertStringContainsString('>+49 6241 509 123</a>', $content);
+    }
+
+    /**
+     * The prefix an integrator configures for an installation that stores phone numbers as
+     * extensions only. It reaches the link target of every phone number and never the text.
+     */
+    #[Test]
+    public function cardPluginPrefixesThePhoneNumberTargetWhenConfigured(): void
+    {
+        $this->setUpTestCase(
+            'cardPage_showFieldsExtensionNumber',
+            ['EXT:academic_persons/Tests/Functional/Plugins/Fixtures/TypoScript/Constants/PhoneLinkPrefix.typoscript'],
+        );
+
+        $content = $this->renderHomePage();
+        $this->assertStringContainsString('href="tel:+496241509123"', $content);
+        $this->assertStringContainsString('>123</a>', $content);
     }
 
     #[Test]

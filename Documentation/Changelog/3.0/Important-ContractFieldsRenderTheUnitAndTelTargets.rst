@@ -38,7 +38,9 @@ there, only without content — sees the unit appear and can drop that rule.
 An installation that overrides
 :file:`Resources/Private/Partials/Profile/Contract/Field.html` keeps its own
 output and profits from neither correction until it drops its copy. The
-arguments the partial is called with are unchanged, so an override of
+arguments the partial is called with are unchanged, except for the new
+optional :html:`telPrefix` (see
+:ref:`feature-phone-link-target-prefix`), so an override of
 :file:`Profile/Contract/Item.html` keeps working.
 
 Affected Installations

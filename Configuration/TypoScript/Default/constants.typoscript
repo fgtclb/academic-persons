@@ -33,6 +33,10 @@ plugin.tx_academicpersons {
       default = EXT:academic_persons/Resources/Public/Images/ProfilePlaceholder.svg
     }
   }
+  phoneNumbers {
+    # cat=plugin.tx_academicpersons//a; type=string; label=Prefix of a phone link target: prepended to the "tel:" target of every phone number, never to its visible text
+    telPrefix =
+  }
   view {
     # cat=plugin.tx_academicpersons/file; type=string; label=Path to template root (FE)
     templateRootPath = EXT:academic_persons/Resources/Private/Templates/

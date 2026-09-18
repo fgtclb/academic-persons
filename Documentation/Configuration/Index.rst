@@ -65,11 +65,40 @@ Every component set depends on `fgtclb/academic-base-ctype-group`, the set of
 :guilabel:`EXT:academic_base` that labels the content element group all academic
 extensions sort their elements into.
 
-The site settings of this extension — the detail page, and the default grouping,
-sorting and pagination of a profile list — are declared with the aggregate set.
-A site that depends on a single component set still gets the shipped defaults,
-but can only override them in :guilabel:`Site Settings` when it depends on
-`fgtclb/academic-persons`.
+The site settings of this extension — the detail page, the default grouping,
+sorting and pagination of a profile list, the image placeholder and the phone
+link prefix below — are declared with the aggregate set. A site that depends on
+a single component set still gets the shipped defaults, but can only override
+them in :guilabel:`Site Settings` when it depends on `fgtclb/academic-persons`.
+
+..  _configuration-phone-link-prefix:
+
+The prefix of a phone link target
+=================================
+
+Every phone number this extension renders is a link, and the number is written
+into its :html:`tel:` target without the spaces it is stored with. An
+installation that stores phone numbers as extensions only — the part that is
+the same for every number left out — has no dialable target that way, and this
+setting is what completes it.
+
+..  confval:: plugin.tx_academicpersons.phoneNumbers.telPrefix
+    :name: plugin-tx-academicpersons-phonenumbers-telprefix
+    :type: string
+    :Default: (empty)
+
+    Prepended to the :html:`tel:` target of every phone number, in the list,
+    card and selection elements, in the profile detail view and in the contacts
+    of a page. The spaces of prefix and number alike are removed from the
+    target. The visible link text is not touched: it keeps the number as it is
+    stored, without the prefix.
+
+    The prefix is applied unconditionally, so an installation that stores full
+    numbers, or a mixture of full numbers and extensions, leaves it empty.
+
+The setting is declared for the site set and as a constant of the shared static
+template, with the same default in both — see
+:ref:`Do not combine both <one-mechanism-per-site>`.
 
 ..  _configuration-hidden-by-default:
 

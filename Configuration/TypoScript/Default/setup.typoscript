@@ -25,6 +25,9 @@ plugin.tx_academicpersons {
         default = {$plugin.tx_academicpersons.image.placeholder.default}
       }
     }
+    phoneNumbers {
+      telPrefix = {$plugin.tx_academicpersons.phoneNumbers.telPrefix}
+    }
   }
   view {
     templateRootPaths {

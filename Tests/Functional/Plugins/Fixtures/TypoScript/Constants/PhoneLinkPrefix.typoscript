@@ -1,0 +1,4 @@
+# Pins the phone link prefix the rendering tests assert, loaded last so it wins over the
+# empty default the extension ships. It is what an installation that stores phone numbers
+# as extensions only configures: the leading part every stored number is missing.
+plugin.tx_academicpersons.phoneNumbers.telPrefix = +49 6241 509

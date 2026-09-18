@@ -21,4 +21,12 @@ page {
   30 = TEXT
   30.value < plugin.tx_academicpersons.ignoreFlexFormSettingsIfEmpty
   30.wrap = <div id="import">|</div>
+
+  # A setting the setup maps out of a constant. The "Constants" field of the probe
+  # "sys_template" record assigns that constant, so what renders here proves that the
+  # constant is declared by the delivery mechanism under test AND that the setup maps it -
+  # a setting whose default is empty proves neither on its own.
+  40 = TEXT
+  40.value < plugin.tx_academicpersons.settings.phoneNumbers.telPrefix
+  40.wrap = <div id="setting">|</div>
 }

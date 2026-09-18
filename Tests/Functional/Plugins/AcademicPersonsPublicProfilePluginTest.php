@@ -90,16 +90,22 @@ final class AcademicPersonsPublicProfilePluginTest extends AbstractAcademicPerso
         parent::tearDown();
     }
 
-    private function renderShippedProfile(): string
+    /**
+     * @param list<string> $additionalConstantFiles Constants loaded after the shipped ones.
+     */
+    private function renderShippedProfile(string $dataSet = 'shippedLayout', array $additionalConstantFiles = []): string
     {
-        $this->importCSVDataSet(__DIR__ . '/Fixtures/AcademicPersonsPublicProfilePlugin/shippedLayout.csv');
+        $this->importCSVDataSet(__DIR__ . '/Fixtures/AcademicPersonsPublicProfilePlugin/' . $dataSet . '.csv');
         $this->setUpFrontendRootPage(
             pageId: 1,
             typoScriptFiles: [
-                'constants' => [
-                    'EXT:fluid_styled_content/Configuration/TypoScript/constants.typoscript',
-                    'EXT:academic_persons/Configuration/TypoScript/Default/constants.typoscript',
-                ],
+                'constants' => array_merge(
+                    [
+                        'EXT:fluid_styled_content/Configuration/TypoScript/constants.typoscript',
+                        'EXT:academic_persons/Configuration/TypoScript/Default/constants.typoscript',
+                    ],
+                    $additionalConstantFiles,
+                ),
                 'setup' => [
                     'EXT:fluid_styled_content/Configuration/TypoScript/setup.typoscript',
                     'EXT:academic_persons/Configuration/TypoScript/Default/setup.typoscript',
@@ -226,6 +232,24 @@ final class AcademicPersonsPublicProfilePluginTest extends AbstractAcademicPerso
         $this->assertStringContainsString('academic-persons-detail__contact-type"> Business ', $normalized);
         $this->assertStringContainsString('academic-persons-detail__contact-type">(work)</span>', $normalized);
         $this->assertStringContainsString('href="tel:+4930123456"', $normalized);
+    }
+
+    /**
+     * The configured prefix reaches the `tel:` target of the detail view as well, so an
+     * installation that stores extensions only gets the same dialable number everywhere. The
+     * visible text stays the stored one.
+     */
+    #[Test]
+    public function configuredPrefixReachesTheTelTargetOfTheDetailView(): void
+    {
+        $content = $this->renderShippedProfile(
+            'shippedLayout_extensionNumber',
+            ['EXT:academic_persons/Tests/Functional/Plugins/Fixtures/TypoScript/Constants/PhoneLinkPrefix.typoscript'],
+        );
+        $normalized = (string)preg_replace('/\s+/', ' ', $content);
+
+        $this->assertStringContainsString('href="tel:+496241509123"', $normalized);
+        $this->assertStringContainsString('>123</a>', $normalized);
     }
 
     /**
