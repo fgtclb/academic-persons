@@ -70,7 +70,12 @@
                                     <b>{f:translate(key: 'detail.phoneNumbers', extensionName: 'academic_persons')}:</b>
 
                                     <f:for each="{contract.phoneNumbers}" as="item" iteration="i">
-                                        <a href="tel:{item.phoneNumber}">
+                                        <f:comment>
+                                            A `tel:` URI carries no spaces, while the stored
+                                            number is written for a reader - so the link
+                                            target drops them and the label keeps them.
+                                        </f:comment>
+                                        <a href="tel:{f:replace(value: item.phoneNumber, search: ' ', replace: '')}">
                                             {item.phoneNumber}
 
                                             {f:if(

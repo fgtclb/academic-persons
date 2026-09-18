@@ -19,6 +19,17 @@
             {contract.location.title}
         </f:if>
 
+        <f:if condition="{fieldName} == organisationalUnit">
+            <f:comment>
+                `displayText` is the field meant for output and `unitName` the one an import
+                fills reliably, so the second is the fallback of the first.
+            </f:comment>
+            <f:if condition="{contract.organisationalUnit.displayText}">
+                <f:then>{contract.organisationalUnit.displayText}</f:then>
+                <f:else>{contract.organisationalUnit.unitName}</f:else>
+            </f:if>
+        </f:if>
+
         <f:if condition="{fieldName} == emailAddresses || {fieldName} == phoneNumbers">
             <f:for each="{contract.{fieldName}}" as="item" iteration="i">
                 <f:if condition="{item.email}">
@@ -26,7 +37,11 @@
                 </f:if>
 
                 <f:if condition="{item.phoneNumber}">
-                    <a href="tel:{item.phoneNumber}">{item.phoneNumber}</a>{f:if(condition: '!{i.isLast}', then: ', ')}
+                    <f:comment>
+                        A `tel:` URI carries no spaces, while the stored number is written for
+                        a reader - so the link target drops them and the label keeps them.
+                    </f:comment>
+                    <a href="tel:{f:replace(value: item.phoneNumber, search: ' ', replace: '')}">{item.phoneNumber}</a>{f:if(condition: '!{i.isLast}', then: ', ')}
                 </f:if>
             </f:for>
         </f:if>
