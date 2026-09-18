@@ -628,4 +628,44 @@ final class AcademicPersonsListAndDetailPluginTest extends AbstractAcademicPerso
         $this->assertStringNotContainsString('[DE] Horst Huber', $content);
         $this->assertStringNotContainsString('[EN] Max Müllermann', $content);
     }
+    /**
+     * The list part of this plugin runs the same `listAction()` as the list plugin, so the
+     * paginated selection is covered here as well - a fix that only reaches one of the two
+     * plugins cannot pass.
+     *
+     * {@see AcademicPersonsListPluginTest::paginatedSelectionRendersTheFirstPageInSelectedOrder()}
+     */
+    #[Test]
+    public function paginatedSelectionRendersTheFirstPageInSelectedOrder(): void
+    {
+        $this->importCSVDataSet(__DIR__ . '/Fixtures/AcademicPersonsListAndDetailPlugin/defaultLanguageOnly_selectedProfilesPaginated.csv');
+        $this->setUpFrontendRootPageForTestCase();
+        $this->writeSiteConfiguration(
+            identifier: 'acme',
+            site: $this->buildSiteConfiguration(
+                rootPageId: 1,
+                base: 'https://www.acme.com/',
+            ),
+            languages: [
+                $this->buildDefaultLanguageConfiguration(
+                    identifier: 'EN',
+                    base: '/',
+                ),
+            ],
+        );
+
+        $response = $this->executeFrontendSubRequest(
+            new InternalRequest('https://www.acme.com/home'),
+            new InternalRequestContext(),
+        );
+        $this->assertSame(200, $response->getStatusCode());
+
+        $content = (string)$response->getBody();
+        $this->assertStringContainsString('<h2>Profilelist</h2>', $content);
+        $this->assertStringContainsString('PAGINATION: page 1 of 2', $content);
+        // The selection is "3,1,2" and two profiles fit on a page.
+        $this->assertStringContainsString('#0(3): Erika Beispiel', $content);
+        $this->assertStringContainsString('#1(1): Max Müllermann', $content);
+        $this->assertStringNotContainsString('Horst Huber', $content);
+    }
 }

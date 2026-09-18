@@ -1,0 +1,10 @@
+<html data-namespace-typo3-fluid="true"
+      xmlns:f="http://typo3.org/ns/TYPO3/CMS/Fluid/ViewHelpers"
+>
+<pre>
+PAGINATION: page {paginator.currentPageNumber} of {paginator.numberOfPages}
+<f:for each="{pagination.allPageNumbers}" as="page">
+PAGELINK {page}: "<f:uri.action action="list" arguments="{demand: '{currentPage: page}'}" />"
+</f:for>
+</pre>
+</html>

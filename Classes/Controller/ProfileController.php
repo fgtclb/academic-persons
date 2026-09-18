@@ -25,6 +25,7 @@ use GeorgRinger\NumberedPagination\NumberedPagination;
 use Psr\Http\Message\ResponseInterface;
 use TYPO3\CMS\Core\Cache\CacheDataCollector;
 use TYPO3\CMS\Core\Cache\CacheTag;
+use TYPO3\CMS\Core\Pagination\ArrayPaginator;
 use TYPO3\CMS\Core\Pagination\SimplePagination;
 use TYPO3\CMS\Core\Utility\ExtensionManagementUtility;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
@@ -97,10 +98,26 @@ final class ProfileController extends ActionController
             $this->settings['paginationEnabled'] = '0';
         }
 
+        // If profiles were selected manually, sort them by order in selection. This has to
+        // happen before the pagination below, which splits exactly this list into pages.
+        $manualSelection = !empty($demand->getProfileList());
+        if ($manualSelection) {
+            $profiles = $this->sortBySelectionOrder(
+                $profiles,
+                GeneralUtility::intExplode(',', $demand->getProfileList(), true),
+            );
+        }
+
         if (($this->settings['paginationEnabled'] ?? null) === '1') {
             $resultsPerPage = (int)($this->settings['pagination']['resultsPerPage'] ?? 10);
             $numberOfPaginationLinks = (int)($this->settings['pagination']['numberOfLinks'] ?? 5);
-            $paginator = new QueryResultPaginator($profiles, $demand->getCurrentPage(), $resultsPerPage);
+            // A manual selection is ordered in PHP and not by the database, so its pages are
+            // cut out of that ordered array. A QueryResultPaginator would page the query
+            // result instead - in database order, and with a LIMIT/OFFSET that carries no
+            // ORDER BY, which lets two pages overlap on PostgreSQL.
+            $paginator = $manualSelection
+                ? new ArrayPaginator($profiles, $demand->getCurrentPage(), $resultsPerPage)
+                : new QueryResultPaginator($profiles, $demand->getCurrentPage(), $resultsPerPage);
             if (ExtensionManagementUtility::isLoaded('numbered_pagination')
                 && class_exists(NumberedPagination::class)
             ) {
@@ -112,14 +129,6 @@ final class ProfileController extends ActionController
                 'paginator' => $paginator,
                 'pagination' => $pagination,
             ]);
-        }
-
-        // If profiles were selected manually, sort them by order in selection
-        if (!empty($demand->getProfileList())) {
-            $profiles = $this->sortBySelectionOrder(
-                $profiles,
-                GeneralUtility::intExplode(',', $demand->getProfileList(), true),
-            );
         }
 
         $this->view->assignMultiple([
