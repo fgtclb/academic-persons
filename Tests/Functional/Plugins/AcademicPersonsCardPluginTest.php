@@ -188,6 +188,64 @@ final class AcademicPersonsCardPluginTest extends AbstractAcademicPersonsTestCas
         $this->assertStringNotContainsString('Main Campus', $content);
     }
 
+    /**
+     * `contracts.organisationalUnit` is one of the items the `showFields` selector offers,
+     * and it is a relation: the partial has to render a property of the unit rather than the
+     * object - the defect the contract location had before ACE-317, and the reason the row
+     * used to render as a label with nothing behind it.
+     */
+    #[Test]
+    public function cardPluginRendersTheOrganisationalUnitOfAContract(): void
+    {
+        $this->setUpTestCase('cardPage_showFieldsContractRelations');
+
+        $content = $this->renderHomePage();
+        $this->assertStringContainsString('Organisational Unit', $content);
+        $this->assertStringContainsString('Institute of Applied Physics', $content);
+        $this->assertStringNotContainsString('OrganisationalUnit', $content);
+    }
+
+    /**
+     * `displayText` is the field meant for output and `unitName` the one an import fills
+     * reliably, so the second is what a unit without a display text renders.
+     */
+    #[Test]
+    public function cardPluginFallsBackToTheUnitNameWithoutADisplayText(): void
+    {
+        $this->setUpTestCase('cardPage_showFieldsContractRelations');
+
+        $this->assertStringContainsString('Faculty of Engineering', $this->renderHomePage());
+    }
+
+    /**
+     * The third contract has no unit, and the row of a field a contract does not carry is not
+     * rendered at all - not as an empty label either.
+     */
+    #[Test]
+    public function cardPluginRendersNoUnitRowForAContractWithoutOne(): void
+    {
+        $this->setUpTestCase('cardPage_showFieldsContractRelations');
+
+        $content = $this->renderHomePage();
+        $this->assertRendersProfileName($content, 'Erika', 'Beispiel');
+        $this->assertSame(2, substr_count($content, 'Organisational Unit'));
+    }
+
+    /**
+     * A `tel:` URI carries no spaces, while the stored number is written for a reader. The
+     * detail view has done this since it was written; the card rendered the stored number
+     * into the target unchanged.
+     */
+    #[Test]
+    public function cardPluginRendersADialablePhoneNumberTarget(): void
+    {
+        $this->setUpTestCase('cardPage_showFieldsContractRelations');
+
+        $content = $this->renderHomePage();
+        $this->assertStringContainsString('href="tel:+496241509123"', $content);
+        $this->assertStringContainsString('>+49 6241 509 123</a>', $content);
+    }
+
     #[Test]
     public function cardPluginHidesHiddenProfilesByDefault(): void
     {
