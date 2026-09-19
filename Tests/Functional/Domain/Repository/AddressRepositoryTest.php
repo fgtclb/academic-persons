@@ -122,6 +122,28 @@ final class AddressRepositoryTest extends AbstractAcademicPersonsTestCase
     }
 
     /**
+     * Records that share a `sorting` value - the state of every record an editor never
+     * reordered - are returned in uid order within that value: the `uid` tiebreaker the
+     * repository rule of docs/architecture/database-queries.md asks for.
+     *
+     * SQLite cannot make this fail: uid is the rowid, so uid order is its natural order for
+     * equal `sorting` values and the assertion passes with or without the tiebreaker there.
+     * On this branch PostgreSQL cannot either: the table is not workspace aware, so there is
+     * no `t3ver_oid` index for the planner to prefer over a scan in insertion order, and the
+     * test stays green on `-d postgres` without the tiebreaker as well. On the 3.x line, where
+     * that index exists, the same test is red there. The assertion pins the contract here.
+     */
+    #[Test]
+    public function findByContractIncludingHiddenBreaksEqualSortingTiesByUid(): void
+    {
+        $this->importCSVDataSet(__DIR__ . '/Fixtures/AddressRepositoryTest/equalSorting.csv');
+
+        $result = $this->subject()->findByContractIncludingHidden(1);
+
+        $this->assertSame([2, 3, 1, 4], $this->uidsInResultOrder($result));
+    }
+
+    /**
      * The values are read through the model rather than the uid alone, so a mapping that
      * silently returns the wrong row is caught as well.
      */
