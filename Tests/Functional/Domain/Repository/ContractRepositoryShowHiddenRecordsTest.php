@@ -46,4 +46,24 @@ final class ContractRepositoryShowHiddenRecordsTest extends AbstractAcademicPers
         $result = $this->getContractRepository()->findByUids([1, 2, 3, 4], true);
         $this->assertSame([1, 2, 3, 4], $this->resultUids($result));
     }
+
+    /**
+     * The result orders by `uid` ascending since ACE-491, whatever order the uids were
+     * requested in - `in()` does not preserve the argument order, and before the explicit
+     * ordering the result order belonged to the DBMS. The order of the editor's selection
+     * is deliberately not reproduced; that would be a behaviour change beyond making the
+     * list reproducible.
+     */
+    #[Test]
+    public function findByUidsReturnsUidOrderRegardlessOfTheRequestedOrder(): void
+    {
+        $this->importCSVDataSet(__DIR__ . '/Fixtures/ShowHiddenRecords/contracts.csv');
+
+        $uids = [];
+        foreach ($this->getContractRepository()->findByUids([3, 1]) as $contract) {
+            $uids[] = (int)$contract->getUid();
+        }
+
+        $this->assertSame([1, 3], $uids);
+    }
 }

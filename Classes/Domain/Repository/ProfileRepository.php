@@ -47,6 +47,9 @@ class ProfileRepository extends Repository
      * Applied whenever nothing else asks for an order, so that an unordered result is
      * reproducible rather than left to the DBMS. The plugin offers "none" as a sorting
      * option, and "no sorting the editor chose" still has to mean the same list twice.
+     * A demanded ordering gets it appended as a tiebreaker instead (array union, the
+     * demand wins on a key collision), so profiles equal in the demanded ordering - two
+     * people sharing a last name - keep a stable relative order as well (ACE-491).
      *
      * "uid" ascending is what every DBMS returns in practice - PostgreSQL without
      * promising it - so no installation sees its list change.
@@ -251,7 +254,7 @@ class ProfileRepository extends Repository
         if ($filters !== null) {
             $query->matching($filters);
         }
-        $query->setOrderings($this->getOrderingsFromDemand($demand) ?: self::FALLBACK_ORDERINGS);
+        $query->setOrderings($this->getOrderingsFromDemand($demand) + self::FALLBACK_ORDERINGS);
     }
 
     /**
@@ -314,6 +317,10 @@ class ProfileRepository extends Repository
         }
 
         $query->matching($query->in('uid', $uids));
+        // Deterministic order only (ACE-491) - the order of the editor's selection is
+        // deliberately not reproduced here: `in()` does not preserve it, and honouring
+        // it would be a behaviour change beyond making the list reproducible.
+        $query->setOrderings(self::FALLBACK_ORDERINGS);
         return $query->execute();
     }
 
@@ -354,6 +361,8 @@ class ProfileRepository extends Repository
         if ($showHidden === true) {
             $this->includeRestrictedRecordsForSynchronization($query);
         }
+
+        $query->setOrderings(self::FALLBACK_ORDERINGS);
 
         return $query
             ->matching(

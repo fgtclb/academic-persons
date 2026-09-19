@@ -14,6 +14,7 @@ namespace FGTCLB\AcademicPersons\Domain\Repository;
 use FGTCLB\AcademicPersons\Domain\Model\Contract;
 use TYPO3\CMS\Core\Context\LanguageAspect;
 use TYPO3\CMS\Core\Site\Entity\Site;
+use TYPO3\CMS\Extbase\Persistence\QueryInterface;
 use TYPO3\CMS\Extbase\Persistence\QueryResultInterface;
 use TYPO3\CMS\Extbase\Persistence\Repository;
 
@@ -31,6 +32,12 @@ class ContractRepository extends Repository
         // @todo Completely ignoring storage pages is a bad design, special for multi site instances.
         //       Needs a better way to deal with this hear and in other places.
         $query->getQuerySettings()->setRespectStoragePage(false);
+        // Without this the order is whatever the DBMS yields, which is not the same
+        // list twice once an index gives the planner an alternative (ACE-491). The table
+        // carries TCA ctrl `sortby`/`default_sortby`, but Extbase reads neither - and its
+        // `sorting` is scoped per parent profile through the inline relation, so a global
+        // ORDER BY sorting would interleave meaninglessly across profiles. `uid` it is.
+        $query->setOrderings(['uid' => QueryInterface::ORDER_ASCENDING]);
         return $query->execute();
     }
 
@@ -98,6 +105,10 @@ class ContractRepository extends Repository
             $query->getQuerySettings()->setEnableFieldsToBeIgnored(['disabled']);
         }
         $query->matching($query->in('uid', $uids));
+        // Deterministic order only (ACE-491) - the order of the editor's selection is
+        // deliberately not reproduced here: `in()` does not preserve it, and honouring
+        // it would be a behaviour change beyond making the list reproducible.
+        $query->setOrderings(['uid' => QueryInterface::ORDER_ASCENDING]);
 
         return $query->execute();
     }
