@@ -113,8 +113,7 @@ final class ProfileController extends ActionController
             $numberOfPaginationLinks = (int)($this->settings['pagination']['numberOfLinks'] ?? 5);
             // A manual selection is ordered in PHP and not by the database, so its pages are
             // cut out of that ordered array. A QueryResultPaginator would page the query
-            // result instead - in database order, and with a LIMIT/OFFSET that carries no
-            // ORDER BY, which lets two pages overlap on PostgreSQL.
+            // result instead, which is in uid order rather than in the order of the selection.
             $paginator = $manualSelection
                 ? new ArrayPaginator($profiles, $demand->getCurrentPage(), $resultsPerPage)
                 : new QueryResultPaginator($profiles, $demand->getCurrentPage(), $resultsPerPage);
