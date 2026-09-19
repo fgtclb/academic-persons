@@ -145,9 +145,9 @@ final class ProfileController extends ActionController
      * Bring records into the order the editor put them in.
      *
      * A selection is an ordered list in the FlexForm, but the query that fetches it
-     * matches `uid IN (...)` and returns whatever order the DBMS yields - the
-     * `profileList` branch of `ProfileRepository::applyDemandForQuery()` returns before
-     * any `setOrderings()` at all. So the order has to be restored here.
+     * matches `uid IN (...)`, which does not preserve that order - the `profileList` branch
+     * of `ProfileRepository::applyDemandForQuery()` orders by uid, for a reproducible result
+     * and nothing more. So the order the editor chose has to be restored here.
      *
      * Records not in the selection are dropped and a uid listed twice yields the record
      * twice, which is what the three hand written copies of this loop did before it was

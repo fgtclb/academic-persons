@@ -20,18 +20,17 @@ the database's. The paginated statement also carried no :sql:`ORDER BY` at all,
 which let two pages show the same profile, or none show it, on PostgreSQL.
 
 The selection is now sorted before it is paginated, and the pages are cut out of
-the sorted list.
-
-The selection query itself stays unordered on this branch, as every query of it
-is: giving one branch of one repository a deterministic ordering while the rest
-of the branch has none would read as an accident. It is tracked separately.
+the sorted list. The selection branch of
+:php:`ProfileRepository::applyDemandForQuery()` orders by :sql:`uid` ascending
+as well now, like every other branch: that result is what listeners of
+:php:`ModifyListProfilesEvent` receive, and it has to be the same list twice.
 
 Impact
 ======
 
 A list plugin with a manual selection **and** pagination renders its pages in
 the order the editor arranged them, from the first page on, and every selected
-profile appears on exactly one page.
+profile appears on exactly one page on every supported database.
 
 Nothing changes for a list without a manual selection, for a selection without
 pagination, or for the card, selected-profiles and selected-contracts plugins,

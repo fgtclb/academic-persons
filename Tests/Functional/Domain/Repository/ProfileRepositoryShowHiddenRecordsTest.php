@@ -68,6 +68,27 @@ final class ProfileRepositoryShowHiddenRecordsTest extends AbstractAcademicPerso
         $this->assertSame([1, 3], $uids);
     }
 
+    /**
+     * A manual selection overrules the demanded ordering, so the `profileList` branch of
+     * `applyDemandForQuery()` returns before it is applied. It still orders by `uid`: the
+     * result is what listeners of `ModifyListProfilesEvent` receive, and an unordered
+     * `uid IN (...)` is only accidentally reproducible (ACE-482). The order of the
+     * selection itself is restored by `ProfileController::listAction()`, not here.
+     */
+    #[Test]
+    public function findByDemandReturnsAManualSelectionInUidOrder(): void
+    {
+        $this->importCSVDataSet(__DIR__ . '/Fixtures/ShowHiddenRecords/profiles.csv');
+        $demand = (new ProfileDemand())->setProfileList('3,1');
+
+        $uids = [];
+        foreach ($this->getProfileRepository()->findByDemand($demand) as $profile) {
+            $uids[] = (int)$profile->getUid();
+        }
+
+        $this->assertSame([1, 3], $uids);
+    }
+
     #[Test]
     public function findByDemandExcludesHiddenRecordsByDefault(): void
     {
