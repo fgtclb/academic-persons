@@ -50,30 +50,21 @@ final class AddressRepositoryTest extends AbstractAcademicPersonsTestCase
     }
 
     /**
-     * `findAll()` sets no orderings at all, so the order it returns is whatever the DBMS
-     * produces. Sorting the uids keeps the expectation honest across the four DBMS the
-     * functional suite runs on.
-     *
-     * @param QueryResultInterface<int, Address> $result
-     * @return int[]
-     */
-    private function sortedUids(QueryResultInterface $result): array
-    {
-        $uids = $this->uidsInResultOrder($result);
-        sort($uids);
-        return $uids;
-    }
-
-    /**
      * The storage page restriction is lifted, so the record on pid 2 is part of the result even
      * though no storage page was ever configured for the test.
+     *
+     * The records come back in uid order, which `findAll()` requests since ACE-431 - not in
+     * `sorting` order, which the fixture runs against uid order and which is scoped per
+     * contract. SQLite cannot make this fail, since uid is its rowid, and on this branch neither
+     * can PostgreSQL: the table is not workspace aware, so there is no index for its planner
+     * to prefer. The assertion pins the contract; the `sorting` fixture is what it can prove.
      */
     #[Test]
     public function findAllReturnsRecordsFromEveryStoragePage(): void
     {
         $this->importCSVDataSet(self::FIXTURE);
 
-        $this->assertSame([1, 3, 5, 6, 7], $this->sortedUids($this->subject()->findAll()));
+        $this->assertSame([1, 3, 5, 6, 7], $this->uidsInResultOrder($this->subject()->findAll()));
     }
 
     /**
@@ -86,7 +77,7 @@ final class AddressRepositoryTest extends AbstractAcademicPersonsTestCase
     {
         $this->importCSVDataSet(self::FIXTURE);
 
-        $this->assertNotContains(2, $this->sortedUids($this->subject()->findAll()));
+        $this->assertNotContains(2, $this->uidsInResultOrder($this->subject()->findAll()));
     }
 
     #[Test]
@@ -94,13 +85,13 @@ final class AddressRepositoryTest extends AbstractAcademicPersonsTestCase
     {
         $this->importCSVDataSet(self::FIXTURE);
 
-        $this->assertNotContains(4, $this->sortedUids($this->subject()->findAll()));
+        $this->assertNotContains(4, $this->uidsInResultOrder($this->subject()->findAll()));
     }
 
     #[Test]
     public function findAllReturnsAnEmptyResultWhenNoRecordExists(): void
     {
-        $this->assertSame([], $this->sortedUids($this->subject()->findAll()));
+        $this->assertSame([], $this->uidsInResultOrder($this->subject()->findAll()));
     }
 
     /**
