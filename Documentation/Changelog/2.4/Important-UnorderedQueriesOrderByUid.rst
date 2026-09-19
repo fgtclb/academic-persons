@@ -25,10 +25,11 @@ All four now order by :sql:`uid` ascending when nothing else asks for an order.
 Impact
 ======
 
-No visible change is expected. Every supported database returned insertion
-order for these queries in practice, and :sql:`uid` ascending is that same
-order — the assertions of the affected functional tests are unchanged, they
-are simply guaranteed now rather than coincidental.
+No visible change is expected on SQLite, MySQL and MariaDB. They returned
+insertion order for these queries in practice, and :sql:`uid` ascending is that
+same order — the assertions of the affected functional tests are unchanged,
+they are simply guaranteed now rather than coincidental. PostgreSQL promised no
+order, as the next paragraph shows.
 
 What changes is that the order is reproducible. It previously depended on the
 database, its version and which indexes existed, and could therefore change

@@ -47,10 +47,9 @@ class PhoneNumberRepository extends Repository
         $query->getQuerySettings()->setIgnoreEnableFields(true);
         $query->getQuerySettings()->setEnableFieldsToBeIgnored(['disabled']);
         $query->matching($query->equals('contract', $contractUid));
-        // `sorting` with `uid` breaking ties: synchronized records are never reordered by
-        // an editor and therefore all share one `sorting` value, and the import match
-        // below adopts the first row of this result - so without the tiebreaker which
-        // record it adopts would be whatever the DBMS happens to return.
+        // `sorting` with `uid` breaking ties: records can share a `sorting` value, and
+        // ProfileFactory adopts the first record carrying its import identifier - so
+        // without the tiebreaker which one it adopts could depend on the DBMS.
         $query->setOrderings([
             'sorting' => QueryInterface::ORDER_ASCENDING,
             'uid' => QueryInterface::ORDER_ASCENDING,

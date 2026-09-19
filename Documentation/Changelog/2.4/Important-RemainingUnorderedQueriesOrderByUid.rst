@@ -31,9 +31,10 @@ winning and gets :sql:`uid` ascending appended as a tiebreaker.
 Impact
 ======
 
-No visible change is expected: :sql:`uid` ascending is the order every
-supported database returned in practice, it is simply guaranteed now rather
-than coincidental.
+No visible change is expected on SQLite, MySQL and MariaDB: :sql:`uid` ascending
+is the order they return in practice, and it is guaranteed now rather than
+coincidental. PostgreSQL promises no order without one, so an installation on it
+may see such a list change once.
 
 For the two uid selection methods the order of the editor's selection is
 deliberately **not** reproduced — :php:`in()` does not preserve it, and it was

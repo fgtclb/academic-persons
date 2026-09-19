@@ -26,8 +26,8 @@ use TYPO3\CMS\Extbase\Persistence\QueryResultInterface;
  *
  * The result orders by `uid` ascending since ACE-491 - before that the statement carried no
  * `ORDER BY` and the order belonged to the DBMS. The table's TCA `sortby`/`default_sortby` is a
- * backend concept Extbase does not read, so `uid` - the order every DBMS happened to return -
- * is what keeps the select items stable without visibly reordering any installation.
+ * backend concept Extbase does not read, so `uid` - the order SQLite, MySQL and MariaDB return
+ * in practice - is what keeps the select items stable without reordering them there.
  */
 final class ContractRepositoryFindAllTest extends AbstractAcademicPersonsTestCase
 {

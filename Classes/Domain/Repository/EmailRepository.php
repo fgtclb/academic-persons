@@ -47,9 +47,9 @@ class EmailRepository extends Repository
         $query->getQuerySettings()->setIgnoreEnableFields(true);
         $query->getQuerySettings()->setEnableFieldsToBeIgnored(['disabled']);
         $query->matching($query->equals('contract', $contractUid));
-        // `sorting` with `uid` breaking ties: records an editor never reordered share a
-        // `sorting` value, and without the tiebreaker their relative order is whatever the
-        // DBMS yields - see docs/architecture/database-queries.md.
+        // `sorting` with `uid` breaking ties: records can share a `sorting` value, and
+        // without the tiebreaker their relative order within it is whatever the DBMS
+        // yields - see docs/architecture/database-queries.md.
         $query->setOrderings([
             'sorting' => QueryInterface::ORDER_ASCENDING,
             'uid' => QueryInterface::ORDER_ASCENDING,

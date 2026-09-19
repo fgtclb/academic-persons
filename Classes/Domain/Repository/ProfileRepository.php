@@ -51,8 +51,8 @@ class ProfileRepository extends Repository
      * demand wins on a key collision), so profiles equal in the demanded ordering - two
      * people sharing a last name - keep a stable relative order as well (ACE-491).
      *
-     * "uid" ascending is what every DBMS returns in practice - PostgreSQL without
-     * promising it - so no installation sees its list change.
+     * "uid" ascending is what SQLite, MySQL and MariaDB return in practice, so installations
+     * on them see no change; PostgreSQL promises no order, and an index lets it return another.
      *
      * @var array<string, string>
      */
