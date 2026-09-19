@@ -18,10 +18,10 @@ use TYPO3\CMS\Extbase\Persistence\QueryResultInterface;
  * cases below the ones that actually pin the override down; everything else pins the settings
  * the method deliberately leaves alone.
  *
- * `findAll()` sets no orderings and `ProfileRepository` declares no `$defaultOrderings`, so the
- * statement carries no `ORDER BY` and the result order is whatever the DBMS returns. The
- * assertions therefore compare sorted uid sets - asserting an order here would pin SQLite
- * behaviour that MySQL, MariaDB and PostgreSQL are free to differ on.
+ * `findAll()` orders by `uid` since ACE-482; before that the statement carried no `ORDER BY`
+ * and the result order was whatever the DBMS returned. The uids are therefore compared in
+ * result order. That cannot fail on SQLite, where uid is the rowid and uid order its natural
+ * order; it pins the order for the databases where it used to be arbitrary.
  *
  * The hidden and deleted expectations look like the ones in
  * `ProfileRepositoryShowHiddenRecordsTest`, but they are about a different method: there is no
@@ -139,7 +139,6 @@ final class ProfileRepositoryFindAllTest extends AbstractAcademicPersonsTestCase
         foreach ($result as $profile) {
             $uids[] = (int)$profile->getUid();
         }
-        sort($uids);
         return $uids;
     }
 
