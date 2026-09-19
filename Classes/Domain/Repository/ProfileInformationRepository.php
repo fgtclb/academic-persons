@@ -31,6 +31,11 @@ class ProfileInformationRepository extends Repository
         // @todo Completely ignoring storage pages is a bad design, special for multi site instances.
         //       Needs a better way to deal with this hear and in other places.
         $query->getQuerySettings()->setRespectStoragePage(false);
+        // Without this the order is whatever the DBMS yields, which is not the same list twice
+        // once an index gives the planner an alternative (ACE-431). The table's `sorting` is
+        // scoped per parent profile through the inline relation, so a global ORDER BY sorting
+        // would interleave meaninglessly across profiles. `uid` it is.
+        $query->setOrderings(['uid' => QueryInterface::ORDER_ASCENDING]);
         return $query->execute();
     }
 

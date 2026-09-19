@@ -20,11 +20,14 @@ use TYPO3\CMS\Extbase\Persistence\QueryResultInterface;
  * profiles anywhere else.
  *
  * The contrast with `findByProfileAndType()` is what makes the rest of this class worth writing:
- * that method sorts explicitly by `sorting, uid`, this one sets no orderings at all and
- * `ProfileInformationRepository` declares no `$defaultOrderings`. The TCA `sortby`/`default_sortby`
- * of the table is a backend concept Extbase does not read, so the statement carries no `ORDER BY`
- * and the result order belongs to the DBMS. The assertions below therefore compare sorted uid
- * sets rather than an order.
+ * that method sorts by `sorting, uid` within one profile, this one orders by `uid` alone since
+ * ACE-431 - the TCA `sortby`/`default_sortby` of the table is a backend concept Extbase does not
+ * read, and `sorting` is scoped per profile, so it means nothing across profiles. The uids are
+ * compared in result order. That cannot fail on SQLite, where uid is the rowid. It does fail on
+ * PostgreSQL without the ordering: the table is workspace aware, and the planner takes another path.
+ *
+ * Ordering by `sorting` instead would pass here as well: the fixture's `sorting` values never
+ * run against uid order, so the assertion does not tell the two orderings apart.
  */
 final class ProfileInformationRepositoryFindAllTest extends AbstractAcademicPersonsTestCase
 {
@@ -131,7 +134,6 @@ final class ProfileInformationRepositoryFindAllTest extends AbstractAcademicPers
         foreach ($result as $profileInformation) {
             $uids[] = (int)$profileInformation->getUid();
         }
-        sort($uids);
         return $uids;
     }
 
