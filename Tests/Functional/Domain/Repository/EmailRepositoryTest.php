@@ -123,9 +123,8 @@ final class EmailRepositoryTest extends AbstractAcademicPersonsTestCase
     }
 
     /**
-     * Records that share a `sorting` value - the state of every record an editor never
-     * reordered - are returned in uid order within that value: the `uid` tiebreaker the
-     * repository rule of docs/architecture/database-queries.md asks for.
+     * Records that share a `sorting` value are returned in uid order within that value: the
+     * `uid` tiebreaker the repository rule of docs/architecture/database-queries.md asks for.
      *
      * SQLite cannot make this fail: uid is the rowid, so uid order is its natural order for
      * equal `sorting` values and the assertion passes with or without the tiebreaker there.
