@@ -79,6 +79,71 @@ A site that depends on a single component set still gets the shipped defaults,
 but can only override them in :guilabel:`Site Settings` when it depends on
 `fgtclb/academic-persons`.
 
+..  _configuration-contract-select-storage-scope:
+
+Restrict the backend contract selects
+=====================================
+
+Two backend fields let an editor pick a contract: the :guilabel:`Contract` of a
+page contact record of :guilabel:`EXT:academic_contacts4pages`, and
+:guilabel:`Selected contracts` of the :guilabel:`Profiles: Selected Contracts`
+content element. Both offer every contract of the installation — in an
+installation with more than one site, that is every site's contracts, each
+labelled with a person's name.
+
+Page TSconfig restricts a field to the pages the contracts of that page tree are
+stored on. Page TSconfig is inherited down the page tree, so each site
+configures its own folders on its root page.
+
+The setting is opt-in, and without it nothing changes. Respecting the Extbase
+storage page instead is deliberately not done: a page tree without an explicitly
+configured storage page would get an empty select and no error.
+
+..  confval:: itemsProcFunc.storagePids
+    :name: contract-select-storage-pids
+    :type: string, a comma-separated list of page uids
+    :Default: (empty)
+
+    The pages a contract has to be stored on to be offered. Empty — the default
+    — offers every contract of the installation.
+
+..  confval:: itemsProcFunc.recursive
+    :name: contract-select-recursive
+    :type: integer
+    :Default: 0
+
+    How many levels below each listed page are included. The default ``0`` uses
+    the listed pages themselves. A hidden folder is included as well, because a
+    storage folder is regularly hidden.
+
+Set them on the page record of the site root, tab :guilabel:`Resources`, field
+:guilabel:`Page TSconfig`. The path of the FlexForm field is the longer one: it
+carries the data structure identifier and the sheet, and the dot in the
+element's name is escaped.
+
+..  code-block:: typoscript
+    :caption: Page TSconfig of a site root
+
+    # The "Contract" field of a page contact record.
+    TCEFORM.tx_academiccontacts4pages_domain_model_contact.contract.itemsProcFunc {
+        storagePids = 42,84
+        recursive = 1
+    }
+
+    # The "Selected contracts" field of the content element.
+    TCEFORM.tt_content.pi_flexform.academicpersons_selectedcontracts.sDEF.settings\.selectedContracts.itemsProcFunc {
+        storagePids = 42,84
+        recursive = 1
+    }
+
+A contract the record already references stays selectable even when it is stored
+outside the listed pages. Without that, opening and saving the record would drop
+the relation, because a select offers no other source for its value.
+
+The restriction is applied before
+:php:`\FGTCLB\AcademicBase\Event\ModifyTcaSelectFieldItemsEvent` is
+dispatched, so a listener of that event still has the last word.
+
 ..  _configuration-hidden-by-default:
 
 The content elements are hidden by default

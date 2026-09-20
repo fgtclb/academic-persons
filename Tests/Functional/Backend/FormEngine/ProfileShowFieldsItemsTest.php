@@ -152,7 +152,10 @@ final class ProfileShowFieldsItemsTest extends AbstractAcademicPersonsTestCase
         $processorParameters = [
             'items' => &$items,
             'config' => $GLOBALS['TCA'][$tableName]['columns'][$fieldName]['config'],
-            'TSconfig' => BackendUtility::getPagesTSconfig($pageId),
+            // The content of the field's `itemsProcFunc.` page TSconfig, with that key
+            // already stripped - the shape FormEngine passes, see
+            // docs/architecture/backend-select-items.md.
+            'TSconfig' => BackendUtility::getPagesTSconfig($pageId)['TCEFORM.'][$tableName . '.'][$fieldName . '.']['itemsProcFunc.'] ?? null,
             'table' => $tableName,
             'field' => $fieldName,
             'effectivePid' => $pageId,
