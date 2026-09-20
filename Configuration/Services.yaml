@@ -21,11 +21,30 @@ services:
   FGTCLB\AcademicPersons\Hook\DataHandlerHooks:
     public: true
 
+  # Instantiated by the DataHandler through GeneralUtility::makeInstance(), which
+  # resolves a public service from the container - constructor injection needs it.
+  FGTCLB\AcademicPersons\Hook\ContractSortingHook:
+    public: true
+
   FGTCLB\AcademicPersons\EventListener\UpdateProfileImageMetadata:
     tags:
       - name: event.listener
         identifier: academicPersonsUpdateProfileImageMetadata
         event: FGTCLB\AcademicPersons\Event\AfterProfileUpdateEvent
+
+  # The DataHandler hook of the same rule covers the backend only; an Extbase write
+  # never reaches it. Both persistence events are needed: one for a contract that is
+  # created, one for a contract that is updated.
+  FGTCLB\AcademicPersons\EventListener\AssignContractOrganisationalUnitSorting:
+    tags:
+      - name: event.listener
+        identifier: academicPersonsAssignContractOrganisationalUnitSortingOnAdd
+        method: afterEntityAdded
+        event: TYPO3\CMS\Extbase\Event\Persistence\EntityAddedToPersistenceEvent
+      - name: event.listener
+        identifier: academicPersonsAssignContractOrganisationalUnitSortingOnUpdate
+        method: afterEntityUpdated
+        event: TYPO3\CMS\Extbase\Event\Persistence\EntityUpdatedInPersistenceEvent
 
   FGTCLB\AcademicPersons\Settings\AcademicPersonsSettings:
     public: true

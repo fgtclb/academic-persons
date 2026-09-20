@@ -36,19 +36,24 @@ The steps at a glance
     *   -   3. Update the database schema
         -   Applies the column changes of 3.0.0, among them the unsigned
             timeline year columns and the workspace columns.
-        -   The wizard of step 4 finds no repaired schema and the editor
-            writes into columns the installation does not have.
-    *   -   4. Repair the profile image relations
+        -   The wizards of steps 4 and 5 find columns the installation does
+            not have, and the editor writes into them too.
+    *   -   4. Seed the sort order of the organisational unit contracts
+        -   Fills the sort column the organisational unit relation gained, from
+            the order the unit forms show today.
+        -   Every organisational unit form lists its contracts in whatever order
+            the database returns until the unit is saved once.
+    *   -   5. Repair the profile image relations
         -   Reduces duplicate references, corrects relation counters and marks
             the translations that carry an image of their own.
         -   A translation loses its own image at the next synchronisation, and
             duplicate references keep rendering the wrong file.
-    *   -   5. Migrate the settings override
+    *   -   6. Migrate the settings override
         -   Replaces the pre-3.0 keys of a site package with the section maps.
         -   The installation runs on the legacy overlay, which is removed in
             4.0 - and a renamed ``type`` or ``fieldName`` stays silently
             broken.
-    *   -   6. Adapt templates, icons and TypoScript
+    *   -   7. Adapt templates, icons and TypoScript
         -   Re-applies project overrides to the new template tree and makes the
             JSON page type reachable.
         -   The editor cannot save, and an overridden detail view loses the
@@ -146,9 +151,43 @@ unsigned because the corrected TCA declares a lower bound of ``0``.
     and never drops it on its own. Accepting such an offer is a decision of the
     installation, not a step of this upgrade.
 
+..  _upgrade-step-inline-sorting:
+
+4. Seed the sort order of the organisational unit contracts
+===========================================================
+
+..  code-block:: bash
+
+    vendor/bin/typo3 upgrade:run academicPersons_seedContractOrganisationalUnitSorting
+
+A contract is an inline child of its profile and of its organisational unit, and
+both relations wrote the same :sql:`sorting` column until 3.0.0 - so saving an
+organisational unit rearranged the contracts of every profile that owns one of
+them. The unit relation has a column of its own from 3.0.0 on,
+:sql:`organisational_unit_sorting`, which step 3 adds and this wizard fills with
+the order the unit forms show today.
+
+Run it after step 3. Without it every contract carries :sql:`0` in the new
+column, so an organisational unit form lists its contracts in whatever order the
+database returns until an editor saves that unit once. Nothing the frontend
+renders is affected either way: profiles keep ordering their contracts by
+:sql:`sorting`. See :ref:`important-organisational-unit-sorts-its-contracts`.
+
+Contracts created after the update do not need it: they are appended to the list
+of their organisational unit as they join it. Running the wizard again is
+harmless all the same - it appends what has no position yet and never renumbers
+what has one.
+
+..  note::
+    :composer:`fgtclb/academic-partners` and
+    :composer:`fgtclb/academic-contacts4pages` ship the same repair for their own
+    tables, as ``academicPartners_seedPartnershipRoleSorting`` and
+    ``academicContact4pages_seedContactSecondarySorting``. Run them in the same
+    step where those extensions are installed.
+
 ..  _upgrade-step-images:
 
-4. Repair the profile image relations
+5. Repair the profile image relations
 =====================================
 
 Only relevant where :guilabel:`academic_persons_edit` is installed, and only
@@ -180,7 +219,7 @@ academicPersonsEdit_repairLocalizedProfileImages` offers it again. See
 
 ..  _upgrade-step-settings:
 
-5. Migrate the settings override
+6. Migrate the settings override
 ================================
 
 Only relevant for an installation whose site package ships
@@ -224,7 +263,7 @@ is deliberately not mapped;
 
 ..  _upgrade-step-templates:
 
-6. Adapt templates, icons and TypoScript
+7. Adapt templates, icons and TypoScript
 ========================================
 
 The public detail view
