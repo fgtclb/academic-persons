@@ -30,7 +30,7 @@ final class ProfileShowFieldsItems
      *       group?: string|null,
      *      }>,
      *      config: array<string, mixed>,
-     *      TSconfig: array<string, mixed>,
+     *      TSconfig: array<string, mixed>|null,
      *      table: string,
      *      row: array<string, mixed>,
      *      field: string,

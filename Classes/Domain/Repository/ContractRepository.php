@@ -11,10 +11,12 @@ declare(strict_types=1);
 
 namespace FGTCLB\AcademicPersons\Domain\Repository;
 
+use FGTCLB\AcademicPersons\Backend\FormEngine\ContractSelectScopeResolver;
 use FGTCLB\AcademicPersons\Domain\Model\Contract;
 use FGTCLB\AcademicPersons\Domain\Model\Profile;
 use TYPO3\CMS\Core\Context\LanguageAspect;
 use TYPO3\CMS\Core\Site\Entity\Site;
+use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Extbase\Persistence\QueryInterface;
 use TYPO3\CMS\Extbase\Persistence\QueryResultInterface;
 use TYPO3\CMS\Extbase\Persistence\Repository;
@@ -58,7 +60,7 @@ class ContractRepository extends Repository
      *       group?: string|null,
      *      }>,
      *      config: array<string, mixed>,
-     *      TSconfig: array<string, mixed>,
+     *      TSconfig: array<string, mixed>|null,
      *      table: string,
      *      row: array<string, mixed>,
      *      field: string,
@@ -77,7 +79,45 @@ class ContractRepository extends Repository
      */
     public function getContractItemsForTcaItemsProcFunc(array $parameters): QueryResultInterface
     {
-        return $this->findAll();
+        $scope = GeneralUtility::makeInstance(ContractSelectScopeResolver::class)->resolve($parameters);
+
+        return $this->findForBackendSelect($scope->storagePageIds, $scope->alwaysIncludeUids);
+    }
+
+    /**
+     * The contracts a backend select offers, restricted to the pages an integrator listed
+     * for the field in page TSconfig.
+     *
+     * An empty $storagePageIds means no restriction, which is what the selects did before
+     * the setting existed: respecting the Extbase storage page instead empties them
+     * wherever none is configured (ACE-431).
+     *
+     * @param int[] $storagePageIds
+     * @param int[] $alwaysIncludeUids Offered wherever they are stored, so that opening and
+     *                                 saving a record never drops a relation it already has
+     * @return QueryResultInterface<int, Contract>
+     */
+    public function findForBackendSelect(array $storagePageIds, array $alwaysIncludeUids = []): QueryResultInterface
+    {
+        if ($storagePageIds === []) {
+            return $this->findAll();
+        }
+
+        $query = $this->createQuery();
+        $query->getQuerySettings()->setRespectStoragePage(false);
+        // This is the Extbase `in()`, not the query builder one of
+        // docs/architecture/database-queries.md: `Typo3DbQueryParser` rejects an empty
+        // list with `BadConstraintException` 1484828466 before it reaches any database,
+        // so the two lists are checked rather than quoted.
+        $constraints = [$query->in('pid', $storagePageIds)];
+        if ($alwaysIncludeUids !== []) {
+            $constraints[] = $query->in('uid', $alwaysIncludeUids);
+        }
+        $query->matching(count($constraints) === 1 ? $constraints[0] : $query->logicalOr(...$constraints));
+        // Same ordering as `findAll()`, for the same reason - see there.
+        $query->setOrderings(['uid' => QueryInterface::ORDER_ASCENDING]);
+
+        return $query->execute();
     }
 
     /**

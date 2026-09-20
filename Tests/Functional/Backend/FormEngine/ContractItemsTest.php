@@ -23,7 +23,7 @@ final class ContractItemsTest extends AbstractAcademicPersonsTestCase
     protected function setUp(): void
     {
         parent::setUp();
-        $backupTCA = $GLOBALS['TCA'];
+        $this->backupTCA = $GLOBALS['TCA'];
     }
 
     protected function tearDown(): void
@@ -152,7 +152,7 @@ final class ContractItemsTest extends AbstractAcademicPersonsTestCase
         $processorParameters = [
             'items' => &$items,
             'config' => $GLOBALS['TCA'][$tableName]['columns'][$fieldName]['config'],
-            'TSconfig' => BackendUtility::getPagesTSconfig($pageId),
+            'TSconfig' => $this->fieldItemsProcFuncTsConfig($pageId, $tableName, $fieldName),
             'table' => $tableName,
             'field' => $fieldName,
             'effectivePid' => $pageId,
@@ -167,7 +167,7 @@ final class ContractItemsTest extends AbstractAcademicPersonsTestCase
      * @return array{
      *     items: array<int, array<string, mixed>>,
      *     config: array<string, mixed>,
-     *     TSconfig: array<string, mixed>,
+     *     TSconfig: array<string, mixed>|null,
      *     table: string,
      *     field: string,
      *     effectivePid: int,
@@ -183,12 +183,27 @@ final class ContractItemsTest extends AbstractAcademicPersonsTestCase
         return [
             'items' => [],
             'config' => $GLOBALS['TCA'][$tableName]['columns'][$fieldName]['config'] ?? [],
-            'TSconfig' => BackendUtility::getPagesTSconfig($pageId),
+            'TSconfig' => $this->fieldItemsProcFuncTsConfig($pageId, $tableName, $fieldName),
             'table' => $tableName,
             'field' => $fieldName,
             'effectivePid' => $pageId,
             'site' => $site,
         ];
+    }
+
+    /**
+     * What FormEngine puts into `$parameters['TSconfig']`: the content of the field's
+     * `itemsProcFunc.` page TSconfig, with that key already stripped - see
+     * `AbstractItemProvider::resolveItemProcessorFunction()` on TYPO3 v13 and
+     * `ItemProcessingService::processItems()` on v14.
+     *
+     * @return array<string, mixed>|null
+     */
+    private function fieldItemsProcFuncTsConfig(int $pageId, string $tableName, string $fieldName): ?array
+    {
+        $tsConfig = BackendUtility::getPagesTSconfig($pageId);
+
+        return $tsConfig['TCEFORM.'][$tableName . '.'][$fieldName . '.']['itemsProcFunc.'] ?? null;
     }
 
     private function applyFakeTableTca(): void
