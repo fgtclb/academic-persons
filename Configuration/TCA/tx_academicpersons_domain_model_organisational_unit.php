@@ -169,7 +169,9 @@ return [
                 ],
                 'enableCascadingDelete' => true,
                 'foreign_field' => 'organisational_unit',
-                'foreign_sortby' => 'sorting',
+                // A sort column of this relation's own: the profile relation owns
+                // "sorting", the column the frontend renders contracts in.
+                'foreign_sortby' => 'organisational_unit_sorting',
                 'foreign_table' => 'tx_academicpersons_domain_model_contract',
             ],
         ],

@@ -30,3 +30,21 @@ services:
         command: 'academic:updateprofiles'
         description: 'This command updates profiles for all frontend users that have a profile.'
 
+  # Instantiated by the DataHandler through GeneralUtility::makeInstance(), which
+  # resolves a public service from the container - constructor injection needs it.
+  FGTCLB\AcademicPersons\Hook\ContractSortingHook:
+    public: true
+
+  # The DataHandler hook of the same rule covers the backend only; an Extbase write
+  # never reaches it. Both persistence events are needed: one for a contract that is
+  # created, one for a contract that is updated.
+  FGTCLB\AcademicPersons\EventListener\AssignContractOrganisationalUnitSorting:
+    tags:
+      - name: event.listener
+        identifier: academicPersonsAssignContractOrganisationalUnitSortingOnAdd
+        method: afterEntityAdded
+        event: TYPO3\CMS\Extbase\Event\Persistence\EntityAddedToPersistenceEvent
+      - name: event.listener
+        identifier: academicPersonsAssignContractOrganisationalUnitSortingOnUpdate
+        method: afterEntityUpdated
+        event: TYPO3\CMS\Extbase\Event\Persistence\EntityUpdatedInPersistenceEvent

@@ -38,6 +38,11 @@ CREATE TABLE tx_academicpersons_domain_model_contract (
     publish smallint(5) unsigned DEFAULT '0' NOT NULL,
     sorting int(11) unsigned DEFAULT '0' NOT NULL,
 
+    -- The sort order within the organisational unit. The profile owns the shared
+    -- "sorting" column; a "foreign_sortby" column is not derived from TCA, so the
+    -- second relation declares its own here.
+    organisational_unit_sorting int(11) unsigned DEFAULT '0' NOT NULL,
+
     import_identifier varchar(170) DEFAULT '' NOT NULL,
     key idx_import_identifier(`import_identifier`),
 );

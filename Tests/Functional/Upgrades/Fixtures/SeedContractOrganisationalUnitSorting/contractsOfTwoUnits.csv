@@ -1,0 +1,21 @@
+"pages",
+,"uid","pid","doktype","deleted","hidden","sys_language_uid","l10n_parent","slug","title"
+,1,0,1,0,0,0,0,"/","Site Root"
+,100,1,254,0,0,0,0,"/sysfolder-records","Recordcollection"
+"tx_academicpersons_domain_model_profile",
+,"uid","pid","deleted","hidden","sys_language_uid","l10n_parent","first_name","last_name","contracts"
+,1,100,0,0,0,0,"Max","Müllermann",3
+,2,100,0,0,0,0,"Erika","Musterfrau",3
+"tx_academicpersons_domain_model_organisational_unit",
+,"uid","pid","deleted","hidden","sys_language_uid","l10n_parent","unit_name","contracts"
+,1,100,0,0,0,0,"Faculty of Science",3
+,2,100,0,0,0,0,"Faculty of Arts",2
+"tx_academicpersons_domain_model_contract",
+,"uid","pid","deleted","hidden","sys_language_uid","l10n_parent","sorting","profile","organisational_unit","position","organisational_unit_sorting"
+,1,100,0,0,0,0,2,1,1,"Professor",0
+,2,100,0,0,0,0,2,1,1,"Dean",0
+,3,100,0,0,0,0,1,2,1,"Lecturer",0
+,4,100,0,0,0,0,7,2,2,"Researcher",0
+,5,100,0,0,0,0,5,1,2,"Assistant",0
+,6,100,0,0,0,0,1,2,0,"Emeritus",0
+,7,100,1,0,0,0,3,2,1,"Tutor",0
