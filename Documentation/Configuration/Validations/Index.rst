@@ -268,42 +268,33 @@ Overriding the flags
 
 The flags live in the map that carries the field, so changing them means
 overriding that map - see :ref:`Overriding the file
-<configuration-sections-override>`. The files are merged on the top level only:
-a site package that defines :yaml:`profile` replaces the shipped
-:yaml:`profile` map completely, layout and fields alike, and there is no syntax
-for changing a single flag of a single field.
+<configuration-sections-override>`. The files are merged recursively, so an
+override names the field and its :yaml:`validators` list and nothing else. The
+list itself is replaced as a whole, which is how a flag is dropped.
 
 Example - making the profile names editable again, in the backend and in the
-editing frontend. The shipped :yaml:`profile` map is repeated with the two
-flags removed from the three name fields; the layout keys and the other fields
-are copied unchanged and are shortened here for readability:
+editing frontend. The three name fields ship with :yaml:`readonly` and
+:yaml:`disabled`; an empty list clears them, and every other key of those
+fields, of the other fields and of the layout stays as shipped:
 
 ..  code-block:: yaml
 
     profile:
-      structure:
-        # ... as shipped
-      details:
-        # ... as shipped
-      gender:
-        section: information
-        fieldType: select
-        renderType: select
+      firstName:
+        validators: []
+      middleName:
+        validators: []
+      lastName:
+        validators: []
+
+A flag is added the same way, by restating the list with it:
+
+..  code-block:: yaml
+
+    profile:
+      title:
         validators:
           - required
-      firstName:
-        section: information
-        fieldType: input
-        renderType: text
-      middleName:
-        section: information
-        fieldType: input
-        renderType: text
-      lastName:
-        section: information
-        fieldType: input
-        renderType: text
-      # ... the remaining fields as shipped
 
 ..  note::
     Because both editing contexts read the same configuration, an override

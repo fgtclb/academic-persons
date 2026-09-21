@@ -1,8 +1,13 @@
 # A site package override of the public profile layout, reduced to what the
 # test asserts: no navigation column, two elements on the right in an order
 # the shipped file does not use, and a headline that names the last name first.
-# The editable fields below `profile` are deliberately absent - the `profile`
-# map is replaced as a whole, so the editing frontend sees no field here.
+# The editable fields below `profile` are deliberately absent: the settings
+# files merge recursively, so they stay as academic_persons ships them, and
+# this file names nothing but the two layout keys. The four entries it does
+# name - both `structure` columns, `details.profileEntries` and
+# `details.headline` - are lists, and a list is replaced as a whole. Other
+# `details` entries of the shipped file are maps or strings and stay as they
+# are; the layout decides that they are not rendered.
 profile:
   structure:
     left: []

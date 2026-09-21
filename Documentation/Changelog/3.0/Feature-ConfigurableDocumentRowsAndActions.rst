@@ -66,8 +66,9 @@ Impact
 ======
 
 The shipped sections list every row field and action that makes sense for
-them. A site package that overrides :yaml:`documentSections` restates the two
-lists for every section it declares - a section without :yaml:`actions`
-offers no action at all. Flush the TYPO3 caches after changing the file.
+them. A site package that overrides a section keeps both lists as long as it
+does not name them; they are lists, so naming one replaces it completely - and
+an empty :yaml:`actions` list means no action at all. Flush the TYPO3 caches
+after changing the file.
 
 ..  index:: Configuration, Frontend, ext:academic_persons

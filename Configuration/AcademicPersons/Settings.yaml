@@ -12,11 +12,13 @@
 #
 # Loading and overriding
 # ----------------------
-# Settings.yaml files from all active packages are loaded and merged by their
-# top-level keys. A later package replaces an entire top-level map; nested maps
-# are not merged recursively. An extension which overrides `contracts`, for
-# example, must therefore provide the complete `contracts` map. Flush TYPO3
-# caches after every change so the typed settings graph is rebuilt.
+# Settings.yaml files from all active packages are loaded and merged
+# recursively. A later package changes only the keys it names, at any depth;
+# an extension which overrides one contract field states that field and
+# nothing else. A list - a `validators` list, a `structure` column, the
+# `rowFields` of a document section - is replaced as a whole, and `~` removes
+# a key. Flush TYPO3 caches after every change so the typed settings graph is
+# rebuilt.
 #
 # Identifiers describe existing domain/DTO/TCA properties and renderers. This
 # configuration can expose, hide, order and validate supported fields, but it
@@ -494,7 +496,7 @@ contracts:
 #   ProfileInformation supports `from`, `to`, `year`, `title` and
 #   `description`; Contract supports `from`, `to` and `position`.
 # - `actions` selects and orders the available per-row actions. Supported
-#   values are `view`, `down`, `up`, `delete` and `edit`.
+#   values are `hide`, `view`, `down`, `up`, `delete` and `edit`.
 # - `validators` belongs exclusively to ProfileInformation records of the
 #   containing section. Contract validators live on `contracts.fields`.
 # Profile-information validation aliases:

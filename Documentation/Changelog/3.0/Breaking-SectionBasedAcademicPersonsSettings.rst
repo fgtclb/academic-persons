@@ -25,8 +25,9 @@ the :ref:`Validation settings <configuration-validations>` page the flags.
 
 There is still **one file, one factory and one cache entry**. The public
 detail layout - :yaml:`structure` and :yaml:`details` - lives in the same
-:yaml:`profile` map as the editable fields, so an override of the layout
-restates the fields with it. The backend TCA **does** consume the graph: five
+:yaml:`profile` map as the editable fields, and since the files merge
+recursively an override changes one of the two without restating the
+other. The backend TCA **does** consume the graph: five
 TCA files of this extension merge the validation set of their own section,
 exactly as they merged the flat sets before, and the sixth - the profile
 information table, one table shared by the seven timeline types - merges a
@@ -182,9 +183,13 @@ Migration
     under :yaml:`profile`, a required contact field its list under
     :yaml:`contracts.contactSections`, a required timeline field its entry
     under the :yaml:`validators` map of every section it applies to.
-#.  Keep every map the override declares complete. The files are merged on
-    the top level only, so a :yaml:`profile` map in the override replaces the
-    shipped one - the layout keys and every field included.
+#.  Mind the merge while you do it. The files are merged recursively, so a
+    map names only the keys it changes - and a key it leaves out is inherited
+    rather than removed, whatever level it sits on. An entry the project does
+    not want is set to :yaml:`~`, a flag list that is to be empty to
+    :yaml:`[]`. This is a change of its own in the same release, with the
+    complete rules and the migration:
+    :ref:`breaking-settings-files-merge-recursively`.
 #.  Decide on the changed defaults: drop :yaml:`required` from
     :yaml:`profile.gender.validators` if profiles without a gender are to stay
     saveable, restore :yaml:`number` on :yaml:`streetNumber` and :yaml:`zip`

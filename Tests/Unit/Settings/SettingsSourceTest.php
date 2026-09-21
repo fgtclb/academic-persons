@@ -17,9 +17,9 @@ use TYPO3\TestingFramework\Core\Unit\UnitTestCase;
 /**
  * There is one settings file, shipped by this extension, and the editing
  * extension reads it rather than shipping a second one. The public layout and
- * the editable fields share the `profile` map on purpose: an integrator
- * overriding the layout restates the fields with it, and never has to keep two
- * files in step.
+ * the editable fields share the `profile` map on purpose: one override surface
+ * for both, and no second file to keep in step - the recursive merge lets an
+ * integrator change the layout without restating the fields.
  */
 final class SettingsSourceTest extends UnitTestCase
 {

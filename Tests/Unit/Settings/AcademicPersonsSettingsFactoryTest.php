@@ -23,7 +23,7 @@ use TYPO3\TestingFramework\Core\Unit\UnitTestCase;
  * The factory owns the persons shape of the settings file: which top-level maps
  * exist, how their entries become sections and fields, and which entries are
  * dropped silently. The shipped file is the primary fixture, because it is what
- * every installation starts from and what an override has to restate.
+ * every installation starts from and what an override is merged onto.
  */
 final class AcademicPersonsSettingsFactoryTest extends UnitTestCase
 {
@@ -89,6 +89,49 @@ final class AcademicPersonsSettingsFactoryTest extends UnitTestCase
         $this->assertSame([NotEmptyValidator::class, UrlValidator::class], $website->validation->validatorClassNames);
         $this->assertArrayNotHasKey('validations', $settings->raw);
         $this->assertSame(['profile', 'special', 'contracts', 'documentSections'], array_keys($settings->raw));
+    }
+
+    /**
+     * The override an installation writes today: a site package that names the three
+     * name fields and nothing else. The recursive merge of the loader applies the
+     * cleared flag lists to those fields and leaves the rest of the shipped `profile`
+     * map - the public layout, the other fields, their flags - in place. With the
+     * top-level merge this package replaced the whole map, and the profile consisted
+     * of three fields and no layout.
+     */
+    #[Test]
+    public function aPartialOverrideOfAnActivePackageChangesOnlyTheFieldsItNames(): void
+    {
+        $cache = $this->createMock(PhpFrontend::class);
+        $cache->method('require')->willReturn(false);
+        $packageManager = $this->createMock(PackageManager::class);
+        $packageManager->method('getActivePackages')->willReturn([
+            $this->package('academic_persons', __DIR__ . '/../../../'),
+            $this->package(
+                'test_partial_settings',
+                __DIR__ . '/../Fixtures/Packages/partial_settings/',
+            ),
+        ]);
+
+        $settings = $this->factory($cache, $packageManager)->get();
+
+        $firstName = $settings->getProfileField('firstName');
+        $this->assertNotNull($firstName);
+        $this->assertFalse($firstName->validation->readOnly);
+        $this->assertFalse($firstName->validation->disabled);
+        $this->assertSame('information', $firstName->section);
+        $this->assertSame('text', $firstName->renderType);
+        $this->assertNotSame('', $firstName->helptext);
+        $gender = $settings->getProfileField('gender');
+        $this->assertNotNull($gender);
+        $this->assertSame([NotEmptyValidator::class], $gender->validation->validatorClassNames);
+        $website = $settings->getProfileField('website');
+        $this->assertNotNull($website);
+        $this->assertSame([UrlValidator::class], $website->validation->validatorClassNames);
+        $this->assertSame(
+            ['title', 'firstName', 'middleName', 'lastName'],
+            $settings->publicProfile->details['headline'],
+        );
     }
 
     #[Test]

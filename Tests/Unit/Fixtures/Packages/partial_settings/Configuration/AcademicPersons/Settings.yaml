@@ -1,0 +1,10 @@
+# The same goal as the override of `test_legacy_settings` - the three name
+# fields become editable - written against the 3.0 sections, and naming
+# nothing but the flag lists it clears.
+profile:
+  firstName:
+    validators: []
+  middleName:
+    validators: []
+  lastName:
+    validators: []

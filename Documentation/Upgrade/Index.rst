@@ -257,6 +257,15 @@ site package, review them, and flush all caches.
     into the new :yaml:`documentSections` map: that one *is* read, and it is
     the shape that diverges from the TCA.
 
+The printed maps state every key the overlay produced, so they carry the
+result the installation runs on today. Since 3.0.0 the files are merged
+**recursively**, which is a step of its own once they are in the site package:
+anything the override leaves out is now inherited from
+:guilabel:`academic_persons` rather than removed, at every level, and is
+removed with :yaml:`~`. Work through
+:ref:`breaking-settings-files-merge-recursively` before the override is
+reduced to its deltas.
+
 :ref:`configuration-validations-migration` has the complete key mapping and what
 is deliberately not mapped;
 :ref:`breaking-section-based-academic-persons-settings` describes the new shape.

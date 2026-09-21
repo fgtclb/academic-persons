@@ -60,8 +60,10 @@ final class AcademicPersonsPublicProfileSettingsOverrideTest extends AbstractAca
 
     /**
      * The override lists `profileEntries` before `headline` and names the last name before the
-     * first name; it has no `left` column and no `subline`. What is not configured is not
-     * rendered - the navigation and the subline are absent, not empty.
+     * first name; its `left` column is empty and `structure.right` does not list `subline`.
+     * The layout decides what is rendered - the navigation and the subline are absent, not
+     * empty, although their `details` entries still come from the shipped file, which the
+     * recursive merge keeps.
      */
     #[Test]
     public function overriddenProfileMapControlsElementAndFieldOrder(): void

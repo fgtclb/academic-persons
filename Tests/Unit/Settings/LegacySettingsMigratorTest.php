@@ -25,7 +25,7 @@ use TYPO3\TestingFramework\Core\Unit\UnitTestCase;
  * The migrator maps the two pre-3.0 keys onto the section maps. The shipped
  * file is the base every case overlays, because that is what an installation
  * that kept its 2.x override runs on: the shipped four maps plus the legacy
- * keys of the site package, folded by the top-level merge.
+ * keys of the site package, as the recursive merge of the loader folds them.
  */
 final class LegacySettingsMigratorTest extends UnitTestCase
 {

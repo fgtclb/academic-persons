@@ -64,10 +64,10 @@ Impact
 
 A site package changes the layout of the public profile and the fields it
 shows by shipping its own :yaml:`profile` map, without replacing the detail
-template. The maps are merged on the top level, so an override repeats the
-complete :yaml:`structure` and :yaml:`details` it wants - and the editable
-fields the editing frontend reads from the same map. Flush the TYPO3 caches
-after changing the file.
+template. The maps are merged key by key, so an override names the entries it
+changes; the lists inside them - a column of :yaml:`structure`, the fields of
+a :yaml:`details` entry - are replaced as a whole and are therefore repeated
+completely. Flush the TYPO3 caches after changing the file.
 
 An installation that overrides :file:`Templates/Profile/Detail.html` keeps
 rendering its own template; the ``publicProfile`` variable is available to it

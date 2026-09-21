@@ -487,11 +487,39 @@ Overriding the file
 
 The file is collected from **all installed extensions**: every package that
 contains :file:`Configuration/AcademicPersons/Settings.yaml` contributes, and
-the package loaded last wins. The files are merged on the **top level only** -
-a site package that defines :yaml:`profile` replaces the shipped
-:yaml:`profile` map completely, layout and fields alike, and the maps it does
-not mention stay as shipped. There is no deep merge and no syntax for changing
-a single flag of a single field.
+the package loaded later wins per key. The files are merged **recursively**: a
+map is merged key by key at any depth, so a site package states only what it
+changes and keeps every entry it does not name - including the entries a later
+:guilabel:`academic_persons` release adds.
+
+Four rules decide what happens to a value, and they hold at every depth:
+
+..  list-table::
+    :header-rows: 1
+
+    *   -   The later file has
+        -   Result
+    *   -   a map
+        -   merged key by key with the earlier map
+    *   -   a list
+        -   replaces the earlier list as a whole, an empty list included
+    *   -   a value of another type
+        -   replaces the earlier value
+    *   -   :yaml:`null` (:yaml:`~`)
+        -   removes the key, as if no package had configured it
+
+A list is replaced rather than combined because the entries of a flag list have
+no identity to merge by: an override that could only add entries could never
+drop :yaml:`required`. A YAML map whose keys happen to be ``0`` to ``n-1`` is a
+list as well, and an empty map, :yaml:`{}`, is the same empty array as an empty
+sequence - it clears a map the way :yaml:`[]` clears a list.
+
+The key order of a merged map is the order of the later file when that file
+names **every** key of the earlier map; otherwise the earlier order stays and
+the keys only the later file names are appended. A file that names a map
+completely therefore decides the display order - and stops deciding it as soon
+as a later :guilabel:`academic_persons` release adds an entry the file does not
+name, which is the moment to add that entry to the file.
 
 To change the shipped configuration:
 
@@ -500,10 +528,33 @@ To change the shipped configuration:
 #.  Make the site package **depend on** :guilabel:`academic_persons` in its
     :file:`composer.json` or :file:`ext_emconf.php`, so that it is loaded after
     it.
-#.  Copy the complete map you want to change from
-    :file:`EXT:academic_persons/Configuration/AcademicPersons/Settings.yaml`
-    and edit the copy.
+#.  Name the keys that differ from
+    :file:`EXT:academic_persons/Configuration/AcademicPersons/Settings.yaml`,
+    and nothing else:
+
+    ..  code-block:: yaml
+
+        profile:
+          # one flag list; the layout, the other fields and every other key of
+          # this field stay as shipped
+          title:
+            validators:
+              - required
+          # a field the installation does not want at all
+          middleName: ~
+        documentSections:
+          # one label; the record type, relation, rows and actions stay
+          lectures:
+            label: 'LLL:EXT:my_site/Resources/Private/Language/db.xlf:lectures'
+
 #.  Flush the TYPO3 caches. The normalised graph is cached in the core cache.
+
+..  note::
+    An entry is **not** removed by leaving it out - leaving it out means "do
+    not change it", at every level. Set the key to :yaml:`~` to remove it, and
+    a flag list that is to be empty to :yaml:`[]`. An override written before
+    3.0, which removed entries by restating a map without them, has to be
+    migrated - see :ref:`breaking-settings-files-merge-recursively`.
 
 There is no TypoScript and no site set equivalent for these settings.
 

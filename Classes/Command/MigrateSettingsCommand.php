@@ -28,9 +28,10 @@ use Symfony\Component\Yaml\Yaml;
  *
  * Each package is migrated against the maps of the packages loaded up to and
  * including it, rather than against the fully merged array the runtime overlay
- * uses. The two agree for the realistic layout - the shipping package first,
- * the site package last - and differ only when a package loaded after the
- * legacy one replaces a whole top-level map.
+ * uses: the packages after it have not been read when its own file is printed.
+ * It folds them with {@see SettingsFileLoader::merge()}, the same recursive
+ * merge the runtime uses, so the printed maps are what the installation would
+ * run on with the packages up to that point.
  *
  * The command deliberately does not write the file: the override lives in a
  * site package that is under version control and deployed read-only, so a
@@ -71,13 +72,19 @@ final class MigrateSettingsCommand extends Command
         $packageArrays = $this->settingsFileLoader->loadPackageArrays(AcademicPersonsSettingsFactory::SETTINGS_FILE);
         foreach ($packageArrays as $packageKey => $packageSettings) {
             $legacyKeys = $this->legacySettingsMigrator->getLegacyKeys($packageSettings);
-            $merged = array_merge($merged, array_diff_key($packageSettings, $legacyKeyFlip));
+            $merged = $this->settingsFileLoader->merge(
+                $merged,
+                array_diff_key($packageSettings, $legacyKeyFlip),
+            );
             if ($legacyKeys === []) {
                 continue;
             }
             $legacyPackageFound = true;
             $migration = $this->legacySettingsMigrator->migrate(
-                array_merge($merged, array_intersect_key($packageSettings, $legacyKeyFlip)),
+                $this->settingsFileLoader->merge(
+                    $merged,
+                    array_intersect_key($packageSettings, $legacyKeyFlip),
+                ),
             );
             $output->writeln(sprintf('# %s: %s', $packageKey, AcademicPersonsSettingsFactory::SETTINGS_FILE));
             $output->writeln(sprintf('# Legacy keys: %s', implode(', ', $legacyKeys)));

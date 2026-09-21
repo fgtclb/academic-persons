@@ -35,9 +35,10 @@ old names: the classes never were public API, and no extension of this set
 referenced them from outside `EXT:academic_persons` and
 `EXT:academic_persons_edit`, both of which are adapted.
 
-Nothing changes for the YAML file itself - its location, its sets, its flags,
-and the package walk and top-level merge of an installation's override are
-all as before.
+Nothing changes for the YAML file itself - its location, its sets and its
+flags - and the package walk of an installation's override is as before. How
+the files of several packages are combined does change in the same release,
+see :ref:`breaking-settings-files-merge-recursively`.
 
 The normalised result is still cached in the core cache, but under the new
 identifier ``AcademicPersons_Settings_v3`` instead of

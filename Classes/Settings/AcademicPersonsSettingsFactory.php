@@ -80,9 +80,10 @@ class AcademicPersonsSettingsFactory
     /**
      * Maps the `validations` and `profileInformationsTypes` keys a package
      * still ships onto the section maps of the merged array, and drops them.
-     * The merged array carries the last package's value of each legacy key,
-     * which is the value the flat shape applied too; the packages that ship
-     * one are looked up again so every one of them is named in the log.
+     * Since the settings files are merged recursively, the merged array carries
+     * the combined legacy map of every package that ships one, where the flat
+     * merge carried the last one alone; the packages that ship one are looked
+     * up again so every one of them is named in the log.
      *
      * Transitional (ACE-504): removed in 4.0 together with the migrator.
      *
