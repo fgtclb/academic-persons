@@ -291,6 +291,24 @@ final class SiteSetDeliveryTest extends AbstractAcademicPersonsTestCase
     }
 
     /**
+     * The card selects its profiles by hand and applies no unit or function type
+     * restriction, so its set hides the option that would match the contracts against
+     * one. The list keeps it: there the restriction selects the profiles.
+     */
+    #[Test]
+    public function theCardSetHidesMatchingContractsToTheRestriction(): void
+    {
+        $this->setUpSite(dependencies: [self::AGGREGATE_SET]);
+
+        $flexForm = BackendUtility::getPagesTSconfig(1)['TCEFORM.']['tt_content.']['pi_flexform.'] ?? [];
+
+        $this->assertSame('1', $flexForm['academicpersons_card.']['sDEF.']['settings.contracts.matchFilter.']['disabled'] ?? null);
+        $this->assertArrayNotHasKey('settings.contracts.matchFilter.', $flexForm['academicpersons_list.']['sDEF.'] ?? []);
+        $this->assertArrayNotHasKey('settings.contracts.display.', $flexForm['academicpersons_card.']['sDEF.'] ?? []);
+        $this->assertArrayNotHasKey('settings.contracts.onlyValid.', $flexForm['academicpersons_card.']['sDEF.'] ?? []);
+    }
+
+    /**
      * Hiding is what the always-included `Configuration/page.tsconfig` does, and it is
      * the half that is easy to get wrong in the other direction: a component whose CType
      * is missing from that file is offered everywhere and nobody notices.

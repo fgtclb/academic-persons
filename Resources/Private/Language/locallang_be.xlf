@@ -216,6 +216,30 @@
       <trans-unit id="flexform.el.showHiddenRecords.description">
         <source>If enabled, hidden (disabled) records are shown in the frontend, independent of the backend preview settings.</source>
       </trans-unit>
+      <trans-unit id="flexform.el.contracts.display.label">
+        <source>Contracts per profile</source>
+      </trans-unit>
+      <trans-unit id="flexform.el.contracts.display.description">
+        <source>Which of a profile's contracts are shown. "Only the first" is the first one in the order of the profile's contracts that the options below leave.</source>
+      </trans-unit>
+      <trans-unit id="flexform.el.contracts.display.items.all">
+        <source>All contracts</source>
+      </trans-unit>
+      <trans-unit id="flexform.el.contracts.display.items.first">
+        <source>Only the first contract</source>
+      </trans-unit>
+      <trans-unit id="flexform.el.contracts.matchFilter.label">
+        <source>Only contracts of the selected organisational units and function types</source>
+      </trans-unit>
+      <trans-unit id="flexform.el.contracts.matchFilter.description">
+        <source>Leaves out the contracts of a profile in other organisational units or with other function types. Without an organisational unit or function type selected above, this has no effect.</source>
+      </trans-unit>
+      <trans-unit id="flexform.el.contracts.onlyValid.label">
+        <source>Only contracts valid today</source>
+      </trans-unit>
+      <trans-unit id="flexform.el.contracts.onlyValid.description">
+        <source>Leaves out contracts that have ended or not started yet; a missing start or end date does not limit a contract. The page is cached no longer than until the next day on which a shown contract ends or a left out one starts.</source>
+      </trans-unit>
     </body>
   </file>
 </xliff>

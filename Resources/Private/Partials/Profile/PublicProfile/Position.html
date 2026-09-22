@@ -1,13 +1,20 @@
 <html
     data-namespace-typo3-fluid="true"
     xmlns:f="http://typo3.org/ns/TYPO3/CMS/Fluid/ViewHelpers"
+    xmlns:persons="http://typo3.org/ns/FGTCLB/AcademicPersons/ViewHelpers"
 >
+
+<f:comment>
+    The positions of the contracts "profile.details.position" in Settings.yaml selects:
+    "contracts" (all|first) and "onlyValid".
+</f:comment>
 
 <f:switch expression="{publicProfile.details.position.special}">
     <f:case value="datasFromContracts">
-        <f:if condition="{profile.contracts}">
+        <f:variable name="contracts" value="{persons:contracts(profile: profile, detailBlock: publicProfile.details.position)}" />
+        <f:if condition="{contracts}">
             <div class="academic-persons-detail__positions">
-                <f:for each="{profile.contracts}" as="contract">
+                <f:for each="{contracts}" as="contract">
                     <f:if condition="{contract.position}">
                         <p class="academic-persons-detail__position">{contract.position}</p>
                     </f:if>

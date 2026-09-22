@@ -9,6 +9,7 @@ use FGTCLB\AcademicBase\Settings\ValidationNormalizer;
 use FGTCLB\AcademicPersons\Settings\AcademicPersonsSettings;
 use FGTCLB\AcademicPersons\Settings\AcademicPersonsSettingsFactory;
 use FGTCLB\AcademicPersons\Settings\LegacySettingsMigrator;
+use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\Attributes\Test;
 use Symfony\Component\Yaml\Yaml;
 use TYPO3\CMS\Core\Cache\Frontend\PhpFrontend;
@@ -212,12 +213,86 @@ final class AcademicPersonsSettingsFactoryTest extends UnitTestCase
         $this->assertSame(
             [
                 'headline' => ['title', 'firstName'],
-                'position' => ['special' => 'datasFromContracts'],
+                'position' => ['special' => 'datasFromContracts', 'contracts' => 'all', 'onlyValid' => false],
                 'subline' => 'LLL:EXT:site/Resources/Private/Language/locallang.xlf:profile.subline',
                 'menuSectionsDatas' => ['researchProjects' => 'scientificResearch'],
             ],
             $settings->publicProfile->details,
         );
+    }
+
+    #[Test]
+    public function theShippedContractBlocksShowEveryContract(): void
+    {
+        $settings = $this->normalize($this->getShippedConfiguration());
+
+        foreach (['position', 'contact'] as $block) {
+            $this->assertSame(
+                ['special' => 'datasFromContracts', 'contracts' => 'all', 'onlyValid' => false],
+                $settings->publicProfile->details[$block],
+                $block,
+            );
+        }
+    }
+
+    /**
+     * @return \Generator<string, array{0: array<string, mixed>, 1: string, 2: bool}>
+     */
+    public static function contractBlockDataProvider(): \Generator
+    {
+        yield 'neither key' => [[], 'all', false];
+        yield 'first, valid only' => [['contracts' => 'first', 'onlyValid' => true], 'first', true];
+        yield 'all, stated' => [['contracts' => 'all', 'onlyValid' => false], 'all', false];
+        yield 'surrounding whitespace' => [['contracts' => ' first '], 'first', false];
+        yield 'unknown display value' => [['contracts' => 'last'], 'all', false];
+        yield 'display value of the wrong type' => [['contracts' => ['first']], 'all', false];
+        yield 'onlyValid as a string' => [['onlyValid' => 'true'], 'all', true];
+        yield 'onlyValid as a number' => [['onlyValid' => 1], 'all', true];
+        yield 'onlyValid not a boolean' => [['onlyValid' => 'sometimes'], 'all', false];
+        yield 'onlyValid empty' => [['onlyValid' => null], 'all', false];
+    }
+
+    /**
+     * A block rendered from the contracts always carries both keys: a missing `contracts`
+     * is `all`, a missing `onlyValid` is `false`, and an invalid value is dropped for the
+     * default like every other invalid value of the file.
+     *
+     * @param array<string, mixed> $keys
+     */
+    #[Test]
+    #[DataProvider('contractBlockDataProvider')]
+    public function aContractBlockCarriesAValidSelection(array $keys, string $contracts, bool $onlyValid): void
+    {
+        $settings = $this->normalize([
+            'profile' => [
+                'details' => [
+                    'contact' => array_merge(['special' => 'datasFromContracts'], $keys),
+                ],
+            ],
+        ]);
+
+        $this->assertSame(
+            ['special' => 'datasFromContracts', 'contracts' => $contracts, 'onlyValid' => $onlyValid],
+            $settings->publicProfile->details['contact'],
+        );
+    }
+
+    /**
+     * Only a block rendered from the contracts selects contracts; another map is left as
+     * it is.
+     */
+    #[Test]
+    public function aBlockNotRenderedFromTheContractsGetsNoSelection(): void
+    {
+        $settings = $this->normalize([
+            'profile' => [
+                'details' => [
+                    'contact' => ['special' => 'somethingElse'],
+                ],
+            ],
+        ]);
+
+        $this->assertSame(['special' => 'somethingElse'], $settings->publicProfile->details['contact']);
     }
 
     #[Test]

@@ -224,6 +224,55 @@
                     <size>3</size>
                 </config>
             </settings.functionTypes>
+            <settings.contracts.display>
+                <label>LLL:EXT:academic_persons/Resources/Private/Language/locallang_be.xlf:flexform.el.contracts.display.label</label>
+                <description>LLL:EXT:academic_persons/Resources/Private/Language/locallang_be.xlf:flexform.el.contracts.display.description</description>
+                <config>
+                    <type>select</type>
+                    <renderType>selectSingle</renderType>
+                    <items>
+                        <numIndex index="0" type="array">
+                            <label>LLL:EXT:academic_persons/Resources/Private/Language/locallang_be.xlf:flexform.el.contracts.display.items.all</label>
+                            <value>all</value>
+                        </numIndex>
+                        <numIndex index="1" type="array">
+                            <label>LLL:EXT:academic_persons/Resources/Private/Language/locallang_be.xlf:flexform.el.contracts.display.items.first</label>
+                            <value>first</value>
+                        </numIndex>
+                    </items>
+                    <default>all</default>
+                </config>
+            </settings.contracts.display>
+            <settings.contracts.matchFilter>
+                <label>LLL:EXT:academic_persons/Resources/Private/Language/locallang_be.xlf:flexform.el.contracts.matchFilter.label</label>
+                <description>LLL:EXT:academic_persons/Resources/Private/Language/locallang_be.xlf:flexform.el.contracts.matchFilter.description</description>
+                <config>
+                    <type>check</type>
+                    <renderType>checkboxToggle</renderType>
+                    <default>0</default>
+                    <items>
+                        <numIndex index="0" type="array">
+                            <label></label>
+                            <value>1</value>
+                        </numIndex>
+                    </items>
+                </config>
+            </settings.contracts.matchFilter>
+            <settings.contracts.onlyValid>
+                <label>LLL:EXT:academic_persons/Resources/Private/Language/locallang_be.xlf:flexform.el.contracts.onlyValid.label</label>
+                <description>LLL:EXT:academic_persons/Resources/Private/Language/locallang_be.xlf:flexform.el.contracts.onlyValid.description</description>
+                <config>
+                    <type>check</type>
+                    <renderType>checkboxToggle</renderType>
+                    <default>0</default>
+                    <items>
+                        <numIndex index="0" type="array">
+                            <label></label>
+                            <value>1</value>
+                        </numIndex>
+                    </items>
+                </config>
+            </settings.contracts.onlyValid>
             <settings.showHiddenRecords>
                 <label>LLL:EXT:academic_persons/Resources/Private/Language/locallang_be.xlf:flexform.el.showHiddenRecords.label</label>
                 <description>LLL:EXT:academic_persons/Resources/Private/Language/locallang_be.xlf:flexform.el.showHiddenRecords.description</description>

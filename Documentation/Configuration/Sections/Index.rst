@@ -102,9 +102,49 @@ Two keys describe the public layout, everything else is a field:
     :yaml:`profileImage`, :yaml:`contact`, :yaml:`subline`,
     :yaml:`profileEntries` and :yaml:`menuSectionsDatas`; an unknown element
     renders nothing. :yaml:`position` and :yaml:`contact` take the special
-    renderer :yaml:`special: datasFromContracts`. :yaml:`menuSections` lists
+    renderer :yaml:`special: datasFromContracts`, and choose their contracts
+    with :yaml:`contracts` and :yaml:`onlyValid` - see
+    :ref:`configuration-sections-profile-contracts`. :yaml:`menuSections` lists
     stable navigation identifiers and :yaml:`menuSectionsDatas` maps each of
     them to the profile relation it shows.
+
+..  _configuration-sections-profile-contracts:
+
+The contracts of the position and contact blocks
+------------------------------------------------
+
+A block rendered with :yaml:`special: datasFromContracts` chooses which of the
+profile's contracts it renders. The shipped file states the defaults:
+
+..  code-block:: yaml
+
+    profile:
+      details:
+        position:
+          special: datasFromContracts
+          contracts: all
+          onlyValid: false
+        contact:
+          special: datasFromContracts
+          contracts: all
+          onlyValid: false
+
+:yaml:`contracts`
+    ``all`` renders every contract, ``first`` only the first in the editor's
+    order that :yaml:`onlyValid` leaves. Anything else is ``all``.
+
+:yaml:`onlyValid`
+    ``true`` leaves out the contracts that have ended or not started yet, and
+    limits the page cache lifetime as described in
+    :ref:`configuration-contract-display-cache`. A boolean, or a value PHP
+    reads as one (``1``, ``'true'``, ``'yes'``, ``'on'``); anything else is
+    ``false``.
+
+The two blocks are configured one by one, so a profile page may list every
+position and the contact data of the first contract only. The unit and function
+type filter of the list elements has no counterpart here: the detail view shows
+one profile, not a restricted list. See :ref:`configuration-contract-display`
+for how the options of the content elements relate.
 
 ..  _configuration-sections-profile-rendering:
 
@@ -130,14 +170,16 @@ the two keys as ``publicProfile`` and dispatches every identifier of
         -   The non-empty ones as the parts of the heading
     *   -   :yaml:`position`
         -   :yaml:`special: datasFromContracts`
-        -   The position of every contract
+        -   The position of every contract :yaml:`contracts` and
+            :yaml:`onlyValid` select
     *   -   :yaml:`profileImage`
         -   Ordered image properties
         -   Every non-empty one, as a figure
     *   -   :yaml:`contact`
         -   :yaml:`special: datasFromContracts`
         -   Email addresses, phone numbers, postal addresses and location with
-            room of every contract
+            room of every contract :yaml:`contracts` and :yaml:`onlyValid`
+            select
     *   -   :yaml:`subline`
         -   A label reference
         -   The translated heading, and the point before which the

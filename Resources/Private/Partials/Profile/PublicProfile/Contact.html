@@ -1,6 +1,7 @@
 <html
     data-namespace-typo3-fluid="true"
     xmlns:f="http://typo3.org/ns/TYPO3/CMS/Fluid/ViewHelpers"
+    xmlns:persons="http://typo3.org/ns/FGTCLB/AcademicPersons/ViewHelpers"
 >
 
 <f:comment>
@@ -8,16 +9,20 @@
     the location with its room. The icons are registered in `Configuration/Icons.php` with the
     currentColor provider of EXT:academic_base and inlined here, so they follow the text colour
     of the page; `core` is a global Fluid namespace, no declaration is needed for `core:icon`.
+
+    Which contracts: "profile.details.contact" in Settings.yaml, "contracts" (all|first) and
+    "onlyValid".
 </f:comment>
 
 <f:switch expression="{publicProfile.details.contact.special}">
     <f:case value="datasFromContracts">
-        <f:if condition="{profile.contracts}">
+        <f:variable name="contracts" value="{persons:contracts(profile: profile, detailBlock: publicProfile.details.contact)}" />
+        <f:if condition="{contracts}">
             <section class="academic-persons-detail__contact">
                 <h3 class="academic-persons-detail__contact-heading">
                     <f:translate key="detail.contact" extensionName="academic_persons" />
                 </h3>
-                <f:for each="{profile.contracts}" as="contract">
+                <f:for each="{contracts}" as="contract">
                     <div class="academic-persons-detail__contact-contract">
                         <f:if condition="{contract.emailAddresses}">
                             <div class="academic-persons-detail__contact-row">

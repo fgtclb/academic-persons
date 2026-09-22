@@ -1,0 +1,5 @@
+# A page cache lifetime well beyond the next midnight, so a limit set at midnight is
+# visible. Without `config.cache_period` TYPO3 v14.3 caches a page for a year; v13.4
+# caps a page that loads Extbase records at 24 hours whatever is configured, because
+# each record adds a cache tag with `CacheLifetimeCalculator::defaultCacheTimeout`.
+config.cache_period = 172800

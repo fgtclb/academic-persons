@@ -1,0 +1,28 @@
+"pages",
+,"uid","pid","doktype","deleted","hidden","sys_language_uid","l10n_parent","l18n_cfg","slug","title"
+,1,0,1,0,0,0,0,0,"/","Site Root (EN)"
+,2,0,1,0,0,1,1,0,"/","Site Root (DE)"
+,3,1,1,0,0,0,0,0,"/home","Home (EN)"
+,4,1,1,0,0,1,3,0,"/home","Home (DE)"
+,100,1,254,0,0,0,0,0,"/sysfolder-records","Recordcollection"
+,101,1,254,0,0,1,100,0,"/sysfolder-records","Datensatzsammlung"
+"tt_content",
+,"uid","pid","deleted","hidden","sys_language_uid","l18n_parent","CType","header","pi_flexform"
+,1,3,0,0,0,0,"academicpersons_list","","<?xml version=""1.0"" encoding=""utf-8"" standalone=""yes"" ?><T3FlexForms><data><sheet index=""sDEF""><language index=""lDEF""><field index=""settings.demand.profileList""><value index=""vDEF""></value></field><field index=""settings.fallbackForNonTranslated""><value index=""vDEF"">0</value></field><field index=""settings.organisationalUnits""><value index=""vDEF"">2</value></field><field index=""settings.contracts.matchFilter""><value index=""vDEF"">1</value></field></language></sheet></data></T3FlexForms>"
+,2,3,0,0,1,1,"academicpersons_list","","<?xml version=""1.0"" encoding=""utf-8"" standalone=""yes"" ?><T3FlexForms><data><sheet index=""sDEF""><language index=""lDEF""><field index=""settings.demand.profileList""><value index=""vDEF""></value></field><field index=""settings.fallbackForNonTranslated""><value index=""vDEF"">0</value></field><field index=""settings.organisationalUnits""><value index=""vDEF"">2</value></field><field index=""settings.contracts.matchFilter""><value index=""vDEF"">1</value></field></language></sheet></data></T3FlexForms>"
+"tx_academicpersons_domain_model_organisational_unit",
+,"uid","pid","deleted","hidden","sys_language_uid","l10n_parent","unit_name","display_text"
+,1,100,0,0,0,0,"MATH","Mathematics"
+,2,100,0,0,0,0,"CS","Computer Science"
+,3,100,0,0,1,1,"MATH","Mathematik"
+,4,100,0,0,1,2,"CS","Informatik"
+"tx_academicpersons_domain_model_profile",
+,"uid","pid","deleted","hidden","sys_language_uid","l10n_parent","first_name","last_name","slug","contracts"
+,1,100,0,0,0,0,"Ada","Lovelace","ada-lovelace",2
+,2,100,0,0,1,1,"Ada","Lovelace","ada-lovelace",2
+"tx_academicpersons_domain_model_contract",
+,"uid","pid","deleted","hidden","sys_language_uid","l10n_parent","profile","organisational_unit","position","sorting"
+,1,100,0,0,0,0,1,1,"[EN] Dean",1
+,2,100,0,0,0,0,1,2,"[EN] Professor",2
+,3,100,0,0,1,1,2,1,"[DE] Dekanin",1
+,4,100,0,0,1,2,2,2,"[DE] Professorin",2

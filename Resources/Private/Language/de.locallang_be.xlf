@@ -289,6 +289,38 @@
         <source>If enabled, hidden (disabled) records are shown in the frontend, independent of the backend preview settings.</source>
         <target>Wenn aktiviert, werden versteckte (deaktivierte) Datensätze unabhängig von den Backend-Vorschaueinstellungen im Frontend ausgegeben.</target>
       </trans-unit>
+      <trans-unit id="flexform.el.contracts.display.label">
+        <source>Contracts per profile</source>
+        <target>Verträge je Profil</target>
+      </trans-unit>
+      <trans-unit id="flexform.el.contracts.display.description">
+        <source>Which of a profile's contracts are shown. "Only the first" is the first one in the order of the profile's contracts that the options below leave.</source>
+        <target>Welche Verträge eines Profils ausgegeben werden. „Nur den ersten“ ist der erste in der Reihenfolge der Verträge des Profils, den die folgenden Optionen übrig lassen.</target>
+      </trans-unit>
+      <trans-unit id="flexform.el.contracts.display.items.all">
+        <source>All contracts</source>
+        <target>Alle Verträge</target>
+      </trans-unit>
+      <trans-unit id="flexform.el.contracts.display.items.first">
+        <source>Only the first contract</source>
+        <target>Nur den ersten Vertrag</target>
+      </trans-unit>
+      <trans-unit id="flexform.el.contracts.matchFilter.label">
+        <source>Only contracts of the selected organisational units and function types</source>
+        <target>Nur Verträge der ausgewählten Organisationseinheiten und Funktionstypen</target>
+      </trans-unit>
+      <trans-unit id="flexform.el.contracts.matchFilter.description">
+        <source>Leaves out the contracts of a profile in other organisational units or with other function types. Without an organisational unit or function type selected above, this has no effect.</source>
+        <target>Lässt die Verträge eines Profils in anderen Organisationseinheiten oder mit anderen Funktionstypen weg. Ohne eine oben ausgewählte Organisationseinheit oder einen Funktionstyp hat die Option keine Wirkung.</target>
+      </trans-unit>
+      <trans-unit id="flexform.el.contracts.onlyValid.label">
+        <source>Only contracts valid today</source>
+        <target>Nur heute gültige Verträge</target>
+      </trans-unit>
+      <trans-unit id="flexform.el.contracts.onlyValid.description">
+        <source>Leaves out contracts that have ended or not started yet; a missing start or end date does not limit a contract. The page is cached no longer than until the next day on which a shown contract ends or a left out one starts.</source>
+        <target>Lässt Verträge weg, die beendet sind oder noch nicht begonnen haben; ein fehlendes Beginn- oder Enddatum begrenzt einen Vertrag nicht. Die Seite wird höchstens bis zu dem Tag zwischengespeichert, an dem ein ausgegebener Vertrag endet oder ein weggelassener beginnt.</target>
+      </trans-unit>
     </body>
   </file>
 </xliff>

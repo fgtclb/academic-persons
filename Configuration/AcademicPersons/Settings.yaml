@@ -155,7 +155,11 @@
 # `links` lists link properties; each is rendered with its companion title
 # property (`website` with `websiteTitle`) and the label `detail.<property>`.
 # `position.special` and `contact.special` currently support only
-# `datasFromContracts`. `menuSections` contains stable navigation identifiers;
+# `datasFromContracts`. Such a block chooses its contracts: `contracts` is
+# `all` or `first`, the first in the editor's contract order, and `onlyValid`
+# leaves out a contract not valid on the day the page is rendered for; an
+# empty start or end date is open-ended. An invalid value is the default.
+# `menuSections` contains stable navigation identifiers;
 # `menuSectionsDatas` maps each identifier to its Profile relation property.
 #
 profile:
@@ -187,10 +191,14 @@ profile:
       - lastName
     position:
       special: datasFromContracts
+      contracts: all
+      onlyValid: false
     profileImage:
       - image
     contact:
       special: datasFromContracts
+      contracts: all
+      onlyValid: false
     subline: 'LLL:EXT:academic_persons/Resources/Private/Language/locallang.xlf:detail.subline'
     profileEntries:
       - teachingArea

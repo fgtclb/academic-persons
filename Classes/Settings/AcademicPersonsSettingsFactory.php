@@ -8,6 +8,7 @@ use FGTCLB\AcademicBase\Settings\SettingsFileLoader;
 use FGTCLB\AcademicBase\Settings\Validation;
 use FGTCLB\AcademicBase\Settings\ValidationNormalizer;
 use FGTCLB\AcademicBase\Settings\ValidationSet;
+use FGTCLB\AcademicPersons\Service\ContractDisplay;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
@@ -47,6 +48,11 @@ class AcademicPersonsSettingsFactory
         'from' => 'validFrom',
         'to' => 'validTo',
     ];
+
+    /**
+     * The `special` renderer of a detail block that shows the profile's contracts.
+     */
+    private const CONTRACTS_SPECIAL = 'datasFromContracts';
 
     private const DOCUMENT_VALIDATION_FLAGS = [
         'required',
@@ -157,11 +163,42 @@ class AcademicPersonsSettingsFactory
             if (!is_array($detailConfiguration)) {
                 continue;
             }
-            $details[$detailIdentifier] = array_is_list($detailConfiguration)
-                ? $this->normalizePublicProfileList($detailConfiguration)
-                : $this->normalizePublicProfileMap($detailConfiguration);
+            if (array_is_list($detailConfiguration)) {
+                $details[$detailIdentifier] = $this->normalizePublicProfileList($detailConfiguration);
+                continue;
+            }
+            $detail = $this->normalizePublicProfileMap($detailConfiguration);
+            if (($detail['special'] ?? '') === self::CONTRACTS_SPECIAL) {
+                $detail = $this->normalizeContractSelection($detailConfiguration, $detail);
+            }
+            $details[$detailIdentifier] = $detail;
         }
         return new PublicProfileSettings(structure: $structure, details: $details);
+    }
+
+    /**
+     * A detail block rendered from the profile's contracts - `position` and `contact` as
+     * shipped - selects which of them: `contracts` is `all` or `first`, `onlyValid` a
+     * boolean. Both are always set; a missing or invalid value is the default, `all` and
+     * `false`, so the block shows every contract as it did before the keys existed.
+     *
+     * @param array<string|int, mixed> $configuredDetail
+     * @param array<string, string> $detail
+     * @return array<string, string|bool>
+     */
+    private function normalizeContractSelection(array $configuredDetail, array $detail): array
+    {
+        // The string map above keeps a string value of either key; both are set anew, in
+        // one order, from what was configured.
+        unset($detail['contracts'], $detail['onlyValid']);
+        $detail['contracts'] = ContractDisplay::fromSetting($configuredDetail['contracts'] ?? null)->value;
+        $detail['onlyValid'] = filter_var(
+            $configuredDetail['onlyValid'] ?? false,
+            FILTER_VALIDATE_BOOLEAN,
+            FILTER_NULL_ON_FAILURE,
+        ) ?? false;
+
+        return $detail;
     }
 
     /**

@@ -42,6 +42,9 @@ TCEFORM.tt_content {
         settings\.pagination\.numberOfLinks.disabled = 1
         settings\.viewMode\.enabled.disabled = 1
         settings\.viewMode\.default.disabled = 1
+        # The card selects its profiles by hand and applies no unit or function type
+        # restriction, so there is nothing for its contracts to match either.
+        settings\.contracts\.matchFilter.disabled = 1
       }
     }
   }

@@ -1,7 +1,16 @@
 <html
     data-namespace-typo3-fluid="true"
     xmlns:f="http://typo3.org/ns/TYPO3/CMS/Fluid/ViewHelpers"
+    xmlns:persons="http://typo3.org/ns/FGTCLB/AcademicPersons/ViewHelpers"
 >
+
+<f:comment>
+    The contracts of one profile item. A caller that has one contract to show - the selected
+    contracts element, EXT:academic_contacts4pages - passes it as "contract" and gets exactly
+    that one. Otherwise the plugin settings decide which of the profile's contracts are shown:
+    "contracts.display", "contracts.matchFilter" and "contracts.onlyValid", applied by
+    "persons:contracts". Iterating "profile.contracts" here instead would ignore all three.
+</f:comment>
 
 <f:if condition="{contract}">
     <f:then>
@@ -11,7 +20,7 @@
         />
     </f:then>
     <f:else>
-        <f:for each="{profile.contracts}" as="contract">
+        <f:for each="{persons:contracts(profile: profile, settings: settings)}" as="contract">
             <f:render
                 section="Contract"
                 arguments="{_all}"

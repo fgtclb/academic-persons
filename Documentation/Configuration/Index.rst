@@ -125,6 +125,82 @@ selected letter does is a setting:
 The setting is declared for the site set and as a constant of the shared static
 template, with the same default in both.
 
+..  _configuration-contract-display:
+
+Which contracts a profile shows
+===============================
+
+A profile has one or more contracts, sorted by the editor. Every view shows all
+of them unless it is told otherwise.
+
+**The list and list-and-detail elements** offer three fields in their plugin
+options, on the sheet :guilabel:`Settings` below :guilabel:`Function Types`:
+
+:guilabel:`Contracts per profile`
+    All contracts (the default), or only the first one.
+
+:guilabel:`Only contracts of the selected organisational units and function types`
+    Leaves out the contracts of a profile in other units or with other function
+    types than the element is restricted to. Without such a restriction the
+    option has no effect. Without the option, the restriction selects the
+    profiles and every contract of a selected profile is shown, as before.
+
+:guilabel:`Only contracts valid today`
+    Leaves out the contracts that have ended or not started yet.
+
+**The card and selected-profiles elements** offer :guilabel:`Contracts per
+profile` and :guilabel:`Only contracts valid today`. They select their profiles
+by hand and apply no unit or function type restriction, so there is nothing for
+the contracts to match. The card hides the field in its form; a value stored
+while the element was a list stays in effect after a switch to the card, as a
+detail page stored while it was a list does.
+
+**The detail view** - of the detail and the list-and-detail elements - is
+configured in :file:`Settings.yaml`, once for the installation rather than per
+content element. Its two blocks rendered from the contracts take a key each for
+the same two choices; see :ref:`configuration-sections-profile-contracts`:
+
+..  code-block:: yaml
+    :caption: EXT:my_sitepackage/Configuration/AcademicPersons/Settings.yaml
+
+    profile:
+      details:
+        position:
+          onlyValid: true
+        contact:
+          contracts: first
+
+**The selected-contracts element** and the contacts element of
+:guilabel:`EXT:academic_contacts4pages` show the contract that was chosen,
+whatever the options say, even one that has ended.
+
+The options apply in a fixed order: the unit and function type filter, then
+validity, then "first". "Only the first" is the first of the contracts left, in
+the editor's order of the profile's contracts, so a list restricted to one unit
+shows each profile's first contract in that unit.
+
+Validity is a matter of days. A contract is valid from the first day of
+:guilabel:`Valid from` through the last day of :guilabel:`Valid to`; an empty
+date does not limit it on that side, and no setting changes that. "Today" is the
+date the page is rendered for, in the time zone of the installation - a date
+simulated in the frontend preview of a backend user counts.
+
+..  _configuration-contract-display-cache:
+
+The page cache follows the validity
+-----------------------------------
+
+A cached page would keep showing a contract that ended yesterday until its cache
+entry expires. On TYPO3 v13 a page with profiles expires after 24 hours at the
+latest, whatever :typoscript:`config.cache_period` says, because every record
+Extbase loads limits the page to that; on TYPO3 v14 a page without
+:typoscript:`config.cache_period` is cached for a year. So while "only contracts
+valid today" applies, a page is cached no longer than until the next midnight on
+which a contract that passes the unit and function type filter ends - the day
+after its :guilabel:`Valid to` - or starts. The limit is set only on the cache
+entry of the page that rendered those contracts, only when that date comes
+before the regular expiry, and never when no validity option applies.
+
 ..  _configuration-contract-select-storage-scope:
 
 Restrict the backend contract selects

@@ -50,6 +50,58 @@ element of `EXT:academic_contacts4pages`. It renders:
         -   The image, through the shared partial of `EXT:academic_base`
         -   `academic-persons-item__image`
 
+..  _templates-contract-selection:
+
+Which contracts an item renders
+-------------------------------
+
+:file:`Profile/Contract/Item.html` renders the one contract a caller passes as
+`contract` - the selected contracts element and
+`EXT:academic_contacts4pages` do. Otherwise it renders the contracts the
+element's options select (see :ref:`configuration-contract-display`), through
+the ViewHelper :html:`<persons:contracts>`. The detail view's
+:file:`Profile/PublicProfile/Position.html` and
+:file:`Profile/PublicProfile/Contact.html` use it with their block of
+:file:`Settings.yaml` instead:
+
+..  code-block:: html
+    :caption: EXT:my_sitepackage/Resources/Private/Partials/Profile/Contract/Item.html
+
+    <html
+        data-namespace-typo3-fluid="true"
+        xmlns:f="http://typo3.org/ns/TYPO3/CMS/Fluid/ViewHelpers"
+        xmlns:persons="http://typo3.org/ns/FGTCLB/AcademicPersons/ViewHelpers"
+    >
+    <f:if condition="{contract}">
+        <f:then>
+            <p class="my-contract">{contract.position}</p>
+        </f:then>
+        <f:else>
+            <f:for each="{persons:contracts(profile: profile, settings: settings)}" as="contract">
+                <p class="my-contract">{contract.position}</p>
+            </f:for>
+        </f:else>
+    </f:if>
+    </html>
+
+Keep the `contract` branch in a copy: without it, the selected contracts element
+and `EXT:academic_contacts4pages` would show the profile's contracts instead of
+the chosen one.
+
+..  code-block:: html
+    :caption: The detail view, one block
+
+    <f:for each="{persons:contracts(profile: profile, detailBlock: publicProfile.details.contact)}" as="contract">
+        ...
+    </f:for>
+
+`settings` are the plugin settings, `detailBlock` a block of
+`publicProfile.details`; a passed block wins. Without either, every contract is
+returned. The ViewHelper also limits the page cache lifetime while a validity
+option applies, which is why a template should call it rather than filter
+:html:`{profile.contracts}` itself: a copy that loops over
+:html:`{profile.contracts}` keeps working, and ignores the options.
+
 ..  _templates-item-partials-text:
 
 Two of them render text, not markup

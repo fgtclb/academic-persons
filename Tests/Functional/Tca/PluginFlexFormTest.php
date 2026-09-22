@@ -66,6 +66,53 @@ final class PluginFlexFormTest extends AbstractAcademicPersonsTestCase
         $this->assertPluginFlexFormIsResolved($cType);
     }
 
+    /**
+     * @return \Generator<string, array{0: string, 1: list<string>}>
+     */
+    public static function contractOptionsDataProvider(): \Generator
+    {
+        $all = ['settings.contracts.display', 'settings.contracts.matchFilter', 'settings.contracts.onlyValid'];
+        yield 'Profile list' => ['academicpersons_list', $all];
+        yield 'Profile list and detail' => ['academicpersons_listanddetail', $all];
+        // The card shares List.xml; its page TSconfig disables "matchFilter" in the form,
+        // see SiteSetDeliveryTest::theCardSetHidesMatchingContractsToTheRestriction().
+        yield 'Profile card' => ['academicpersons_card', $all];
+        // No unit or function type restriction to match, so no "matchFilter".
+        yield 'Selected profiles' => ['academicpersons_selectedprofiles', ['settings.contracts.display', 'settings.contracts.onlyValid']];
+        // A chosen contract is shown as chosen.
+        yield 'Selected contracts' => ['academicpersons_selectedcontracts', []];
+        // The detail view is configured in Settings.yaml.
+        yield 'Profile detail' => ['academicpersons_detail', []];
+    }
+
+    /**
+     * @param list<string> $expectedFields
+     */
+    #[Test]
+    #[DataProvider('contractOptionsDataProvider')]
+    public function contractOptionsAreOfferedWhereTheyApply(string $cType, array $expectedFields): void
+    {
+        $fields = $this->resolvePluginFlexFormDataStructure($cType)['sheets']['sDEF']['ROOT']['el'] ?? [];
+        $this->assertIsArray($fields);
+
+        $this->assertSame(
+            $expectedFields,
+            array_values(array_filter(
+                array_map('strval', array_keys($fields)),
+                static fn(string $field): bool => str_starts_with($field, 'settings.contracts.'),
+            )),
+        );
+        if ($expectedFields === []) {
+            return;
+        }
+        $display = $fields['settings.contracts.display']['config'] ?? [];
+        $this->assertSame('all', $display['default'] ?? null);
+        $this->assertSame(
+            ['all', 'first'],
+            array_map(static fn(array $item): mixed => $item['value'] ?? $item[1] ?? null, $display['items'] ?? []),
+        );
+    }
+
     #[Test]
     #[DataProvider('pluginContentTypeValuePickerDataProvider')]
     public function pluginFlexFormValuePickerItemsAreReadableByRunningCore(
