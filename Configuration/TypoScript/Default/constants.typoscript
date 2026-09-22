@@ -27,6 +27,10 @@ plugin.tx_academicpersons {
     # cat=plugin.tx_academicpersons//a; type=string; label=Number of links
     numberOfLinks = 5
   }
+  alphabet {
+    # cat=plugin.tx_academicpersons//a; type=boolean; label=Letter navigation: the selected letter links back to the list without a letter
+    activeLetterResets = 0
+  }
   image {
     placeholder {
       # cat=plugin.tx_academicpersons//a; type=string; label=Placeholder of a profile without image: an EXT: path to a public file, empty for none

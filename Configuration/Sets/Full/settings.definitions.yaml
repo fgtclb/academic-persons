@@ -47,6 +47,12 @@ settings:
     category: academic.persons
     type: int
     default: 5
+  plugin.tx_academicpersons.alphabet.activeLetterResets:
+    label: 'Letter navigation | The selected letter links back to the list without a letter'
+    description: 'Off, the selected letter is marked as the current one and is not a link.'
+    category: academic.persons
+    type: bool
+    default: false
   plugin.tx_academicpersons.image.placeholder.default:
     label: 'Image | Placeholder of a profile without image'
     description: 'An EXT: path to a public file. Empty shows no image.'

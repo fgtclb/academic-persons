@@ -64,6 +64,10 @@
         <source>no profiles</source>
         <target>keine Profile</target>
       </trans-unit>
+      <trans-unit id="list.alphabetFilter.showAll" resname="list.alphabetFilter.showAll">
+        <source>show all profiles</source>
+        <target>alle Profile anzeigen</target>
+      </trans-unit>
 
       <!-- Detail -->
 

@@ -20,6 +20,9 @@ plugin.tx_academicpersons {
       resultsPerPage = {$plugin.tx_academicpersons.pagination.resultsPerPage}
       numberOfLinks = {$plugin.tx_academicpersons.pagination.numberOfLinks}
     }
+    alphabet {
+      activeLetterResets = {$plugin.tx_academicpersons.alphabet.activeLetterResets}
+    }
     image {
       placeholder {
         default = {$plugin.tx_academicpersons.image.placeholder.default}

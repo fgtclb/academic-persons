@@ -128,14 +128,15 @@ final class AcademicPersonsLetterNavigationTest extends AbstractAcademicPersonsT
 
     /**
      * The item of one entry of the navigation, found by its visible text: "A-Z" or a letter.
-     * The visually hidden text of a disabled letter is not part of what is matched.
+     * The visually hidden text of a disabled letter or of a reset link is not part of what is
+     * matched.
      */
     private function item(\DOMXPath $xpath, string $label): \DOMElement
     {
         $items = $this->nodes(
             $xpath,
             sprintf(
-                './/li[normalize-space(concat(./a, ./span/text()))="%s"]',
+                './/li[normalize-space(concat(./a/span[1], ./span/text()))="%s"]',
                 $label,
             ),
             $this->navigation($xpath),
@@ -317,6 +318,32 @@ final class AcademicPersonsLetterNavigationTest extends AbstractAcademicPersonsT
             ['A-Z' => 'link', 'A' => 'current active', 'B' => 'link', 'C' => 'disabled'],
             $this->states($xpath, ['A-Z', 'A', 'B', 'C']),
         );
+    }
+
+    /**
+     * With the reset option on, the selected letter is still the current one, and links back
+     * to the list without a letter - the target "A-Z" links to. A screen reader would announce
+     * "A, current page, link" and leave the visitor guessing what the link does, so it says
+     * so in a visually hidden text.
+     */
+    #[Test]
+    public function theSelectedLetterLinksBackWithTheResetOption(): void
+    {
+        $this->setUpTestCase('list', ['EXT:academic_persons/Tests/Functional/Plugins/Fixtures/TypoScript/Constants/ActiveLetterResets.typoscript']);
+
+        $xpath = $this->follow($this->xpath($this->renderFrontendPage('https://www.acme.com/home')), 'A');
+
+        $this->assertSame(
+            ['A-Z' => 'link', 'A' => 'current link active', 'B' => 'link'],
+            $this->states($xpath, ['A-Z', 'A', 'B']),
+        );
+        $this->assertSame($this->href($xpath, 'A-Z'), $this->href($xpath, 'A'));
+        $this->assertSame(
+            'show all profiles',
+            trim((string)$this->nodes($xpath, sprintf('./a/span[%s]', $this->hasClass('visually-hidden')), $this->item($xpath, 'A'))->item(0)?->textContent, " -\n"),
+            'The link says where it leads, not only that it is the current letter.',
+        );
+        $this->assertSame(['Anna Adams', 'Ben Baker'], $this->listedNames($this->follow($xpath, 'A')));
     }
 
     #[Test]

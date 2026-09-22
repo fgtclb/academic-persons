@@ -163,7 +163,9 @@ letter from `a` to `z`, mapped to whether the list holds a profile under it
     `span.page-link` - no link - with a `visually-hidden` "no profiles" for
     assistive technology;
 *   the selected letter as `li.page-item.active` with
-    :html:`aria-current="page"`, not linked;
+    :html:`aria-current="page"`, and as a link back to the list without a letter
+    - with a `visually-hidden` "show all profiles" - only when
+    :ref:`the reset setting <configuration-letter-navigation>` is on;
 *   :guilabel:`A-Z` as `li.page-item.active` with :html:`aria-current="page"`
     while no letter is selected.
 

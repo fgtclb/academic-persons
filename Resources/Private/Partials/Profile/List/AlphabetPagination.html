@@ -53,9 +53,23 @@
             <f:if condition="{demand.alphabetFilter} == {letter}">
                 <f:then>
                     <li class="page-item active">
-                        <span class="page-link" aria-current="page">
-                            {letter -> f:format.case()}
-                        </span>
+                        <f:if condition="{settings.alphabet.activeLetterResets}">
+                            <f:then>
+                                <f:link.action
+                                    arguments="{demand: '{alphabetFilter: \'\'}'}"
+                                    class="page-link"
+                                    rel="nofollow"
+                                    aria="{current: 'page'}"
+                                >
+                                    <span>{letter -> f:format.case()}</span><span class="visually-hidden"> - {f:translate(key: 'list.alphabetFilter.showAll', extensionName: 'academic_persons')}</span>
+                                </f:link.action>
+                            </f:then>
+                            <f:else>
+                                <span class="page-link" aria-current="page">
+                                    {letter -> f:format.case()}
+                                </span>
+                            </f:else>
+                        </f:if>
                     </li>
                 </f:then>
                 <f:else if="{available}">

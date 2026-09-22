@@ -1,0 +1,2 @@
+# The selected letter of the letter navigation links back to the list without a letter.
+plugin.tx_academicpersons.alphabet.activeLetterResets = 1

@@ -66,8 +66,9 @@ Every component set depends on `fgtclb/academic-base-ctype-group`, the set of
 extensions sort their elements into.
 
 The site settings of this extension — the detail page, the default grouping,
-sorting and pagination of a profile list, the image placeholder and the phone
-link prefix below — are declared with the aggregate set. A site that depends on
+sorting and pagination of a profile list, the selected letter of the letter
+navigation, the image placeholder and the phone link prefix below — are
+declared with the aggregate set. A site that depends on
 a single component set still gets the shipped defaults, but can only override
 them in :guilabel:`Site Settings` when it depends on `fgtclb/academic-persons`.
 
@@ -99,6 +100,30 @@ setting is what completes it.
 The setting is declared for the site set and as a constant of the shared static
 template, with the same default in both — see
 :ref:`Do not combine both <one-mechanism-per-site>`.
+
+..  _configuration-letter-navigation:
+
+The selected letter of the letter navigation
+============================================
+
+The list and list-and-detail elements can show a letter navigation above the
+list (:guilabel:`Alphabetical Pagination` in the content element). A letter
+without profiles in that list is shown disabled and is not a link, and the
+navigation is left out for a list of profiles selected by hand. What the
+selected letter does is a setting:
+
+..  confval:: plugin.tx_academicpersons.alphabet.activeLetterResets
+    :name: plugin-tx-academicpersons-alphabet-activeletterresets
+    :type: boolean
+    :Default: 0
+
+    Off, the selected letter is marked as the current one and is not a link.
+    On, it is still marked as the current one, and links back to the list
+    without a letter — the target of :guilabel:`A-Z`. A visually hidden "show
+    all profiles" tells assistive technology where the link leads.
+
+The setting is declared for the site set and as a constant of the shared static
+template, with the same default in both.
 
 ..  _configuration-contract-select-storage-scope:
 
