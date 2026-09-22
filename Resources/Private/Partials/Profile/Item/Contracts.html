@@ -1,0 +1,20 @@
+<html
+    data-namespace-typo3-fluid="true"
+    xmlns:f="http://typo3.org/ns/TYPO3/CMS/Fluid/ViewHelpers"
+>
+
+<f:comment>
+    The contracts of a profile item. It renders no element of its own: the list element
+    and its classes belong to "Profile/Contract/Item", which is what an integrator
+    overrides to change a contract row. Overriding this partial drops or replaces the
+    whole block instead.
+
+    Arguments: everything the item has, handed on unchanged.
+</f:comment>
+
+<f:render
+    partial="Profile/Contract/Item"
+    arguments="{_all}"
+/>
+
+</html>

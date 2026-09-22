@@ -1,0 +1,23 @@
+<html
+    lang="en"
+    xmlns:f="http://typo3.org/ns/TYPO3/CMS/Fluid/ViewHelpers"
+    data-namespace-typo3-fluid="true"
+>
+
+<f:comment>
+    What a plugin shows instead of the items when it found nothing. Every plugin of this
+    extension renders it, so an override reaches all of them at once. Its class is a block
+    of its own for that reason, as the one of "Profile/List/Items" is.
+
+    Arguments:
+    - key:      the label to show, defaulting to the one about profiles. The selected
+                contracts element passes the one about contracts
+    - settings: the plugin settings
+    - data:     the content element record
+</f:comment>
+
+<f:variable name="emptyStateKey" value="{f:if(condition: key, then: key, else: 'list.noProfilesFound')}" />
+
+<p class="academic-persons-empty-state">{f:translate(key: emptyStateKey, extensionName: 'academic_persons')}</p>
+
+</html>

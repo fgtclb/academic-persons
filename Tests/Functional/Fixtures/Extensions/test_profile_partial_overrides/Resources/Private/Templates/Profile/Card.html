@@ -1,0 +1,25 @@
+<html
+    data-namespace-typo3-fluid="true"
+    xmlns:f="http://typo3.org/ns/TYPO3/CMS/Fluid/ViewHelpers"
+>
+
+<f:comment>
+    The card template of a project that links the profiles to a detail page of its own,
+    rather than to the one "settings.detailPid" names.
+</f:comment>
+
+<div class="academic-persons-card">
+    <f:for each="{profiles}" as="profile">
+        <f:render
+            partial="Profile/Item"
+            arguments="{
+                settings: settings,
+                profile: profile,
+                data: data,
+                detailPid: 4
+            }"
+        />
+    </f:for>
+</div>
+
+</html>

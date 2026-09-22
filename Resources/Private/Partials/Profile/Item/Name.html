@@ -1,0 +1,26 @@
+<html
+    data-namespace-typo3-fluid="true"
+    xmlns:f="http://typo3.org/ns/TYPO3/CMS/Fluid/ViewHelpers"
+>
+
+<f:comment>
+    The name of a profile, as text: the academic title, the first, the middle and the last
+    name, each one only when the profile has it. The item hands the rendered value to the
+    header partials, which put it inside their heading element and escape it there.
+
+    The parts are rendered raw for that reason - escaping them here would reach the output
+    escaped twice, and an apostrophe would show as "&amp;#039;". An override renders text
+    for the same reason; markup would arrive as literal text.
+
+    Because the text is unescaped, this partial is only safe where something else escapes
+    it: as an argument of a partial that writes it into an element, which is what
+    "Profile/Item.html" does. Never render it in an output position of a template - the
+    profile values would reach the browser unescaped.
+
+    Arguments:
+    - profile: the profile whose name is rendered
+</f:comment>
+
+<f:for each="{0: profile.title, 1: profile.firstName, 2: profile.middleName, 3: profile.lastName}" as="namePart"><f:if condition="{namePart}"> <f:format.raw>{namePart}</f:format.raw></f:if></f:for>
+
+</html>

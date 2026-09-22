@@ -4,52 +4,71 @@
     data-namespace-typo3-fluid="true"
 >
 
+<f:comment>
+    The body of a profile list: the result count, the items - grouped or not - the
+    pagination, and the empty state when the list found nothing.
+
+    Each of those is a partial of its own: "Profile/List/ResultCount",
+    "Profile/List/GroupHeader", "Profile/List/Items", "Profile/List/Pagination" and
+    "Profile/List/EmptyState". The letter navigation is not one of them - the list
+    template renders it above this partial.
+
+    Arguments: the list template renders it with "{_all}", which is what it expects.
+    - profilesToList: the profiles to show, one page of them when the list paginates
+    - profiles:       everything the list found, counted for the result count
+    - demand:         read for "groupBy"
+    - paginator:      the paginator, and "pagination" next to it
+    - settings:       read for "paginationEnabled"
+    - data:           the content element record
+</f:comment>
+
 <f:if condition="{profilesToList}">
     <f:then>
+        <f:render
+            partial="Profile/List/ResultCount"
+            arguments="{
+                count: '{profilesToList -> f:count()}',
+                total: '{profiles -> f:count()}',
+                profiles: profilesToList,
+                paginator: paginator,
+                settings: settings,
+                data: data
+            }"
+        />
+
         <f:if condition="{demand.groupBy}">
             <f:then>
                 <f:groupedFor as="groupedProfiles" groupBy="{demand.groupBy}" each="{profilesToList}">
                     <f:render
-                        partial="Profile/Header"
+                        partial="Profile/List/GroupHeader"
                         arguments="{
-                            header: '{groupKey -> f:format.case()}',
-                            layout: '{data.header_layout}',
-                            subheader: '{data.subheader}'
+                            groupKey: groupKey,
+                            data: data
                         }"
                     />
 
-                    <div class="academic-persons-itemlist row">
-                        <f:for each="{groupedProfiles}" as="profile">
-                            <div class="col-12 col-md-6 col-lg-4 col-xl-3">
-                                <f:render
-                                    partial="Profile/Item"
-                                    arguments="{
-                                        profile: profile,
-                                        settings: settings,
-                                        data: data,
-                                        groupedProfiles: 'true'
-                                    }"
-                                />
-                            </div>
-                        </f:for>
-                    </div>
+                    <f:render
+                        partial="Profile/List/Items"
+                        arguments="{
+                            profiles: groupedProfiles,
+                            settings: settings,
+                            data: data,
+                            groupedProfiles: 'true',
+                            class: 'academic-persons-itemlist'
+                        }"
+                    />
                 </f:groupedFor>
             </f:then>
             <f:else>
-                <div class="academic-persons-itemlist row">
-                    <f:for each="{profilesToList}" as="profile">
-                        <div class="col-12 col-md-6 col-lg-4 col-xl-3">
-                            <f:render
-                                partial="Profile/Item"
-                                arguments="{
-                                    profile: profile,
-                                    settings: settings,
-                                    data: data
-                                }"
-                            />
-                        </div>
-                    </f:for>
-                </div>
+                <f:render
+                    partial="Profile/List/Items"
+                    arguments="{
+                        profiles: profilesToList,
+                        settings: settings,
+                        data: data,
+                        class: 'academic-persons-itemlist'
+                    }"
+                />
             </f:else>
         </f:if>
 
@@ -65,7 +84,13 @@
         </f:if>
     </f:then>
     <f:else>
-        <p>{f:translate(key: 'list.noProfilesFound', extensionName: 'academic_persons')}</p>
+        <f:render
+            partial="Profile/List/EmptyState"
+            arguments="{
+                settings: settings,
+                data: data
+            }"
+        />
     </f:else>
 </f:if>
 

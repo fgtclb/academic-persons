@@ -1,0 +1,3 @@
+# The list without the grouping the extension defaults to, which renders one grid instead
+# of one per first letter of the last name.
+plugin.tx_academicpersons.demand.groupBy =

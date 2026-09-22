@@ -6,24 +6,24 @@
 <div class="academic-persons-contracts">
     <f:if condition="{contracts}">
         <f:then>
-            <div class="row">
-                <f:for each="{contracts}" as="contract">
-                    <div class="col-12 col-md-6 col-lg-4 col-xl-3">
-                        <f:render
-                            partial="Profile/Item"
-                            arguments="{
-                                settings: settings,
-                                profile: contract.profile,
-                                contract: contract,
-                                data: data
-                            }"
-                        />
-                    </div>
-                </f:for>
-            </div>
+            <f:render
+                partial="Profile/List/Items"
+                arguments="{
+                    contracts: contracts,
+                    settings: settings,
+                    data: data
+                }"
+            />
         </f:then>
         <f:else>
-            <p>{f:translate(key: 'list.noContractsFound', extensionName: 'academic_persons')}</p>
+            <f:render
+                partial="Profile/List/EmptyState"
+                arguments="{
+                    key: 'list.noContractsFound',
+                    settings: settings,
+                    data: data
+                }"
+            />
         </f:else>
     </f:if>
 </div>

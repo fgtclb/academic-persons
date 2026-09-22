@@ -1,0 +1,23 @@
+<html
+    lang="en"
+    xmlns:f="http://typo3.org/ns/TYPO3/CMS/Fluid/ViewHelpers"
+    data-namespace-typo3-fluid="true"
+>
+
+<f:comment>
+    The number of profiles a list shows. It renders nothing on purpose: printing a count
+    by default would change every list that exists today. It is an override hook, and the
+    one place a project puts its "showing x of y" without copying the list.
+
+    Arguments:
+    - count:     the number of profiles rendered below, one page of a paginated list
+    - total:     the number the list found, which is the same one unless it paginates.
+                 The paginator carries no public total - "getTotalAmountOfItems()" is
+                 protected on every supported core version - so it is counted here
+    - profiles:  the profiles rendered below
+    - paginator: the paginator of a paginated list, for its page number and page count
+    - settings:  the plugin settings
+    - data:      the content element record
+</f:comment>
+
+</html>

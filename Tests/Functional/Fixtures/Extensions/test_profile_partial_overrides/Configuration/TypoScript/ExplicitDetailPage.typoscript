@@ -1,0 +1,4 @@
+# A template that renders the profile item with a detail page of its own, next to a
+# "detailPid" setting that points somewhere else.
+plugin.tx_academicpersons.view.templateRootPath = EXT:test_profile_partial_overrides/Resources/Private/Templates/
+plugin.tx_academicpersons.detailPid = 3

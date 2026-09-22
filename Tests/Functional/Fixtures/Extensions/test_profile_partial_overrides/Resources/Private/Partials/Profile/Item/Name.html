@@ -1,0 +1,14 @@
+<html
+    data-namespace-typo3-fluid="true"
+    xmlns:f="http://typo3.org/ns/TYPO3/CMS/Fluid/ViewHelpers"
+>
+
+<f:comment>
+    An override of the shipped name partial, written the way the documentation describes
+    one: text, and the profile values rendered raw, because whoever renders the name
+    escapes it once for output.
+</f:comment>
+
+NAME-OVERRIDE[<f:format.raw>{profile.lastName}</f:format.raw>]
+
+</html>

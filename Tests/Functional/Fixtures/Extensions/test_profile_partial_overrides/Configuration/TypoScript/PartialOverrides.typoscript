@@ -1,0 +1,5 @@
+# A project that overrides single profile partials rather than the whole item or list.
+# The path is registered for the persons plugins and for the contacts content element of
+# EXT:academic_contacts4pages, which renders the same partials through paths of its own.
+plugin.tx_academicpersons.view.partialRootPath = EXT:test_profile_partial_overrides/Resources/Private/Partials/
+plugin.tx_academiccontacts4pages.view.partialRootPath = EXT:test_profile_partial_overrides/Resources/Private/Partials/

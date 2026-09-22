@@ -154,7 +154,7 @@ final class AcademicPersonsCardPluginTest extends AbstractAcademicPersonsTestCas
         // The card template passes no `groupedProfiles`, so the item renders through
         // `Profile/Header` rather than `Profile/SectionHeader` — one level higher.
         $this->assertMatchesRegularExpression(
-            '#<h2 class="card-title">\s*<a href="[^"]*">Max\s+Müllermann</a>\s*</h2>#',
+            '#<h2 class="academic-persons-item__name card-title">\s*<a href="[^"]*">Max\s+Müllermann</a>\s*</h2>#',
             $this->renderHomePage(),
         );
     }

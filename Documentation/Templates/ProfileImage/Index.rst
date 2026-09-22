@@ -19,7 +19,7 @@ presets are described in the :guilabel:`Templates` chapter of
     *   -   View
         -   Preset
         -   Without an image
-    *   -   Profile card, :file:`Partials/Profile/Item.html`
+    *   -   Profile card, :file:`Partials/Profile/Item/Image.html`
         -   `card`
         -   The placeholder, unless it is empty
     *   -   Public profile, :file:`Partials/Profile/PublicProfile/ProfileImage.html`
@@ -64,3 +64,8 @@ widths of every profile image by placing its own :file:`Academic/Image.html`
 in the partial root path it configures through
 `plugin.tx_academicpersons.view.partialRootPath` - there is no need to
 override :file:`Profile/Item.html` for it.
+
+The card renders it through :file:`Partials/Profile/Item/Image.html`, which is
+where the preset, the placeholder and the classes are decided. Overriding that
+one file changes them for the card alone, without touching the shared partial
+and without copying the item - see :ref:`templates-item-and-list-partials`.

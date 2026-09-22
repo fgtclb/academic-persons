@@ -1,0 +1,17 @@
+<html
+    data-namespace-typo3-fluid="true"
+    xmlns:f="http://typo3.org/ns/TYPO3/CMS/Fluid/ViewHelpers"
+>
+
+<f:comment>
+    An override of the shipped grid. It renders markup, so it is written as any Fluid
+    partial is - unlike the name partial next to it, whose output is a value.
+</f:comment>
+
+<div class="grid-override">
+    <f:for each="{f:if(condition: contracts, then: contracts, else: profiles)}" as="item">
+        <div class="grid-override__item">GRID-OVERRIDE</div>
+    </f:for>
+</div>
+
+</html>

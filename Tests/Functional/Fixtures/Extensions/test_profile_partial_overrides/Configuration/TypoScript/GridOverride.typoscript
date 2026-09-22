@@ -1,0 +1,4 @@
+# A project that overrides the item grid alone. It lives in a partial directory of its
+# own, so a test can have the grid override without the name and empty state ones.
+plugin.tx_academicpersons.view.partialRootPath = EXT:test_profile_partial_overrides/Resources/Private/GridPartials/
+plugin.tx_academiccontacts4pages.view.partialRootPath = EXT:test_profile_partial_overrides/Resources/Private/GridPartials/

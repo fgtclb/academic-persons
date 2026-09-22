@@ -3,37 +3,27 @@
     xmlns:f="http://typo3.org/ns/TYPO3/CMS/Fluid/ViewHelpers"
 >
 
-<f:if condition="{data.CType} == 'academicpersons_listanddetail'">
-    <f:then>
-        <f:variable
-            name="detailUri"
-            value="{f:uri.action(
-                action: 'detail',
-                arguments: {
-                    profile: profile
-                },
-                pluginName: 'ListAndDetail',
-                controller: 'Profile',
-                extensionName: 'academicpersons'
-            )}"
-        />
-    </f:then>
-    <f:else>
-        <f:variable
-            name="detailUri"
-            value="{f:uri.action(
-                pageUid: settings.detailPid,
-                action: 'detail',
-                arguments: {
-                    profile: profile
-                },
-                pluginName: 'Detail',
-                controller: 'Profile',
-                extensionName: 'academicpersons'
-            )}"
-        />
-    </f:else>
-</f:if>
+<f:comment>
+    One profile, as the list, the card, the selected profiles, the selected contracts and
+    the contacts element of EXT:academic_contacts4pages render it.
+
+    Its four parts are partials of their own, so a project changes one of them without
+    copying this file: "Profile/Item/DetailLink", "Profile/Item/Name",
+    "Profile/Item/Contracts" and "Profile/Item/Image". A copy of this file keeps working
+    and simply stops profiting from them.
+
+    Arguments:
+    - profile:         the profile to render
+    - contract:        one contract, when the caller has a single one to show
+    - detailPid:       the page the detail view sits on, for a caller without plugin
+                       settings; it wins over "settings.detailPid"
+    - groupedProfiles: set by a grouped list, which puts the heading one level lower
+    - settings:        the plugin settings
+    - data:            the content element record
+</f:comment>
+
+<f:variable name="detailLink"><f:render partial="Profile/Item/DetailLink" arguments="{_all}" /></f:variable>
+<f:variable name="profileName"><f:render partial="Profile/Item/Name" arguments="{_all}" /></f:variable>
 
 <div class="academic-persons-item card flex-column-reverse">
     <div>
@@ -43,11 +33,11 @@
                     <f:render
                         partial="Profile/SectionHeader"
                         arguments="{
-                            header: '{profile.firstName} {profile.middleName} {profile.lastName}',
+                            header: '{profileName -> f:format.trim()}',
                             layout: '{data.header_layout}',
                             subheader: '{data.subheader}',
-                            link: '{detailUri}',
-                            positionClass: 'card-title'
+                            link: '{detailLink -> f:format.trim()}',
+                            positionClass: 'academic-persons-item__name card-title'
                         }"
                     />
                 </f:then>
@@ -55,11 +45,11 @@
                     <f:render
                         partial="Profile/Header"
                         arguments="{
-                            header: '{profile.firstName} {profile.middleName} {profile.lastName}',
+                            header: '{profileName -> f:format.trim()}',
                             layout: '{data.header_layout}',
                             subheader: '{data.subheader}',
-                            link: '{detailUri}',
-                            positionClass: 'card-title'
+                            link: '{detailLink -> f:format.trim()}',
+                            positionClass: 'academic-persons-item__name card-title'
                         }"
                     />
                 </f:else>
@@ -67,39 +57,15 @@
         </div>
 
         <f:render
-            partial="Profile/Contract/Item"
+            partial="Profile/Item/Contracts"
             arguments="{_all}"
         />
     </div>
 
-    <f:if condition="{settings.showFields}">
-        <f:then>
-            <f:variable name="showImage" value="0" />
-            <f:for each="{settings.showFields}" as="field">
-                <f:if condition="{field} == 'profile.image'">
-                    <f:variable name="showImage" value="1" />
-                </f:if>
-            </f:for>
-        </f:then>
-        <f:else>
-            <f:variable name="showImage" value="1" />
-        </f:else>
-    </f:if>
-    <f:if condition="{showImage}">
-        <f:comment>
-            The shared partial of EXT:academic_base: the image, or the placeholder for a
-            profile without one.
-        </f:comment>
-        <f:render
-            partial="Academic/Image"
-            arguments="{
-                image: profile.image,
-                preset: 'card',
-                placeholder: settings.image.placeholder.default,
-                class: 'card-img-top img-fluid'
-            }"
-        />
-    </f:if>
+    <f:render
+        partial="Profile/Item/Image"
+        arguments="{_all}"
+    />
 </div>
 
 </html>

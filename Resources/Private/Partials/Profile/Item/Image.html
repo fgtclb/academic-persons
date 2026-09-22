@@ -1,0 +1,44 @@
+<html
+    data-namespace-typo3-fluid="true"
+    xmlns:f="http://typo3.org/ns/TYPO3/CMS/Fluid/ViewHelpers"
+>
+
+<f:comment>
+    The image of a profile item. A content element that limits the shown fields and leaves
+    the image out renders nothing here, placeholder included.
+
+    Arguments:
+    - profile:  the profile whose image is rendered
+    - settings: the plugin settings, read for "showFields" and the placeholder
+</f:comment>
+
+<f:if condition="{settings.showFields}">
+    <f:then>
+        <f:variable name="showImage" value="0" />
+        <f:for each="{settings.showFields}" as="field">
+            <f:if condition="{field} == 'profile.image'">
+                <f:variable name="showImage" value="1" />
+            </f:if>
+        </f:for>
+    </f:then>
+    <f:else>
+        <f:variable name="showImage" value="1" />
+    </f:else>
+</f:if>
+<f:if condition="{showImage}">
+    <f:comment>
+        The shared partial of EXT:academic_base: the image, or the placeholder for a
+        profile without one.
+    </f:comment>
+    <f:render
+        partial="Academic/Image"
+        arguments="{
+            image: profile.image,
+            preset: 'card',
+            placeholder: settings.image.placeholder.default,
+            class: 'academic-persons-item__image card-img-top img-fluid'
+        }"
+    />
+</f:if>
+
+</html>

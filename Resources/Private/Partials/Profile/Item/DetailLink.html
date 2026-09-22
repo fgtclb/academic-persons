@@ -1,0 +1,84 @@
+<html
+    data-namespace-typo3-fluid="true"
+    xmlns:f="http://typo3.org/ns/TYPO3/CMS/Fluid/ViewHelpers"
+>
+
+<f:comment>
+    The address of a profile's detail view, as text rather than as a link: the item hands
+    it to the header partials, which place it inside their heading element.
+
+    The address is rendered raw on purpose. It carries query arguments, and whoever
+    renders it escapes what it is given - escaping here as well would turn every "&" of
+    the address into "&amp;" before that second pass ever sees it. An override renders
+    text for the same reason.
+
+    Because the text is unescaped, this partial is only safe where something else escapes
+    it: as an argument of a partial that writes it into an element, which is what
+    "Profile/Item.html" does. Never render it in an output position of a template.
+
+    Arguments:
+    - profile:   the profile to link to
+    - detailPid: the page the detail view sits on. A template that renders an item
+                 outside the plugins of this extension passes it; it wins over the
+                 plugin setting
+    - settings:  the plugin settings, read for "detailPid"
+    - data:      the content element record, read for its type
+</f:comment>
+
+<f:if condition="{detailPid}">
+    <f:then>
+        <f:variable
+            name="profileDetailUri"
+            value="{f:uri.action(
+                pageUid: detailPid,
+                action: 'detail',
+                arguments: {
+                    profile: profile
+                },
+                pluginName: 'Detail',
+                controller: 'Profile',
+                extensionName: 'academicpersons'
+            )}"
+        />
+    </f:then>
+    <f:else>
+        <f:if condition="{data.CType} == 'academicpersons_listanddetail'">
+            <f:then>
+                <f:comment>
+                    The list-and-detail element shows the detail view itself, so the link
+                    stays on the page the element sits on.
+                </f:comment>
+                <f:variable
+                    name="profileDetailUri"
+                    value="{f:uri.action(
+                        action: 'detail',
+                        arguments: {
+                            profile: profile
+                        },
+                        pluginName: 'ListAndDetail',
+                        controller: 'Profile',
+                        extensionName: 'academicpersons'
+                    )}"
+                />
+            </f:then>
+            <f:else>
+                <f:variable
+                    name="profileDetailUri"
+                    value="{f:uri.action(
+                        pageUid: settings.detailPid,
+                        action: 'detail',
+                        arguments: {
+                            profile: profile
+                        },
+                        pluginName: 'Detail',
+                        controller: 'Profile',
+                        extensionName: 'academicpersons'
+                    )}"
+                />
+            </f:else>
+        </f:if>
+    </f:else>
+</f:if>
+{profileDetailUri -> f:format.raw()}
+
+</html>

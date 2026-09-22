@@ -1,0 +1,65 @@
+<html
+    lang="en"
+    xmlns:f="http://typo3.org/ns/TYPO3/CMS/Fluid/ViewHelpers"
+    data-namespace-typo3-fluid="true"
+>
+
+<f:comment>
+    The grid of profile items, rendered by the list, the card, the selected profiles and
+    the selected contracts. It carries the Bootstrap row and column classes, so a project
+    changes the grid of all four by overriding this one file.
+
+    Its classes are a block of their own, "academic-persons-grid", rather than a part of
+    one of the four: each of those elements is a block, and the grid sits inside all of
+    them. The list adds its own "academic-persons-itemlist" through "class".
+
+    It iterates contracts when it is given some, and profiles otherwise: the selected
+    contracts element shows one item per selected contract, which is the one contract that
+    item renders, while every other caller shows one item per profile with all of them.
+
+    Arguments:
+    - profiles:        the profiles to render, one item each
+    - contracts:       the contracts to render instead, one item each
+    - class:           an additional class of the row, for a caller that has one
+    - groupedProfiles: set by a grouped list, so the item picks the lower heading level
+    - settings:        the plugin settings, handed to every item
+    - data:            the content element record, handed to every item
+</f:comment>
+
+<div class="academic-persons-grid<f:if condition="{class}"> {class}</f:if> row">
+    <f:if condition="{contracts}">
+        <f:then>
+            <f:for each="{contracts}" as="contract">
+                <div class="academic-persons-grid__item col-12 col-md-6 col-lg-4 col-xl-3">
+                    <f:render
+                        partial="Profile/Item"
+                        arguments="{
+                            profile: contract.profile,
+                            contract: contract,
+                            settings: settings,
+                            data: data,
+                            groupedProfiles: groupedProfiles
+                        }"
+                    />
+                </div>
+            </f:for>
+        </f:then>
+        <f:else>
+            <f:for each="{profiles}" as="profile">
+                <div class="academic-persons-grid__item col-12 col-md-6 col-lg-4 col-xl-3">
+                    <f:render
+                        partial="Profile/Item"
+                        arguments="{
+                            profile: profile,
+                            settings: settings,
+                            data: data,
+                            groupedProfiles: groupedProfiles
+                        }"
+                    />
+                </div>
+            </f:for>
+        </f:else>
+    </f:if>
+</div>
+
+</html>

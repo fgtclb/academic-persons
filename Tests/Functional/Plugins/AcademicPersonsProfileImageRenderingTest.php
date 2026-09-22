@@ -166,7 +166,7 @@ final class AcademicPersonsProfileImageRenderingTest extends AbstractAcademicPer
         $image = $this->nodes($xpath, './/picture/img', $card)->item(0);
         $this->assertInstanceOf(\DOMElement::class, $image);
         $this->assertStringEndsWith('.jpg', $image->getAttribute('src'));
-        $this->assertSame('card-img-top img-fluid', $image->getAttribute('class'));
+        $this->assertSame('academic-persons-item__image card-img-top img-fluid', $image->getAttribute('class'));
         $this->assertSame('Portrait of Max Müllermann', $image->getAttribute('alt'));
     }
 
@@ -192,7 +192,7 @@ final class AcademicPersonsProfileImageRenderingTest extends AbstractAcademicPer
         $image = $images->item(0);
         $this->assertInstanceOf(\DOMElement::class, $image);
         $this->assertStringEndsWith('Images/ProfilePlaceholder.svg', $image->getAttribute('src'));
-        $this->assertSame('card-img-top img-fluid', $image->getAttribute('class'));
+        $this->assertSame('academic-persons-item__image card-img-top img-fluid', $image->getAttribute('class'));
     }
 
     #[Test]

@@ -1,0 +1,3 @@
+# The page the profile item links to. Every plugin but list-and-detail builds its detail
+# link against it, so pinning it is what makes a link assertion deterministic.
+plugin.tx_academicpersons.detailPid = 3
