@@ -69,8 +69,9 @@ final class ProfileRepositoryShowHiddenRecordsTest extends AbstractAcademicPerso
     }
 
     /**
-     * A manual selection overrules the demanded ordering, so the `profileList` branch of
-     * `applyDemandForQuery()` returns before it is applied. It still orders by `uid`: the
+     * A manual selection overrules the demanded ordering: the `profileList` branch of
+     * `resolveDemandForQuery()` returns the `uid` fallback and never looks at the demanded
+     * one. It does order, though: the
      * result is what listeners of `ModifyListProfilesEvent` receive, and an unordered
      * `uid IN (...)` is only accidentally reproducible (ACE-482). The order of the
      * selection itself is restored by `ProfileController::listAction()`, not here.

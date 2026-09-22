@@ -482,10 +482,11 @@ final class AcademicPersonsListPluginTest extends AbstractAcademicPersonsTestCas
 
     /**
      * The list plugin reaches the `profileList` branch of
-     * `ProfileRepository::applyDemandForQuery()`, which used to render default language
+     * `ProfileRepository::resolveDemandForQuery()`, which used to render default language
      * profiles on a `fallbackType: free` site (ACE-341). On `main` the card plugin covers
-     * the same branch; this branch has no card rendering test, so this is the only guard
-     * against a regression in that shared query here.
+     * the same branch in a localization test of its own; this branch renders a card only in
+     * `AcademicPersonsProfileQueryConstraintTest`, and not across languages, so this is the
+     * only guard against a localization regression in that shared query here.
      */
     #[Test]
     public function fullyLocalizedListDisplaysLocalizedSelectedProfilesForRequestedLanguageWithFallbackTypeFree(): void
@@ -563,11 +564,12 @@ final class AcademicPersonsListPluginTest extends AbstractAcademicPersonsTestCas
     }
     /**
      * A manual selection is ordered in PHP and not in the database: the `profileList`
-     * branch of `ProfileRepository::applyDemandForQuery()` returns before any
-     * `setOrderings()`, and `ProfileController::listAction()` restores the editor's order
-     * afterwards. With pagination switched on, the paginator used to be built from the
-     * query result, so the pages carried the database order while the restored order only
-     * reached the `profiles` variable the template does not render in that case.
+     * branch of `ProfileRepository::resolveDemandForQuery()` returns the deterministic
+     * `uid` fallback rather than the editor's order, and `ProfileController::listAction()`
+     * restores that order afterwards. With pagination switched on, the paginator used to
+     * be built from the query result, so the pages carried the database order while the
+     * restored order only reached the `profiles` variable the template does not render in
+     * that case.
      */
     #[Test]
     public function paginatedSelectionRendersTheFirstPageInSelectedOrder(): void

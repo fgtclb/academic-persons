@@ -110,7 +110,7 @@ final class ProfileDemandTest extends UnitTestCase
 
     /**
      * The documented "overrules all other filter options" of `getProfileList()` is a
-     * decision `ProfileRepository::applyDemandForQuery()` takes when it reads the demand,
+     * decision `ProfileRepository::resolveDemandForQuery()` takes when it reads the demand,
      * not something the DTO enforces. Pinning that: a `ModifyProfileDemandEvent` listener
      * that clears the profile list again gets the previous filters back rather than an
      * emptied demand, and `ProfileController::adoptSettings()` may set both in any order.

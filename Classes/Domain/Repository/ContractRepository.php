@@ -13,9 +13,12 @@ namespace FGTCLB\AcademicPersons\Domain\Repository;
 
 use FGTCLB\AcademicPersons\Backend\FormEngine\ContractSelectScopeResolver;
 use FGTCLB\AcademicPersons\Domain\Model\Contract;
+use FGTCLB\AcademicPersons\Event\ModifyContractQueryEvent;
+use Psr\EventDispatcher\EventDispatcherInterface;
 use TYPO3\CMS\Core\Context\LanguageAspect;
 use TYPO3\CMS\Core\Site\Entity\Site;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
+use TYPO3\CMS\Extbase\Persistence\Generic\Qom\ConstraintInterface;
 use TYPO3\CMS\Extbase\Persistence\QueryInterface;
 use TYPO3\CMS\Extbase\Persistence\QueryResultInterface;
 use TYPO3\CMS\Extbase\Persistence\Repository;
@@ -25,6 +28,18 @@ use TYPO3\CMS\Extbase\Persistence\Repository;
  */
 class ContractRepository extends Repository
 {
+    /**
+     * TYPO3 v12's Extbase `Repository` declares no event dispatcher at all - it arrives on the
+     * parent with v13 - so this repository has to take one of its own to be able to dispatch on
+     * both supported versions. `ProfileRepository` does the same, for the same reason.
+     */
+    protected EventDispatcherInterface $eventDispatcher;
+
+    public function injectEventDispatcher(EventDispatcherInterface $eventDispatcher): void
+    {
+        $this->eventDispatcher = $eventDispatcher;
+    }
+
     /**
      * @return QueryResultInterface<int, Contract>
      */
@@ -144,10 +159,23 @@ class ContractRepository extends Repository
             $query->getQuerySettings()->setIgnoreEnableFields(true);
             $query->getQuerySettings()->setEnableFieldsToBeIgnored(['disabled']);
         }
-        $query->matching($query->in('uid', $uids));
+        // The repository's own constraint comes first and the constraints the listeners collected
+        // follow, combined with a logical AND. Same shape as `ProfileRepository::applyQuery()` -
+        // see there for why a constraint a listener set with `matching()` is folded in, and why a
+        // single constraint is not wrapped.
+        /** @var ModifyContractQueryEvent $event */
+        $event = $this->eventDispatcher->dispatch(new ModifyContractQueryEvent($query));
+        $constraints = $event->getConstraints();
+        $constraintSetByAListener = $query->getConstraint();
+        if ($constraintSetByAListener instanceof ConstraintInterface) {
+            $constraints[] = $constraintSetByAListener;
+        }
+        array_unshift($constraints, $query->in('uid', $uids));
+        $query->matching(count($constraints) === 1 ? $constraints[0] : $query->logicalAnd(...$constraints));
         // Deterministic order only (ACE-491) - the order of the editor's selection is
         // deliberately not reproduced here: `in()` does not preserve it, and honouring
-        // it would be a behaviour change beyond making the list reproducible.
+        // it would be a behaviour change beyond making the list reproducible. It is set after
+        // the dispatch, so a listener that calls `setOrderings()` itself is overwritten.
         $query->setOrderings(['uid' => QueryInterface::ORDER_ASCENDING]);
 
         return $query->execute();

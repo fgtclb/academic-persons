@@ -1,0 +1,23 @@
+services:
+  _defaults:
+    autowire: true
+    autoconfigure: true
+    public: false
+
+  TESTS\TestProfileQueryConstraints\:
+    resource: '../Classes/*'
+
+  # TYPO3\CMS\Core\Attribute\AsEventListener does not exist on TYPO3 v12, so the listeners are
+  # registered with the tag - which is what this branch documents and what the shipped listeners
+  # of this repository do.
+  TESTS\TestProfileQueryConstraints\EventListener\RestrictProfileQueryListener:
+    tags:
+      - name: event.listener
+        identifier: 'test-profile-query-constraints/restrict-profiles'
+        event: FGTCLB\AcademicPersons\Event\ModifyProfileQueryEvent
+
+  TESTS\TestProfileQueryConstraints\EventListener\RestrictContractQueryListener:
+    tags:
+      - name: event.listener
+        identifier: 'test-profile-query-constraints/restrict-contracts'
+        event: FGTCLB\AcademicPersons\Event\ModifyContractQueryEvent

@@ -16,6 +16,7 @@ use FGTCLB\AcademicPersons\DemandValues\SortByValues;
 use FGTCLB\AcademicPersons\Domain\Model\Dto\DemandInterface;
 use FGTCLB\AcademicPersons\Domain\Model\Profile;
 use FGTCLB\AcademicPersons\Event\ModifyProfileDemandEvent;
+use FGTCLB\AcademicPersons\Event\ModifyProfileQueryEvent;
 use Psr\EventDispatcher\EventDispatcherInterface;
 use TYPO3\CMS\Core\Context\LanguageAspect;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
@@ -79,8 +80,56 @@ class ProfileRepository extends Repository
         $query = $this->createQuery();
         $demand = $this->eventDispatcher->dispatch(new ModifyProfileDemandEvent($demand))->getDemand();
         $this->applyDemandSettings($query, $demand);
-        $this->applyDemandForQuery($query, $demand);
+        [$constraint, $orderings] = $this->resolveDemandForQuery($query, $demand);
+        $this->applyQuery($query, $constraint, $orderings, $demand);
         return $query->execute();
+    }
+
+    /**
+     * Dispatch {@see ModifyProfileQueryEvent} and apply what this repository and the listeners
+     * together ask of the query.
+     *
+     * The repository's own constraint comes first and the collected ones follow, combined with a
+     * logical AND: a constraint narrows the result and can never widen it. That guarantee covers
+     * the constraints and nothing else - the query settings, the limit and the offset a listener
+     * can reach through the query object are read after this method and are not guarded. The
+     * ordering is set after the dispatch and is therefore always this repository's, which is the
+     * editor's choice in the content element and not a listener's.
+     *
+     * A listener that expressed its condition with `matching()` on the query instead of
+     * {@see ModifyProfileQueryEvent::addConstraint()} is folded in rather than dropped: nothing
+     * has called `matching()` at this point, so anything sitting there came from a listener, and
+     * taking it as one more constraint keeps the narrowing guarantee without losing what it
+     * meant. It is not the documented way, because `matching()` overwrites and only the last
+     * listener to call it would survive.
+     *
+     * A single constraint is passed on unwrapped: `Query::logicalAnd()` pads a one element list
+     * with an always true `uid > 0` (`case 1`, identical on v12 and v13), which would otherwise
+     * sit in every query of every installation that has no listener.
+     *
+     * @param QueryInterface<Profile> $query
+     * @param array<string, string> $orderings
+     */
+    private function applyQuery(
+        QueryInterface $query,
+        ?ConstraintInterface $ownConstraint,
+        array $orderings,
+        ?DemandInterface $demand,
+    ): void {
+        /** @var ModifyProfileQueryEvent $event */
+        $event = $this->eventDispatcher->dispatch(new ModifyProfileQueryEvent($query, $demand));
+        $constraints = $event->getConstraints();
+        $constraintSetByAListener = $query->getConstraint();
+        if ($constraintSetByAListener instanceof ConstraintInterface) {
+            $constraints[] = $constraintSetByAListener;
+        }
+        if ($ownConstraint !== null) {
+            array_unshift($constraints, $ownConstraint);
+        }
+        if ($constraints !== []) {
+            $query->matching(count($constraints) === 1 ? $constraints[0] : $query->logicalAnd(...$constraints));
+        }
+        $query->setOrderings($orderings);
     }
 
     /**
@@ -238,9 +287,14 @@ class ProfileRepository extends Repository
     }
 
     /**
+     * What the demand asks of the query: the query settings it implies are applied to $query
+     * directly, its constraint and its orderings are returned so that {@see self::applyQuery()}
+     * can apply them after the listeners had their say.
+     *
      * @param QueryInterface<Profile> $query
+     * @return array{0: ConstraintInterface|null, 1: array<string, string>}
      */
-    private function applyDemandForQuery(QueryInterface $query, DemandInterface $demand): void
+    private function resolveDemandForQuery(QueryInterface $query, DemandInterface $demand): array
     {
         // Direct selected profiles make all filters and the demanded ordering obsolete and are
         // handled first. The order of the selection is not reproducible in the query - `in()`
@@ -251,16 +305,13 @@ class ProfileRepository extends Repository
         if ($demand->getProfileList() !== '') {
             $profileUidArray = GeneralUtility::intExplode(',', $demand->getProfileList(), true);
             $this->matchSelectedUidsAcrossLanguages($query);
-            $query->matching($query->in('uid', $profileUidArray));
-            $query->setOrderings(self::FALLBACK_ORDERINGS);
-            return;
+            return [$query->in('uid', $profileUidArray), self::FALLBACK_ORDERINGS];
         }
 
-        $filters = $this->setFilters($query, $demand);
-        if ($filters !== null) {
-            $query->matching($filters);
-        }
-        $query->setOrderings($this->getOrderingsFromDemand($demand) + self::FALLBACK_ORDERINGS);
+        return [
+            $this->setFilters($query, $demand),
+            $this->getOrderingsFromDemand($demand) + self::FALLBACK_ORDERINGS,
+        ];
     }
 
     /**
@@ -322,11 +373,10 @@ class ProfileRepository extends Repository
             $this->includeHiddenRecords($query);
         }
 
-        $query->matching($query->in('uid', $uids));
         // Deterministic order only (ACE-491) - the order of the editor's selection is
         // deliberately not reproduced here: `in()` does not preserve it, and honouring
         // it would be a behaviour change beyond making the list reproducible.
-        $query->setOrderings(self::FALLBACK_ORDERINGS);
+        $this->applyQuery($query, $query->in('uid', $uids), self::FALLBACK_ORDERINGS, null);
         return $query->execute();
     }
 
