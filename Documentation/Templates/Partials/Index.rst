@@ -12,9 +12,12 @@ maintaining it against every later correction.
 
 The entry points stay :file:`Profile/Item.html`,
 :file:`Profile/List/ItemList.html`, :file:`Profile/List/Pagination.html` and
-:file:`Profile/List/AlphabetPagination.html`, with unchanged arguments. The
-first two delegate to the partials below; the two navigations are leaves that
-only gained a class, and a project copy of either loses nothing.
+:file:`Profile/List/AlphabetPagination.html`. The first two delegate to the
+partials below, with unchanged arguments. The page navigation is a leaf that
+only gained a class, and a project copy of it loses nothing. The letter
+navigation gained an argument as well, `alphabetFilterLetters`; a project copy
+of it keeps working and renders every letter as a link, as before - see
+:ref:`the letter navigation <templates-letter-navigation>` below.
 
 An existing copy of the item or the list body keeps working - and stops
 profiting from the partials below, because a copy does not render them.
@@ -141,6 +144,8 @@ The list
         -   The text shown when nothing was found
         -   `academic-persons-empty-state`
 
+..  _templates-letter-navigation:
+
 :file:`Profile/List/AlphabetPagination.html` is the sixth, and the one
 :file:`ItemList.html` does not render: the list template
 :file:`Templates/Profile/List.html` renders it above the list body, when
@@ -148,6 +153,23 @@ The list
 selected by hand - a manual selection ignores the letter filter. It carries
 `academic-persons-list__alphabet-pagination` next to the
 `alphabetical-pagination` it had.
+
+The list template passes it `alphabetFilterLetters` next to `demand`: every
+letter from `a` to `z`, mapped to whether the list holds a profile under it
+(see :ref:`developers-letter-availability`). The partial renders
+
+*   a letter with profiles as a link, in a plain `li.page-item`;
+*   a letter without profiles as `li.page-item.disabled` holding a
+    `span.page-link` - no link - with a `visually-hidden` "no profiles" for
+    assistive technology;
+*   the selected letter as `li.page-item.active` with
+    :html:`aria-current="page"`, not linked;
+*   :guilabel:`A-Z` as `li.page-item.active` with :html:`aria-current="page"`
+    while no letter is selected.
+
+The :html:`<nav>` is named by the label `list.alphabetFilter.navigation`. A
+list template of a project that renders this partial without
+`alphabetFilterLetters` gets every letter as a link, as before.
 
 :file:`Profile/List/Items.html` carries the Bootstrap row and column classes, so
 overriding it changes the grid of all four elements **of this extension** at

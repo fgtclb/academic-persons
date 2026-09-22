@@ -21,7 +21,7 @@
     <f:if condition="{settings.alphabetPaginationEnabled} && !{demand.profileList}">
         <f:render
             partial="Profile/List/AlphabetPagination"
-            arguments="{demand: demand}"
+            arguments="{demand: demand, alphabetFilterLetters: alphabetFilterLetters}"
         />
     </f:if>
 

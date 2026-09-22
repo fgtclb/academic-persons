@@ -3,40 +3,77 @@
     xmlns:f="http://typo3.org/ns/TYPO3/CMS/Fluid/ViewHelpers"
 >
 
-<f:variable
-    name="alphabets"
-    value="{0: 'a', 1: 'b', 2: 'c', 3: 'd', 4: 'e', 5: 'f', 6: 'g', 7: 'h', 8: 'i', 9: 'j', 10: 'k', 11: 'l', 12: 'm', 13: 'n', 14: 'o', 15: 'p', 16: 'q', 17: 'r', 18: 's', 19: 't', 20: 'u', 21: 'v', 22: 'w', 23: 'x', 24: 'y', 25: 'z'}"
-/>
+<f:comment>
+    alphabetFilterLetters maps every letter to whether its list holds a profile. A list
+    template of a project that does not pass it gets every letter as a link, as before.
+</f:comment>
+<f:if condition="{alphabetFilterLetters}">
+    <f:then>
+        <f:variable name="letters" value="{alphabetFilterLetters}" />
+    </f:then>
+    <f:else>
+        <f:variable
+            name="letters"
+            value="{a: 1, b: 1, c: 1, d: 1, e: 1, f: 1, g: 1, h: 1, i: 1, j: 1, k: 1, l: 1, m: 1, n: 1, o: 1, p: 1, q: 1, r: 1, s: 1, t: 1, u: 1, v: 1, w: 1, x: 1, y: 1, z: 1}"
+        />
+    </f:else>
+</f:if>
 
-<nav class="academic-persons-list__alphabet-pagination alphabetical-pagination mb-4">
+<nav
+    class="academic-persons-list__alphabet-pagination alphabetical-pagination mb-4"
+    aria-label="{f:translate(key: 'list.alphabetFilter.navigation', extensionName: 'academic_persons')}"
+>
     <ul class="pagination justify-content-center">
-        <li class="page-item">
-            <f:link.action
-                arguments="{demand: '{alphabetFilter: \'\'}'}"
-                class="page-link"
-                rel="nofollow"
-            >
-                <span>A-Z</span>
-            </f:link.action>
-        </li>
-        <f:for each="{alphabets}" as="alphabet">
-            <f:if condition="{demand.alphabetFilter} == {alphabet}">
+        <f:if condition="{demand.alphabetFilter}">
+            <f:then>
+                <li class="page-item">
+                    <f:link.action
+                        arguments="{demand: '{alphabetFilter: \'\'}'}"
+                        class="page-link"
+                        rel="nofollow"
+                    >
+                        <span>A-Z</span>
+                    </f:link.action>
+                </li>
+            </f:then>
+            <f:else>
+                <li class="page-item active">
+                    <f:link.action
+                        arguments="{demand: '{alphabetFilter: \'\'}'}"
+                        class="page-link"
+                        rel="nofollow"
+                        aria="{current: 'page'}"
+                    >
+                        <span>A-Z</span>
+                    </f:link.action>
+                </li>
+            </f:else>
+        </f:if>
+        <f:for each="{letters}" as="available" key="letter">
+            <f:if condition="{demand.alphabetFilter} == {letter}">
                 <f:then>
                     <li class="page-item active">
-                        <span class="page-link">
-                            {alphabet -> f:format.case()}
+                        <span class="page-link" aria-current="page">
+                            {letter -> f:format.case()}
                         </span>
                     </li>
                 </f:then>
-                <f:else>
+                <f:else if="{available}">
                     <li class="page-item">
                         <f:link.action
-                            arguments="{demand: '{alphabetFilter: alphabet}'}"
+                            arguments="{demand: '{alphabetFilter: letter}'}"
                             class="page-link"
                             rel="nofollow"
                         >
-                            <span>{alphabet -> f:format.case()}</span>
+                            <span>{letter -> f:format.case()}</span>
                         </f:link.action>
+                    </li>
+                </f:else>
+                <f:else>
+                    <li class="page-item disabled">
+                        <span class="page-link">
+                            {letter -> f:format.case()}<span class="visually-hidden"> - {f:translate(key: 'list.alphabetFilter.noProfiles', extensionName: 'academic_persons')}</span>
+                        </span>
                     </li>
                 </f:else>
             </f:if>

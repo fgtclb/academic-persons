@@ -56,6 +56,14 @@
         <source>No contracts found.</source>
         <target>Keine Verträge gefunden.</target>
       </trans-unit>
+      <trans-unit id="list.alphabetFilter.navigation" resname="list.alphabetFilter.navigation">
+        <source>Filter by initial of the last name</source>
+        <target>Nach Anfangsbuchstaben des Nachnamens filtern</target>
+      </trans-unit>
+      <trans-unit id="list.alphabetFilter.noProfiles" resname="list.alphabetFilter.noProfiles">
+        <source>no profiles</source>
+        <target>keine Profile</target>
+      </trans-unit>
 
       <!-- Detail -->
 

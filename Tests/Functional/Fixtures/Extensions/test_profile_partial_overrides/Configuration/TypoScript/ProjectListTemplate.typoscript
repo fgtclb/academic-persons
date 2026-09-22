@@ -1,0 +1,3 @@
+# A project that overrides the list template but not the letter navigation partial, the
+# way a project did before the navigation knew which letters lead somewhere.
+plugin.tx_academicpersons.view.templateRootPath = EXT:test_profile_partial_overrides/Resources/Private/ProjectListTemplate/
