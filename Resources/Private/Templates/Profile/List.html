@@ -14,7 +14,11 @@
 </f:if>
 
 <div class="academic-persons-list">
-    <f:if condition="{settings.alphabetPaginationEnabled}">
+    <f:comment>
+        A manual selection ignores the letter filter, so every letter would show the whole
+        selection: no navigation for it, whatever the content element says.
+    </f:comment>
+    <f:if condition="{settings.alphabetPaginationEnabled} && !{demand.profileList}">
         <f:render
             partial="Profile/List/AlphabetPagination"
             arguments="{demand: demand}"

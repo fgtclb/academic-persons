@@ -144,7 +144,8 @@ The list
 :file:`Profile/List/AlphabetPagination.html` is the sixth, and the one
 :file:`ItemList.html` does not render: the list template
 :file:`Templates/Profile/List.html` renders it above the list body, when
-`settings.alphabetPaginationEnabled` is switched on. It carries
+`settings.alphabetPaginationEnabled` is switched on and no profiles are
+selected by hand - a manual selection ignores the letter filter. It carries
 `academic-persons-list__alphabet-pagination` next to the
 `alphabetical-pagination` it had.
 
