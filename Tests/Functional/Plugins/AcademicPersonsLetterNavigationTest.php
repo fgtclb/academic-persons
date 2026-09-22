@@ -6,8 +6,10 @@ namespace FGTCLB\AcademicPersons\Tests\Functional\Plugins;
 
 use FGTCLB\AcademicPersons\Tests\Functional\AbstractAcademicPersonsTestCase;
 use FGTCLB\TestingHelper\FunctionalTestCase\FrontendPluginRenderingTrait;
+use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\Attributes\Test;
 use SBUERK\TYPO3\Testing\SiteHandling\SiteBasedTestTrait;
+use TESTS\TestProfileQueryConstraints\EventListener\CountProfileQueryListener;
 
 /**
  * The letter navigation of the persons list, as the **shipped** templates render it -
@@ -29,11 +31,14 @@ final class AcademicPersonsLetterNavigationTest extends AbstractAcademicPersonsT
     {
         $this->configurationToUseInTestInstance = $this->frontendPluginTestConfiguration();
         $this->addCoreExtensionsToLoad('typo3/cms-fluid-styled-content');
+        $this->addTestExtensionsToLoad('tests/test-profile-query-constraints');
         parent::setUp();
+        CountProfileQueryListener::$dispatches = 0;
     }
 
     protected function tearDown(): void
     {
+        CountProfileQueryListener::$dispatches = 0;
         $this->removeWrittenSiteConfiguration();
         parent::tearDown();
     }
@@ -138,5 +143,33 @@ final class AcademicPersonsLetterNavigationTest extends AbstractAcademicPersonsT
 
         $this->assertSame(0, $this->navigationCount($xpath));
         $this->assertSame(['Ben Baker'], $this->listedNames($xpath));
+    }
+
+    /**
+     * @return \Generator<string, array{0: string, 1: int}>
+     */
+    public static function profileQueriesPerRenderingDataProvider(): \Generator
+    {
+        yield 'navigation on: the list and its letters' => ['list', 2];
+        yield 'navigation off: the list only' => ['listWithoutNavigation', 1];
+        yield 'manual selection: the list only' => ['manualSelection', 1];
+    }
+
+    /**
+     * The letters cost one statement, and only a rendering that shows them pays for it. Seen
+     * through the query event, which the list query and the letter query both dispatch. A
+     * manual selection would not reach the database for its letters either way - the
+     * repository answers it without a query - so that the list action leaves them out there
+     * is asserted in `AcademicPersonsListPluginTest`, through the view.
+     */
+    #[DataProvider('profileQueriesPerRenderingDataProvider')]
+    #[Test]
+    public function theLetterQueryRunsOnlyForARenderedNavigation(string $dataSet, int $expectedQueries): void
+    {
+        $this->setUpTestCase($dataSet);
+
+        $this->renderFrontendPage('https://www.acme.com/home');
+
+        $this->assertSame($expectedQueries, CountProfileQueryListener::$dispatches);
     }
 }

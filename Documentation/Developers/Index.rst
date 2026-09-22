@@ -39,7 +39,9 @@ would - a consent flag, a site the profile belongs to, an editorial state.
         -   Dispatched for
     *   -   :php:`ModifyProfileQueryEvent`
         -   the profile query of the list, list-and-detail and card plugins,
-            and the uid lookup of the selected-profiles plugin
+            the letter query of the two list plugins (see
+            :ref:`developers-letter-availability`), and the uid lookup of the
+            selected-profiles plugin
     *   -   :php:`ModifyContractQueryEvent`
         -   the uid lookup of the selected-contracts plugin
 
@@ -146,6 +148,43 @@ check, not in these events.
 A project that narrowed the plugins by subclassing or XCLASSing the
 repositories moves that code here; see
 :ref:`breaking-profile-and-contract-finder-signatures`.
+
+..  _developers-letter-availability:
+
+Which letters lead somewhere
+============================
+
+The letter navigation of the list and list-and-detail plugins is told which
+letters lead to a list that is not empty:
+:php:`ProfileRepository::findAlphabetFilterLetters()`, assigned to the view as
+`alphabetFilterLetters` - the letters `a` to `z`, each mapped to a boolean. It
+is assigned only while the content element has the navigation switched on and
+no profiles are selected by hand; a manual selection ignores the letter filter.
+
+The letters come from the list's own query with the letter cleared, so the
+active letter never narrows the others, and both events reach it:
+:php:`ModifyProfileDemandEvent` and :php:`ModifyProfileQueryEvent` are
+dispatched **twice** for a list that shows the navigation - once for the list,
+once for its letters - and the query event carries the same plugin context both
+times. A listener that narrows the list narrows the letters in the same way, as
+long as it answers both calls alike. The demand of the second call carries no
+letter.
+
+Two things the letters do not see, both shared with the list's own pagination
+count, which is computed in SQL as well:
+
+*   a listener of :php:`ModifyListProfilesEvent` that **replaces** the result -
+    the letters are computed from the query, not from the records that event
+    hands on. Nor can that listener assign letters of its own: the list action
+    assigns `alphabetFilterLetters` after the event and would overwrite them;
+*   in a workspace preview, a profile deleted or hidden only in the workspace -
+    it still makes its letter available. Live, the letters are exact.
+
+The method compares with the letter filter's own predicate - :sql:`LIKE`, or
+:sql:`ILIKE` on PostgreSQL, against the last name - so a name is available
+under exactly the letter the list files it under. Where a name starting with an
+umlaut ends up is a question of the database collation: under O on MariaDB and
+MySQL, under no letter on PostgreSQL and SQLite.
 
 ..  _developers-trigger:
 

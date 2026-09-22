@@ -33,7 +33,7 @@ final class AcademicPersonsListPluginTest extends AbstractAcademicPersonsTestCas
             ],
         ]);
         $this->addCoreExtensionsToLoad('typo3/cms-fluid-styled-content');
-        $this->addTestExtensionsToLoad('georgringer/numbered-pagination', 'tests/plugin-templates');
+        $this->addTestExtensionsToLoad('georgringer/numbered-pagination', 'tests/plugin-templates', 'tests/test-profile-query-constraints');
         parent::setUp();
     }
 
@@ -43,7 +43,10 @@ final class AcademicPersonsListPluginTest extends AbstractAcademicPersonsTestCas
         parent::tearDown();
     }
 
-    private function setUpFrontendRootPageForTestCase(): void
+    /**
+     * @param list<string> $additionalSetupFiles Setup loaded after the shipped one.
+     */
+    private function setUpFrontendRootPageForTestCase(array $additionalSetupFiles = []): void
     {
         $this->setUpFrontendRootPage(
             pageId: 1,
@@ -54,12 +57,15 @@ final class AcademicPersonsListPluginTest extends AbstractAcademicPersonsTestCas
                     'EXT:test_plugin_templates/Configuration/TypoScript/constants.typoscript',
                     'EXT:academic_persons/Tests/Functional/Plugins/Fixtures/TypoScript/Constants/PluginConfiguration.typoscript',
                 ],
-                'setup' => [
-                    'EXT:fluid_styled_content/Configuration/TypoScript/setup.typoscript',
-                    'EXT:academic_persons/Configuration/TypoScript/Default/setup.typoscript',
-                    'EXT:test_plugin_templates/Configuration/TypoScript/setup.typoscript',
-                    'EXT:academic_persons/Tests/Functional/Plugins/Fixtures/TypoScript/Setup/Rendering.typoscript',
-                ],
+                'setup' => array_merge(
+                    [
+                        'EXT:fluid_styled_content/Configuration/TypoScript/setup.typoscript',
+                        'EXT:academic_persons/Configuration/TypoScript/Default/setup.typoscript',
+                        'EXT:test_plugin_templates/Configuration/TypoScript/setup.typoscript',
+                        'EXT:academic_persons/Tests/Functional/Plugins/Fixtures/TypoScript/Setup/Rendering.typoscript',
+                    ],
+                    $additionalSetupFiles,
+                ),
             ],
         );
     }
@@ -93,6 +99,94 @@ final class AcademicPersonsListPluginTest extends AbstractAcademicPersonsTestCas
         $this->assertStringContainsString('<h2>Profilelist</h2>', $content);
         $this->assertStringContainsString('#0(1): Max Müllermann', $content);
         $this->assertStringContainsString('#1(2): Horst Huber', $content);
+    }
+
+    /**
+     * The list action hands the letter availability to the view when the letter navigation is
+     * switched on (ACE-597). `EXT:test_plugin_templates` prints it as `LETTER <x>: available`
+     * or `LETTER <x>: empty`.
+     */
+    #[Test]
+    public function letterAvailabilityReachesTheViewWhenTheLetterNavigationIsOn(): void
+    {
+        $this->importCSVDataSet(__DIR__ . '/Fixtures/AcademicPersonsListPlugin/defaultLanguageOnly_alphabetPagination.csv');
+        $this->setUpFrontendRootPageForTestCase();
+        $this->writeFrontendPluginTestSite([
+            $this->buildDefaultLanguageConfiguration(
+                identifier: 'EN',
+                base: '/',
+            ),
+        ]);
+
+        $content = $this->renderFrontendPage('https://www.acme.com/home');
+        $this->assertStringContainsString('LETTER h: available', $content);
+        $this->assertStringContainsString('LETTER m: available', $content);
+        $this->assertStringContainsString('LETTER a: empty', $content);
+        $this->assertStringContainsString('LETTER z: empty', $content);
+    }
+
+    /**
+     * A listener that narrows the list by the settings of the content element - the way a
+     * consent listener would - narrows its letters as well: the list action hands the letter
+     * query the same plugin context as the list query. Without it the listener would see no
+     * context, leave the letter query alone, and M would stay available over an empty list.
+     */
+    #[Test]
+    public function letterAvailabilityFollowsAListenerThatReadsThePluginSettings(): void
+    {
+        $this->importCSVDataSet(__DIR__ . '/Fixtures/AcademicPersonsListPlugin/defaultLanguageOnly_alphabetPagination_achterberg.csv');
+        $this->setUpFrontendRootPageForTestCase(['EXT:test_profile_query_constraints/Configuration/TypoScript/RestrictLastName.typoscript']);
+        $this->writeFrontendPluginTestSite([
+            $this->buildDefaultLanguageConfiguration(
+                identifier: 'EN',
+                base: '/',
+            ),
+        ]);
+
+        $content = $this->renderFrontendPage('https://www.acme.com/home');
+        $this->assertStringContainsString('Anna Achterberg', $content);
+        $this->assertStringNotContainsString('Max Müllermann', $content);
+        $this->assertStringContainsString('LETTER a: available', $content);
+        $this->assertStringContainsString('LETTER m: empty', $content);
+        $this->assertStringContainsString('LETTER h: empty', $content);
+    }
+
+    #[Test]
+    public function letterAvailabilityIsNotAssignedWhileTheLetterNavigationIsOff(): void
+    {
+        $this->importCSVDataSet(__DIR__ . '/Fixtures/AcademicPersonsListPlugin/defaultLanguageOnly.csv');
+        $this->setUpFrontendRootPageForTestCase();
+        $this->writeFrontendPluginTestSite([
+            $this->buildDefaultLanguageConfiguration(
+                identifier: 'EN',
+                base: '/',
+            ),
+        ]);
+
+        $content = $this->renderFrontendPage('https://www.acme.com/home');
+        $this->assertStringContainsString('#0(1): Max Müllermann', $content);
+        $this->assertStringNotContainsString('LETTER ', $content);
+    }
+
+    /**
+     * A manual selection ignores the letter filter and renders no navigation (ACE-599), so it
+     * gets no availability either - not even the "every letter" a selection would answer.
+     */
+    #[Test]
+    public function letterAvailabilityIsNotAssignedForAManualSelection(): void
+    {
+        $this->importCSVDataSet(__DIR__ . '/Fixtures/AcademicPersonsListPlugin/defaultLanguageOnly_oneProfileSelected_alphabetPagination.csv');
+        $this->setUpFrontendRootPageForTestCase();
+        $this->writeFrontendPluginTestSite([
+            $this->buildDefaultLanguageConfiguration(
+                identifier: 'EN',
+                base: '/',
+            ),
+        ]);
+
+        $content = $this->renderFrontendPage('https://www.acme.com/home');
+        $this->assertStringContainsString('#0(2): Horst Huber', $content);
+        $this->assertStringNotContainsString('LETTER ', $content);
     }
 
     #[Test]

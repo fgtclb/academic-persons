@@ -119,6 +119,16 @@ final class ProfileController extends ActionController
             ]);
         }
 
+        // Which letters lead to a list that is not empty - only when the navigation is rendered,
+        // which it is not for a manual selection: that ignores the letter filter. The demand is
+        // the one the listeners handed back, so the letters answer for the list they changed.
+        if ((bool)($this->settings['alphabetPaginationEnabled'] ?? false) && !$manualSelection) {
+            $this->view->assign(
+                'alphabetFilterLetters',
+                $this->profileRepository->findAlphabetFilterLetters($demand, $this->queryContext()),
+            );
+        }
+
         $this->view->assignMultiple([
             'data' => $this->getCurrentContentObjectRenderer()?->data,
             'profiles' => $profiles,

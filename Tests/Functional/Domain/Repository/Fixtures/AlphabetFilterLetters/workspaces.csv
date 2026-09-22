@@ -1,0 +1,10 @@
+"sys_workspace",
+,"uid","pid","title","deleted"
+,1,0,"Test workspace",0
+"tx_academicpersons_domain_model_profile",
+,"uid","pid","deleted","hidden","starttime","endtime","fe_group","sys_language_uid","l10n_parent","t3ver_oid","t3ver_wsid","t3ver_state","first_name","last_name"
+,51,100,0,0,0,0,"",0,0,0,1,1,"Quentin","Quinn"
+,52,100,0,0,0,0,"",0,0,0,0,0,"Rita","Reed"
+,53,100,0,0,0,0,"",0,0,52,1,2,"Rita","Reed"
+,54,100,0,0,0,0,"",0,0,0,0,0,"Sam","Stone"
+,55,100,0,0,0,0,"",0,0,54,1,0,"Sam","Young"

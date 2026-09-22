@@ -11,7 +11,9 @@ declare(strict_types=1);
 
 namespace FGTCLB\AcademicPersons\Domain\Repository;
 
+use Doctrine\DBAL\Platforms\PostgreSQLPlatform;
 use FGTCLB\AcademicBase\Domain\Model\Dto\PluginControllerActionContextInterface;
+use FGTCLB\AcademicPersons\DemandValues\AlphabetFilterLetters;
 use FGTCLB\AcademicPersons\DemandValues\GroupByValues;
 use FGTCLB\AcademicPersons\DemandValues\SortByValues;
 use FGTCLB\AcademicPersons\Domain\Model\Dto\DemandInterface;
@@ -19,11 +21,14 @@ use FGTCLB\AcademicPersons\Domain\Model\Profile;
 use FGTCLB\AcademicPersons\Event\ModifyProfileDemandEvent;
 use FGTCLB\AcademicPersons\Event\ModifyProfileQueryEvent;
 use Psr\EventDispatcher\EventDispatcherInterface;
+use TYPO3\CMS\Core\Context\Context;
 use TYPO3\CMS\Core\Context\LanguageAspect;
+use TYPO3\CMS\Core\Database\Query\Restriction\WorkspaceRestriction;
 use TYPO3\CMS\Core\Schema\Capability\TcaSchemaCapability;
 use TYPO3\CMS\Core\Schema\TcaSchemaFactory;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Extbase\Persistence\Generic\Qom\ConstraintInterface;
+use TYPO3\CMS\Extbase\Persistence\Generic\Storage\Typo3DbQueryParser;
 use TYPO3\CMS\Extbase\Persistence\QueryInterface;
 use TYPO3\CMS\Extbase\Persistence\QueryResultInterface;
 use TYPO3\CMS\Extbase\Persistence\Repository;
@@ -104,6 +109,92 @@ class ProfileRepository extends Repository
         [$constraint, $orderings] = $this->resolveDemandForQuery($query, $demand);
         $this->applyQuery($query, $constraint, $orderings, $demand, $context);
         return $query->execute();
+    }
+
+    /**
+     * Which letters of the letter navigation lead to a list that is not empty: every letter of
+     * {@see AlphabetFilterLetters::LETTERS}, `true` when the list this demand renders for that
+     * letter holds at least one profile.
+     *
+     * The list query is built the way {@see self::findByDemand()} builds it - both events, the
+     * demand settings, the filters and the plugin context - from a copy of the demand without
+     * its letter, so the active letter never narrows the others. It is then run the way core's
+     * own `count()` runs it, with one conditional aggregate per letter as the select list: one
+     * statement, whatever the number of profiles. Each aggregate uses the predicate of the
+     * letter filter itself - `LIKE`, `ILIKE` on PostgreSQL, against `last_name` - so a name is
+     * available under exactly the letter the list files it under on the DBMS at hand. That is a
+     * question of collation, and a first character compared in PHP would answer it differently.
+     *
+     * A manual selection ignores the letter filter, so every letter yields the whole selection
+     * and is `true`.
+     *
+     * Two limits, both shared with the list's own pagination count, which is SQL only as well:
+     * in a workspace preview a profile deleted or hidden only in the workspace still counts, and
+     * a listener of `ModifyListProfilesEvent` that replaces the result is not reflected. Live
+     * and in the frontend, the answer is exact. Outside the frontend Extbase applies no
+     * versioning rules to the records of a query, so there the letters agree with the list's
+     * count - live records only - and not necessarily with its records.
+     *
+     * The query parser is internal to Extbase. It is used here exactly as
+     * `Typo3DbBackend::getObjectCountByQuery()` uses it, identically on TYPO3 v13 and v14,
+     * because it is the only source of the list's language, visibility and join handling that
+     * does not duplicate it. Should it go, 26 `count()` calls give the same answer.
+     *
+     * @param PluginControllerActionContextInterface|null $context The plugin the list is rendered
+     *        for, handed to the listeners of {@see ModifyProfileQueryEvent} as the list query does.
+     * @return array<string, bool>
+     */
+    public function findAlphabetFilterLetters(
+        DemandInterface $demand,
+        ?PluginControllerActionContextInterface $context = null,
+    ): array {
+        $demand = clone $demand;
+        $demand->setAlphabetFilter('');
+        // Cloned again: a listener may hand back an object it keeps using, and one with a
+        // letter of its own, which still must not narrow the other letters.
+        /** @var ModifyProfileDemandEvent $demandEvent */
+        $demandEvent = $this->eventDispatcher->dispatch(new ModifyProfileDemandEvent($demand));
+        $demand = clone $demandEvent->getDemand();
+        $demand->setAlphabetFilter('');
+        if ($demand->getProfileList() !== '') {
+            return array_fill_keys(AlphabetFilterLetters::LETTERS, true);
+        }
+
+        $query = $this->createQuery();
+        $this->applyDemandSettings($query, $demand);
+        [$constraint] = $this->resolveDemandForQuery($query, $demand);
+        $this->applyQuery($query, $constraint, [], $demand, $context);
+
+        $queryBuilder = GeneralUtility::makeInstance(Typo3DbQueryParser::class)
+            ->convertQueryToDoctrineQueryBuilder($query)
+            ->resetOrderBy()
+            ->resetGroupBy();
+        $workspaceId = (int)GeneralUtility::makeInstance(Context::class)->getPropertyFromAspect('workspace', 'id');
+        $queryBuilder->getRestrictions()->add(GeneralUtility::makeInstance(WorkspaceRestriction::class, $workspaceId));
+
+        // The table or its alias is quoted already, the column is not - as in core's count().
+        $source = $queryBuilder->getFrom()[0];
+        $lastName = ($source->alias ?: $source->table) . '.' . $queryBuilder->quoteIdentifier('last_name');
+        $operator = $queryBuilder->getConnection()->getDatabasePlatform() instanceof PostgreSQLPlatform ? 'ILIKE' : 'LIKE';
+        $aggregates = [];
+        foreach (AlphabetFilterLetters::LETTERS as $letter) {
+            // MAX() makes the duplicate rows of the contract joins irrelevant, and without a
+            // GROUP BY there is exactly one row, also for an empty list.
+            $aggregates[] = sprintf(
+                'MAX(CASE WHEN %s %s %s THEN 1 ELSE 0 END) AS %s',
+                $lastName,
+                $operator,
+                $queryBuilder->quote($letter . '%'),
+                $queryBuilder->quoteIdentifier('letter_' . $letter),
+            );
+        }
+        $row = $queryBuilder->selectLiteral(...$aggregates)->executeQuery()->fetchAssociative() ?: [];
+
+        $letters = [];
+        foreach (AlphabetFilterLetters::LETTERS as $letter) {
+            $letters[$letter] = (int)($row['letter_' . $letter] ?? 0) === 1;
+        }
+        return $letters;
     }
 
     /**

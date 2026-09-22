@@ -2,6 +2,12 @@
       xmlns:f="http://typo3.org/ns/TYPO3/CMS/Fluid/ViewHelpers"
 >
 
+<f:if condition="{alphabetFilterLetters}">
+<pre>
+<f:for each="{alphabetFilterLetters}" as="available" key="letter">LETTER {letter}: {f:if(condition: available, then: 'available', else: 'empty')}
+</f:for></pre>
+</f:if>
+
 <f:if condition="{profiles}">
     <f:variable name="profilesToList" value="{profiles}" />
     <f:if condition="{settings.paginationEnabled}">

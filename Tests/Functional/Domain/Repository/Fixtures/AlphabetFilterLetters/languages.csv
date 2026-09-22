@@ -1,0 +1,9 @@
+"tx_academicpersons_domain_model_profile",
+,"uid","pid","deleted","hidden","starttime","endtime","fe_group","sys_language_uid","l10n_parent","t3ver_oid","t3ver_wsid","t3ver_state","first_name","last_name"
+,31,100,0,0,0,0,"",0,0,0,0,0,"Lena","Lopez"
+,32,100,0,0,0,0,"",1,31,0,0,0,"Lena","Lopez"
+,33,100,0,0,0,0,"",0,0,0,0,0,"Mia","Moore"
+,34,100,0,0,0,0,"",1,0,0,0,0,"Nils","Nash"
+,35,100,0,0,0,0,"",-1,0,0,0,0,"Ole","Owen"
+,36,100,0,1,0,0,"",0,0,0,0,0,"Pia","Price"
+,37,100,0,0,0,0,"",1,36,0,0,0,"Pia","Price"
