@@ -11,12 +11,15 @@ declare(strict_types=1);
 
 namespace FGTCLB\AcademicPersons\Domain\Repository;
 
+use FGTCLB\AcademicBase\Domain\Model\Dto\PluginControllerActionContextInterface;
 use FGTCLB\AcademicPersons\Backend\FormEngine\ContractSelectScopeResolver;
 use FGTCLB\AcademicPersons\Domain\Model\Contract;
 use FGTCLB\AcademicPersons\Domain\Model\Profile;
+use FGTCLB\AcademicPersons\Event\ModifyContractQueryEvent;
 use TYPO3\CMS\Core\Context\LanguageAspect;
 use TYPO3\CMS\Core\Site\Entity\Site;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
+use TYPO3\CMS\Extbase\Persistence\Generic\Qom\ConstraintInterface;
 use TYPO3\CMS\Extbase\Persistence\QueryInterface;
 use TYPO3\CMS\Extbase\Persistence\QueryResultInterface;
 use TYPO3\CMS\Extbase\Persistence\Repository;
@@ -144,11 +147,31 @@ class ContractRepository extends Repository
     }
 
     /**
+     * The signature is deliberately unchanged: a project that XCLASSes or overrides this method
+     * keeps loading. The selected-contracts plugin calls {@see self::findByUidsWithContext()}
+     * instead, so such an override no longer reaches it - see the `Breaking-*.rst` of this change.
+     *
      * @param int[] $uids
      * @return QueryResultInterface<int, Contract>
      */
     public function findByUids(array $uids, bool $showHidden = false): QueryResultInterface
     {
+        return $this->findByUidsWithContext($uids, null, $showHidden);
+    }
+
+    /**
+     * The uid lookup of the selected-contracts plugin. It differs from {@see self::findByUids()}
+     * in nothing but the context it hands to the listeners of {@see ModifyContractQueryEvent},
+     * which a listener such as a consent filter needs to read the content element's settings.
+     *
+     * @param int[] $uids
+     * @return QueryResultInterface<int, Contract>
+     */
+    public function findByUidsWithContext(
+        array $uids,
+        ?PluginControllerActionContextInterface $context,
+        bool $showHidden = false,
+    ): QueryResultInterface {
         $query = $this->createQuery();
         // Selected uid's are default language and we need to configure extbase in away to
         // properly handle the overlay. This is adopted from the generic extbase backend
@@ -168,10 +191,24 @@ class ContractRepository extends Repository
             $query->getQuerySettings()->setIgnoreEnableFields(true);
             $query->getQuerySettings()->setEnableFieldsToBeIgnored(['disabled']);
         }
-        $query->matching($query->in('uid', $uids));
+        // The repository's own constraint comes first and the constraints the listeners collected
+        // follow, combined with a logical AND. Same shape as `ProfileRepository::applyQuery()` -
+        // see there for why a constraint a listener set with `matching()` is folded in, and why a
+        // single constraint is not wrapped. `$this->eventDispatcher` is the one Extbase's own
+        // `Repository` injects.
+        /** @var ModifyContractQueryEvent $event */
+        $event = $this->eventDispatcher->dispatch(new ModifyContractQueryEvent($query, $context));
+        $constraints = $event->getConstraints();
+        $constraintSetByAListener = $query->getConstraint();
+        if ($constraintSetByAListener instanceof ConstraintInterface) {
+            $constraints[] = $constraintSetByAListener;
+        }
+        array_unshift($constraints, $query->in('uid', $uids));
+        $query->matching(count($constraints) === 1 ? $constraints[0] : $query->logicalAnd(...$constraints));
         // Deterministic order only (ACE-491) - the order of the editor's selection is
         // deliberately not reproduced here: `in()` does not preserve it, and honouring
-        // it would be a behaviour change beyond making the list reproducible.
+        // it would be a behaviour change beyond making the list reproducible. It is set after
+        // the dispatch, so a listener that calls `setOrderings()` itself is overwritten.
         $query->setOrderings(['uid' => QueryInterface::ORDER_ASCENDING]);
 
         return $query->execute();

@@ -1,0 +1,3 @@
+# Makes the listener set its condition with matching() instead of addConstraint(), so that the
+# repository has to fold it in next to the filter the content element carries.
+plugin.tx_academicpersons.settings.testQueryMatchingBesideAnEditorFilter = 1

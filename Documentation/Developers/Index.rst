@@ -4,17 +4,148 @@
 For developers
 ==============
 
-This chapter documents the programmatic surface of the translation
-synchronisation this extension ships: the event that triggers it, the service
-interface behind it, and how it behaves in workspaces. It also documents the
-event that lets a project decide what is written as the metadata of a profile
-image.
+This chapter documents the programmatic surface this extension ships: the two
+events that let a project narrow what the plugins show, the translation
+synchronisation - the event that triggers it, the service interface behind it,
+and how it behaves in workspaces - and the event that lets a project decide
+what is written as the metadata of a profile image.
 
 ..  warning::
 
-    The whole surface is marked :php:`@internal` and experimental. It works and
-    is covered by functional tests, but signatures may still change in a minor
-    release. Depend on it deliberately.
+    **The translation synchronisation is experimental.**
+    :php:`RecordSynchronizerInterface` and :php:`RecordSynchronizer` are marked
+    :php:`@internal`, and the rest of :ref:`developers-synchronisation` and
+    :ref:`developers-workspaces` - :php:`SynchronizerContext` among it - is to
+    be treated the same way. It works and is covered by functional tests, but
+    signatures may still change in a minor release. Depend on it deliberately.
+    The events - the query events below, :php:`AfterProfileUpdateEvent` and
+    :php:`ModifyProfileImageMetadataEvent` - are public API.
+
+..  _developers-query-events:
+
+Narrowing what a plugin shows
+=============================
+
+:php:`\FGTCLB\AcademicPersons\Event\ModifyProfileQueryEvent` and
+:php:`\FGTCLB\AcademicPersons\Event\ModifyContractQueryEvent` are dispatched
+immediately before a plugin query is executed, and a listener adds conditions
+to it. They are the supported way to make a plugin show fewer records than it
+would - a consent flag, a site the profile belongs to, an editorial state.
+
+..  list-table::
+    :header-rows: 1
+
+    *   -   Event
+        -   Dispatched for
+    *   -   :php:`ModifyProfileQueryEvent`
+        -   the profile query of the list, list-and-detail and card plugins,
+            and the uid lookup of the selected-profiles plugin
+    *   -   :php:`ModifyContractQueryEvent`
+        -   the uid lookup of the selected-contracts plugin
+
+Both carry the Extbase :php:`QueryInterface` the conditions are built on
+(:php:`getQuery()`), collect them through :php:`addConstraint()` and hand them
+back through :php:`getConstraints()`. :php:`getPluginControllerActionContext()` is the plugin the
+query is rendered for - its name, the settings of the content element, the
+request, the site, the language and the content object - and is :php:`null`
+where the query has no plugin behind it. :php:`ModifyProfileQueryEvent` also
+carries :php:`getDemand()`, the list demand, which is :php:`null` for the uid
+lookup of the selected-profiles plugin.
+
+..  code-block:: php
+    :caption: EXT:my_extension/Classes/EventListener/ShowOnlyConsentingProfiles.php
+
+    <?php
+
+    declare(strict_types=1);
+
+    namespace MyVendor\MyExtension\EventListener;
+
+    use FGTCLB\AcademicPersons\Event\ModifyProfileQueryEvent;
+    use TYPO3\CMS\Core\Attribute\AsEventListener;
+
+    final class ShowOnlyConsentingProfiles
+    {
+        #[AsEventListener(identifier: 'my-extension/show-only-consenting-profiles')]
+        public function __invoke(ModifyProfileQueryEvent $event): void
+        {
+            // The two list plugins only; the card plugin of the same page keeps everything.
+            if (!in_array($event->getPluginControllerActionContext()?->getPluginName(), ['List', 'ListAndDetail'], true)) {
+                return;
+            }
+            $query = $event->getQuery();
+            $event->addConstraint($query->equals('publicDisplayConsent', true));
+        }
+    }
+
+:php:`getPluginName()` is the name a plugin is **registered** with, not its
+content element type. There are six, and two of them render a profile list:
+
+..  list-table::
+    :header-rows: 1
+
+    *   - Plugin name
+        - Content element type
+    *   - :php:`List`
+        - :sql:`academicpersons_list`
+    *   - :php:`ListAndDetail`
+        - :sql:`academicpersons_listanddetail`
+    *   - :php:`Card`
+        - :sql:`academicpersons_card`
+    *   - :php:`SelectedProfiles`
+        - :sql:`academicpersons_selectedprofiles`
+    *   - :php:`SelectedContracts`
+        - :sql:`academicpersons_selectedcontracts`
+    *   - :php:`Detail`
+        - :sql:`academicpersons_detail`
+
+:php:`Detail` is in the table for completeness and never reaches these events:
+neither of them is dispatched for the detail action. A detail view rendered by
+the :php:`ListAndDetail` plugin reports that plugin's name, not :php:`Detail`.
+
+The collected conditions are combined with the ones the extension builds
+itself - storage folders, the organisational unit and function type filters of
+the content element, the letter filter, hidden records and the language
+handling - with a logical **AND**, and they are applied **before pagination**.
+A *constraint* therefore only ever narrows a result, and it cannot drop a
+condition the extension put there.
+
+..  warning::
+
+    That guarantee covers the constraints, and nothing else about the query.
+
+    :php:`setOrderings()` is called on the query *after* the event, so a
+    listener that sets an ordering is overwritten without a notice. The
+    ordering belongs to the plugin: it is what the editor chose in the content
+    element, and a listener that changed it would override that choice for
+    every element at once.
+
+    A condition set with :php:`matching()` instead of :php:`addConstraint()` is
+    **folded into the same AND** rather than dropped, so it narrows like any
+    other. Use :php:`addConstraint()` anyway: :php:`matching()` replaces what
+    is on the query, so two listeners doing it leave only the last one's
+    condition standing, while :php:`addConstraint()` collects.
+
+    The **query settings, the limit and the offset are live**.
+    :php:`getQuerySettings()` hands out the object the query is parsed from,
+    and it is read after this event, so a listener that calls
+    :php:`setRespectStoragePage(false)` or :php:`setIgnoreEnableFields(true)`
+    on it widens the result past the content element - and a listener that
+    calls :php:`setLimit()` cuts it. Nothing guards any of this; it is the same
+    object because a listener needs it to build an expression in the first
+    place. Add constraints and leave the rest of the query alone.
+
+The detail view is not covered: neither event is dispatched for it. It resolves
+its profile through Extbase argument mapping, and the one finder it does use -
+for a hidden profile, when the plugin's "show hidden records" is on - builds
+its own query and never goes through the shared path these events sit in. So a
+profile a listener hides from the lists is still reachable through its own
+detail URL; a condition that has to hold there as well belongs in an access
+check, not in these events.
+
+A project that narrowed the plugins by subclassing or XCLASSing the
+repositories moves that code here; see
+:ref:`breaking-profile-and-contract-finder-signatures`.
 
 ..  _developers-trigger:
 
@@ -212,3 +343,8 @@ See also
 *   `EXT:academic_persons_edit`, whose ``profile.allowedLanguages`` setting
     feeds the allowed language ids and whose event listener wires the pieces
     together.
+*   The changelog entry
+    :ref:`Narrow the profiles and contracts a plugin shows <feature-profile-and-contract-query-events>`
+    for the query events, and
+    :ref:`The plugins call different repository finders <breaking-profile-and-contract-finder-signatures>`
+    for what they replace.

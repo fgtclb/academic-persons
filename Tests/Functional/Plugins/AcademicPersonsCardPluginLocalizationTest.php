@@ -22,7 +22,7 @@ use TYPO3\CMS\Core\Information\Typo3Version;
  *
  * That is not the same as calling every result here desirable. Two were not, and neither
  * belonged to this action - both came out of the shared `profileList` path in
- * `ProfileRepository::applyDemandForQuery()`, so they hit the list plugin just as hard:
+ * `ProfileRepository::resolveDemandForQuery()`, so they hit the list plugin just as hard:
  *
  * - a site language with `fallbackType: free` rendered **default language** profiles,
  *   because dropping the language restriction for a selection of default language uids

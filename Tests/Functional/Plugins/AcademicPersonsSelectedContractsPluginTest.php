@@ -214,7 +214,7 @@ final class AcademicPersonsSelectedContractsPluginTest extends AbstractAcademicP
      * Same core defect as the strict-mode test above, reached over a different route.
      *
      * "free" maps to `OVERLAYS_OFF`, which
-     * {@see \FGTCLB\AcademicPersons\Domain\Repository\ContractRepository::findByUids()} lifts to
+     * {@see \FGTCLB\AcademicPersons\Domain\Repository\ContractRepository::findByUidsWithContext()} lifts to
      * `OVERLAYS_ON_WITH_FLOATING` (ACE-341) - so this exercises the same overlay decision as the
      * strict test above, reached from a different site configuration. Genuine fallback mode is
      * covered separately below and behaves differently: it keeps the untranslated contracts.
@@ -296,7 +296,7 @@ final class AcademicPersonsSelectedContractsPluginTest extends AbstractAcademicP
 
     /**
      * Genuine fallback mode, which no test covered before: "fallback" maps to `OVERLAYS_MIXED`, and
-     * unlike `OVERLAYS_OFF` the repositories leave that untouched - {@see \FGTCLB\AcademicPersons\Domain\Repository\ContractRepository::findByUids()}
+     * unlike `OVERLAYS_OFF` the repositories leave that untouched - {@see \FGTCLB\AcademicPersons\Domain\Repository\ContractRepository::findByUidsWithContext()}
      * only lifts `OVERLAYS_OFF`. The untranslated selected contract is therefore *kept* and rendered in
      * the default language.
      *

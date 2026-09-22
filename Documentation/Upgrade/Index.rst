@@ -53,11 +53,13 @@ The steps at a glance
         -   The installation runs on the legacy overlay, which is removed in
             4.0 - and a renamed ``type`` or ``fieldName`` stays silently
             broken.
-    *   -   7. Adapt templates, icons and TypoScript
-        -   Re-applies project overrides to the new template tree and makes the
-            JSON page type reachable.
-        -   The editor cannot save, and an overridden detail view loses the
-            configurable layout.
+    *   -   7. Adapt templates, icons, TypoScript and repository overrides
+        -   Re-applies project overrides to the new template tree, makes the
+            JSON page type reachable, and moves repository customizations to
+            the query events.
+        -   The editor cannot save, an overridden detail view loses the
+            configurable layout, and a repository override is either a fatal
+            error or silently unused.
 
 ..  note::
     The TYPO3 core update itself is not a step of this page; it is an upgrade
@@ -272,8 +274,8 @@ is deliberately not mapped;
 
 ..  _upgrade-step-templates:
 
-7. Adapt templates, icons and TypoScript
-========================================
+7. Adapt templates, icons, TypoScript and repository overrides
+=============================================================
 
 The public detail view
 ----------------------
@@ -356,6 +358,19 @@ firewall or reverse proxy has to let it and the ``X-Requested-With`` header
 through - see the `page type section
 <https://docs.typo3.org/p/fgtclb/academic-persons-edit/main/en-us/ProfileEditing/Index.html#profile-editing-page-type>`__.
 
+Repository customizations
+-------------------------
+
+A project that narrowed what the plugins show by **subclassing or XCLASSing**
+:php:`ProfileRepository` or :php:`ContractRepository` has to be looked at. An
+override of :php:`findByDemand()` is a fatal error until it takes the new
+trailing context parameter; an override of either :php:`findByUids()` keeps
+loading and is no longer reached by the selected-profiles and
+selected-contracts plugins, silently. Both move to a listener of the query
+events, which applies to every plugin and before pagination. See
+:ref:`breaking-profile-and-contract-finder-signatures` and
+:ref:`feature-profile-and-contract-query-events`.
+
 ..  _upgrade-verify:
 
 Verifying the result
@@ -370,3 +385,5 @@ Verifying the result
     uploading a new one in one language does not change the other.
 #.  :bash:`vendor/bin/typo3 academic:persons:settings:migrate` exits with
     ``0``, and the log carries no legacy settings warning.
+#.  A list plugin and a selected-profiles plugin show what the project's own
+    code intends, where that code used to be a repository subclass or XCLASS.

@@ -1,0 +1,2 @@
+# Drops the first uid of the selection the content element itself carries.
+plugin.tx_academicpersons.settings.testQueryDropFirstSelectedProfile = 1

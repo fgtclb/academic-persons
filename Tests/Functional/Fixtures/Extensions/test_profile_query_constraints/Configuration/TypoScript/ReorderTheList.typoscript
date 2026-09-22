@@ -1,0 +1,2 @@
+# Makes the listener ask for an ordering of its own, which the repository overwrites.
+plugin.tx_academicpersons.settings.testQueryReorderTheList = 1

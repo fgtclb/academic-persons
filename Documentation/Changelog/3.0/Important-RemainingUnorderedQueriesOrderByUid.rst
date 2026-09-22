@@ -13,10 +13,12 @@ kept returning rows in whatever order the database yielded:
 
 *   :php:`ContractRepository::findAll()`, which builds every contract select
     item in the backend (TCA :php:`itemsProcFunc` and FlexForm)
-*   :php:`ContractRepository::findByUids()`, which resolves the contracts of
-    the "selected contracts" plugin
-*   :php:`ProfileRepository::findByUids()`, which resolves the profiles of the
-    "selected profiles" plugin
+*   :php:`ContractRepository::findByUids()` and
+    :php:`ContractRepository::findByUidsWithContext()`, the latter of which
+    resolves the contracts of the "selected contracts" plugin
+*   :php:`ProfileRepository::findByUids()` and
+    :php:`ProfileRepository::findByUidsWithContext()`, the latter of which
+    resolves the profiles of the "selected profiles" plugin
 *   :php:`ProfileRepository::findByFrontendUser()`, which resolves the profiles
     of a frontend user for the frontend editing of
     :php:`academic_persons_edit`

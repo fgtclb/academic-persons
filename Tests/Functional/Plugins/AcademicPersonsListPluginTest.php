@@ -350,7 +350,7 @@ final class AcademicPersonsListPluginTest extends AbstractAcademicPersonsTestCas
 
     /**
      * The list plugin reaches the same `profileList` branch of
-     * `ProfileRepository::applyDemandForQuery()` as the card plugin, and used to render
+     * `ProfileRepository::resolveDemandForQuery()` as the card plugin, and used to render
      * default language profiles on a `fallbackType: free` site for the same reason
      * (ACE-341). Kept here as well so a regression in that shared query cannot pass by
      * only breaking one of the two plugins.
@@ -407,9 +407,9 @@ final class AcademicPersonsListPluginTest extends AbstractAcademicPersonsTestCas
     }
     /**
      * A manual selection is ordered in PHP and not in the database: the `profileList`
-     * branch of `ProfileRepository::applyDemandForQuery()` returns before any
-     * `setOrderings()`, and `ProfileController::listAction()` restores the editor's order
-     * afterwards. With pagination switched on, the paginator used to be built from the
+     * branch of `ProfileRepository::resolveDemandForQuery()` returns the deterministic
+     * `uid` fallback rather than the editor's order, and `ProfileController::listAction()`
+     * restores that order afterwards. With pagination switched on, the paginator used to be built from the
      * query result, so the pages carried the database order while the restored order only
      * reached the `profiles` variable the template does not render in that case.
      */

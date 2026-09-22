@@ -1,0 +1,3 @@
+# Narrows only the list plugin, so that a card plugin on the same page stays unrestricted.
+plugin.tx_academicpersons.settings.testQueryLastName = Achterberg
+plugin.tx_academicpersons.settings.testQueryOnlyForPlugin = List

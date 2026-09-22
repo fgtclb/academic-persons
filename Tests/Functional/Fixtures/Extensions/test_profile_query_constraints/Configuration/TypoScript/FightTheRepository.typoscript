@@ -1,0 +1,3 @@
+# Makes the listener call matching() and setOrderings() on the query itself. The repository folds
+# the constraint into its own and overwrites the ordering.
+plugin.tx_academicpersons.settings.testQueryFightTheRepository = 1

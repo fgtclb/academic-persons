@@ -1,0 +1,2 @@
+# Narrows every persons plugin to the profiles whose last name is "Achterberg".
+plugin.tx_academicpersons.settings.testQueryLastName = Achterberg

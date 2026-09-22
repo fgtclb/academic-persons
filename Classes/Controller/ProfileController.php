@@ -11,7 +11,8 @@ declare(strict_types=1);
 
 namespace FGTCLB\AcademicPersons\Controller;
 
-use FGTCLB\AcademicPersons\Domain\Model\Dto\PluginControllerActionContext;
+use FGTCLB\AcademicBase\Domain\Model\Dto\PluginControllerActionContext;
+use FGTCLB\AcademicPersons\Domain\Model\Dto\PluginControllerActionContext as PersonsPluginControllerActionContext;
 use FGTCLB\AcademicPersons\Domain\Model\Dto\ProfileDemand;
 use FGTCLB\AcademicPersons\Domain\Model\Profile;
 use FGTCLB\AcademicPersons\Domain\Repository\ContractRepository;
@@ -70,13 +71,13 @@ final class ProfileController extends ActionController
     public function listAction(ProfileDemand $demand): ResponseInterface
     {
         $this->adoptSettings($demand);
-        $profiles = $this->profileRepository->findByDemand($demand);
+        $profiles = $this->profileRepository->findByDemand($demand, $this->queryContext());
 
         /** @var ModifyListProfilesEvent $event */
         $event = $this->eventDispatcher->dispatch(new ModifyListProfilesEvent(
             profiles: $profiles,
             view: $this->view,
-            pluginControllerActionContext: new PluginControllerActionContext($this->request, $this->settings),
+            pluginControllerActionContext: new PersonsPluginControllerActionContext($this->request, $this->settings),
             profileDemand: $demand,
         ));
         $demand = $event->getProfileDemand();
@@ -133,7 +134,7 @@ final class ProfileController extends ActionController
      *
      * A selection is an ordered list in the FlexForm, but the query that fetches it
      * matches `uid IN (...)`, which does not preserve that order - the `profileList` branch
-     * of `ProfileRepository::applyDemandForQuery()` orders by uid, for a reproducible result
+     * of `ProfileRepository::resolveDemandForQuery()` orders by uid, for a reproducible result
      * and nothing more. So the order the editor chose has to be restored here.
      *
      * Records not in the selection are dropped and a uid listed twice yields the record
@@ -174,7 +175,7 @@ final class ProfileController extends ActionController
      * #88886, core). The other one - a `fallbackType: free` site rendering default
      * language profiles - was ours and is fixed, see
      * `ProfileRepository::matchSelectedUidsAcrossLanguages()` and ACE-341. Both came out
-     * of the shared `profileList` branch of `applyDemandForQuery()` and hit
+     * of the shared `profileList` branch of `resolveDemandForQuery()` and hit
      * `listAction()` in the same way.
      *
      * @return ResponseInterface
@@ -203,7 +204,7 @@ final class ProfileController extends ActionController
             }
             $profileDemand->setShowHiddenRecords((bool)($this->settings['showHiddenRecords'] ?? false));
             $profiles = $this->sortBySelectionOrder(
-                $this->profileRepository->findByDemand($profileDemand),
+                $this->profileRepository->findByDemand($profileDemand, $this->queryContext()),
                 GeneralUtility::intExplode(',', $this->settings['demand']['profileList'], true),
             );
         }
@@ -256,7 +257,7 @@ final class ProfileController extends ActionController
             );
         }
 
-        $pluginControllerActionContext = new PluginControllerActionContext($this->request, $this->settings);
+        $pluginControllerActionContext = new PersonsPluginControllerActionContext($this->request, $this->settings);
         /** @var ModifyDetailProfileEvent $event */
         $event = $this->eventDispatcher->dispatch(new ModifyDetailProfileEvent(
             $profile,
@@ -303,13 +304,13 @@ final class ProfileController extends ActionController
 
         $profileUids = GeneralUtility::intExplode(',', $this->settings['selectedProfiles'], true);
         $showHiddenRecords = (bool)($this->settings['showHiddenRecords'] ?? false);
-        $profiles = $this->profileRepository->findByUids($profileUids, $showHiddenRecords);
+        $profiles = $this->profileRepository->findByUidsWithContext($profileUids, $this->queryContext(), $showHiddenRecords);
 
         /** @var ModifySelectedProfilesEvent $event */
         $event = $this->eventDispatcher->dispatch(new ModifySelectedProfilesEvent(
             $profiles,
             $this->view,
-            new PluginControllerActionContext($this->request, $this->settings),
+            new PersonsPluginControllerActionContext($this->request, $this->settings),
         ));
         $profiles = $event->getProfiles();
 
@@ -334,13 +335,13 @@ final class ProfileController extends ActionController
 
         $contractUids = GeneralUtility::intExplode(',', $this->settings['selectedContracts'], true);
         $showHiddenRecords = (bool)($this->settings['showHiddenRecords'] ?? false);
-        $contracts = $this->contractRepository->findByUids($contractUids, $showHiddenRecords);
+        $contracts = $this->contractRepository->findByUidsWithContext($contractUids, $this->queryContext(), $showHiddenRecords);
 
         /** @var ModifySelectedContractsEvent $event */
         $event = $this->eventDispatcher->dispatch(new ModifySelectedContractsEvent(
             $contracts,
             $this->view,
-            new PluginControllerActionContext($this->request, $this->settings),
+            new PersonsPluginControllerActionContext($this->request, $this->settings),
         ));
         $contracts = $event->getContracts();
 
@@ -419,6 +420,25 @@ final class ProfileController extends ActionController
     private function getCurrentContentObjectRenderer(): ?ContentObjectRenderer
     {
         return $this->request->getAttribute('currentContentObject');
+    }
+
+    /**
+     * The context the repositories hand to the listeners of `ModifyProfileQueryEvent` and
+     * `ModifyContractQueryEvent`.
+     *
+     * It is the `academic_base` context rather than the one this extension ships, because the
+     * repository API is new and the persons interface is the one that goes away: it is the base
+     * interface minus `getContentObjectRenderer()`, and a listener of the query events is the
+     * kind of listener that wants exactly that. The events of the actions keep the persons
+     * context until that interface is retired.
+     *
+     * @todo Three actions therefore build two context objects from the same request and
+     *       settings. They collapse into one once the persons interface extends the
+     *       `academic_base` one - change `ace-tbd-single-action-context-interface`.
+     */
+    private function queryContext(): PluginControllerActionContext
+    {
+        return new PluginControllerActionContext($this->request, $this->settings);
     }
 
     private function resolveDetailPageTitleFormat(): string

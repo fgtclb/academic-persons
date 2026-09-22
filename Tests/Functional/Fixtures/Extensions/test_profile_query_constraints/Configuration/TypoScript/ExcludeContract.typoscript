@@ -1,0 +1,2 @@
+# Excludes the contract with uid 1 from the selected contracts plugin.
+plugin.tx_academicpersons.settings.testQueryExcludeContract = 1
