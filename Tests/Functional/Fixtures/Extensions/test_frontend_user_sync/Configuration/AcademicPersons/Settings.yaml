@@ -1,0 +1,27 @@
+# What a site package ships to synchronise more than the shipped columns: the
+# website is left to the editors, the position comes from a column of its own,
+# and a second address, a second e-mail address and a mobile number are
+# imported. The lists are replaced as a whole, so they repeat the shipped
+# entries.
+frontendUserSync:
+  profile:
+    website: ''
+  contract:
+    position: tx_test_position
+  physicalAddresses:
+    - street: address
+      zip: zip
+      city: city
+      country: country
+    - street: tx_test_office_street
+      city: tx_test_office_city
+  emailAddresses:
+    - column: email
+    - column: tx_test_email
+  phoneNumbers:
+    - column: telephone
+      type: ''
+    - column: fax
+      type: ''
+    - column: tx_test_mobile
+      type: mobile

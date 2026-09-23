@@ -10,6 +10,8 @@ use FGTCLB\AcademicPersons\Settings\AcademicPersonsSettings;
 use FGTCLB\AcademicPersons\Settings\ContractContactField;
 use FGTCLB\AcademicPersons\Settings\ContractField;
 use FGTCLB\AcademicPersons\Settings\DocumentSection;
+use FGTCLB\AcademicPersons\Settings\FrontendUserSyncEntry;
+use FGTCLB\AcademicPersons\Settings\FrontendUserSyncSettings;
 use FGTCLB\AcademicPersons\Settings\ProfileField;
 use FGTCLB\AcademicPersons\Settings\ProfileSection;
 use FGTCLB\AcademicPersons\Settings\PublicProfileSettings;
@@ -243,6 +245,21 @@ final class SectionSettingsTest extends UnitTestCase
     }
 
     /**
+     * A graph cached before the map existed has no `frontendUserSync`. Read as an
+     * empty map it would synchronise nothing and pass for valid; it is refused
+     * until the caches are flushed.
+     */
+    #[Test]
+    public function aGraphCachedBeforeTheFrontendUserSyncMapRefusesTheSynchronisation(): void
+    {
+        $restored = AcademicPersonsSettings::__set_state(['raw' => []]);
+
+        $this->expectException(\UnexpectedValueException::class);
+        $this->expectExceptionMessage('flush the TYPO3 caches');
+        $restored->frontendUserSync->assertValid();
+    }
+
+    /**
      * Every value object of the graph, nested as the factory nests them, through
      * `var_export()` and back. A property missing from a `__set_state()` is lost
      * on every request but the first - the defect only the cached path shows.
@@ -292,6 +309,14 @@ final class SectionSettingsTest extends UnitTestCase
                 ],
             ),
             raw: ['profile' => ['miscellaneous' => ['section' => 'aboutme']]],
+            frontendUserSync: new FrontendUserSyncSettings(
+                profile: ['lastName' => 'last_name'],
+                contract: ['position' => 'tx_project_position'],
+                physicalAddresses: [new FrontendUserSyncEntry(['street' => 'address', 'city' => 'city'])],
+                emailAddresses: [new FrontendUserSyncEntry(['email' => 'email'])],
+                phoneNumbers: [new FrontendUserSyncEntry(['phoneNumber' => 'mobile'], 'mobile')],
+                problems: ['`frontendUserSync.profile.nickname` is not supported.'],
+            ),
         );
 
         $restored = eval('return ' . var_export($subject, true) . ';');

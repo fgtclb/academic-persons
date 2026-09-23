@@ -8,6 +8,8 @@ use FGTCLB\AcademicBase\Settings\SettingsFileLoader;
 use FGTCLB\AcademicBase\Settings\ValidationNormalizer;
 use FGTCLB\AcademicPersons\Settings\AcademicPersonsSettings;
 use FGTCLB\AcademicPersons\Settings\AcademicPersonsSettingsFactory;
+use FGTCLB\AcademicPersons\Settings\FrontendUserSyncEntry;
+use FGTCLB\AcademicPersons\Settings\FrontendUserSyncSettings;
 use FGTCLB\AcademicPersons\Settings\LegacySettingsMigrator;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\Attributes\Test;
@@ -29,10 +31,10 @@ use TYPO3\TestingFramework\Core\Unit\UnitTestCase;
 final class AcademicPersonsSettingsFactoryTest extends UnitTestCase
 {
     #[Test]
-    public function theShippedFileConsistsOfTheFourTopLevelMaps(): void
+    public function theShippedFileConsistsOfTheFiveTopLevelMaps(): void
     {
         $this->assertSame(
-            ['profile', 'special', 'contracts', 'documentSections'],
+            ['profile', 'special', 'contracts', 'documentSections', 'frontendUserSync'],
             array_keys($this->getShippedConfiguration()),
         );
     }
@@ -89,7 +91,7 @@ final class AcademicPersonsSettingsFactoryTest extends UnitTestCase
         $this->assertNotNull($website);
         $this->assertSame([NotEmptyValidator::class, UrlValidator::class], $website->validation->validatorClassNames);
         $this->assertArrayNotHasKey('validations', $settings->raw);
-        $this->assertSame(['profile', 'special', 'contracts', 'documentSections'], array_keys($settings->raw));
+        $this->assertSame(['profile', 'special', 'contracts', 'documentSections', 'frontendUserSync'], array_keys($settings->raw));
     }
 
     /**
@@ -867,6 +869,185 @@ final class AcademicPersonsSettingsFactoryTest extends UnitTestCase
         $this->assertInstanceOf(AcademicPersonsSettings::class, $restored);
         $this->assertEquals($settings, $restored);
         $this->assertNotSame($settings, $restored);
+    }
+
+    /**
+     * The shipped map is what the synchronisation wrote before it existed: the
+     * five profile columns, no contract property, one address, one e-mail
+     * address, telephone and fax with the types of the extension configuration.
+     */
+    #[Test]
+    public function theShippedFrontendUserSyncMapIsThePreviousSynchronisation(): void
+    {
+        $settings = $this->normalize($this->getShippedConfiguration());
+
+        $this->assertEquals(
+            new FrontendUserSyncSettings(
+                profile: [
+                    'title' => 'title',
+                    'firstName' => 'first_name',
+                    'middleName' => 'middle_name',
+                    'lastName' => 'last_name',
+                    'website' => 'www',
+                ],
+                contract: [],
+                physicalAddresses: [
+                    new FrontendUserSyncEntry(['street' => 'address', 'zip' => 'zip', 'city' => 'city', 'country' => 'country']),
+                ],
+                emailAddresses: [new FrontendUserSyncEntry(['email' => 'email'])],
+                phoneNumbers: [
+                    new FrontendUserSyncEntry(['phoneNumber' => 'telephone']),
+                    new FrontendUserSyncEntry(['phoneNumber' => 'fax']),
+                ],
+            ),
+            $settings->frontendUserSync,
+        );
+    }
+
+    /**
+     * A column of `''` - or `~`, which the loader removes from a map and a list
+     * entry keeps - is not synchronised, and is simply absent from the map.
+     * Names and types are trimmed, the order of the lists is kept.
+     */
+    #[Test]
+    public function aFrontendUserSyncPropertyMappedToNothingIsLeftOut(): void
+    {
+        $settings = $this->normalize([
+            'frontendUserSync' => [
+                'profile' => ['firstName' => ' first_name ', 'website' => ''],
+                'contract' => ['position' => 'tx_project_position', 'room' => ''],
+                'physicalAddresses' => [['street' => 'address', 'zip' => null, 'city' => '']],
+                'emailAddresses' => [['column' => 'tx_project_email']],
+                'phoneNumbers' => [
+                    ['column' => 'tx_project_mobile', 'type' => ' mobile '],
+                    ['column' => 'telephone', 'type' => ''],
+                ],
+            ],
+        ])->frontendUserSync;
+
+        $this->assertSame(['firstName' => 'first_name'], $settings->profile);
+        $this->assertSame(['position' => 'tx_project_position'], $settings->contract);
+        $this->assertEquals([new FrontendUserSyncEntry(['street' => 'address'])], $settings->physicalAddresses);
+        $this->assertEquals([new FrontendUserSyncEntry(['email' => 'tx_project_email'])], $settings->emailAddresses);
+        $this->assertEquals(
+            [
+                new FrontendUserSyncEntry(['phoneNumber' => 'tx_project_mobile'], 'mobile'),
+                new FrontendUserSyncEntry(['phoneNumber' => 'telephone']),
+            ],
+            $settings->phoneNumbers,
+        );
+        $this->assertSame([], $settings->problems);
+    }
+
+    /**
+     * @return \Generator<string, array{array<string, mixed>, string}>
+     */
+    public static function invalidFrontendUserSyncMaps(): \Generator
+    {
+        yield 'an unknown profile property' => [
+            ['profile' => ['firstname' => 'first_name']],
+            '`frontendUserSync.profile.firstname` is not supported',
+        ];
+        yield 'a derived profile property' => [
+            ['profile' => ['lastNameAlpha' => 'last_name']],
+            '`frontendUserSync.profile.lastNameAlpha` is not supported',
+        ];
+        yield 'an unknown contract property' => [
+            ['contract' => ['officeHours' => 'tx_project_hours']],
+            '`frontendUserSync.contract.officeHours` is not supported',
+        ];
+        yield 'an unknown address property' => [
+            ['physicalAddresses' => [['street' => 'address', 'postcode' => 'zip']]],
+            '`frontendUserSync.physicalAddresses.0.postcode` is not supported',
+        ];
+        yield 'a type on an e-mail address' => [
+            ['emailAddresses' => [['column' => 'email', 'type' => 'business']]],
+            '`frontendUserSync.emailAddresses.0.type` is not supported',
+        ];
+        yield 'an unknown top-level key' => [
+            ['phoneNumber' => [['column' => 'mobile']]],
+            '`frontendUserSync.phoneNumber` is not a known key',
+        ];
+        yield 'a column that is not a string' => [
+            ['profile' => ['title' => ['title']]],
+            '`frontendUserSync.profile.title` must be a column name',
+        ];
+        yield 'a map where a list belongs' => [
+            ['phoneNumbers' => ['column' => 'mobile']],
+            '`frontendUserSync.phoneNumbers` must be a list',
+        ];
+        yield 'a type that is not a string' => [
+            ['phoneNumbers' => [['column' => 'mobile', 'type' => ['mobile']]]],
+            '`frontendUserSync.phoneNumbers.0.type` must be a string',
+        ];
+        yield 'two phone numbers named by the same column' => [
+            ['phoneNumbers' => [['column' => 'mobile', 'type' => 'mobile'], ['column' => 'mobile', 'type' => 'private']]],
+            '`frontendUserSync.phoneNumbers` names the column `mobile` first in more than one entry',
+        ];
+        yield 'two e-mail addresses named by the same column' => [
+            ['emailAddresses' => [['column' => 'email'], ['column' => 'email']]],
+            '`frontendUserSync.emailAddresses` names the column `email` first in more than one entry',
+        ];
+        yield 'two addresses named by the same first column' => [
+            ['physicalAddresses' => [['street' => 'address', 'city' => 'city'], ['street' => 'address', 'city' => 'tx_city']]],
+            '`frontendUserSync.physicalAddresses` names the column `address` first in more than one entry',
+        ];
+        yield 'an e-mail address that maps no column' => [
+            ['emailAddresses' => [['column' => ''], ['column' => 'tx_project_email']]],
+            '`frontendUserSync.emailAddresses.0` maps no column',
+        ];
+        yield 'an address whose columns are all empty' => [
+            ['physicalAddresses' => [['street' => '', 'city' => null]]],
+            '`frontendUserSync.physicalAddresses.0` maps no column',
+        ];
+        yield 'a phone number with a type and no column' => [
+            ['phoneNumbers' => [['type' => 'mobile']]],
+            '`frontendUserSync.phoneNumbers.0` maps no column',
+        ];
+        yield 'the column phone, the identifier of the telephone records before ACE-365' => [
+            ['phoneNumbers' => [['column' => 'fax'], ['column' => 'phone', 'type' => 'mobile']]],
+            '`frontendUserSync.phoneNumbers.1` cannot read the column `phone`',
+        ];
+    }
+
+    /**
+     * A typo in an entry is one mistake: the entry maps no column because of it,
+     * and "remove the entry instead" would be the wrong advice.
+     */
+    #[Test]
+    public function aTypoInAnEntryIsNamedOnce(): void
+    {
+        $settings = $this->normalize([
+            'frontendUserSync' => ['emailAddresses' => [['colum' => 'email']]],
+        ])->frontendUserSync;
+
+        $this->assertCount(1, $settings->problems);
+        $this->assertStringContainsString('`frontendUserSync.emailAddresses.0.colum` is not supported', $settings->problems[0]);
+    }
+
+    /**
+     * A mistake in the map is named, not thrown: the graph is also built for
+     * the TCA, which a typo in the synchronisation must not break. The check
+     * the synchronisation runs first throws it, with the path of the entry.
+     *
+     * @param array<string, mixed> $frontendUserSync
+     */
+    #[DataProvider('invalidFrontendUserSyncMaps')]
+    #[Test]
+    public function aMistakeInTheFrontendUserSyncMapIsRefusedWhereTheMapIsUsed(
+        array $frontendUserSync,
+        string $expectedProblem,
+    ): void {
+        $settings = $this->normalize([
+            'profile' => $this->getShippedConfiguration()['profile'],
+            'frontendUserSync' => $frontendUserSync,
+        ]);
+
+        $this->assertNotSame([], $settings->profileSections);
+        $this->expectException(\UnexpectedValueException::class);
+        $this->expectExceptionCode(1790142324);
+        $this->expectExceptionMessage($expectedProblem);
+        $settings->frontendUserSync->assertValid();
     }
 
     /**

@@ -54,7 +54,9 @@ final class MigrateSettingsCommandTest extends UnitTestCase
     /**
      * And what it prints is what that installation runs on: the legacy package
      * is the last one here, the realistic layout, so the per-package view and
-     * the merged array of the runtime have to agree key for key.
+     * the merged array of the runtime have to agree key for key. It prints the
+     * four section maps the legacy keys are mapped onto; `frontendUserSync` is
+     * none of them, and a package that does not name it keeps the shipped one.
      */
     #[Test]
     public function thePrintedMapsAreTheSettingsTheInstallationRunsOn(): void
@@ -66,7 +68,7 @@ final class MigrateSettingsCommandTest extends UnitTestCase
         $printed = Yaml::parse($tester->getDisplay());
 
         $factory = new AcademicPersonsSettingsFactory($loader, new ValidationNormalizer(), new LegacySettingsMigrator());
-        $this->assertSame($factory->get()->raw, $printed);
+        $this->assertSame(array_diff_key($factory->get()->raw, ['frontendUserSync' => true]), $printed);
     }
 
     private function cacheWithoutEntry(): PhpFrontend

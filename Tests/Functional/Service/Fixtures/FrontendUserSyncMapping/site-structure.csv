@@ -1,0 +1,7 @@
+"pages"
+,"uid","pid","doktype","deleted","hidden","sys_language_uid","l10n_parent","slug","title"
+,1,0,1,0,0,0,0,"/","Site Root"
+,200,1,254,0,0,0,0,"/people","People"
+"fe_groups"
+,"uid","pid","title"
+,10,200,"Staff"

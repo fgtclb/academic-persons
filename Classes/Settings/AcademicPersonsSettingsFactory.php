@@ -126,7 +126,201 @@ class AcademicPersonsSettingsFactory
             documentSections: $this->normalizeDocumentSections($settings, $contractFields),
             publicProfile: $this->normalizePublicProfile($settings),
             raw: $settings,
+            frontendUserSync: $this->normalizeFrontendUserSync($settings),
         );
+    }
+
+    /**
+     * The `frontendUserSync` map. A property or column mapped to `''` is left
+     * out, so it is not synchronised. Nothing here throws: whatever is wrong is
+     * named in `problems` and the rest is kept, and the synchronisation refuses
+     * to run on it - the graph is also built for the TCA, which a typo in the
+     * synchronisation must not break.
+     *
+     * @param array<string, mixed> $settings
+     */
+    private function normalizeFrontendUserSync(array $settings): FrontendUserSyncSettings
+    {
+        $configuration = $settings['frontendUserSync'] ?? [];
+        $problems = [];
+        if (!is_array($configuration) || ($configuration !== [] && array_is_list($configuration))) {
+            return new FrontendUserSyncSettings(problems: ['`frontendUserSync` must be a map.']);
+        }
+        foreach (array_keys($configuration) as $key) {
+            if (!in_array($key, ['profile', 'contract', 'physicalAddresses', 'emailAddresses', 'phoneNumbers'], true)) {
+                $problems[] = sprintf('`frontendUserSync.%s` is not a known key.', $key);
+            }
+        }
+        $profile = $this->normalizeFrontendUserSyncMap(
+            $configuration['profile'] ?? [],
+            'frontendUserSync.profile',
+            FrontendUserSyncSettings::PROFILE_PROPERTIES,
+            $problems,
+        );
+        $contract = $this->normalizeFrontendUserSyncMap(
+            $configuration['contract'] ?? [],
+            'frontendUserSync.contract',
+            FrontendUserSyncSettings::CONTRACT_PROPERTIES,
+            $problems,
+        );
+        $physicalAddresses = [];
+        foreach ($this->frontendUserSyncList($configuration, 'physicalAddresses', $problems) as $index => $entry) {
+            $knownProblems = count($problems);
+            $columns = $this->normalizeFrontendUserSyncMap(
+                $entry,
+                sprintf('frontendUserSync.physicalAddresses.%d', $index),
+                FrontendUserSyncSettings::PHYSICAL_ADDRESS_PROPERTIES,
+                $problems,
+            );
+            if ($columns !== []) {
+                $physicalAddresses[] = new FrontendUserSyncEntry(columns: $columns);
+            } elseif (count($problems) === $knownProblems) {
+                $problems[] = $this->emptyEntryProblem('physicalAddresses', $index);
+            }
+        }
+        $emailAddresses = [];
+        foreach ($this->frontendUserSyncList($configuration, 'emailAddresses', $problems) as $index => $entry) {
+            $path = sprintf('frontendUserSync.emailAddresses.%d', $index);
+            $knownProblems = count($problems);
+            $columns = $this->normalizeFrontendUserSyncMap($entry, $path, ['column'], $problems);
+            if (isset($columns['column'])) {
+                $emailAddresses[] = new FrontendUserSyncEntry(columns: ['email' => $columns['column']]);
+            } elseif (count($problems) === $knownProblems) {
+                $problems[] = $this->emptyEntryProblem('emailAddresses', $index);
+            }
+        }
+        $phoneNumbers = [];
+        foreach ($this->frontendUserSyncList($configuration, 'phoneNumbers', $problems) as $index => $entry) {
+            $path = sprintf('frontendUserSync.phoneNumbers.%d', $index);
+            $knownProblems = count($problems);
+            $type = $entry['type'] ?? '';
+            if (!is_string($type)) {
+                $problems[] = sprintf('`%s.type` must be a string.', $path);
+                $type = '';
+            }
+            unset($entry['type']);
+            $columns = $this->normalizeFrontendUserSyncMap($entry, $path, ['column'], $problems);
+            if (isset($columns['column'])) {
+                $phoneNumbers[] = new FrontendUserSyncEntry(
+                    columns: ['phoneNumber' => $columns['column']],
+                    type: trim($type),
+                );
+            } elseif (count($problems) === $knownProblems) {
+                $problems[] = $this->emptyEntryProblem('phoneNumbers', $index);
+            }
+        }
+        // The identifying column names a record in its import identifier - two entries of
+        // one list sharing it would write the same record over and over.
+        foreach (['physicalAddresses' => $physicalAddresses, 'emailAddresses' => $emailAddresses, 'phoneNumbers' => $phoneNumbers] as $key => $entries) {
+            $identifyingColumns = array_map(
+                static fn(FrontendUserSyncEntry $entry): string => $entry->getIdentifyingColumn(),
+                $entries,
+            );
+            foreach (array_unique(array_diff_assoc($identifyingColumns, array_unique($identifyingColumns))) as $column) {
+                $problems[] = sprintf('`frontendUserSync.%s` names the column `%s` first in more than one entry.', $key, $column);
+            }
+        }
+        // `phone:fe_users:<uid>` identifies the telephone records the synchronisation wrote
+        // before ACE-365, which the telephone entry adopts; a `phone` entry would claim them.
+        foreach ($phoneNumbers as $index => $entry) {
+            if ($entry->getIdentifyingColumn() === 'phone') {
+                $problems[] = sprintf(
+                    '`frontendUserSync.phoneNumbers.%d` cannot read the column `phone`: `phone:fe_users:<uid>`'
+                    . ' identifies the telephone records written before ACE-365.',
+                    $index,
+                );
+            }
+        }
+        return new FrontendUserSyncSettings(
+            profile: $profile,
+            contract: $contract,
+            physicalAddresses: $physicalAddresses,
+            emailAddresses: $emailAddresses,
+            phoneNumbers: $phoneNumbers,
+            problems: $problems,
+        );
+    }
+
+    /**
+     * An entry that maps no column would be dropped, and the next one would take its
+     * position - and with position 0 the identifier of the first record.
+     */
+    private function emptyEntryProblem(string $key, int $index): string
+    {
+        return sprintf(
+            '`frontendUserSync.%s.%d` maps no column; remove the entry instead.',
+            $key,
+            $index,
+        );
+    }
+
+    /**
+     * @param array<string, mixed> $configuration
+     * @param list<string> $problems
+     * @return array<int, array<string|int, mixed>>
+     */
+    private function frontendUserSyncList(array $configuration, string $key, array &$problems): array
+    {
+        $list = $configuration[$key] ?? [];
+        if (!is_array($list) || !array_is_list($list)) {
+            $problems[] = sprintf('`frontendUserSync.%s` must be a list.', $key);
+            return [];
+        }
+        $entries = [];
+        foreach ($list as $index => $entry) {
+            if (!is_array($entry)) {
+                $problems[] = sprintf('`frontendUserSync.%s.%d` must be a map.', $key, $index);
+                continue;
+            }
+            $entries[$index] = $entry;
+        }
+        return $entries;
+    }
+
+    /**
+     * A property => column map: an unknown property or a value that is not a
+     * string is a problem, an empty column is left out. `null` is empty too:
+     * the loader removes a `~` from a map, but a list is replaced as a whole
+     * and keeps the `~` of its entries.
+     *
+     * @param list<string> $allowedProperties
+     * @param list<string> $problems
+     * @return array<string, non-empty-string>
+     */
+    private function normalizeFrontendUserSyncMap(
+        mixed $configuration,
+        string $path,
+        array $allowedProperties,
+        array &$problems,
+    ): array {
+        if (!is_array($configuration) || ($configuration !== [] && array_is_list($configuration))) {
+            $problems[] = sprintf('`%s` must be a map.', $path);
+            return [];
+        }
+        $map = [];
+        foreach ($configuration as $property => $column) {
+            if (!in_array($property, $allowedProperties, true)) {
+                $problems[] = sprintf(
+                    '`%s.%s` is not supported, use one of: %s.',
+                    $path,
+                    $property,
+                    implode(', ', $allowedProperties),
+                );
+                continue;
+            }
+            if ($column === null) {
+                continue;
+            }
+            if (!is_string($column)) {
+                $problems[] = sprintf('`%s.%s` must be a column name or \'\'.', $path, $property);
+                continue;
+            }
+            $column = trim($column);
+            if ($column !== '') {
+                $map[$property] = $column;
+            }
+        }
+        return $map;
     }
 
     /**

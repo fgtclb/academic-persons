@@ -10,12 +10,14 @@ use FGTCLB\AcademicBase\Settings\ValidationSet;
 /**
  * The typed graph built from `Configuration/AcademicPersons/Settings.yaml`.
  *
- * Its four top-level maps become: the profile sections with their fields
+ * Its five top-level maps become: the profile sections with their fields
  * (`profile`), the special components (`special`), the contract fields and
- * the contact sections a contract owns (`contracts`), and the document
- * sections (`documentSections`). The public detail layout is read from the
- * same `profile` map into {@see PublicProfileSettings}. `raw` keeps the
- * merged array the graph was built from.
+ * the contact sections a contract owns (`contracts`), the document sections
+ * (`documentSections`) and the mapping of the frontend user synchronisation
+ * (`frontendUserSync`, {@see FrontendUserSyncSettings}). The public detail
+ * layout is read from the same `profile` map into
+ * {@see PublicProfileSettings}. `raw` keeps the merged array the graph was
+ * built from.
  *
  * The lookups fail softly: a TCA file or a form asks for identifiers an
  * installation need not configure, and an unknown one yields null or an
@@ -38,6 +40,7 @@ final class AcademicPersonsSettings
     /** @var array<string, DocumentSection> */
     public readonly array $documentSections;
     public readonly PublicProfileSettings $publicProfile;
+    public readonly FrontendUserSyncSettings $frontendUserSync;
     /** @var array<string, mixed> */
     public readonly array $raw;
 
@@ -57,6 +60,7 @@ final class AcademicPersonsSettings
         array $documentSections = [],
         ?PublicProfileSettings $publicProfile = null,
         array $raw = [],
+        ?FrontendUserSyncSettings $frontendUserSync = null,
     ) {
         $this->profileSections = $profileSections;
         $this->specialFields = $specialFields;
@@ -65,6 +69,7 @@ final class AcademicPersonsSettings
         $this->documentSections = $documentSections;
         $this->publicProfile = $publicProfile ?? new PublicProfileSettings();
         $this->raw = $raw;
+        $this->frontendUserSync = $frontendUserSync ?? new FrontendUserSyncSettings();
     }
 
     /**
@@ -76,6 +81,7 @@ final class AcademicPersonsSettings
      *     documentSections?: array<string, DocumentSection>,
      *     publicProfile?: PublicProfileSettings,
      *     raw?: array<string, mixed>,
+     *     frontendUserSync?: FrontendUserSyncSettings,
      * } $array
      */
     public static function __set_state(array $array): self
@@ -88,6 +94,12 @@ final class AcademicPersonsSettings
             documentSections: $array['documentSections'] ?? [],
             publicProfile: $array['publicProfile'] ?? null,
             raw: $array['raw'] ?? [],
+            // A graph cached before the map existed has no entry for it. Read as an empty map,
+            // it would synchronise nothing and pass for valid, so it is refused until the
+            // caches are flushed.
+            frontendUserSync: $array['frontendUserSync'] ?? new FrontendUserSyncSettings(problems: [
+                'The cached settings predate the map; flush the TYPO3 caches.',
+            ]),
         );
     }
 

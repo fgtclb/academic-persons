@@ -2,9 +2,10 @@
 # ===================================
 # This file is the single source for the public profile layout, the fields
 # the editing frontend of EXT:academic_persons_edit offers, and the validation
-# metadata applied to frontend requests and to the backend TCA. It contains
-# four top-level maps: `profile`, `special`, `contracts` and
-# `documentSections`.
+# metadata applied to frontend requests and to the backend TCA, and the
+# mapping of the frontend user synchronisation. It contains five top-level
+# maps: `profile`, `special`, `contracts`, `documentSections` and
+# `frontendUserSync`.
 #
 # Documented at:
 # https://docs.typo3.org/p/fgtclb/academic-persons/main/en-us/Configuration/Sections/Index.html
@@ -774,3 +775,52 @@ documentSections:
       to: 'LLL:EXT:academic_persons/Resources/Private/Language/locallang.xlf:helptext.documentSections.to'
       year: 'LLL:EXT:academic_persons/Resources/Private/Language/locallang.xlf:helptext.documentSections.year'
       description: 'LLL:EXT:academic_persons/Resources/Private/Language/locallang.xlf:helptext.documentSections.description'
+
+# Frontend user synchronisation
+# -----------------------------
+# `academic:createprofiles` and `academic:updateprofiles` copy `fe_users`
+# columns onto the profile and its imported contract.
+# Each entry maps a property to the `fe_users` column that feeds it; `''` or
+# `~` means the property is not synchronised, and the value an editor entered
+# stays.
+# - `profile` and `contract` map single properties. The contract supports
+#   `position` and `room`; the profile its text and link fields.
+# - `physicalAddresses`, `emailAddresses` and `phoneNumbers` are lists: every
+#   entry maps at least one column and becomes one record of the imported
+#   contract. A record whose columns are all empty is removed; records an
+#   editor added are never touched. `[]` synchronises no record of the list.
+# - A map without any contract property and with three empty lists leaves the
+#   imported contract alone.
+# - A phone number's `type` is one of `types.phoneNumberTypes` of the extension
+#   configuration. `''` takes `profile.feuser.faxNumberType` for the column
+#   `fax` and `profile.feuser.telephoneNumberType` for any other column.
+# - The first address and the first e-mail address are identified as
+#   `fe_users:<uid>`, every further entry and every phone number as
+#   `<first column>:fe_users:<uid>`. An entry moved to the front of the
+#   address or e-mail list therefore writes onto the record `fe_users:<uid>`,
+#   and the record it wrote before is no longer synchronised; so is the record
+#   of an entry whose first column changes.
+# A list is replaced as a whole by a later package, so an extension adding a
+# phone number repeats the two shipped ones.
+frontendUserSync:
+  profile:
+    title: title
+    firstName: first_name
+    middleName: middle_name
+    lastName: last_name
+    website: www
+  contract:
+    position: ''
+    room: ''
+  physicalAddresses:
+    - street: address
+      zip: zip
+      city: city
+      country: country
+  emailAddresses:
+    - column: email
+  phoneNumbers:
+    - column: telephone
+      type: ''
+    - column: fax
+      type: ''

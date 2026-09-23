@@ -38,7 +38,7 @@ final class SettingsSourceTest extends UnitTestCase
     }
 
     /**
-     * What the editing extension relies on in the shipped file: the four maps, the
+     * What the editing extension relies on in the shipped file: the five maps, the
      * layout keys next to the fields in `profile`, a help text for every contract
      * and contact field, and the character limit of the one long rich text field.
      */
@@ -48,7 +48,7 @@ final class SettingsSourceTest extends UnitTestCase
         $configuration = Yaml::parseFile(self::CENTRAL_FILE);
         $this->assertIsArray($configuration);
 
-        $this->assertSame(['profile', 'special', 'contracts', 'documentSections'], array_keys($configuration));
+        $this->assertSame(['profile', 'special', 'contracts', 'documentSections', 'frontendUserSync'], array_keys($configuration));
         $this->assertArrayHasKey('structure', $configuration['profile']);
         $this->assertArrayHasKey('details', $configuration['profile']);
         $this->assertArrayHasKey('gender', $configuration['profile']);

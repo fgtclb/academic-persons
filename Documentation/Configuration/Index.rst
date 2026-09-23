@@ -418,4 +418,5 @@ one mechanism per site and the question does not arise.
    General/Index
    Sections/Index
    Validations/Index
+   FrontendUserSync/Index
    RouteEnhancers/Index

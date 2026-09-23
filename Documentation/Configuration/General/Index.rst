@@ -36,7 +36,10 @@ There are some options for global extension configuration:
 
     The type assigned to telephone numbers imported from frontend users. The
     value must be one of :confval:`types.phoneNumberTypes`. An unavailable
-    value is stored as the undefined type ``''``.
+    value is stored as the undefined type ``''``. It applies to every phone
+    number of the :ref:`frontend user synchronisation map
+    <configuration-frontend-user-sync>` without a type of its own, apart from
+    the column :sql:`fax`.
 
 ..  confval:: profile.feuser.faxNumberType
 
@@ -46,7 +49,9 @@ There are some options for global extension configuration:
     The type assigned to fax numbers imported from frontend users. It is
     validated independently from
     :confval:`profile.feuser.telephoneNumberType`; an unavailable value is
-    stored as the undefined type ``''``.
+    stored as the undefined type ``''``. It applies to the column :sql:`fax`
+    when its entry of the :ref:`frontend user synchronisation map
+    <configuration-frontend-user-sync>` names no type.
 
 ..  confval:: demand.allowedGroupByValues
 
