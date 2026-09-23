@@ -396,9 +396,11 @@ final class SiteSetDeliveryTest extends AbstractAcademicPersonsTestCase
     }
 
     /**
-     * The name this extension published before the split. Two site configurations in this
-     * repository depend on it by that exact string, and a set that is not found is not an
-     * error - the site simply gets nothing.
+     * The name this extension published before the split. Site configurations of the
+     * released 2.x line depend on it by that exact string - the development instances of
+     * this repository name the aggregate - and a site that depends on a set no active
+     * extension ships is not delivered at all: TYPO3 answers every page with HTTP 500
+     * ("depends on unavailable sets").
      */
     #[Test]
     public function compatibilitySetDelegatesToTheAggregate(): void
