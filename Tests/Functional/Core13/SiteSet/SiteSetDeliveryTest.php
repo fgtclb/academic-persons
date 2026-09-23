@@ -198,8 +198,9 @@ final class SiteSetDeliveryTest extends AbstractDeliveryTestCase
 
     /**
      * The name this extension published before the split. Site configurations depend on
-     * it by that exact string, and a set that is not found is not an error - the site
-     * simply gets nothing.
+     * it by that exact string, and a site that depends on a set no active extension ships
+     * is not delivered at all: TYPO3 v13 answers every page with HTTP 500 ("depends on
+     * unavailable sets").
      */
     #[Test]
     public function compatibilitySetDelegatesToTheAggregate(): void
