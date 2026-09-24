@@ -95,6 +95,45 @@ final class AcademicPersonsSettingsFactoryTest extends UnitTestCase
     }
 
     /**
+     * Two packages with the pre-3.0 `validations` map: the legacy keys are merged
+     * like every other map, so the later package adds the title to the `profile`
+     * set of the earlier one instead of replacing it. With a top-level fold only the
+     * later map reached the overlay, and the website lost the `required` flag of
+     * the earlier package.
+     */
+    #[Test]
+    public function theLegacyMapsOfTwoPackagesAreMergedBeforeTheOverlay(): void
+    {
+        $cache = $this->createMock(PhpFrontend::class);
+        $cache->method('require')->willReturn(false);
+        $packageManager = $this->createMock(PackageManager::class);
+        $packageManager->method('getActivePackages')->willReturn([
+            $this->package('academic_persons', __DIR__ . '/../../../'),
+            $this->package(
+                'test_legacy_settings',
+                __DIR__ . '/../../Functional/Fixtures/Extensions/test_legacy_settings/',
+            ),
+            $this->package(
+                'test_second_legacy_settings',
+                __DIR__ . '/../Fixtures/Packages/second_legacy_settings/',
+            ),
+        ]);
+
+        $settings = $this->factory($cache, $packageManager)->get();
+
+        $website = $settings->getProfileField('website');
+        $this->assertNotNull($website);
+        $this->assertSame([NotEmptyValidator::class, UrlValidator::class], $website->validation->validatorClassNames);
+        $title = $settings->getProfileField('title');
+        $this->assertNotNull($title);
+        $this->assertSame([NotEmptyValidator::class], $title->validation->validatorClassNames);
+        $firstName = $settings->getProfileField('firstName');
+        $this->assertNotNull($firstName);
+        $this->assertFalse($firstName->validation->readOnly, 'Neither package lists the name fields');
+        $this->assertArrayNotHasKey('validations', $settings->raw);
+    }
+
+    /**
      * The override an installation writes today: a site package that names the three
      * name fields and nothing else. The recursive merge of the loader applies the
      * cleared flag lists to those fields and leaves the rest of the shipped `profile`

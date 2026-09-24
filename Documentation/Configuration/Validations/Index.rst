@@ -336,6 +336,12 @@ TYPO3 caches are flushed afterwards. When EXT:reports is installed, the
 :guilabel:`Status` report lists the same packages under
 :guilabel:`Academic Persons` as a warning.
 
+The printed maps restate everything the runtime produces. Once they replace
+the legacy keys, :bash:`vendor/bin/typo3 academic:persons:settings:migrate --delta`
+reduces the file to the entries that differ from what the packages loaded
+before it configure - see
+:ref:`Overriding the file <configuration-sections-override>`.
+
 How the legacy keys map:
 
 ..  list-table::

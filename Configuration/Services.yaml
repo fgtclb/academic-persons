@@ -68,5 +68,5 @@ services:
     tags:
       - name: console.command
         command: 'academic:persons:settings:migrate'
-        description: 'Prints the section maps a package still shipping the pre-3.0 "validations" or "profileInformationsTypes" keys of Configuration/AcademicPersons/Settings.yaml should replace them with; exits with 1 when such a package exists.'
+        description: 'Prints the section maps a package still shipping the pre-3.0 "validations" or "profileInformationsTypes" keys of Configuration/AcademicPersons/Settings.yaml should replace them with; exits with 1 when such a package exists. With --delta, prints the smallest settings file of every package after the first one instead.'
         schedulable: false

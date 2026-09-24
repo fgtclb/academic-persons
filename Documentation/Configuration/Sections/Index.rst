@@ -602,6 +602,15 @@ To change the shipped configuration:
     3.0, which removed entries by restating a map without them, has to be
     migrated - see :ref:`breaking-settings-files-merge-recursively`.
 
+To see what an override changes, run
+:bash:`vendor/bin/typo3 academic:persons:settings:migrate --delta`. It prints,
+for every package after :guilabel:`academic_persons`, the smallest file with
+the same effect - replacing the package's file with it changes nothing - and
+names, as comments, the entries a map the package copied leaves out and
+therefore inherits. The :guilabel:`Status` report of EXT:reports lists the same
+entries, and the ones a package removes with :yaml:`~`, under
+:guilabel:`Academic Persons`. See :ref:`feature-settings-override-report-and-delta`.
+
 There is no TypoScript and no site set equivalent for these settings.
 
 ..  note::

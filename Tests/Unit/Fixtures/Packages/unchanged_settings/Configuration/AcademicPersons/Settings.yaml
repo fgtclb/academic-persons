@@ -1,0 +1,9 @@
+# Restates the gender field exactly as academic_persons ships it, and nothing
+# else: the file has no effect and can be dropped.
+profile:
+  gender:
+    section: information
+    fieldType: select
+    renderType: select
+    validators:
+      - required

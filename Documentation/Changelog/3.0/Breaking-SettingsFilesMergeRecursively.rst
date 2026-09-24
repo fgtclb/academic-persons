@@ -79,9 +79,12 @@ and the level it sits on makes no difference:
     :yaml:`[readonly, disabled]` again and are locked, in the backend and in
     the editing frontend.
 
-Nothing reports either case: the settings are valid, they just say what
+Nothing fails in either case: the settings are valid, they just say what
 upstream says. **An override therefore has to be compared with the shipped
-file key by key, not map by map.**
+file key by key, not map by map.** The status report of EXT:reports and
+``academic:persons:settings:migrate --delta`` do that comparison and name the
+entries a map that looks copied leaves out - see
+:ref:`feature-settings-override-report-and-delta` for when a map looks copied.
 
 An override behaves as it did only where it is complete at every level. A
 file that named one entry of a map used to be the whole map; it is now that
@@ -109,6 +112,11 @@ Migration
     **at every level**, and collect every key the shipped file has and the
     override does not. A missing :yaml:`validators` list, a missing field and
     a missing section are all inherited from now on.
+    :bash:`vendor/bin/typo3 academic:persons:settings:migrate --delta` prints
+    those keys as comments, for every package after
+    :guilabel:`academic_persons`; it takes a map for a copy when the package
+    restates at least two of its entries unchanged, or when the map is part of
+    a copy.
 #.  Decide per key: keep the inheritance, or state it. An entry that is to be
     gone is set to :yaml:`~`, a flag list that is to be empty is set to
     :yaml:`[]`:
@@ -127,7 +135,9 @@ Migration
 
 #.  Reduce the override to the keys that differ from the shipped file, once
     the two above are settled. It is not required, but it is the point of the
-    recursive merge: what is not named follows upstream.
+    recursive merge: what is not named follows upstream. The file ``--delta``
+    prints is that reduced file, the :yaml:`~` lines of the previous step
+    added.
 #.  Flush the TYPO3 caches. The normalised graph is cached in the core cache.
 
 ..  index:: Configuration, Frontend, Backend, ext:academic_persons

@@ -1,0 +1,47 @@
+# The shape a project override had while the settings files were merged per
+# top-level key: the contract fields copied from academic_persons to require
+# the location. The copy leaves out the room, which it inherits now that the
+# files are merged per entry, and removes the office hours with `~`.
+contracts:
+  fields:
+    position:
+      fieldType: input
+      renderType: text
+      validators:
+        - required
+      helptext: 'LLL:EXT:academic_persons/Resources/Private/Language/locallang.xlf:helptext.contracts.position'
+    organisationalUnit:
+      fieldType: select
+      renderType: select
+      options: organisationalUnits
+      helptext: 'LLL:EXT:academic_persons/Resources/Private/Language/locallang.xlf:helptext.contracts.organisationalUnit'
+    functionType:
+      fieldType: select
+      renderType: select
+      options: functionTypes
+      helptext: 'LLL:EXT:academic_persons/Resources/Private/Language/locallang.xlf:helptext.contracts.functionType'
+    validFrom:
+      fieldType: input
+      renderType: date
+      validators:
+        - required
+        - date
+      helptext: 'LLL:EXT:academic_persons/Resources/Private/Language/locallang.xlf:helptext.contracts.validFrom'
+    validTo:
+      fieldType: input
+      renderType: date
+      validators:
+        - date
+      helptext: 'LLL:EXT:academic_persons/Resources/Private/Language/locallang.xlf:helptext.contracts.validTo'
+    location:
+      fieldType: select
+      renderType: select
+      options: locations
+      validators:
+        - required
+      helptext: 'LLL:EXT:academic_persons/Resources/Private/Language/locallang.xlf:helptext.contracts.location'
+    officeHours: ~
+    publish:
+      fieldType: check
+      renderType: checkbox
+      helptext: 'LLL:EXT:academic_persons/Resources/Private/Language/locallang.xlf:helptext.contracts.publish'

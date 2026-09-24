@@ -19,7 +19,9 @@
 # nothing else. A list - a `validators` list, a `structure` column, the
 # `rowFields` of a document section - is replaced as a whole, and `~` removes
 # a key. Flush TYPO3 caches after every change so the typed settings graph is
-# rebuilt.
+# rebuilt. `academic:persons:settings:migrate --delta` prints the smallest file
+# an override needs, and names the entries a copied map leaves out and so
+# inherits; the Reports module lists those entries as well.
 #
 # Identifiers describe existing domain/DTO/TCA properties and renderers. This
 # configuration can expose, hide, order and validate supported fields, but it

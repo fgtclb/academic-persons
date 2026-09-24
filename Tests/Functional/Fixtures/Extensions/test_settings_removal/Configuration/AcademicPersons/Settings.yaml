@@ -1,0 +1,4 @@
+# A delta that removes the middle name and changes nothing else. It copies
+# nothing, so the status report lists the removal and no omission.
+profile:
+  middleName: ~

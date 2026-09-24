@@ -9,6 +9,7 @@ use FGTCLB\AcademicBase\Settings\ValidationNormalizer;
 use FGTCLB\AcademicPersons\Command\MigrateSettingsCommand;
 use FGTCLB\AcademicPersons\Settings\AcademicPersonsSettingsFactory;
 use FGTCLB\AcademicPersons\Settings\LegacySettingsMigrator;
+use FGTCLB\AcademicPersons\Settings\SettingsOverrideComparator;
 use PHPUnit\Framework\Attributes\Test;
 use Symfony\Component\Console\Tester\CommandTester;
 use Symfony\Component\Yaml\Yaml;
@@ -40,7 +41,7 @@ final class MigrateSettingsCommandTest extends UnitTestCase
     public function aPartialOverrideBeforeTheLegacyPackageKeepsTheFieldsItDoesNotName(): void
     {
         $loader = new SettingsFileLoader($this->cacheWithoutEntry(), $this->packageManager());
-        $tester = new CommandTester(new MigrateSettingsCommand($loader, new LegacySettingsMigrator()));
+        $tester = new CommandTester(new MigrateSettingsCommand($loader, new LegacySettingsMigrator(), new SettingsOverrideComparator($loader)));
 
         $tester->execute([]);
         $printed = Yaml::parse($tester->getDisplay());
@@ -62,7 +63,7 @@ final class MigrateSettingsCommandTest extends UnitTestCase
     public function thePrintedMapsAreTheSettingsTheInstallationRunsOn(): void
     {
         $loader = new SettingsFileLoader($this->cacheWithoutEntry(), $this->packageManager());
-        $tester = new CommandTester(new MigrateSettingsCommand($loader, new LegacySettingsMigrator()));
+        $tester = new CommandTester(new MigrateSettingsCommand($loader, new LegacySettingsMigrator(), new SettingsOverrideComparator($loader)));
 
         $tester->execute([]);
         $printed = Yaml::parse($tester->getDisplay());

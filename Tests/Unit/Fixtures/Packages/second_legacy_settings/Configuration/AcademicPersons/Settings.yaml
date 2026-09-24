@@ -1,0 +1,7 @@
+# A second package with the pre-3.0 keys, loaded after `test_legacy_settings`.
+# It names one field of the `profile` set, which the earlier package does not
+# name; the website entry of that package and every other set stay in place.
+validations:
+  profile:
+    title:
+      - required

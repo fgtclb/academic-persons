@@ -18,6 +18,15 @@
       <trans-unit id="status.legacySettings.none.message" resname="status.legacySettings.none.message">
         <source>No active package ships the pre-3.0 "validations" or "profileInformationsTypes" keys.</source>
       </trans-unit>
+      <trans-unit id="status.overrides.removed" resname="status.overrides.removed">
+        <source>The package removes these entries with "~": %s.</source>
+      </trans-unit>
+      <trans-unit id="status.overrides.omitted" resname="status.overrides.omitted">
+        <source>The maps the package copied leave these entries out: %s. The package inherits them, because the settings files are merged per entry. Set an entry to "~" where leaving it out was meant to remove it.</source>
+      </trans-unit>
+      <trans-unit id="status.overrides.delta" resname="status.overrides.delta">
+        <source>"academic:persons:settings:migrate --delta" prints the smallest file with the same effect.</source>
+      </trans-unit>
     </body>
   </file>
 </xliff>

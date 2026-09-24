@@ -23,6 +23,18 @@
         <source>No active package ships the pre-3.0 "validations" or "profileInformationsTypes" keys.</source>
         <target>Kein aktives Paket liefert die vor 3.0 verwendeten Schlüssel "validations" oder "profileInformationsTypes" aus.</target>
       </trans-unit>
+      <trans-unit id="status.overrides.removed" resname="status.overrides.removed" approved="yes">
+        <source>The package removes these entries with "~": %s.</source>
+        <target>Das Paket entfernt diese Einträge mit "~": %s.</target>
+      </trans-unit>
+      <trans-unit id="status.overrides.omitted" resname="status.overrides.omitted" approved="yes">
+        <source>The maps the package copied leave these entries out: %s. The package inherits them, because the settings files are merged per entry. Set an entry to "~" where leaving it out was meant to remove it.</source>
+        <target>Die vom Paket kopierten Konfigurationsblöcke lassen diese Einträge aus: %s. Das Paket erbt sie, weil die Konfigurationsdateien eintragsweise zusammengeführt werden. Setzen Sie einen Eintrag auf "~", wenn das Auslassen ihn entfernen sollte.</target>
+      </trans-unit>
+      <trans-unit id="status.overrides.delta" resname="status.overrides.delta" approved="yes">
+        <source>"academic:persons:settings:migrate --delta" prints the smallest file with the same effect.</source>
+        <target>"academic:persons:settings:migrate --delta" gibt die kleinste Datei mit derselben Wirkung aus.</target>
+      </trans-unit>
     </body>
   </file>
 </xliff>

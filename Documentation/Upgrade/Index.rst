@@ -266,7 +266,9 @@ anything the override leaves out is now inherited from
 :guilabel:`academic_persons` rather than removed, at every level, and is
 removed with :yaml:`~`. Work through
 :ref:`breaking-settings-files-merge-recursively` before the override is
-reduced to its deltas.
+reduced to its deltas;
+:bash:`vendor/bin/typo3 academic:persons:settings:migrate --delta` prints them,
+and names the entries a copied map leaves out.
 
 :ref:`configuration-validations-migration` has the complete key mapping and what
 is deliberately not mapped;
