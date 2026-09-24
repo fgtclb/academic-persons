@@ -1,0 +1,8 @@
+"tx_academicpersons_domain_model_profile",,,,,,,,,,,
+,"uid","pid","sys_language_uid","l10n_parent","l10n_source","first_name","last_name","slug","hidden","starttime","endtime"
+,1,2,0,0,0,"Scrooge","Duck","scrooge-duck",0,0,0
+,2,2,1,1,1,"Dagobert","Duck","dagobert-duck",0,0,0
+,3,2,0,0,0,"Gyro","Gearloose","gyro-gearloose",1,0,946684800
+"sys_workspace",,,,,,,,,,,
+,"uid","pid","title",,,,,,,,
+,1,0,"Draft",,,,,,,,

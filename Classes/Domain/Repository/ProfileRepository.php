@@ -531,6 +531,33 @@ class ProfileRepository extends Repository
     }
 
     /**
+     * Resolve a single profile by uid for an announcement of its update, ignoring the hidden
+     * flag, start time, end time and frontend user group like {@see self::findByFrontendUser()}
+     * with `$showHidden`: a profile outside its visibility window is kept up to date all the
+     * same. Not meant for display - {@see self::findByUidIncludingHidden()} is.
+     *
+     * The row is returned as it is stored, whatever language the context is in, so an
+     * announcement carries the default-language record, never a translation overlay.
+     * The caller passes the uid of a default-language profile: the finder does not
+     * check the language, a translation uid returns the translation row.
+     *
+     * @internal for the announcement of DataHandler saves, not part of the public API.
+     */
+    public function findByUidForSynchronization(int $uid): ?Profile
+    {
+        $query = $this->createQuery();
+        $query->getQuerySettings()
+            ->setRespectStoragePage(false)
+            ->setRespectSysLanguage(false)
+            ->setLanguageAspect(new LanguageAspect(0, 0, LanguageAspect::OVERLAYS_OFF));
+        $this->includeRestrictedRecordsForSynchronization($query);
+        $query->matching($query->equals('uid', $uid));
+        /** @var Profile|null $profile */
+        $profile = $query->execute()->getFirst();
+        return $profile;
+    }
+
+    /**
      * Find profiles for a frontend user. `$showHidden` exists for the synchronization and lifts
      * every enable field of the profile - hidden flag, start time, end time and frontend user
      * group - so that the data of a hidden, scheduled, expired or group restricted profile keeps

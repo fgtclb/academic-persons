@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace FGTCLB\AcademicPersons\Service;
 
+use FGTCLB\AcademicPersons\DataHandling\ProfileWriteCorrelation;
 use FGTCLB\AcademicPersons\Domain\Model\Dto\Syncronizer\SynchronizerContext;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\DependencyInjection\Attribute\AsAlias;
@@ -13,6 +14,7 @@ use TYPO3\CMS\Backend\Utility\BackendUtility;
 use TYPO3\CMS\Core\Authentication\BackendUserAuthentication;
 use TYPO3\CMS\Core\Database\RelationHandler;
 use TYPO3\CMS\Core\DataHandling\DataHandler;
+use TYPO3\CMS\Core\DataHandling\ReferenceIndexUpdater;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
@@ -389,13 +391,21 @@ class RecordSynchronizer implements RecordSynchronizerInterface
         array $cmdmap = [],
     ): void {
         $dataHandler = GeneralUtility::makeInstance(DataHandler::class);
-        $dataHandler->start($datamap, $cmdmap, $backendUser);
+        // Run from a listener of a backend save, this instance is nested in the
+        // save's run, and the DataHandler flushes the reference index of the
+        // outermost run only: this one is flushed here.
+        $referenceIndexUpdater = GeneralUtility::makeInstance(ReferenceIndexUpdater::class);
+        $dataHandler->start($datamap, $cmdmap, $backendUser, $referenceIndexUpdater);
+        // Never announced as a backend save: the update this write belongs to is
+        // announced by the code that started it (`DataHandlerHooks`).
+        $dataHandler->setCorrelationId(ProfileWriteCorrelation::Internal->create());
         if ($datamap !== []) {
             $dataHandler->process_datamap();
         }
         if ($cmdmap !== []) {
             $dataHandler->process_cmdmap();
         }
+        $referenceIndexUpdater->update();
         if ($dataHandler->errorLog !== []) {
             $this->logger->error(
                 'DataHandler reported errors during translation synchronization.',

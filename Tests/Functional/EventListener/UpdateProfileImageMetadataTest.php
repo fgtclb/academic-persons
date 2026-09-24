@@ -13,8 +13,10 @@ namespace FGTCLB\AcademicPersons\Tests\Functional\EventListener;
 
 use FGTCLB\AcademicPersons\Domain\Model\Profile;
 use FGTCLB\AcademicPersons\Event\AfterProfileUpdateEvent;
+use FGTCLB\AcademicPersons\Event\ProfileUpdateOrigin;
 use FGTCLB\AcademicPersons\EventListener\UpdateProfileImageMetadata;
 use FGTCLB\AcademicPersons\Tests\Functional\AbstractAcademicPersonsTestCase;
+use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\Attributes\Test;
 use Psr\EventDispatcher\EventDispatcherInterface;
 use TYPO3\CMS\Core\EventDispatcher\ListenerProvider;
@@ -41,21 +43,60 @@ final class UpdateProfileImageMetadataTest extends AbstractAcademicPersonsTestCa
         );
     }
 
+    /**
+     * @return \Generator<string, array{ProfileUpdateOrigin}>
+     */
+    public static function writingOrigins(): \Generator
+    {
+        yield 'unknown' => [ProfileUpdateOrigin::Unknown];
+        yield 'frontend editing' => [ProfileUpdateOrigin::FrontendEditing];
+        yield 'creation' => [ProfileUpdateOrigin::Creation];
+        yield 'synchronization' => [ProfileUpdateOrigin::Synchronization];
+    }
+
+    #[DataProvider('writingOrigins')]
     #[Test]
-    public function dispatchedEventWritesTheProfileNameIntoTheReferenceMetadata(): void
+    public function dispatchedEventWritesTheProfileNameIntoTheReferenceMetadata(ProfileUpdateOrigin $origin): void
     {
         $this->importCSVDataSet(__DIR__ . '/../Service/RecordSynchronizer/Fixtures/ProfileWithRelations.csv');
         $profile = new Profile();
         $profile->_setProperty('uid', 1);
 
-        $this->get(EventDispatcherInterface::class)->dispatch(new AfterProfileUpdateEvent($profile));
+        $this->get(EventDispatcherInterface::class)->dispatch(new AfterProfileUpdateEvent($profile, null, $origin));
 
         $this->assertSame(
             ['title' => 'Erika Musterfrau', 'alternative' => 'Erika Musterfrau'],
-            $this->getConnectionPool()
-                ->getConnectionForTable('sys_file_reference')
-                ->select(['title', 'alternative'], 'sys_file_reference', ['uid' => 1])
-                ->fetchAssociative(),
+            $this->fetchReferenceMetadata(),
         );
+    }
+
+    /**
+     * A backend save and an import are DataHandler runs, for which the hook has
+     * written the metadata already - and only where a name or the image changed.
+     */
+    #[Test]
+    public function anAnnouncedDataHandlerRunLeavesTheReferenceMetadataToTheHook(): void
+    {
+        $this->importCSVDataSet(__DIR__ . '/../Service/RecordSynchronizer/Fixtures/ProfileWithRelations.csv');
+        $before = $this->fetchReferenceMetadata();
+        $profile = new Profile();
+        $profile->_setProperty('uid', 1);
+
+        $this->get(EventDispatcherInterface::class)->dispatch(new AfterProfileUpdateEvent($profile, null, ProfileUpdateOrigin::Backend));
+        $this->get(EventDispatcherInterface::class)->dispatch(new AfterProfileUpdateEvent($profile, null, ProfileUpdateOrigin::Import));
+
+        $this->assertNotSame(['title' => 'Erika Musterfrau', 'alternative' => 'Erika Musterfrau'], $before, 'Precondition: the fixture carries other metadata.');
+        $this->assertSame($before, $this->fetchReferenceMetadata());
+    }
+
+    /**
+     * @return array<string, mixed>|false
+     */
+    private function fetchReferenceMetadata(): array|false
+    {
+        return $this->getConnectionPool()
+            ->getConnectionForTable('sys_file_reference')
+            ->select(['title', 'alternative'], 'sys_file_reference', ['uid' => 1])
+            ->fetchAssociative();
     }
 }

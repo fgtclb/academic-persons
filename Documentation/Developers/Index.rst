@@ -193,30 +193,123 @@ The trigger: AfterProfileUpdateEvent
 
 :php:`\FGTCLB\AcademicPersons\Event\AfterProfileUpdateEvent` is a PSR-14 event
 announcing that a profile aggregate — the profile record or one of its child
-records — has changed and was persisted. This extension dispatches it after a
-profile is auto-created for a frontend user
-(:php:`AbstractProfileFactory::createProfileForUser()`, also reached by the
-:bash:`academic:createprofiles` command); `EXT:academic_persons_edit`
-dispatches it after every persisting frontend edit action, and project code —
-typically a :php:`DataHandler` hook reacting to backend edits — may dispatch it
-as well to trigger the same synchronisation.
+records — has changed and was persisted. It is dispatched
 
-The dispatch contract:
+*   after a profile is auto-created for a frontend user
+    (:php:`AbstractProfileFactory::createProfileForUser()`, also reached by the
+    :bash:`academic:createprofiles` command);
+*   after a profile is updated from its frontend user record
+    (:php:`AbstractProfileFactory::updateProfileForUser()`, command
+    :bash:`academic:updateprofiles`), per profile the update runs through —
+    even when every value already matched. A profile whose :sql:`skip_sync`
+    flag is set is neither updated nor announced;
+*   by `EXT:academic_persons_edit` after every persisting frontend edit action;
+*   after a **DataHandler save** of a live, default-language profile: the
+    backend form, and any code that writes profiles through the DataHandler.
+    Every default-language profile in the run's datamap is announced once per
+    run, after all of the run is written. Saves of translations alone, saves
+    in a workspace, commands such as copy, move or localize, and a save of
+    only a child record - a contract edited on its own - are not announced.
+
+Besides the profile the event carries the site the profile belongs to, and
+the origin of the update:
+
+..  list-table::
+    :header-rows: 1
+
+    *   - :php:`getOrigin()`
+        - Dispatched by
+        - :php:`getSite()`
+    *   - :php:`ProfileUpdateOrigin::Creation`
+        - :bash:`academic:createprofiles`
+        - :php:`null`
+    *   - :php:`ProfileUpdateOrigin::Synchronization`
+        - :bash:`academic:updateprofiles`
+        - :php:`null`
+    *   - :php:`ProfileUpdateOrigin::FrontendEditing`
+        - the profile editing plugin of `EXT:academic_persons_edit`
+        - the site of the request
+    *   - :php:`ProfileUpdateOrigin::Backend`
+        - a DataHandler save
+        - the site of the profile's page, :php:`null` when it belongs to none
+    *   - :php:`ProfileUpdateOrigin::Import`
+        - a DataHandler save of a run marked as an import (below)
+        - the site of the profile's page, :php:`null` when it belongs to none
+    *   - :php:`ProfileUpdateOrigin::Unknown`
+        - code that passes no origin, such as code written for 2.x
+        - whatever it passes, usually :php:`null`
+
+The case set of :php:`ProfileUpdateOrigin` is fixed, so a listener may
+:php:`match` over it exhaustively.
+
+The dispatch contract, for code that dispatches the event itself:
 
 *   The event carries the **persisted default language profile**: its
     :php:`getUid()` returns a real uid, and the record is not a translation
     overlay. Listeners read the database, not the object, so all changes must
     be persisted before dispatching.
-*   The profile's pid must resolve to a site — the synchronisation listener of
-    `EXT:academic_persons_edit` determines the site from the request or from
-    the pid and skips the event silently when it cannot.
+*   The site is optional. Without one the synchronisation listener of
+    `EXT:academic_persons_edit` determines it from the site of the global
+    request, then from the pid, and skips the event silently when it cannot.
+    An event of origin :php:`ProfileUpdateOrigin::Backend` or
+    :php:`ProfileUpdateOrigin::Import` without a site is not synchronised at
+    all: the DataHandler hook passes none only when the profile's page belongs
+    to no site, and the site of a backend request is the one of the page
+    selected in the page tree.
+*   A project that dispatched the event from its own DataHandler hook to have
+    backend saves synchronised must remove that hook: the save is announced
+    by this extension now, and the hook would announce it a second time.
 
-Updating an existing profile from its frontend user record
-(:php:`AbstractProfileFactory::updateProfileForUser()`, command
-:bash:`academic:updateprofiles`) dispatches the event per profile the update
-runs through — announced even when every value already matched, exactly like
-the frontend editing flow. A profile whose :sql:`skip_sync` flag is set is
-neither updated nor announced.
+..  _developers-profile-write-correlation:
+
+Marking a DataHandler run: ProfileWriteCorrelation
+--------------------------------------------------
+
+The DataHandler hook of this extension recognises two kinds of run by an
+aspect of the run's correlation id, which
+:php:`\FGTCLB\AcademicPersons\DataHandling\ProfileWriteCorrelation` creates:
+
+:php:`ProfileWriteCorrelation::Import`
+    An import. Its saves are announced like backend saves, once per profile
+    and synchronously, with the origin :php:`ProfileUpdateOrigin::Import`, so
+    that a listener can tell them apart or defer its own work. Every profile
+    is synchronised in the same request, which is the cost of a large import.
+
+:php:`ProfileWriteCorrelation::Internal`
+    A write of this extension itself — the translation synchronisation and
+    the profile image writes. Such a run is never announced: the update it
+    belongs to is announced by the code that started it. A listener of
+    :php:`AfterProfileUpdateEvent` that writes profiles through the
+    DataHandler marks its run the same way: an announcement from the frontend
+    or from a command has no DataHandler run around it, and the listener's
+    write would be announced as a save of its own.
+
+The synchronisation runs as the backend user of the save. An editor without
+access to a target language gets no translation in it; the DataHandler error
+is logged, not shown.
+
+A DataHandler run a listener starts from inside a backend save is nested in
+the save's run, and the DataHandler flushes the reference index of the
+outermost run only. Such a run passes a :php:`ReferenceIndexUpdater` of its
+own to :php:`start()` and calls :php:`update()` on it afterwards, as the
+synchronisation does.
+
+The mark is set after :php:`start()`, which replaces the correlation id:
+
+..  code-block:: php
+
+    use FGTCLB\AcademicPersons\DataHandling\ProfileWriteCorrelation;
+    use TYPO3\CMS\Core\DataHandling\DataHandler;
+    use TYPO3\CMS\Core\Utility\GeneralUtility;
+
+    $dataHandler = GeneralUtility::makeInstance(DataHandler::class);
+    $dataHandler->start($datamap, []);
+    $dataHandler->setCorrelationId(ProfileWriteCorrelation::Import->create());
+    $dataHandler->process_datamap();
+
+A DataHandler run started from inside another DataHandler run — from one of
+its hooks, or from a listener of the announcement it made — is never
+announced, marked or not.
 
 ..  _developers-synchronisation:
 

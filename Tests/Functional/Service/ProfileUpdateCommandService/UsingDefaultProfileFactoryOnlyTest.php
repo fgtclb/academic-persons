@@ -7,6 +7,7 @@ namespace FGTCLB\AcademicPersons\Tests\Functional\Service\ProfileUpdateCommandSe
 use FGTCLB\AcademicPersons\Domain\Model\Dto\ProfileUpdateCommandDto;
 use FGTCLB\AcademicPersons\Domain\Repository\ProfileRepository;
 use FGTCLB\AcademicPersons\Event\AfterProfileUpdateEvent;
+use FGTCLB\AcademicPersons\Event\ProfileUpdateOrigin;
 use FGTCLB\AcademicPersons\Profile\ProfileFactory;
 use FGTCLB\AcademicPersons\Service\Event\ModifyProfileCommandEnvironmentStateBuildContextForFrontendUserEvent;
 use FGTCLB\AcademicPersons\Service\ProfileCreateCommandService;
@@ -825,6 +826,8 @@ final class UsingDefaultProfileFactoryOnlyTest extends AbstractAcademicPersonsTe
         foreach ($capturedEvents as $event) {
             $this->assertNotNull($event->getProfile()->getUid());
             $this->assertFalse($event->getProfile()->getIsTranslation());
+            $this->assertSame(ProfileUpdateOrigin::Synchronization, $event->getOrigin());
+            $this->assertNull($event->getSite());
         }
     }
 

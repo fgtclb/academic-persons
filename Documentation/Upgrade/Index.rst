@@ -55,11 +55,13 @@ The steps at a glance
             broken.
     *   -   7. Adapt templates, icons, TypoScript and repository overrides
         -   Re-applies project overrides to the new template tree, makes the
-            JSON page type reachable, and moves repository customizations to
-            the query events.
+            JSON page type reachable, moves repository customizations to the
+            query events, and drops a project hook that announced backend
+            saves.
         -   The editor cannot save, an overridden detail view loses the
-            configurable layout, and a repository override is either a fatal
-            error or silently unused.
+            configurable layout, a repository override is either a fatal
+            error or silently unused, and every backend save is announced and
+            synchronised twice.
 
 ..  note::
     The TYPO3 core update itself is not a step of this page; it is an upgrade
@@ -277,7 +279,7 @@ is deliberately not mapped;
 ..  _upgrade-step-templates:
 
 7. Adapt templates, icons, TypoScript and repository overrides
-=============================================================
+==============================================================
 
 The public detail view
 ----------------------
@@ -373,6 +375,18 @@ events, which applies to every plugin and before pagination. See
 :ref:`breaking-profile-and-contract-finder-signatures` and
 :ref:`feature-profile-and-contract-query-events`.
 
+Project hooks announcing backend saves
+--------------------------------------
+
+A project that dispatched :php:`AfterProfileUpdateEvent` from a DataHandler hook
+of its own, so that backend saves synchronise the translations, removes that
+hook - together with any frontend request it faked for the site. The extension
+announces a backend save itself now, with the site of the profile's page, and
+the project hook would announce it a second time. An import that writes
+through the DataHandler can mark its run as an import instead. See
+:ref:`important-backend-saves-announce-profile-updates` and
+:ref:`feature-profile-update-event-carries-site-and-origin`.
+
 ..  _upgrade-verify:
 
 Verifying the result
@@ -389,3 +403,6 @@ Verifying the result
     ``0``, and the log carries no legacy settings warning.
 #.  A list plugin and a selected-profiles plugin show what the project's own
     code intends, where that code used to be a repository subclass or XCLASS.
+#.  With ``profile.allowedLanguages`` of `EXT:academic_persons_edit` set, a
+    last name changed in the backend reaches the translation of the profile
+    after one save, and a project hook announcing backend saves is gone.

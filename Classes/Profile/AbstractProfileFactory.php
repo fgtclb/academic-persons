@@ -15,6 +15,7 @@ use FGTCLB\AcademicPersons\Domain\Model\FrontendUser;
 use FGTCLB\AcademicPersons\Domain\Model\Profile;
 use FGTCLB\AcademicPersons\Domain\Repository\ProfileRepository;
 use FGTCLB\AcademicPersons\Event\AfterProfileUpdateEvent;
+use FGTCLB\AcademicPersons\Event\ProfileUpdateOrigin;
 use Psr\EventDispatcher\EventDispatcherInterface;
 use Symfony\Contracts\Service\Attribute\Required;
 use TYPO3\CMS\Core\Configuration\Exception\ExtensionConfigurationExtensionNotConfiguredException;
@@ -102,7 +103,10 @@ abstract class AbstractProfileFactory implements ProfileFactoryInterface
 
         $this->persistenceManager->persistAll();
 
-        $afterProfileUpdatedEvent = new AfterProfileUpdateEvent($profileForDefaultLanguage);
+        $afterProfileUpdatedEvent = new AfterProfileUpdateEvent(
+            $profileForDefaultLanguage,
+            origin: ProfileUpdateOrigin::Creation,
+        );
         $this->eventDispatcher->dispatch($afterProfileUpdatedEvent);
 
         return $profileForDefaultLanguage->getUid();
@@ -177,7 +181,9 @@ abstract class AbstractProfileFactory implements ProfileFactoryInterface
         // at them. Listeners regenerate the slug and synchronise the translations, so an
         // `academic:updateprofiles` run keeps the whole aggregate consistent (ACE-490).
         foreach ($updatedProfiles as $updatedProfile) {
-            $this->eventDispatcher->dispatch(new AfterProfileUpdateEvent($updatedProfile));
+            $this->eventDispatcher->dispatch(
+                new AfterProfileUpdateEvent($updatedProfile, origin: ProfileUpdateOrigin::Synchronization),
+            );
         }
     }
 

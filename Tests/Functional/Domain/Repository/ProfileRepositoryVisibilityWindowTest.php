@@ -94,6 +94,23 @@ final class ProfileRepositoryVisibilityWindowTest extends AbstractAcademicPerson
         );
     }
 
+    /**
+     * The lookup of a profile whose update is announced: lifts the window like the
+     * synchronization lookup, keeps deleted profiles out.
+     */
+    #[Test]
+    public function uidLookupForTheSynchronizationIgnoresTheVisibilityWindow(): void
+    {
+        $found = [];
+        foreach ([1, 2, 3, 4, 5, 6] as $profileUid) {
+            if ($this->subject()->findByUidForSynchronization($profileUid) !== null) {
+                $found[] = $profileUid;
+            }
+        }
+
+        $this->assertSame([1, 2, 3, 4, 5], $found);
+    }
+
     private function subject(): ProfileRepository
     {
         return $this->get(ProfileRepository::class);

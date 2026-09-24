@@ -5,6 +5,8 @@ declare(strict_types=1);
 namespace FGTCLB\AcademicPersons\Tests\Functional\Service\ProfileCreateCommandService;
 
 use FGTCLB\AcademicPersons\Domain\Model\Dto\ProfileCreateCommandDto;
+use FGTCLB\AcademicPersons\Event\AfterProfileUpdateEvent;
+use FGTCLB\AcademicPersons\Event\ProfileUpdateOrigin;
 use FGTCLB\AcademicPersons\Profile\ProfileFactory;
 use FGTCLB\AcademicPersons\Service\Event\ModifyProfileCommandEnvironmentStateBuildContextForFrontendUserEvent;
 use FGTCLB\AcademicPersons\Service\ProfileCreateCommandService;
@@ -723,6 +725,39 @@ final class UsingDefaultProfileFactoryOnlyTest extends AbstractAcademicPersonsTe
         ));
         $this->assertCSVDataSet(__DIR__ . '/Fixtures/Asserts/' . $assertCsvFileName);
         $this->assertCount($dispatchedEventCount, $dispatchedModifyEvents);
+    }
+
+    /**
+     * Every created profile is announced as a creation, without a site: the command runs
+     * outside any request, and the listeners resolve the site from the profile's page.
+     */
+    #[Test]
+    public function executeAnnouncesEveryCreatedProfileAsACreation(): void
+    {
+        $announcements = [];
+        /** @var Container $container */
+        $container = $this->get('service_container');
+        $container->set(
+            'profile-create-announcement-listener',
+            static function (AfterProfileUpdateEvent $event) use (&$announcements): void {
+                $announcements[] = [$event->getSite(), $event->getOrigin()];
+            }
+        );
+        $container->get(ListenerProvider::class)->addListener(
+            AfterProfileUpdateEvent::class,
+            'profile-create-announcement-listener',
+        );
+
+        GeneralUtility::makeInstance(ProfileCreateCommandService::class)->execute(new ProfileCreateCommandDto(
+            includePids: [100, 110],
+            excludePids: [],
+        ));
+
+        $this->assertNotSame([], $announcements);
+        $this->assertSame(
+            array_fill(0, count($announcements), [null, ProfileUpdateOrigin::Creation]),
+            $announcements,
+        );
     }
 
     /**
