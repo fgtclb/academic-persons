@@ -1,11 +1,15 @@
 <html
     data-namespace-typo3-fluid="true"
     xmlns:f="http://typo3.org/ns/TYPO3/CMS/Fluid/ViewHelpers"
+    xmlns:persons="http://typo3.org/ns/FGTCLB/AcademicPersons/ViewHelpers"
 >
 
 <f:comment>
     alphabetFilterLetters maps every letter to whether its list holds a profile. A list
     template of a project that does not pass it gets every letter as a link, as before.
+
+    Every link carries the other choices of the visitor, activeListArguments, changes
+    only the letter and leads to the first page.
 </f:comment>
 <f:if condition="{alphabetFilterLetters}">
     <f:then>
@@ -28,7 +32,7 @@
             <f:then>
                 <li class="page-item">
                     <f:link.action
-                        arguments="{demand: '{alphabetFilter: \'\'}'}"
+                        arguments="{demand: '{persons:listArguments(arguments: activeListArguments, overrides: {alphabetFilter: \'\'}, remove: \'currentPage\')}'}"
                         class="page-link"
                         rel="nofollow"
                     >
@@ -39,7 +43,7 @@
             <f:else>
                 <li class="page-item active">
                     <f:link.action
-                        arguments="{demand: '{alphabetFilter: \'\'}'}"
+                        arguments="{demand: '{persons:listArguments(arguments: activeListArguments, overrides: {alphabetFilter: \'\'}, remove: \'currentPage\')}'}"
                         class="page-link"
                         rel="nofollow"
                         aria="{current: 'page'}"
@@ -56,7 +60,7 @@
                         <f:if condition="{settings.alphabet.activeLetterResets}">
                             <f:then>
                                 <f:link.action
-                                    arguments="{demand: '{alphabetFilter: \'\'}'}"
+                                    arguments="{demand: '{persons:listArguments(arguments: activeListArguments, overrides: {alphabetFilter: \'\'}, remove: \'currentPage\')}'}"
                                     class="page-link"
                                     rel="nofollow"
                                     aria="{current: 'page'}"
@@ -75,7 +79,7 @@
                 <f:else if="{available}">
                     <li class="page-item">
                         <f:link.action
-                            arguments="{demand: '{alphabetFilter: letter}'}"
+                            arguments="{demand: '{persons:listArguments(arguments: activeListArguments, overrides: {alphabetFilter: letter}, remove: \'currentPage\')}'}"
                             class="page-link"
                             rel="nofollow"
                         >

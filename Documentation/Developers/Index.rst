@@ -186,6 +186,28 @@ under exactly the letter the list files it under. Where a name starting with an
 umlaut ends up is a question of the database collation: under O on MariaDB and
 MySQL, under no letter on PostgreSQL and SQLite.
 
+..  _developers-navigation-links:
+
+What the navigation links carry
+===============================
+
+The list action of the list and list-and-detail plugins assigns
+`activeListArguments`, the visitor's choices the pagination and the letter
+navigation carry into their links - see
+:ref:`what the navigation links carry <templates-navigation-links>` for the
+templates. Which demand properties a visitor may set is one list in
+:php:`ProfileController`, and it decides both what the property mapping accepts
+from the request and what the links carry, so the two cannot differ. Today it
+holds the page and the letter; a value equal to its default is left out.
+
+The value is read from the mapped demand before any event of the list is
+dispatched, :php:`ModifyProfileDemandEvent`, :php:`ModifyProfileQueryEvent` and
+:php:`ModifyListProfilesEvent` alike. A listener acts again on the request a
+link leads to, so what it changes need not travel in the URL. Nor can a listener
+of :php:`ModifyListProfilesEvent` assign a value of its own through the view:
+the list action assigns `activeListArguments` after the event and would
+overwrite it.
+
 ..  _developers-trigger:
 
 The trigger: AfterProfileUpdateEvent

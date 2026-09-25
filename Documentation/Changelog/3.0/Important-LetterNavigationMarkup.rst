@@ -41,13 +41,14 @@ keeps its markup and shows no availability until it reads
 `alphabetFilterLetters`. A project that overrides
 :file:`Templates/Profile/List.html` and renders the shipped partial with
 `demand` alone gets every letter as a link, as before; to get the disabled
-letters it passes `alphabetFilterLetters` along:
+letters it passes `alphabetFilterLetters` along - and `activeListArguments`,
+which the links carry (see :ref:`feature-list-links-keep-state`):
 
 ..  code-block:: html
 
     <f:render
         partial="Profile/List/AlphabetPagination"
-        arguments="{demand: demand, alphabetFilterLetters: alphabetFilterLetters}"
+        arguments="{demand: demand, alphabetFilterLetters: alphabetFilterLetters, activeListArguments: activeListArguments}"
     />
 
 Affected Installations

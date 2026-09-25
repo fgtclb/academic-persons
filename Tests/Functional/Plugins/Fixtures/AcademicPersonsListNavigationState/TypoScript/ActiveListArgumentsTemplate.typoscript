@@ -1,0 +1,3 @@
+# The list template of this fixture folder, which prints the active list arguments and
+# adds a visitor value the plugin does not know yet, see its own comment.
+plugin.tx_academicpersons.view.templateRootPaths.20 = EXT:academic_persons/Tests/Functional/Plugins/Fixtures/AcademicPersonsListNavigationState/Templates/

@@ -1,8 +1,21 @@
 <html
     lang="en"
     xmlns:f="http://typo3.org/ns/TYPO3/CMS/Fluid/ViewHelpers"
+    xmlns:persons="http://typo3.org/ns/FGTCLB/AcademicPersons/ViewHelpers"
     data-namespace-typo3-fluid="true"
 >
+
+<f:comment>
+    The shipped list template, with two additions for the test:
+
+    - the "activeListArguments" the list action assigned are printed as JSON, and
+    - a visitor value the plugin does not accept yet, "viewMode", is added to them before
+      the shipped partials render. It stands in for the first change that lets a visitor
+      set another value: the partials have to carry it without knowing it.
+</f:comment>
+<div class="test-active-list-arguments" data-arguments="{activeListArguments -> f:format.json()}"></div>
+
+<f:variable name="activeListArguments" value="{persons:listArguments(arguments: activeListArguments, overrides: {viewMode: 'table'})}" />
 
 <f:if condition="{settings.paginationEnabled} && {paginator.paginatedItems}">
     <f:then>
@@ -14,10 +27,6 @@
 </f:if>
 
 <div class="academic-persons-list">
-    <f:comment>
-        A manual selection ignores the letter filter, so every letter would show the whole
-        selection: no navigation for it, whatever the content element says.
-    </f:comment>
     <f:if condition="{settings.alphabetPaginationEnabled} && !{demand.profileList}">
         <f:render
             partial="Profile/List/AlphabetPagination"

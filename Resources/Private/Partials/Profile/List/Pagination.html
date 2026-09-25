@@ -1,14 +1,27 @@
 <html
     data-namespace-typo3-fluid="true"
     xmlns:f="http://typo3.org/ns/TYPO3/CMS/Fluid/ViewHelpers"
+    xmlns:persons="http://typo3.org/ns/FGTCLB/AcademicPersons/ViewHelpers"
 >
+
+<f:comment>
+    The navigation between the pages of a paginated profile list.
+
+    Every link carries the visitor's choices the list is shown with - "activeListArguments"
+    - and changes the page only.
+
+    Arguments:
+    - paginator:           the paginator, for the current page
+    - pagination:          the pagination, for the pages to link
+    - activeListArguments: the visitor's choices, as the list action assigns them
+</f:comment>
 
 <nav class="academic-persons-list__pagination">
     <ul class="pagination justify-content-center mt-4">
         <f:if condition="{pagination.previousPageNumber} && {pagination.previousPageNumber} >= {pagination.firstPageNumber}">
             <li class="page-item first">
                 <f:link.action
-                    arguments="{demand: '{currentPage: 1}'}"
+                    arguments="{demand: '{persons:listArguments(arguments: activeListArguments, overrides: {currentPage: 1})}'}"
                     title="{f:translate(key:'widget.pagination.first', extensionName: 'fluid')}"
                     class="page-link"
                 >
@@ -18,7 +31,7 @@
 
             <li class="page-item previous">
                 <f:link.action
-                    arguments="{demand: '{currentPage: pagination.previousPageNumber}'}"
+                    arguments="{demand: '{persons:listArguments(arguments: activeListArguments, overrides: {currentPage: pagination.previousPageNumber})}'}"
                     title="{f:translate(key:'widget.pagination.previous', extensionName: 'fluid')}"
                     class="page-link"
                 >
@@ -42,7 +55,7 @@
                 </f:then>
                 <f:else>
                     <li class="page-item">
-                        <f:link.action arguments="{demand: '{currentPage: page}'}" class="page-link">
+                        <f:link.action arguments="{demand: '{persons:listArguments(arguments: activeListArguments, overrides: {currentPage: page})}'}" class="page-link">
                             <span>{page}</span>
                         </f:link.action>
                     </li>
@@ -59,7 +72,7 @@
         <f:if condition="{pagination.nextPageNumber} && {pagination.nextPageNumber} <= {pagination.lastPageNumber}">
             <li class="page-item next">
                 <f:link.action
-                    arguments="{demand: '{currentPage: pagination.nextPageNumber}'}"
+                    arguments="{demand: '{persons:listArguments(arguments: activeListArguments, overrides: {currentPage: pagination.nextPageNumber})}'}"
                     title="{f:translate(key:'widget.pagination.next', extensionName: 'fluid')}"
                     class="page-link"
                 >
@@ -69,7 +82,7 @@
 
             <li class="page-item last">
                 <f:link.action
-                    arguments="{demand: '{currentPage: pagination.lastPageNumber}'}"
+                    arguments="{demand: '{persons:listArguments(arguments: activeListArguments, overrides: {currentPage: pagination.lastPageNumber})}'}"
                     title="{f:translate(key:'widget.pagination.last', extensionName: 'fluid')}"
                     class="page-link"
                 >

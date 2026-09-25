@@ -34,12 +34,24 @@ use TYPO3\CMS\Extbase\Annotation\IgnoreValidation;
 use TYPO3\CMS\Extbase\DomainObject\AbstractEntity;
 use TYPO3\CMS\Extbase\Mvc\Controller\ActionController;
 use TYPO3\CMS\Extbase\Pagination\QueryResultPaginator;
+use TYPO3\CMS\Extbase\Reflection\ObjectAccess;
 use TYPO3\CMS\Frontend\ContentObject\ContentObjectRenderer;
 use TYPO3\CMS\Frontend\Controller\ErrorController;
 use TYPO3\CMS\Frontend\Page\PageAccessFailureReasons;
 
 final class ProfileController extends ActionController
 {
+    /**
+     * The demand properties of the list a visitor sets through the request, and the only
+     * ones its navigation links carry: the page and the letter. Every other property the
+     * property mapping allows is one of `settings.demand`, which the content element sets
+     * and which wins over the request.
+     *
+     * A change that lets a visitor set another value adds it here, and the pagination and
+     * the letter navigation carry it without an edit of their own.
+     */
+    private const VISITOR_DEMAND_PROPERTIES = ['currentPage', 'alphabetFilter'];
+
     public function __construct(
         private readonly ContractRepository $contractRepository,
         private readonly ProfileRepository $profileRepository,
@@ -59,8 +71,9 @@ final class ProfileController extends ActionController
 
         $demandArray = array_replace_recursive($demandArray, $this->settings['demand'] ?? []);
         $propertyMappingConfiguration = $this->arguments->getArgument('demand')->getPropertyMappingConfiguration();
-        $propertyMappingConfiguration->allowProperties(...array_keys(array_merge($this->settings['demand'] ?? [], ['currentPage' => 1])));
-        $propertyMappingConfiguration->allowProperties(...array_keys(array_merge($this->settings['demand'] ?? [], ['alphabetFilter' => ''])));
+        $propertyMappingConfiguration->allowProperties(
+            ...array_keys(array_merge($this->settings['demand'] ?? [], array_flip(self::VISITOR_DEMAND_PROPERTIES))),
+        );
         $propertyMappingConfiguration->skipUnknownProperties();
 
         $this->request = $this->request->withArgument('demand', $demandArray);
@@ -71,6 +84,7 @@ final class ProfileController extends ActionController
     public function listAction(ProfileDemand $demand): ResponseInterface
     {
         $this->adoptSettings($demand);
+        $activeListArguments = $this->activeListArguments($demand);
         $profiles = $this->profileRepository->findByDemand($demand, $this->queryContext());
 
         /** @var ModifyListProfilesEvent $event */
@@ -133,6 +147,7 @@ final class ProfileController extends ActionController
             'data' => $this->getCurrentContentObjectRenderer()?->data,
             'profiles' => $profiles,
             'demand' => $demand,
+            'activeListArguments' => $activeListArguments,
         ]);
         $this->addCacheTags('profile_list_view');
 
@@ -361,6 +376,33 @@ final class ProfileController extends ActionController
         ]);
 
         return $this->htmlResponse();
+    }
+
+    /**
+     * The visitor's choices the list is shown with, as its navigation links carry them.
+     *
+     * Read from the mapped demand, so a value the property mapping rejected never reaches a
+     * link, and before the list event, as the partner list reads its link arguments: a
+     * listener acts again on the request a link leads to, so what it changes need not
+     * travel in the URL. A value equal to its default is left out, so the first page and
+     * the list without a letter keep the URLs they always had.
+     *
+     * The page is the one requested, not the one the paginator clamps it to. No link
+     * carries it as it is: a page link replaces it and a letter link drops it.
+     *
+     * @return array<string, mixed>
+     */
+    private function activeListArguments(ProfileDemand $demand): array
+    {
+        $defaults = new ProfileDemand();
+        $arguments = [];
+        foreach (self::VISITOR_DEMAND_PROPERTIES as $property) {
+            $value = ObjectAccess::getProperty($demand, $property);
+            if ($value !== ObjectAccess::getProperty($defaults, $property)) {
+                $arguments[$property] = $value;
+            }
+        }
+        return $arguments;
     }
 
     /**

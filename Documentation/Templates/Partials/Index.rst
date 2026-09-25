@@ -14,10 +14,11 @@ The entry points stay :file:`Profile/Item.html`,
 :file:`Profile/List/ItemList.html`, :file:`Profile/List/Pagination.html` and
 :file:`Profile/List/AlphabetPagination.html`. The first two delegate to the
 partials below, with unchanged arguments. The page navigation is a leaf that
-only gained a class, and a project copy of it loses nothing. The letter
-navigation gained an argument as well, `alphabetFilterLetters`; a project copy
-of it keeps working and renders every letter as a link, as before - see
-:ref:`the letter navigation <templates-letter-navigation>` below.
+gained a class and the argument `activeListArguments`. The letter navigation
+gained both as well, and `alphabetFilterLetters` next to them; a project copy
+of either keeps working and renders the links it rendered before - see
+:ref:`the letter navigation <templates-letter-navigation>` and
+:ref:`what the navigation links carry <templates-navigation-links>` below.
 
 An existing copy of the item or the list body keeps working - and stops
 profiting from the partials below, because a copy does not render them.
@@ -224,6 +225,49 @@ letter from `a` to `z`, mapped to whether the list holds a profile under it
 The :html:`<nav>` is named by the label `list.alphabetFilter.navigation`. A
 list template of a project that renders this partial without
 `alphabetFilterLetters` gets every letter as a link, as before.
+
+..  _templates-navigation-links:
+
+What the navigation links carry
+-------------------------------
+
+The list action assigns `activeListArguments`: the choices of the visitor the
+list is shown with, as the plugin accepted them - the page while it is not the
+first, the letter while one is selected. A value of the request the plugin does
+not accept from a visitor is never part of it, nor is a value the content
+element sets, such as the sorting. The list template passes it to the letter
+navigation, and :file:`Profile/List/ItemList.html` to the page navigation.
+
+Both navigations build every link from it and change only what the link is
+responsible for, through the view helper `persons:listArguments`:
+
+..  code-block:: html
+    :caption: A page link and a letter link
+
+    <html
+        xmlns:f="http://typo3.org/ns/TYPO3/CMS/Fluid/ViewHelpers"
+        xmlns:persons="http://typo3.org/ns/FGTCLB/AcademicPersons/ViewHelpers"
+        data-namespace-typo3-fluid="true"
+    >
+
+    <f:link.action
+        arguments="{demand: '{persons:listArguments(arguments: activeListArguments, overrides: {currentPage: page})}'}"
+    >{page}</f:link.action>
+
+    <f:link.action
+        arguments="{demand: '{persons:listArguments(arguments: activeListArguments, overrides: {alphabetFilter: letter}, remove: \'currentPage\')}'}"
+    >{letter}</f:link.action>
+
+`overrides` sets values, `remove` drops the comma separated keys it names. A
+letter link and :guilabel:`A-Z` drop the page, so a new letter starts on the
+first page.
+
+With page and letter as the only values a visitor sets, the links are the ones
+they were before. What this prepares for is a further value - a view mode, a
+filter: it reaches `activeListArguments` and both navigations carry it without
+an edit. A project copy of either partial, and a list template that does not
+pass `activeListArguments` on, keeps the links it has and drops such a value on
+the next click, until it adopts the view helper as above.
 
 :file:`Profile/List/Items.html` carries the Bootstrap row and column classes, so
 overriding it changes the grid of all four elements **of this extension** at

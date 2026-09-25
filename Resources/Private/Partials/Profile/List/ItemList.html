@@ -14,12 +14,13 @@
     template renders it above this partial.
 
     Arguments: the list template renders it with "{_all}", which is what it expects.
-    - profilesToList: the profiles to show, one page of them when the list paginates
-    - profiles:       everything the list found, counted for the result count
-    - demand:         read for "groupBy"
-    - paginator:      the paginator, and "pagination" next to it
-    - settings:       read for "paginationEnabled"
-    - data:           the content element record
+    - profilesToList:      the profiles to show, one page of them when the list paginates
+    - profiles:            everything the list found, counted for the result count
+    - demand:              read for "groupBy"
+    - paginator:           the paginator, and "pagination" next to it
+    - activeListArguments: the visitor's choices, which the pagination links carry
+    - settings:            read for "paginationEnabled"
+    - data:                the content element record
 </f:comment>
 
 <f:if condition="{profilesToList}">
@@ -78,7 +79,8 @@
                 arguments="{
                     demand: demand,
                     paginator: paginator,
-                    pagination: pagination
+                    pagination: pagination,
+                    activeListArguments: activeListArguments
                 }"
             />
         </f:if>
