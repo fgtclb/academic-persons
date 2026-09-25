@@ -238,11 +238,14 @@ selected contracts element passes the label about contracts to it through its
 ..  note::
 
     The contacts element of `EXT:academic_contacts4pages` is **not** one of the
-    four. It renders :file:`Profile/Item` directly, inside a grid of its own, and
-    it has no empty state at all - a page without contacts renders nothing.
-    Overriding :file:`Profile/List/Items.html` therefore does not change how its
-    contacts are arranged; overriding :file:`Profile/Item.html` or one of the
-    item partials does change how each of them looks.
+    four. It renders :file:`Profile/Item` through a partial of its own,
+    :file:`Contacts/Item.html`, inside a grid of its own, and it has no empty
+    state at all - a page without contacts renders nothing. Overriding
+    :file:`Profile/List/Items.html` therefore does not change how its contacts
+    are arranged; overriding :file:`Profile/Item.html` or one of the item
+    partials does change how each of them looks, and a project that wants a
+    card of its own for the contacts only overrides :file:`Contacts/Item.html`
+    of that extension instead.
 
 Both classes are blocks of their own rather than parts of
 `academic-persons-list`: the grid and the empty state sit inside four different
