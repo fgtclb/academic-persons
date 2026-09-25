@@ -12,8 +12,36 @@ routeEnhancers:
         _controller: 'Profile::list'
         _arguments:
           letter: 'demand/alphabetFilter'
+      - routePath: '/view-mode/{viewMode}'
+        _controller: 'Profile::list'
+        _arguments:
+          viewMode: 'demand/viewMode'
+      - routePath: '/view-mode/{viewMode}/{localized_page}-{page}'
+        _controller: 'Profile::list'
+        _arguments:
+          viewMode: 'demand/viewMode'
+          page: 'demand/currentPage'
+      - routePath: '/view-mode/{viewMode}/{letter}'
+        _controller: 'Profile::list'
+        _arguments:
+          viewMode: 'demand/viewMode'
+          letter: 'demand/alphabetFilter'
     defaultController: 'Profile::list'
+    # An aspect makes its variable match anything, slashes included. Pinned, the view
+    # mode routes stay apart from each other and from the routes above.
+    requirements:
+      viewMode: '[^/]+'
+      localized_page: '[^/]+'
+      page: '[0-9]+'
+      letter: '[a-z]'
     aspects:
+      # The view modes a URL segment exists for. A mode missing here is still reachable,
+      # with its value as a query argument; a site adds its own modes to this map.
+      viewMode:
+        type: StaticValueMapper
+        map:
+          list: list
+          table: table
       localized_page:
         type: LocaleModifier
         default: 'page'

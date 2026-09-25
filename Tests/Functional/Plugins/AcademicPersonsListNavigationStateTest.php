@@ -17,12 +17,14 @@ use TYPO3\CMS\Frontend\Page\CacheHashCalculator;
 /**
  * Which choices of a visitor the pagination and letter links of the persons list carry.
  *
- * Page and letter are the only values a visitor sets on this branch, and pagination is
- * switched off under a letter, so the shipped templates alone cannot show a link that
- * keeps a second value. The list template of the fixture folder adds one, `viewMode`, to
- * the active list arguments before the **shipped** partials render - the way the first
- * change that lets a visitor set another value will - and prints what the list action
- * assigned. The other tests render the shipped templates as they are.
+ * Pagination is switched off under a letter, so page and letter alone cannot show a link
+ * that keeps a second value. The list template of the fixture folder adds one, `viewMode`,
+ * to the active list arguments before the **shipped** partials render, and prints what the
+ * list action assigned. The partials carry it without knowing it, which is what the tests
+ * with the fixture template assert; the view mode switch of the content element is off,
+ * so the plugin itself does not take the value from the request.
+ * {@see AcademicPersonsListViewModesTest} covers the switch. The other tests render the
+ * shipped templates as they are.
  *
  * Three profiles, Adams under A and Baker and Brown under B, one per page. Links are
  * followed as rendered, cHash included, rather than assembled by the test.
@@ -225,7 +227,8 @@ final class AcademicPersonsListNavigationStateTest extends AbstractAcademicPerso
      * The list action assigns the visitor's choices, and only those that differ from
      * their default: nothing on the bare page, the page on page 2, the letter under a
      * letter. The `viewMode` the fixture template adds to every link arrives with the
-     * next request and is not among them, because the plugin does not accept it.
+     * next request and is not among them: the content element does not offer the switch,
+     * so the plugin resolves the default mode, which no link carries.
      */
     #[DataProvider('pluginsDataProvider')]
     #[Test]

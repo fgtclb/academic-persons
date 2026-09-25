@@ -125,6 +125,66 @@ selected letter does is a setting:
 The setting is declared for the site set and as a constant of the shared static
 template, with the same default in both.
 
+..  _configuration-view-modes:
+
+View modes
+==========
+
+The list, list-and-detail, selected profiles and selected contracts elements
+render their profiles in a view mode. Two fields of the content element choose
+it:
+
+:guilabel:`View Mode Default`
+    The mode the element renders: :guilabel:`Tiles`, the grid every list
+    rendered so far, or :guilabel:`Table`. The stored value of the tiles is
+    still ``list``, so a content element saved before needs no migration, and
+    one saved without the field renders the tiles as well.
+
+:guilabel:`View Mode Toggle`
+    Offers the visitor a switch between the allowed modes above the list - when
+    at least two are allowed. The active mode is marked as current. Off, a mode
+    the request asks for is ignored and the default renders.
+
+The card element shares the fields with the list, hides both, and renders tiles
+whatever it stores.
+
+Two settings decide which modes exist and what the table shows:
+
+..  confval:: plugin.tx_academicpersons.viewMode.allowed
+    :name: plugin-tx-academicpersons-viewmode-allowed
+    :type: string
+    :Default: list,table
+
+    The modes the elements may render, comma separated. Neither the default of
+    a content element nor the request of a visitor renders a mode outside this
+    list: such a default falls back to the tiles - or to the first allowed mode
+    where the tiles are not allowed - and such a request to the default. A mode
+    is a plain name, a lowercase letter followed by letters and digits; an entry
+    of any other shape is ignored.
+
+..  confval:: plugin.tx_academicpersons.table.columns
+    :name: plugin-tx-academicpersons-table-columns
+    :type: string
+    :Default: name,position,emailAddresses,phoneNumbers,room
+
+    The columns of the table, comma separated, in this order. The shipped
+    columns are ``name``, ``position``, ``organisationalUnit``,
+    ``emailAddresses``, ``phoneNumbers`` and ``room``. The name links to the
+    detail view; the contract columns show the value of every contract the
+    element shows for the profile, one per line.
+
+    The fields of the content element (:guilabel:`Show only selected Fields`)
+    apply to the table as they apply to the tiles: while the element names
+    fields there, a contract column whose field it does not name -
+    ``contracts.room`` for ``room`` - is left out. The name, and a column of
+    your own, stay.
+
+Both settings are declared for the site set and as constants of the shared
+static template, with the same default in both. A mode of your own is a partial
+and an entry in the allowed modes, see
+:ref:`adding a view mode <templates-view-modes-own>`; its URL is described in
+:ref:`the route enhancers <configuration-route-enhancers-view-modes>`.
+
 ..  _configuration-contract-display:
 
 Which contracts a profile shows

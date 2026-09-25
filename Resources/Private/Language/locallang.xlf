@@ -54,6 +54,33 @@
       <trans-unit id="list.alphabetFilter.showAll" resname="list.alphabetFilter.showAll">
         <source>show all profiles</source>
       </trans-unit>
+      <trans-unit id="list.viewMode.navigation" resname="list.viewMode.navigation">
+        <source>View mode</source>
+      </trans-unit>
+      <trans-unit id="list.viewMode.list" resname="list.viewMode.list">
+        <source>Tiles</source>
+      </trans-unit>
+      <trans-unit id="list.viewMode.table" resname="list.viewMode.table">
+        <source>Table</source>
+      </trans-unit>
+      <trans-unit id="list.table.name" resname="list.table.name">
+        <source>Name</source>
+      </trans-unit>
+      <trans-unit id="list.table.position" resname="list.table.position">
+        <source>Position</source>
+      </trans-unit>
+      <trans-unit id="list.table.organisationalUnit" resname="list.table.organisationalUnit">
+        <source>Organisational unit</source>
+      </trans-unit>
+      <trans-unit id="list.table.emailAddresses" resname="list.table.emailAddresses">
+        <source>E-mail</source>
+      </trans-unit>
+      <trans-unit id="list.table.phoneNumbers" resname="list.table.phoneNumbers">
+        <source>Phone</source>
+      </trans-unit>
+      <trans-unit id="list.table.room" resname="list.table.room">
+        <source>Room</source>
+      </trans-unit>
 
       <!-- Detail -->
 

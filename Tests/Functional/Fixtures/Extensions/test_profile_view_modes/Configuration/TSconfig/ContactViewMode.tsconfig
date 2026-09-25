@@ -1,0 +1,6 @@
+# The view mode "contact" as an item of the default view mode, for the two list elements.
+# Not loaded by itself: a test imports it into the page TSconfig of its page tree.
+TCEFORM.tt_content.pi_flexform {
+  academicpersons_list.sDEF.settings\.viewMode\.default.addItems.contact = Contact cards
+  academicpersons_listanddetail.sDEF.settings\.viewMode\.default.addItems.contact = Contact cards
+}

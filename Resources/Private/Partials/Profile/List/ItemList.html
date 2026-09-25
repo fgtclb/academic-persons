@@ -9,9 +9,10 @@
     pagination, and the empty state when the list found nothing.
 
     Each of those is a partial of its own: "Profile/List/ResultCount",
-    "Profile/List/GroupHeader", "Profile/List/Items", "Profile/List/Pagination" and
-    "Profile/List/EmptyState". The letter navigation is not one of them - the list
-    template renders it above this partial.
+    "Profile/List/GroupHeader", "Profile/List/Pagination" and "Profile/List/EmptyState".
+    The items are rendered by the partial of the view mode, "Profile/ViewMode/<Mode>",
+    once per group in a grouped list. The letter navigation and the view mode switch are
+    not among them - the list template renders both above this partial.
 
     Arguments: the list template renders it with "{_all}", which is what it expects.
     - profilesToList:      the profiles to show, one page of them when the list paginates
@@ -19,6 +20,7 @@
     - demand:              read for "groupBy"
     - paginator:           the paginator, and "pagination" next to it
     - activeListArguments: the visitor's choices, which the pagination links carry
+    - viewModePartial:     the partial of the view mode, below "Profile/ViewMode/"
     - settings:            read for "paginationEnabled"
     - data:                the content element record
 </f:comment>
@@ -49,7 +51,7 @@
                     />
 
                     <f:render
-                        partial="Profile/List/Items"
+                        partial="Profile/ViewMode/{viewModePartial}"
                         arguments="{
                             profiles: groupedProfiles,
                             settings: settings,
@@ -62,7 +64,7 @@
             </f:then>
             <f:else>
                 <f:render
-                    partial="Profile/List/Items"
+                    partial="Profile/ViewMode/{viewModePartial}"
                     arguments="{
                         profiles: profilesToList,
                         settings: settings,

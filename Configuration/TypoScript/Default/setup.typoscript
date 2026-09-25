@@ -23,6 +23,12 @@ plugin.tx_academicpersons {
     alphabet {
       activeLetterResets = {$plugin.tx_academicpersons.alphabet.activeLetterResets}
     }
+    viewMode {
+      allowed = {$plugin.tx_academicpersons.viewMode.allowed}
+    }
+    table {
+      columns = {$plugin.tx_academicpersons.table.columns}
+    }
     image {
       placeholder {
         default = {$plugin.tx_academicpersons.image.placeholder.default}

@@ -1,0 +1,77 @@
+<html
+    lang="en"
+    xmlns:f="http://typo3.org/ns/TYPO3/CMS/Fluid/ViewHelpers"
+    data-namespace-typo3-fluid="true"
+>
+
+<f:comment>
+    One cell of the table view mode. The shipped columns are "name", "position",
+    "organisationalUnit", "emailAddresses", "phoneNumbers" and "room"; any other column
+    renders an empty cell. A project overrides this partial to add one.
+
+    The contract columns list the value of every contract of the row, one per line.
+
+    Arguments:
+    - column:    the column, an entry of "settings.table.columns"
+    - profile:   the profile of the row
+    - contracts: the contracts of the row
+    - settings:  the plugin settings
+    - data:      the content element record
+</f:comment>
+
+<f:switch expression="{column}">
+    <f:case value="name">
+        <f:variable name="detailLink"><f:render partial="Profile/Item/DetailLink" arguments="{_all}" /></f:variable>
+        <f:variable name="profileName"><f:render partial="Profile/Item/Name" arguments="{_all}" /></f:variable>
+        <f:render
+            section="Name"
+            arguments="{
+                name: '{profileName -> f:format.trim()}',
+                link: '{detailLink -> f:format.trim()}'
+            }"
+        />
+    </f:case>
+    <f:case value="position">
+        <td><f:for each="{contracts}" as="contract"><f:if condition="{contract.position}"><span class="d-block">{contract.position}</span></f:if></f:for></td>
+    </f:case>
+    <f:case value="organisationalUnit">
+        <td>
+            <f:for each="{contracts}" as="contract">
+                <f:if condition="{contract.organisationalUnit}">
+                    <span class="d-block">
+                        <f:if condition="{contract.organisationalUnit.displayText}">
+                            <f:then>{contract.organisationalUnit.displayText}</f:then>
+                            <f:else>{contract.organisationalUnit.unitName}</f:else>
+                        </f:if>
+                    </span>
+                </f:if>
+            </f:for>
+        </td>
+    </f:case>
+    <f:case value="emailAddresses">
+        <td><f:for each="{contracts}" as="contract"><f:for each="{contract.emailAddresses}" as="emailAddress"><span class="d-block"><f:link.email email="{emailAddress.email}" /></span></f:for></f:for></td>
+    </f:case>
+    <f:case value="phoneNumbers">
+        <f:comment>
+            The link target drops the spaces of the stored number and carries the site's
+            prefix, the visible text is the stored number - as in "Profile/Contract/Field".
+        </f:comment>
+        <td><f:for each="{contracts}" as="contract"><f:for each="{contract.phoneNumbers}" as="phoneNumber"><span class="d-block"><a href="tel:{f:replace(value: '{settings.phoneNumbers.telPrefix}{phoneNumber.phoneNumber}', search: ' ', replace: '')}">{phoneNumber.phoneNumber}</a></span></f:for></f:for></td>
+    </f:case>
+    <f:case value="room">
+        <td><f:for each="{contracts}" as="contract"><f:if condition="{contract.room}"><span class="d-block">{contract.room}</span></f:if></f:for></td>
+    </f:case>
+    <f:defaultCase>
+        <td></td>
+    </f:defaultCase>
+</f:switch>
+
+<f:comment>
+    The name and the detail link come from the partials the tiles use, which render them
+    unescaped; handed in as values, they are escaped once here, as the item headings do.
+</f:comment>
+<f:section name="Name">
+    <th scope="row"><f:link.typolink parameter="{link}">{name}</f:link.typolink></th>
+</f:section>
+
+</html>

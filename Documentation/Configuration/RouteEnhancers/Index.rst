@@ -35,12 +35,21 @@ What the files enhance
     the page number is translated by a :yaml:`LocaleModifier` — ``page`` by
     default, ``seite`` for German.
 
+    Three more routes carry a :ref:`view mode <configuration-view-modes>`
+    other than the default, for :yaml:`demand/viewMode`: the static segment
+    ``view-mode`` followed by :yaml:`{viewMode}` alone, followed by the page
+    route, and followed by the letter route - there is no route with a page
+    and a letter, because a list under a letter is not paginated. The mode is
+    mapped by a :yaml:`StaticValueMapper` holding ``list`` and ``table``, and
+    every variable of the enhancer carries explicit :yaml:`requirements`.
+
 :file:`ListAndDetail.yaml`
     Enhancer :yaml:`ProfileListAndDetailPlugin` for the plugin
     :yaml:`ListAndDetail`, argument namespace
     :php:`tx_academicpersons_listanddetail`. It is the union of the two above:
-    the detail route, the pagination route and the letter route, with the same
-    aspects, because that plugin renders both the list and the detail view.
+    the detail route, the pagination route, the letter route and the three
+    view mode routes, with the same aspects, because that plugin renders both
+    the list and the detail view.
 
 Which file to import
 --------------------
@@ -82,6 +91,8 @@ overlap by construction:
     *   -   :yaml:`{localized_page}-{page}`
         -   :file:`List.yaml` and :file:`ListAndDetail.yaml`
     *   -   :yaml:`/{letter}`
+        -   :file:`List.yaml` and :file:`ListAndDetail.yaml`
+    *   -   the three :yaml:`/view-mode/{viewMode}` routes
         -   :file:`List.yaml` and :file:`ListAndDetail.yaml`
 
 Each pair is identical down to the mapper, so importing more than one file
@@ -142,6 +153,51 @@ detail plugin on :file:`/persons/profile`, the URLs change as follows.
     /persons/page-2
     /persons/m
     /persons/profile/jane-doe
+
+A list shown as a table, when its default mode is the tiles:
+
+..  code-block:: text
+    :caption: View mode routes
+
+    /persons/view-mode/table
+    /persons/view-mode/table/page-2
+    /persons/view-mode/table/m
+
+The link to the default mode carries no mode, so the list in its default mode
+keeps the URLs above. A segment the map does not hold, such as
+:file:`/persons/view-mode/slider`, matches no route, and the site answers with
+its page-not-found response. A segment the map holds always resolves, and the
+list decides what it renders: :file:`/persons/view-mode/list` on a list whose
+default is the tiles, or :file:`/persons/view-mode/table` on one without the
+switch, shows the default mode. No link of the list leads there.
+
+..  _configuration-route-enhancers-view-modes:
+
+A view mode of your own in the URL
+----------------------------------
+
+A mode the map of the :yaml:`StaticValueMapper` does not hold cannot be a
+segment. Its links keep the mode as a query argument with a cHash, and work
+as they are. To give it a segment, add it to the map of the shipped enhancer in
+the configuration of the site, next to the import - a site configuration merges
+its own :yaml:`routeEnhancers` over the imported ones:
+
+..  code-block:: yaml
+    :caption: config/sites/my_site/config.yaml
+
+    imports:
+      - resource: 'EXT:academic_persons/Configuration/Routes/List.yaml'
+
+    routeEnhancers:
+      ProfileListPlugin:
+        aspects:
+          viewMode:
+            map:
+              contact: contact
+
+The key of the map is the segment - any text without a slash - and the value the
+mode, so the segment may differ from the name of the mode. The shipped modes stay
+in the map.
 
 Caveats
 -------

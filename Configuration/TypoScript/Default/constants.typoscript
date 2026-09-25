@@ -31,6 +31,14 @@ plugin.tx_academicpersons {
     # cat=plugin.tx_academicpersons//a; type=boolean; label=Letter navigation: the selected letter links back to the list without a letter
     activeLetterResets = 0
   }
+  viewMode {
+    # cat=plugin.tx_academicpersons//a; type=string; label=View modes: the modes a list may render, comma separated; each one is the partial Profile/ViewMode/<Mode>.html
+    allowed = list,table
+  }
+  table {
+    # cat=plugin.tx_academicpersons//a; type=string; label=Columns of the table view mode, comma separated: name, position, organisationalUnit, emailAddresses, phoneNumbers, room
+    columns = name,position,emailAddresses,phoneNumbers,room
+  }
   image {
     placeholder {
       # cat=plugin.tx_academicpersons//a; type=string; label=Placeholder of a profile without image: an EXT: path to a public file, empty for none

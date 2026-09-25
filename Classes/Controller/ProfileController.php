@@ -43,14 +43,34 @@ final class ProfileController extends ActionController
 {
     /**
      * The demand properties of the list a visitor sets through the request, and the only
-     * ones its navigation links carry: the page and the letter. Every other property the
-     * property mapping allows is one of `settings.demand`, which the content element sets
-     * and which wins over the request.
+     * ones its navigation links carry: the page, the letter and the view mode. Every other
+     * property the property mapping allows is one of `settings.demand`, which the content
+     * element sets and which wins over the request.
      *
      * A change that lets a visitor set another value adds it here, and the pagination and
      * the letter navigation carry it without an edit of their own.
      */
-    private const VISITOR_DEMAND_PROPERTIES = ['currentPage', 'alphabetFilter'];
+    private const VISITOR_DEMAND_PROPERTIES = ['currentPage', 'alphabetFilter', 'viewMode'];
+
+    /**
+     * A view mode names the partial `Profile/ViewMode/<Mode>.html` that renders it, so it
+     * is never taken as it is: it has to be one of the modes the site allows, and it has to
+     * be a plain name. The second check keeps a path out of a partial name even when the
+     * allowed modes are misconfigured.
+     */
+    private const VIEW_MODE_PATTERN = '/^[a-z][a-zA-Z0-9]*$/';
+
+    /**
+     * The tile grid, the mode every list rendered before view modes existed. The stored
+     * FlexForm value keeps its name, "list", although its label says "Tiles".
+     */
+    private const TILES_VIEW_MODE = 'list';
+
+    /**
+     * The shipped columns of the table that show a contract field, each the field
+     * `contracts.<column>` of `settings.showFields`.
+     */
+    private const CONTRACT_TABLE_COLUMNS = ['position', 'organisationalUnit', 'emailAddresses', 'phoneNumbers', 'room'];
 
     public function __construct(
         private readonly ContractRepository $contractRepository,
@@ -79,12 +99,16 @@ final class ProfileController extends ActionController
         $this->request = $this->request->withArgument('demand', $demandArray);
 
         $this->settings['showFields'] = !empty($this->settings['showFields']) ? GeneralUtility::trimExplode(',', $this->settings['showFields']) : null;
+        $this->settings['table']['columns'] = $this->tableColumns();
     }
 
     public function listAction(ProfileDemand $demand): ResponseInterface
     {
         $this->adoptSettings($demand);
         $activeListArguments = $this->activeListArguments($demand);
+        // Read before the list event as well: the mode names a partial, and a demand a
+        // listener hands back is not resolved again.
+        $viewMode = $demand->getViewMode() !== '' ? $demand->getViewMode() : $this->defaultViewMode();
         $profiles = $this->profileRepository->findByDemand($demand, $this->queryContext());
 
         /** @var ModifyListProfilesEvent $event */
@@ -149,6 +173,7 @@ final class ProfileController extends ActionController
             'demand' => $demand,
             'activeListArguments' => $activeListArguments,
         ]);
+        $this->assignViewMode($viewMode);
         $this->addCacheTags('profile_list_view');
 
         return $this->htmlResponse();
@@ -319,10 +344,12 @@ final class ProfileController extends ActionController
     public function initializeSelectedProfilesAction(): void
     {
         $this->settings['showFields'] = !empty($this->settings['showFields']) ? GeneralUtility::trimExplode(',', $this->settings['showFields']) : null;
+        $this->settings['table']['columns'] = $this->tableColumns();
     }
 
     public function selectedProfilesAction(): ResponseInterface
     {
+        $this->assignViewMode($this->resolveViewMode($this->requestedViewMode()));
         if (empty($this->settings['selectedProfiles'])) {
             return $this->htmlResponse();
         }
@@ -350,10 +377,12 @@ final class ProfileController extends ActionController
     public function initializeSelectedContractsAction(): void
     {
         $this->settings['showFields'] = !empty($this->settings['showFields']) ? GeneralUtility::trimExplode(',', $this->settings['showFields']) : null;
+        $this->settings['table']['columns'] = $this->tableColumns();
     }
 
     public function selectedContractsAction(): ResponseInterface
     {
+        $this->assignViewMode($this->resolveViewMode($this->requestedViewMode()));
         if (empty($this->settings['selectedContracts'])) {
             return $this->htmlResponse();
         }
@@ -387,8 +416,9 @@ final class ProfileController extends ActionController
      * travel in the URL. A value equal to its default is left out, so the first page and
      * the list without a letter keep the URLs they always had.
      *
-     * The page is the one requested, not the one the paginator clamps it to. No link
-     * carries it as it is: a page link replaces it and a letter link drops it.
+     * The page is the one requested, not the one the paginator clamps it to. A page link
+     * replaces it and a letter link drops it; the view mode switch keeps it as it is, and
+     * the paginator clamps it again on the request the switch leads to.
      *
      * @return array<string, mixed>
      */
@@ -454,6 +484,106 @@ final class ProfileController extends ActionController
         }
 
         $demand->setShowHiddenRecords((bool)($this->settings['showHiddenRecords'] ?? false));
+
+        // The mode the list renders, written back so the navigation links carry it: empty
+        // for the default mode, and for a mode the resolution rejected, which never reaches
+        // a link that way.
+        $viewMode = $this->resolveViewMode($demand->getViewMode());
+        $demand->setViewMode($viewMode === $this->defaultViewMode() ? '' : $viewMode);
+    }
+
+    /**
+     * The view mode to render: the one the visitor asked for while the content element
+     * offers the switch and the site allows it, the default mode otherwise.
+     */
+    private function resolveViewMode(string $requested): string
+    {
+        if ((bool)($this->settings['viewMode']['enabled'] ?? false)
+            && in_array($requested, $this->allowedViewModes(), true)
+        ) {
+            return $requested;
+        }
+        return $this->defaultViewMode();
+    }
+
+    /**
+     * The default view mode of the content element, while the site allows it. A content
+     * element saved before view modes rendered, or one whose mode the site no longer
+     * allows, gets the tiles, or the first allowed mode where the tiles are not allowed.
+     */
+    private function defaultViewMode(): string
+    {
+        $allowed = $this->allowedViewModes();
+        $default = $this->settings['viewMode']['default'] ?? '';
+        if (is_string($default) && in_array($default, $allowed, true)) {
+            return $default;
+        }
+        return in_array(self::TILES_VIEW_MODE, $allowed, true) ? self::TILES_VIEW_MODE : $allowed[0];
+    }
+
+    /**
+     * The modes `settings.viewMode.allowed` names, once each, without one that is not a
+     * plain name. Without any, the tiles are the one mode there is.
+     *
+     * @return non-empty-list<string>
+     */
+    private function allowedViewModes(): array
+    {
+        $allowed = $this->settings['viewMode']['allowed'] ?? '';
+        $modes = array_values(array_unique(array_filter(
+            GeneralUtility::trimExplode(',', is_string($allowed) ? $allowed : '', true),
+            static fn(string $mode): bool => preg_match(self::VIEW_MODE_PATTERN, $mode) === 1,
+        )));
+        return $modes !== [] ? $modes : [self::TILES_VIEW_MODE];
+    }
+
+    /**
+     * The view mode the request of a selected profiles or contracts element asks for. They
+     * have no demand, so it is a plugin argument of its own.
+     */
+    private function requestedViewMode(): string
+    {
+        $requested = $this->request->hasArgument('viewMode') ? $this->request->getArgument('viewMode') : '';
+        return is_string($requested) ? $requested : '';
+    }
+
+    /**
+     * Assign the resolved mode, `viewModePartial` - its partial below `Profile/ViewMode/`,
+     * the mode with an upper case first letter - and what the switch needs: `viewModes`,
+     * the modes it offers, empty while the content element does not offer it or there is
+     * nothing to switch between, and `defaultViewMode`, whose link carries no mode.
+     */
+    private function assignViewMode(string $viewMode): void
+    {
+        $viewModes = (bool)($this->settings['viewMode']['enabled'] ?? false) ? $this->allowedViewModes() : [];
+        $this->view->assignMultiple([
+            'viewMode' => $viewMode,
+            'viewModePartial' => ucfirst($viewMode),
+            'viewModes' => count($viewModes) > 1 ? $viewModes : [],
+            'defaultViewMode' => $this->defaultViewMode(),
+        ]);
+    }
+
+    /**
+     * The columns of the table view mode, `settings.table.columns` as a list. While the
+     * content element restricts its fields, `settings.showFields` - already a list here -
+     * a contract column it does not name is left out, as the tiles leave the field out.
+     *
+     * @return list<string>
+     */
+    private function tableColumns(): array
+    {
+        $columns = $this->settings['table']['columns'] ?? '';
+        $columns = GeneralUtility::trimExplode(',', is_string($columns) ? $columns : '', true);
+        $showFields = $this->settings['showFields'] ?? null;
+        if (!is_array($showFields)) {
+            return $columns;
+        }
+        return array_values(array_filter(
+            $columns,
+            static fn(string $column): bool => !in_array($column, self::CONTRACT_TABLE_COLUMNS, true)
+                || in_array('contracts.' . $column, $showFields, true),
+        ));
     }
 
     /**

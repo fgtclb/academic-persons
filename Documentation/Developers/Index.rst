@@ -198,7 +198,15 @@ navigation carry into their links - see
 templates. Which demand properties a visitor may set is one list in
 :php:`ProfileController`, and it decides both what the property mapping accepts
 from the request and what the links carry, so the two cannot differ. Today it
-holds the page and the letter; a value equal to its default is left out.
+holds the page, the letter and the view mode; a value equal to its default is
+left out.
+
+The view mode is resolved before that: the list action checks the requested
+mode against the switch of the content element and the allowed modes, and
+writes the result back into the demand - empty for the default mode, and for a
+mode it rejected, so neither ever reaches a link. The mode the list renders is
+also read before the events, so a demand a listener hands back cannot name a
+partial.
 
 The value is read from the mapped demand before any event of the list is
 dispatched, :php:`ModifyProfileDemandEvent`, :php:`ModifyProfileQueryEvent` and

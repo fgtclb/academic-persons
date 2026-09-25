@@ -1,0 +1,82 @@
+<html
+    lang="en"
+    xmlns:f="http://typo3.org/ns/TYPO3/CMS/Fluid/ViewHelpers"
+    xmlns:persons="http://typo3.org/ns/FGTCLB/AcademicPersons/ViewHelpers"
+    data-namespace-typo3-fluid="true"
+>
+
+<f:comment>
+    The visitor switch between the view modes: one link per mode, the active one marked
+    as current. It renders nothing while the content element does not offer it or fewer
+    than two modes are allowed - the action then assigns no "viewModes".
+
+    A link changes the view mode and nothing else. In the list elements the mode is part
+    of the demand, and a link keeps the other choices of the visitor, activeListArguments;
+    the link to the default mode carries no mode at all, so the list keeps its plain URL -
+    the page itself when the visitor chose nothing else.
+    The selected profiles and contracts elements have no demand, and their mode is a
+    plugin argument of its own.
+
+    The label of a mode is "list.viewMode.<mode>" of EXT:academic_persons, the mode
+    itself for a project mode without a label.
+
+    Arguments:
+    - viewModes:           the modes the switch offers
+    - viewMode:            the active mode
+    - defaultViewMode:     the default mode of the content element
+    - activeListArguments: the visitor's choices of a list element
+    - inDemand:            set by the list elements, whose mode is part of the demand
+</f:comment>
+
+<f:if condition="{viewModes}">
+    <nav
+        class="academic-persons-view-mode-switch mb-4"
+        aria-label="{f:translate(key: 'list.viewMode.navigation', extensionName: 'academic_persons')}"
+    >
+        <ul class="nav nav-pills">
+            <f:for each="{viewModes}" as="mode">
+                <f:if condition="{mode} == {defaultViewMode}">
+                    <f:then>
+                        <f:variable name="modeArguments" value="{persons:listArguments(arguments: activeListArguments, remove: 'viewMode')}" />
+                    </f:then>
+                    <f:else>
+                        <f:variable name="modeArguments" value="{persons:listArguments(arguments: activeListArguments, overrides: {viewMode: mode})}" />
+                    </f:else>
+                </f:if>
+                <f:if condition="{inDemand}">
+                    <f:then>
+                        <f:variable name="linkArguments" value="{demand: modeArguments}" />
+                    </f:then>
+                    <f:else>
+                        <f:variable name="linkArguments" value="{modeArguments}" />
+                    </f:else>
+                </f:if>
+                <f:comment>
+                    A link that carries nothing is the page itself: an action link would carry
+                    the controller, and with it a query string and a cHash.
+                </f:comment>
+                <f:if condition="{modeArguments}">
+                    <f:then>
+                        <f:variable name="href" value="{f:uri.action(arguments: linkArguments)}" />
+                    </f:then>
+                    <f:else>
+                        <f:variable name="href" value="{f:uri.page()}" />
+                    </f:else>
+                </f:if>
+                <f:variable name="label" value="{f:translate(key: 'list.viewMode.{mode}', extensionName: 'academic_persons', default: mode)}" />
+                <li class="nav-item">
+                    <f:if condition="{mode} == {viewMode}">
+                        <f:then>
+                            <a href="{href}" class="nav-link active" rel="nofollow" aria-current="true">{label}</a>
+                        </f:then>
+                        <f:else>
+                            <a href="{href}" class="nav-link" rel="nofollow">{label}</a>
+                        </f:else>
+                    </f:if>
+                </li>
+            </f:for>
+        </ul>
+    </nav>
+</f:if>
+
+</html>

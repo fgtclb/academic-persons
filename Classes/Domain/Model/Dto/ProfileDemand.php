@@ -19,6 +19,7 @@ class ProfileDemand implements DemandInterface
     protected int $currentPage = 1;
     protected string $alphabetFilter = '';
     protected string $profileList = '';
+    protected string $viewMode = '';
     private string $storagePages = '';
     private int $fallbackForNonTranslated = 0;
     private bool $showHiddenRecords = false;
@@ -117,6 +118,27 @@ class ProfileDemand implements DemandInterface
     public function setAlphabetFilter(string $alphabetFilter): self
     {
         $this->alphabetFilter = $alphabetFilter;
+        return $this;
+    }
+
+    /**
+     * The view mode a visitor chose. It selects no record: the list action resolves it
+     * against the view modes the site allows and writes the result back, empty for the
+     * default mode, so a navigation link carries it only while it differs from that.
+     */
+    public function getViewMode(): string
+    {
+        return $this->viewMode;
+    }
+
+    /**
+     * The view mode a visitor chose. It selects no record: the list action resolves it
+     * against the view modes the site allows and writes the result back, empty for the
+     * default mode, so a navigation link carries it only while it differs from that.
+     */
+    public function setViewMode(string $viewMode): self
+    {
+        $this->viewMode = $viewMode;
         return $this;
     }
 

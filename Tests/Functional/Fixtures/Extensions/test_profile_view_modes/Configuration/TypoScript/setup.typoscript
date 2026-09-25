@@ -1,0 +1,2 @@
+# The partial of the view mode, "Profile/ViewMode/Contact.html", next to the shipped ones.
+plugin.tx_academicpersons.view.partialRootPaths.20 = EXT:test_profile_view_modes/Resources/Private/Partials/

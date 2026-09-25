@@ -4,10 +4,19 @@
 >
 
 <div class="academic-persons-contracts">
+    <f:render
+        partial="Profile/ViewMode/Switch"
+        arguments="{
+            viewModes: viewModes,
+            viewMode: viewMode,
+            defaultViewMode: defaultViewMode
+        }"
+    />
+
     <f:if condition="{contracts}">
         <f:then>
             <f:render
-                partial="Profile/List/Items"
+                partial="Profile/ViewMode/{viewModePartial}"
                 arguments="{
                     contracts: contracts,
                     settings: settings,

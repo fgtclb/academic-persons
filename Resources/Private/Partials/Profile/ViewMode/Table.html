@@ -1,0 +1,85 @@
+<html
+    lang="en"
+    xmlns:f="http://typo3.org/ns/TYPO3/CMS/Fluid/ViewHelpers"
+    xmlns:persons="http://typo3.org/ns/FGTCLB/AcademicPersons/ViewHelpers"
+    data-namespace-typo3-fluid="true"
+>
+
+<f:comment>
+    The view mode "table": one row per profile - per contract in the selected contracts
+    element - and one column per entry of "settings.table.columns", in that order. The
+    site setting "plugin.tx_academicpersons.table.columns" sets them; a contract column
+    the content element leaves out of its fields, "settings.showFields", is dropped by
+    the action.
+
+    Each cell is the partial "Profile/ViewMode/Table/Cell". A project overrides that one
+    to add a column of its own; a column it does not know stays empty.
+
+    A profile row shows the contracts the plugin settings select, as the tiles do, through
+    "persons:contracts". A contract row shows its own contract.
+
+    Arguments: those of every view mode, see "Profile/ViewMode/List". It does not take
+    "class": that is the class of the grid, which a stylesheet of the grid targets.
+    Nor does it read "groupedProfiles": a grouped list renders one table per group.
+</f:comment>
+
+<div class="academic-persons-table table-responsive">
+    <table class="table">
+        <thead>
+            <tr>
+                <f:for each="{settings.table.columns}" as="column">
+                    <th scope="col">{f:translate(key: 'list.table.{column}', extensionName: 'academic_persons', default: column)}</th>
+                </f:for>
+            </tr>
+        </thead>
+        <tbody>
+            <f:if condition="{contracts}">
+                <f:then>
+                    <f:for each="{contracts}" as="contract">
+                        <f:render
+                            section="Row"
+                            arguments="{
+                                profile: contract.profile,
+                                contracts: {0: contract},
+                                settings: settings,
+                                data: data
+                            }"
+                        />
+                    </f:for>
+                </f:then>
+                <f:else>
+                    <f:for each="{profiles}" as="profile">
+                        <f:render
+                            section="Row"
+                            arguments="{
+                                profile: profile,
+                                contracts: '{persons:contracts(profile: profile, settings: settings)}',
+                                settings: settings,
+                                data: data
+                            }"
+                        />
+                    </f:for>
+                </f:else>
+            </f:if>
+        </tbody>
+    </table>
+</div>
+
+<f:section name="Row">
+    <tr>
+        <f:for each="{settings.table.columns}" as="column">
+            <f:render
+                partial="Profile/ViewMode/Table/Cell"
+                arguments="{
+                    column: column,
+                    profile: profile,
+                    contracts: contracts,
+                    settings: settings,
+                    data: data
+                }"
+            />
+        </f:for>
+    </tr>
+</f:section>
+
+</html>

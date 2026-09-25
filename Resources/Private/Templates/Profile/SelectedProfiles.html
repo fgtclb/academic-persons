@@ -4,10 +4,19 @@
 >
 
 <div class="academic-persons-profiles">
+    <f:render
+        partial="Profile/ViewMode/Switch"
+        arguments="{
+            viewModes: viewModes,
+            viewMode: viewMode,
+            defaultViewMode: defaultViewMode
+        }"
+    />
+
     <f:if condition="{profiles}">
         <f:then>
             <f:render
-                partial="Profile/List/Items"
+                partial="Profile/ViewMode/{viewModePartial}"
                 arguments="{
                     profiles: profiles,
                     settings: settings,

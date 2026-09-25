@@ -205,7 +205,7 @@
         <source>View Mode Default</source>
       </trans-unit>
       <trans-unit id="flexform.el.viewMode.default.I.list">
-        <source>List</source>
+        <source>Tiles</source>
       </trans-unit>
       <trans-unit id="flexform.el.viewMode.default.I.table">
         <source>Table</source>

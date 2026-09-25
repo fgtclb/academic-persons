@@ -187,9 +187,10 @@ The list
     *   -   :file:`Profile/List/GroupHeader.html`
         -   The heading above one group of a grouped list
         -   `academic-persons-list__group-header`, on the heading
-    *   -   :file:`Profile/List/Items.html`
-        -   The grid of items
-        -   `academic-persons-grid`, `academic-persons-grid__item`
+    *   -   :file:`Profile/ViewMode/<Mode>.html`
+        -   The profiles, in the :ref:`view mode <templates-view-modes>` of the
+            element - once per group of a grouped list
+        -   depends on the mode
     *   -   :file:`Profile/List/Pagination.html`
         -   The page navigation
         -   `academic-persons-list__pagination`
@@ -262,18 +263,20 @@ responsible for, through the view helper `persons:listArguments`:
 letter link and :guilabel:`A-Z` drop the page, so a new letter starts on the
 first page.
 
-With page and letter as the only values a visitor sets, the links are the ones
-they were before. What this prepares for is a further value - a view mode, a
-filter: it reaches `activeListArguments` and both navigations carry it without
-an edit. A project copy of either partial, and a list template that does not
-pass `activeListArguments` on, keeps the links it has and drops such a value on
-the next click, until it adopts the view helper as above.
+Besides page and letter, a visitor chooses the :ref:`view mode
+<templates-view-modes>`, where the element offers the switch; a link carries it
+while it differs from the default. It reaches `activeListArguments` like the
+other two, and both navigations carry it without an edit. A project copy of
+either partial, and a list template that does not pass `activeListArguments` on,
+keeps the links it has and drops the view mode on the next click, until it
+adopts the view helper as above.
 
-:file:`Profile/List/Items.html` carries the Bootstrap row and column classes, so
-overriding it changes the grid of all four elements **of this extension** at
-once. It takes either `profiles` or `contracts`: the selected contracts element
-passes the latter, because it shows one item per selected contract, and each of
-those items renders that one contract rather than every contract of its profile.
+:file:`Profile/List/Items.html`, the grid the view mode ``list`` renders,
+carries the Bootstrap row and column classes, so overriding it changes the grid
+of all four elements **of this extension** at once. It takes either `profiles`
+or `contracts`: the selected contracts element passes the latter, because it
+shows one item per selected contract, and each of those items renders that one
+contract rather than every contract of its profile.
 
 :file:`Profile/List/EmptyState.html` is rendered by all four as well. The
 selected contracts element passes the label about contracts to it through its
@@ -322,6 +325,97 @@ the same one unless the list paginates - those profiles as `profiles`, and the
 on purpose: `getTotalAmountOfItems()` is protected on every core version this
 extension supports, so Fluid cannot reach it and
 `{paginator.totalAmountOfItems}` renders an empty string.
+
+..  _templates-view-modes:
+
+View modes
+==========
+
+The list, list-and-detail, selected profiles and selected contracts elements
+render their profiles through the partial of their :ref:`view mode
+<configuration-view-modes>`, :file:`Profile/ViewMode/<Mode>.html` - the mode with
+an upper case first letter, :file:`ContactCards.html` for ``contactCards``. The
+action assigns the mode as `viewMode` and the partial name
+as `viewModePartial`; the list renders the partial from
+:file:`Profile/List/ItemList.html`, the selected profiles and contracts from
+their templates.
+
+..  list-table::
+    :header-rows: 1
+
+    *   -   Partial
+        -   Renders
+        -   Class
+    *   -   :file:`Profile/ViewMode/List.html`
+        -   The mode ``list``, labelled :guilabel:`Tiles`: the grid of
+            :file:`Profile/List/Items.html`
+        -   those of the grid
+    *   -   :file:`Profile/ViewMode/Table.html`
+        -   The mode ``table``: a header row, then one row per profile - per
+            contract in the selected contracts element - with one cell per
+            entry of `settings.table.columns`
+        -   `academic-persons-table`, next to Bootstrap's `table-responsive`
+    *   -   :file:`Profile/ViewMode/Table/Cell.html`
+        -   One cell of the table, by its column
+        -   none
+    *   -   :file:`Profile/ViewMode/Switch.html`
+        -   The switch between the allowed modes, only when the content element
+            offers it
+        -   `academic-persons-view-mode-switch`
+
+Every mode partial receives the same arguments: `profiles`, or `contracts` in
+the selected contracts element, `settings`, `data`, `class` from the list and
+`groupedProfiles` from a grouped list. `class` is the grid's own
+`academic-persons-itemlist`; the table does not take it, so a stylesheet of the
+grid does not reach the table.
+
+The switch renders one link per allowed mode - nothing while fewer than two
+modes are allowed - with :html:`rel="nofollow"`, and marks the active one with
+:html:`aria-current="true"`. Its :html:`<nav>` is named by the label
+`list.viewMode.navigation`, a mode by `list.viewMode.<mode>` of this extension -
+or by its name, for a mode without a label. In the list elements a link keeps
+`activeListArguments` and changes only the mode; the link to the default mode
+carries no mode, and is the page itself when the visitor chose nothing else.
+
+A project copy of :file:`Profile/List/ItemList.html`,
+:file:`Templates/Profile/SelectedProfiles.html` or
+:file:`Templates/Profile/SelectedContracts.html` keeps rendering the grid
+whatever the mode; a copy of :file:`Templates/Profile/List.html` has no switch.
+
+..  _templates-view-modes-own:
+
+Adding a view mode
+------------------
+
+A view mode of your own needs no template override. Taking the mode ``contact``:
+
+1.  Provide the partial :file:`Profile/ViewMode/Contact.html` in a partial path
+    of the plugin, such as that of your site package.
+2.  Allow the mode: the site setting
+    :typoscript:`plugin.tx_academicpersons.viewMode.allowed` becomes
+    ``list,table,contact``, see :ref:`configuration-view-modes`.
+3.  Offer it to the editor as an item of :guilabel:`View Mode Default`, in page
+    TSconfig, for each element that shall have it:
+
+    ..  code-block:: typoscript
+        :caption: EXT:my_sitepackage/Configuration/page.tsconfig
+
+        TCEFORM.tt_content.pi_flexform {
+          academicpersons_list.sDEF.settings\.viewMode\.default.addItems.contact = Contact cards
+          academicpersons_listanddetail.sDEF.settings\.viewMode\.default.addItems.contact = Contact cards
+        }
+
+The switch offers the mode as soon as it is allowed; label it with
+`list.viewMode.contact` in a language override of this extension. A mode that is
+allowed without a partial fails with Fluid's error for a missing partial. Its
+links carry it as a query argument until it is added to the route enhancer, see
+:ref:`a view mode of your own in the URL
+<configuration-route-enhancers-view-modes>`.
+
+To add a column to the table, override :file:`Profile/ViewMode/Table/Cell.html`,
+render your column there and keep the shipped ones; a column the partial does
+not know renders an empty cell. Its header is the label `list.table.<column>`,
+or the column's name without one.
 
 ..  _templates-partials-contacts4pages:
 

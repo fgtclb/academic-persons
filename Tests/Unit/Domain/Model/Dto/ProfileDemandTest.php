@@ -52,6 +52,17 @@ final class ProfileDemandTest extends UnitTestCase
     }
 
     /**
+     * An empty view mode is the default mode, which is what keeps a navigation link of a
+     * list in its default mode free of one: `ProfileController::activeListArguments()`
+     * leaves out every value equal to that of a fresh demand.
+     */
+    #[Test]
+    public function aFreshDemandCarriesNoViewMode(): void
+    {
+        $this->assertSame('', (new ProfileDemand())->getViewMode());
+    }
+
+    /**
      * The three values that are deliberately not on `DemandInterface` and are only ever
      * set by the controller from plugin settings. Their defaults are the safe end of each
      * branch in `ProfileRepository::applyDemandSettings()`: an empty `storagePages` turns
@@ -87,6 +98,7 @@ final class ProfileDemandTest extends UnitTestCase
             ->setSortByDirection('desc')
             ->setCurrentPage(3)
             ->setAlphabetFilter('B')
+            ->setViewMode('table')
             ->setProfileList('12,34')
             ->setFunctionTypes([5, 8])
             ->setOrganisationalUnits([13])
@@ -100,6 +112,7 @@ final class ProfileDemandTest extends UnitTestCase
         $this->assertSame('desc', $subject->getSortByDirection());
         $this->assertSame(3, $subject->getCurrentPage());
         $this->assertSame('B', $subject->getAlphabetFilter());
+        $this->assertSame('table', $subject->getViewMode());
         $this->assertSame('12,34', $subject->getProfileList());
         $this->assertSame([5, 8], $subject->getFunctionTypes());
         $this->assertSame([13], $subject->getOrganisationalUnits());

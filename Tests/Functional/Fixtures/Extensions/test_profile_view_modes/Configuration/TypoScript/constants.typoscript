@@ -1,0 +1,4 @@
+# The three steps of a project view mode, as a site takes them: the mode is allowed here,
+# its partial is found through the path in "setup.typoscript", and the editor gets it as
+# an item of the default view mode through "Configuration/TSconfig/ContactViewMode.tsconfig".
+plugin.tx_academicpersons.viewMode.allowed = list,table,contact

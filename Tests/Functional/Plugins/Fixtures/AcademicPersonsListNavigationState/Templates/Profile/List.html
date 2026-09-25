@@ -9,9 +9,9 @@
     The shipped list template, with two additions for the test:
 
     - the "activeListArguments" the list action assigned are printed as JSON, and
-    - a visitor value the plugin does not accept yet, "viewMode", is added to them before
-      the shipped partials render. It stands in for the first change that lets a visitor
-      set another value: the partials have to carry it without knowing it.
+    - a visitor value, "viewMode", is added to them before the shipped partials render:
+      the partials have to carry it without knowing it. The content element does not
+      offer the view mode switch, so the plugin ignores the value when it comes back.
 </f:comment>
 <div class="test-active-list-arguments" data-arguments="{activeListArguments -> f:format.json()}"></div>
 

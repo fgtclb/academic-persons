@@ -53,6 +53,18 @@ settings:
     category: academic.persons
     type: bool
     default: false
+  plugin.tx_academicpersons.viewMode.allowed:
+    label: 'View modes | Allowed modes'
+    description: 'Comma separated. The modes the default view mode and the visitor switch of a list may render; each one is the partial Profile/ViewMode/<Mode>.html.'
+    category: academic.persons
+    type: string
+    default: 'list,table'
+  plugin.tx_academicpersons.table.columns:
+    label: 'View modes | Columns of the table'
+    description: 'Comma separated, in this order: name, position, organisationalUnit, emailAddresses, phoneNumbers, room.'
+    category: academic.persons
+    type: string
+    default: 'name,position,emailAddresses,phoneNumbers,room'
   plugin.tx_academicpersons.image.placeholder.default:
     label: 'Image | Placeholder of a profile without image'
     description: 'An EXT: path to a public file. Empty shows no image.'

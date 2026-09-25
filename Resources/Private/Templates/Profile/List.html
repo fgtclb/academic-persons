@@ -26,6 +26,17 @@
     </f:if>
 
     <f:render
+        partial="Profile/ViewMode/Switch"
+        arguments="{
+            viewModes: viewModes,
+            viewMode: viewMode,
+            defaultViewMode: defaultViewMode,
+            activeListArguments: activeListArguments,
+            inDemand: 1
+        }"
+    />
+
+    <f:render
         partial="Profile/List/ItemList"
         arguments="{_all}"
     />

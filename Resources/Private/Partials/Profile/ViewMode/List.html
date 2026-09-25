@@ -1,0 +1,31 @@
+<html
+    lang="en"
+    xmlns:f="http://typo3.org/ns/TYPO3/CMS/Fluid/ViewHelpers"
+    data-namespace-typo3-fluid="true"
+>
+
+<f:comment>
+    The view mode "list": the tile grid of "Profile/List/Items", which every list rendered
+    before view modes existed. The stored value keeps that name; the editor sees "Tiles".
+
+    A view mode is the partial "Profile/ViewMode/<Mode>" - the mode with an upper case
+    first letter, "contactCards" in "ContactCards.html" - and a project adds one by
+    providing its own partial next to this one. Every mode gets the same arguments.
+
+    Arguments:
+    - profiles:        the profiles to render
+    - contracts:       the contracts to render instead, one each, in the selected
+                       contracts element
+    - class:           the additional class of the grid, from the list; a mode that is
+                       not a grid need not take it
+    - groupedProfiles: set by a grouped list, once per group
+    - settings:        the plugin settings
+    - data:            the content element record
+</f:comment>
+
+<f:render
+    partial="Profile/List/Items"
+    arguments="{_all}"
+/>
+
+</html>

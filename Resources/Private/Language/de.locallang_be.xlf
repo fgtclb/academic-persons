@@ -274,8 +274,8 @@
         <target>Standard für Ansichtsmodus</target>
       </trans-unit>
       <trans-unit id="flexform.el.viewMode.default.I.list">
-        <source>List</source>
-        <target>Liste</target>
+        <source>Tiles</source>
+        <target>Kacheln</target>
       </trans-unit>
       <trans-unit id="flexform.el.viewMode.default.I.table">
         <source>Table</source>
