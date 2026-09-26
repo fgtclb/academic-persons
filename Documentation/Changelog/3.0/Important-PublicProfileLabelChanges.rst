@@ -12,7 +12,9 @@ The rebuilt public profile detail view (see
 labels of :file:`Resources/Private/Language/locallang.xlf`. All three are
 relevant for an installation that ships its own translation of this file or
 overrides single units through
-:php:`$GLOBALS['TYPO3_CONF_VARS']['SYS']['locallangXMLOverride']`.
+:php:`$GLOBALS['TYPO3_CONF_VARS']['SYS']['locallangXMLOverride']` on TYPO3 v13,
+:php:`$GLOBALS['TYPO3_CONF_VARS']['LANG']['resourceOverrides']` on TYPO3 v14, or
+:typoscript:`_LOCAL_LANG`.
 
 **A misspelled unit id is corrected.** The English file declared the unit
 

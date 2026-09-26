@@ -95,9 +95,11 @@ What an integrator sees:
     file of :guilabel:`academic_persons` gains the 38 :xml:`helptext.*`
     units they reference - the help of the profile, contract, contact and
     timeline fields, rendered by the editing frontend. A project replaces
-    the text either by pointing :yaml:`helptext` at an :php:`LLL:` key of
-    its own (or at literal text), or by overriding the shipped unit through
-    :typoscript:`locallangXMLOverride`.
+    the text either by pointing :yaml:`helptext` at an ``LLL:EXT:`` key of
+    its own - literal text works for the contract, contact and timeline
+    fields only - or by overriding the shipped unit through
+    :php:`locallangXMLOverride` on TYPO3 v13, :php:`resourceOverrides` on
+    TYPO3 v14, or :typoscript:`plugin.tx_academicpersonsedit._LOCAL_LANG`.
 
 The internal PHP API changes with the file. :php:`AcademicPersonsSettings`
 exposes the graph - :php:`profileSections`, :php:`specialFields`,

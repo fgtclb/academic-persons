@@ -31,7 +31,7 @@
 <f:if condition="{viewModes}">
     <nav
         class="academic-persons-view-mode-switch mb-4"
-        aria-label="{f:translate(key: 'list.viewMode.navigation', extensionName: 'academic_persons')}"
+        aria-label="{f:translate(key: 'list.viewMode.navigation', extensionName: 'AcademicPersons')}"
     >
         <ul class="nav nav-pills">
             <f:for each="{viewModes}" as="mode">
@@ -63,7 +63,7 @@
                         <f:variable name="href" value="{f:uri.page()}" />
                     </f:else>
                 </f:if>
-                <f:variable name="label" value="{f:translate(key: 'list.viewMode.{mode}', extensionName: 'academic_persons', default: mode)}" />
+                <f:variable name="label" value="{f:translate(key: 'list.viewMode.{mode}', extensionName: 'AcademicPersons', default: mode)}" />
                 <li class="nav-item">
                     <f:if condition="{mode} == {viewMode}">
                         <f:then>

@@ -64,7 +64,7 @@
 #     validators:
 #       - required
 #     autocomplete: email                # Contract/contact fields only
-#     helptext: 'LLL:EXT:...:key'        # LLL key or literal text
+#     helptext: 'LLL:EXT:...:key'        # LLL:EXT: reference; contract/contact fields also literal text
 #
 # `propertyName` and `fieldName` are only necessary when the public identifier
 # differs from the DTO/domain property or database column. `fieldType` and

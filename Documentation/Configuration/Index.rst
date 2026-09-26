@@ -480,3 +480,4 @@ one mechanism per site and the question does not arise.
    Validations/Index
    FrontendUserSync/Index
    RouteEnhancers/Index
+   Labels/Index

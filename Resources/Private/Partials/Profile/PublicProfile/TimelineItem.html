@@ -21,13 +21,13 @@
                             <f:if condition="{item.yearEnd}">
                                 <f:then>{item.yearStart} – {item.yearEnd}</f:then>
                                 <f:else>
-                                    <f:translate key="detail.since" extensionName="academic_persons" />
+                                    <f:translate key="detail.since" extensionName="AcademicPersons" />
                                     {item.yearStart}
                                 </f:else>
                             </f:if>
                         </f:then>
                         <f:else>
-                            <f:translate key="detail.till" extensionName="academic_persons" />
+                            <f:translate key="detail.till" extensionName="AcademicPersons" />
                             {item.yearEnd}
                         </f:else>
                     </f:if>

@@ -20,7 +20,7 @@
         <f:if condition="{contracts}">
             <section class="academic-persons-detail__contact">
                 <h3 class="academic-persons-detail__contact-heading">
-                    <f:translate key="detail.contact" extensionName="academic_persons" />
+                    <f:translate key="detail.contact" extensionName="AcademicPersons" />
                 </h3>
                 <f:for each="{contracts}" as="contract">
                     <div class="academic-persons-detail__contact-contract">
@@ -76,7 +76,7 @@
                                         <span class="academic-persons-detail__contact-type">
                                             <f:translate
                                                 key="detail.physicalAddress.{physicalAddress.type}"
-                                                extensionName="academic_persons"
+                                                extensionName="AcademicPersons"
                                             />
                                         </span>
                                     </f:if>
@@ -109,7 +109,7 @@
                                     </f:if>
                                     <f:if condition="{contract.room}">
                                         <span class="academic-persons-detail__contact-line">
-                                            <f:translate key="detail.room" extensionName="academic_persons" />: {contract.room}
+                                            <f:translate key="detail.room" extensionName="AcademicPersons" />: {contract.room}
                                         </span>
                                     </f:if>
                                 </div>

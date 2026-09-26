@@ -12,7 +12,7 @@
 <nav
     class="academic-persons-detail__navigation"
     data-academic-persons-scrollspy-navigation
-    aria-label="{f:translate(key: 'detail.navigation', extensionName: 'academic_persons')}"
+    aria-label="{f:translate(key: 'detail.navigation', extensionName: 'AcademicPersons')}"
 >
     <ol class="nav flex-column academic-persons-detail__navigation-list list-unstyled">
         <f:for each="{publicProfile.details.menuSections}" as="menuSection">
@@ -25,7 +25,7 @@
                     >
                         <span class="academic-persons-detail__navigation-number" aria-hidden="true"></span>
                         <span class="academic-persons-detail__navigation-label">
-                            <f:translate key="detail.{fieldName}" extensionName="academic_persons" />
+                            <f:translate key="detail.{fieldName}" extensionName="AcademicPersons" />
                         </span>
                     </a>
                 </li>

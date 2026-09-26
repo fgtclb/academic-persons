@@ -185,7 +185,7 @@ the two keys as ``publicProfile`` and dispatches every identifier of
             room of every contract :yaml:`contracts` and :yaml:`onlyValid`
             select
     *   -   :yaml:`subline`
-        -   A label reference
+        -   An ``LLL:EXT:`` reference
         -   The translated heading, and the point before which the
             :yaml:`left` elements are repeated below the large breakpoint
     *   -   :yaml:`profileEntries`
@@ -318,7 +318,10 @@ Every other key is a field, and fields share one shape across
             number of readable characters. Checked on the server, never copied
             into the TCA.
     *   -   :yaml:`helptext`
-        -   A label reference or literal text rendered next to the control.
+        -   An ``LLL:EXT:`` reference rendered next to the control; for
+            contract and contact fields also literal text. A translation domain
+            reference of TYPO3 v14 does not resolve here, see
+            :ref:`configuration-labels`.
     *   -   :yaml:`autocomplete`
         -   Contract and contact fields only: an HTML ``autocomplete`` token.
     *   -   :yaml:`options`
@@ -473,7 +476,7 @@ Each key is a stable section identifier; the map order is the display order.
     *   -   Key
         -   Meaning
     *   -   :yaml:`label`
-        -   The label reference of the section heading.
+        -   An ``LLL:EXT:`` reference for the section heading.
     *   -   :yaml:`type`
         -   The record type of the rows, i.e. the ``type`` of the profile
             information records. :yaml:`contracts` is the reserved value for
@@ -500,7 +503,7 @@ Each key is a stable section identifier; the map order is the display order.
             ``textarea``. The contract section validates against
             :yaml:`contracts.fields` instead.
     *   -   :yaml:`helptext`
-        -   A map from field to label reference.
+        -   A map from field to an ``LLL:EXT:`` reference or literal text.
 
 ..  warning::
     :yaml:`type` and :yaml:`fieldName` describe the editing frontend. The seven

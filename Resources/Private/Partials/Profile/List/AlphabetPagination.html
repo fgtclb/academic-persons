@@ -25,7 +25,7 @@
 
 <nav
     class="academic-persons-list__alphabet-pagination alphabetical-pagination mb-4"
-    aria-label="{f:translate(key: 'list.alphabetFilter.navigation', extensionName: 'academic_persons')}"
+    aria-label="{f:translate(key: 'list.alphabetFilter.navigation', extensionName: 'AcademicPersons')}"
 >
     <ul class="pagination justify-content-center">
         <f:if condition="{demand.alphabetFilter}">
@@ -65,7 +65,7 @@
                                     rel="nofollow"
                                     aria="{current: 'page'}"
                                 >
-                                    <span>{letter -> f:format.case()}</span><span class="visually-hidden"> - {f:translate(key: 'list.alphabetFilter.showAll', extensionName: 'academic_persons')}</span>
+                                    <span>{letter -> f:format.case()}</span><span class="visually-hidden"> - {f:translate(key: 'list.alphabetFilter.showAll', extensionName: 'AcademicPersons')}</span>
                                 </f:link.action>
                             </f:then>
                             <f:else>
@@ -90,7 +90,7 @@
                 <f:else>
                     <li class="page-item disabled">
                         <span class="page-link">
-                            {letter -> f:format.case()}<span class="visually-hidden"> - {f:translate(key: 'list.alphabetFilter.noProfiles', extensionName: 'academic_persons')}</span>
+                            {letter -> f:format.case()}<span class="visually-hidden"> - {f:translate(key: 'list.alphabetFilter.noProfiles', extensionName: 'AcademicPersons')}</span>
                         </span>
                     </li>
                 </f:else>
