@@ -11,10 +11,14 @@ use TYPO3\CMS\Core\Http\ApplicationType;
 use TYPO3\CMS\Core\Site\Entity\Site;
 use TYPO3\CMS\Core\Site\Entity\SiteLanguage;
 use TYPO3\CMS\Extbase\Mvc\ExtbaseRequestParameters;
+use TYPO3\CMS\Frontend\ContentObject\ContentObjectRenderer;
 
 /**
  * Generic context object used to provide plugin controller action related context information, either in views
  * or dispatched events, for example {@see ModifyDetailProfileEvent} in {@see ProfileController::detailAction()}.
+ *
+ * @deprecated since 3.0, will be removed in 4.0 together with {@see PluginControllerActionContextInterface}.
+ *             The persons plugins then hand the context of `academic_base` to their events.
  */
 final class PluginControllerActionContext implements PluginControllerActionContextInterface
 {
@@ -25,6 +29,12 @@ final class PluginControllerActionContext implements PluginControllerActionConte
         private readonly ServerRequestInterface $request,
         private readonly array $settings,
     ) {}
+
+    public function getContentObjectRenderer(): ?ContentObjectRenderer
+    {
+        $attribute = $this->request->getAttribute('currentContentObject');
+        return $attribute instanceof ContentObjectRenderer ? $attribute : null;
+    }
 
     public function getRequest(): ServerRequestInterface
     {

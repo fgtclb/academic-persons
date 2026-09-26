@@ -34,9 +34,10 @@ context it passes on; :php:`findByUids()` delegates to it without one.
 The context is
 :php:`\FGTCLB\AcademicBase\Domain\Model\Dto\PluginControllerActionContextInterface`
 of :guilabel:`academic_base`, not the interface of the same name this extension
-ships. The latter is the former minus :php:`getContentObjectRenderer()` and is
-the one that goes away in a later major version, so new API is typed against
-the shared one. The events of the controller actions are untouched.
+ships. The latter extends the former since 3.0, see
+:ref:`breaking-plugin-controller-action-context-interface-extends-base`, and
+goes away in 4.0, so new API is typed against the shared one. The events of the
+controller actions are untouched.
 
 Impact
 ======

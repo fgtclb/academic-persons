@@ -7,8 +7,9 @@ For developers
 This chapter documents the programmatic surface this extension ships: the two
 events that let a project narrow what the plugins show, the translation
 synchronisation - the event that triggers it, the service interface behind it,
-and how it behaves in workspaces - and the event that lets a project decide
-what is written as the metadata of a profile image.
+and how it behaves in workspaces - the event that lets a project decide
+what is written as the metadata of a profile image, and the plugin action
+context the plugin events carry.
 
 ..  warning::
 
@@ -493,6 +494,77 @@ field there has to set it on every dispatch.
     A listener runs inside the write of the profile record — for a backend save
     from within a :php:`DataHandler` hook. Keep it short and do not write
     profile records from it.
+
+..  _developers-plugin-action-context:
+
+The plugin action context
+=========================
+
+The events in the table below carry the context the plugin renders in: the
+request, the site and language, the plugin and action name, the settings of the
+content element and the content element itself.
+:php:`getPluginControllerActionContext()` returns it.
+
+..  list-table::
+    :header-rows: 1
+
+    *   -   Event
+        -   Declared context type
+    *   -   :php:`ModifyListProfilesEvent`, :php:`ModifyDetailProfileEvent`,
+            :php:`ModifySelectedProfilesEvent`,
+            :php:`ModifySelectedContractsEvent`,
+            :php:`ModifyProfileTitlePlaceholderReplacementEvent`
+        -   the interface of this extension, deprecated
+    *   -   :php:`ModifyProfileQueryEvent`, :php:`ModifyContractQueryEvent`
+        -   the interface of :guilabel:`academic_base`, :php:`null` where the
+            query has no plugin behind it
+
+Type a listener against
+:php:`\FGTCLB\AcademicBase\Domain\Model\Dto\PluginControllerActionContextInterface`,
+whichever of the events it listens to. The interface of this extension extends
+it and declares nothing of its own, so every context a persons event carries
+satisfies it, and the same code serves the events of the other academic
+extensions. The interface of this extension is removed in 4.0, and the events
+above then declare the :guilabel:`academic_base` one; see
+:ref:`deprecation-persons-plugin-controller-action-context`.
+
+..  code-block:: php
+    :caption: EXT:my_extension/Classes/EventListener/LogPluginContentElement.php
+
+    <?php
+
+    declare(strict_types=1);
+
+    namespace MyVendor\MyExtension\EventListener;
+
+    use FGTCLB\AcademicBase\Domain\Model\Dto\PluginControllerActionContextInterface;
+    use FGTCLB\AcademicPersons\Event\ModifyListProfilesEvent;
+    use Psr\Log\LoggerInterface;
+    use TYPO3\CMS\Core\Attribute\AsEventListener;
+
+    final class LogPluginContentElement
+    {
+        public function __construct(private readonly LoggerInterface $logger) {}
+
+        #[AsEventListener(identifier: 'my-extension/log-plugin-content-element')]
+        public function __invoke(ModifyListProfilesEvent $event): void
+        {
+            $this->log($event->getPluginControllerActionContext());
+        }
+
+        private function log(PluginControllerActionContextInterface $context): void
+        {
+            $this->logger->info('Profile list rendered', [
+                'plugin' => $context->getPluginName(),
+                'contentElement' => $context->getContentObjectRenderer()?->data['uid'] ?? null,
+            ]);
+        }
+    }
+
+:php:`getContentObjectRenderer()` is the content element of the plugin, also
+for the page title placeholder event, which is dispatched while the detail
+action builds the page title. It is :php:`null` for a context built from a
+request without a content element.
 
 ..  _developers-see-also:
 

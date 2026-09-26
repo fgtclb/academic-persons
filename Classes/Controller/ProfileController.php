@@ -12,8 +12,7 @@ declare(strict_types=1);
 namespace FGTCLB\AcademicPersons\Controller;
 
 use FGTCLB\AcademicBase\Controller\GetCurrentContentRecordMethodTrait;
-use FGTCLB\AcademicBase\Domain\Model\Dto\PluginControllerActionContext;
-use FGTCLB\AcademicPersons\Domain\Model\Dto\PluginControllerActionContext as PersonsPluginControllerActionContext;
+use FGTCLB\AcademicPersons\Domain\Model\Dto\PluginControllerActionContext;
 use FGTCLB\AcademicPersons\Domain\Model\Dto\ProfileDemand;
 use FGTCLB\AcademicPersons\Domain\Model\Profile;
 use FGTCLB\AcademicPersons\Domain\Repository\ContractRepository;
@@ -112,13 +111,14 @@ final class ProfileController extends ActionController
         // Read before the list event as well: the mode names a partial, and a demand a
         // listener hands back is not resolved again.
         $viewMode = $demand->getViewMode() !== '' ? $demand->getViewMode() : $this->defaultViewMode();
-        $profiles = $this->profileRepository->findByDemand($demand, $this->queryContext());
+        $pluginControllerActionContext = $this->pluginControllerActionContext();
+        $profiles = $this->profileRepository->findByDemand($demand, $pluginControllerActionContext);
 
         /** @var ModifyListProfilesEvent $event */
         $event = $this->eventDispatcher->dispatch(new ModifyListProfilesEvent(
             profiles: $profiles,
             view: $this->view,
-            pluginControllerActionContext: new PersonsPluginControllerActionContext($this->request, $this->settings),
+            pluginControllerActionContext: $pluginControllerActionContext,
             profileDemand: $demand,
         ));
         $demand = $event->getProfileDemand();
@@ -166,7 +166,7 @@ final class ProfileController extends ActionController
         if ((bool)($this->settings['alphabetPaginationEnabled'] ?? false) && !$manualSelection) {
             $this->view->assign(
                 'alphabetFilterLetters',
-                $this->profileRepository->findAlphabetFilterLetters($demand, $this->queryContext()),
+                $this->profileRepository->findAlphabetFilterLetters($demand, $this->pluginControllerActionContext()),
             );
         }
 
@@ -257,7 +257,7 @@ final class ProfileController extends ActionController
             }
             $profileDemand->setShowHiddenRecords((bool)($this->settings['showHiddenRecords'] ?? false));
             $profiles = $this->sortBySelectionOrder(
-                $this->profileRepository->findByDemand($profileDemand, $this->queryContext()),
+                $this->profileRepository->findByDemand($profileDemand, $this->pluginControllerActionContext()),
                 GeneralUtility::intExplode(',', $this->settings['demand']['profileList'], true),
             );
         }
@@ -310,7 +310,7 @@ final class ProfileController extends ActionController
             );
         }
 
-        $pluginControllerActionContext = new PersonsPluginControllerActionContext($this->request, $this->settings);
+        $pluginControllerActionContext = $this->pluginControllerActionContext();
         /** @var ModifyDetailProfileEvent $event */
         $event = $this->eventDispatcher->dispatch(new ModifyDetailProfileEvent(
             $profile,
@@ -361,13 +361,14 @@ final class ProfileController extends ActionController
 
         $profileUids = GeneralUtility::intExplode(',', $this->settings['selectedProfiles'], true);
         $showHiddenRecords = (bool)($this->settings['showHiddenRecords'] ?? false);
-        $profiles = $this->profileRepository->findByUidsWithContext($profileUids, $this->queryContext(), $showHiddenRecords);
+        $pluginControllerActionContext = $this->pluginControllerActionContext();
+        $profiles = $this->profileRepository->findByUidsWithContext($profileUids, $pluginControllerActionContext, $showHiddenRecords);
 
         /** @var ModifySelectedProfilesEvent $event */
         $event = $this->eventDispatcher->dispatch(new ModifySelectedProfilesEvent(
             $profiles,
             $this->view,
-            new PersonsPluginControllerActionContext($this->request, $this->settings),
+            $pluginControllerActionContext,
         ));
         $profiles = $event->getProfiles();
 
@@ -396,13 +397,14 @@ final class ProfileController extends ActionController
 
         $contractUids = GeneralUtility::intExplode(',', $this->settings['selectedContracts'], true);
         $showHiddenRecords = (bool)($this->settings['showHiddenRecords'] ?? false);
-        $contracts = $this->contractRepository->findByUidsWithContext($contractUids, $this->queryContext(), $showHiddenRecords);
+        $pluginControllerActionContext = $this->pluginControllerActionContext();
+        $contracts = $this->contractRepository->findByUidsWithContext($contractUids, $pluginControllerActionContext, $showHiddenRecords);
 
         /** @var ModifySelectedContractsEvent $event */
         $event = $this->eventDispatcher->dispatch(new ModifySelectedContractsEvent(
             $contracts,
             $this->view,
-            new PersonsPluginControllerActionContext($this->request, $this->settings),
+            $pluginControllerActionContext,
         ));
         $contracts = $event->getContracts();
 
@@ -626,20 +628,17 @@ final class ProfileController extends ActionController
     }
 
     /**
-     * The context the repositories hand to the listeners of `ModifyProfileQueryEvent` and
-     * `ModifyContractQueryEvent`.
+     * The context of the action, for its event and for the repository, which hands it to the
+     * listeners of `ModifyProfileQueryEvent` and `ModifyContractQueryEvent`. Those are typed
+     * against the `academic_base` interface, and the persons interface extends it.
      *
-     * It is the `academic_base` context rather than the one this extension ships, because the
-     * repository API is new and the persons interface is the one that goes away: it is the base
-     * interface minus `getContentObjectRenderer()`, and a listener of the query events is the
-     * kind of listener that wants exactly that. The events of the actions keep the persons
-     * context until that interface is retired.
+     * It carries the settings as they are when it is built, so an action that changes a setting
+     * and queries again builds a new one.
      *
-     * @todo Three actions therefore build two context objects from the same request and
-     *       settings. They collapse into one once the persons interface extends the
-     *       `academic_base` one - change `ace-tbd-single-action-context-interface`.
+     * @todo Build the `academic_base` context in 4.0 (ACE-747), when the persons one is
+     *       removed and the persons events declare the `academic_base` interface.
      */
-    private function queryContext(): PluginControllerActionContext
+    private function pluginControllerActionContext(): PluginControllerActionContext
     {
         return new PluginControllerActionContext($this->request, $this->settings);
     }

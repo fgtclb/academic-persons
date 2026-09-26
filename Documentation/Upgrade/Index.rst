@@ -56,12 +56,13 @@ The steps at a glance
     *   -   7. Adapt templates, icons, TypoScript and repository overrides
         -   Re-applies project overrides to the new template tree, makes the
             JSON page type reachable, moves repository customizations to the
-            query events, and drops a project hook that announced backend
-            saves.
+            query events, drops a project hook that announced backend
+            saves, and completes a project's own plugin action context.
         -   The editor cannot save, an overridden detail view loses the
             configurable layout, a repository override is either a fatal
-            error or silently unused, and every backend save is announced and
-            synchronised twice.
+            error or silently unused, every backend save is announced and
+            synchronised twice, and a project's own plugin action context
+            is a fatal error.
 
 ..  note::
     The TYPO3 core update itself is not a step of this page; it is an upgrade
@@ -386,6 +387,19 @@ the project hook would announce it a second time. An import that writes
 through the DataHandler can mark its run as an import instead. See
 :ref:`important-backend-saves-announce-profile-updates` and
 :ref:`feature-profile-update-event-carries-site-and-origin`.
+
+Classes implementing the plugin action context
+----------------------------------------------
+
+A class of a project that implements
+:php:`\FGTCLB\AcademicPersons\Domain\Model\Dto\PluginControllerActionContextInterface`
+adds :php:`getContentObjectRenderer()`, or is a fatal error. It keeps
+implementing the persons interface while it is handed to a persons event, which
+declares that type throughout 3.x, and switches
+to the interface of :guilabel:`academic_base` with 4.0, when the persons one is
+removed. See
+:ref:`breaking-plugin-controller-action-context-interface-extends-base` and
+:ref:`deprecation-persons-plugin-controller-action-context`.
 
 ..  _upgrade-verify:
 
