@@ -19,6 +19,8 @@ use TYPO3\CMS\Core\Site\Entity\Site;
  *
  * The site is the one the profile belongs to, when the dispatcher knows it, and
  * `null` otherwise: a listener that needs one resolves it from the profile's page.
+ *
+ * @api
  */
 final class AfterProfileUpdateEvent
 {

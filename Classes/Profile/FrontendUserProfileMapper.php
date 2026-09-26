@@ -43,6 +43,8 @@ use TYPO3\CMS\Extbase\Persistence\PersistenceManagerInterface;
  * has a problem, before it writes anything. The map is not checked against
  * the data: a column the data lacks reads as empty, unless the caller asks
  * {@see self::assertColumnsExist()} first, as the default factory does.
+ *
+ * @api
  */
 final readonly class FrontendUserProfileMapper
 {

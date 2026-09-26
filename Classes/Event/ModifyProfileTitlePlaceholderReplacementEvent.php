@@ -15,6 +15,8 @@ use FGTCLB\AcademicPersons\PageTitle\ProfileTitleProvider;
  *
  * Note that the event is executed after all internal replacement methods has been processed and that
  * this event is dispatched for each single placeholder on its own.
+ *
+ * @api
  */
 final class ModifyProfileTitlePlaceholderReplacementEvent
 {

@@ -36,6 +36,8 @@ use TYPO3\CMS\Extbase\Persistence\QueryInterface;
  * offset are read when the query is parsed, after this event, so a listener that changes them
  * really does change the query - `setRespectStoragePage(false)` and `setIgnoreEnableFields(true)`
  * widen the result past what the content element asked for. Add constraints, leave the rest alone.
+ *
+ * @api
  */
 final class ModifyProfileQueryEvent
 {

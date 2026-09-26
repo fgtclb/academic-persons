@@ -13,6 +13,9 @@ namespace FGTCLB\AcademicPersons\Profile;
 
 use TYPO3\CMS\Frontend\Authentication\FrontendUserAuthentication;
 
+/**
+ * @api
+ */
 interface ProfileFactoryInterface
 {
     public function shouldCreateProfileForUser(FrontendUserAuthentication $frontendUserAuthentication): bool;

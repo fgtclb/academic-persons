@@ -11,6 +11,9 @@ declare(strict_types=1);
 
 namespace FGTCLB\AcademicPersons\Profile;
 
+/**
+ * @api
+ */
 enum ProfileActionType: string
 {
     case Create = 'create';

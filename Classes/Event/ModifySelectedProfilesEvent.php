@@ -11,6 +11,8 @@ use TYPO3Fluid\Fluid\View\ViewInterface as FluidViewInterface;
 /**
  * Fired in {@see ProfileController::selectedProfilesAction()} included in `academicpersons_selectedprofiles`
  * extbase plugins to allow assigning additional data to the detail view or replace the profiles resultset.
+ *
+ * @api
  */
 final class ModifySelectedProfilesEvent
 {

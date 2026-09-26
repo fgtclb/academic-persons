@@ -19,9 +19,11 @@ use TYPO3\CMS\Extbase\Persistence\QueryResultInterface;
 use TYPO3Fluid\Fluid\View\ViewInterface as FluidViewInterface;
 
 /**
- * Fired in {@see ProfileController::listAction()} included in `academicpersons_detail` and
- * `academicpersons_listanddetail`  extbase plugins to allow assigning additional data to
- * the detail view or replace the profile.
+ * Fired in {@see ProfileController::listAction()} of the `academicpersons_list` and
+ * `academicpersons_listanddetail` Extbase plugins to allow assigning additional data to
+ * the list view or replacing the profiles and the demand.
+ *
+ * @api
  */
 final class ModifyListProfilesEvent
 {

@@ -15,7 +15,10 @@ use FGTCLB\AcademicPersons\Domain\Model\Dto\DemandInterface;
 use FGTCLB\AcademicPersons\Domain\Repository\ProfileRepository;
 
 /**
- * Dispatched in {@see ProfileRepository::findByDemand().
+ * Dispatched in {@see ProfileRepository::findByDemand()} and
+ * {@see ProfileRepository::findAlphabetFilterLetters()}, before the query is built from the demand.
+ *
+ * @api
  */
 final class ModifyProfileDemandEvent
 {

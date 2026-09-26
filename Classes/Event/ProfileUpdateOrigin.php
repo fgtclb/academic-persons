@@ -15,6 +15,8 @@ namespace FGTCLB\AcademicPersons\Event;
  * Where the update an {@see AfterProfileUpdateEvent} announces came from.
  *
  * The case set is fixed, so that a listener can `match` over it exhaustively.
+ *
+ * @api
  */
 enum ProfileUpdateOrigin: string
 {

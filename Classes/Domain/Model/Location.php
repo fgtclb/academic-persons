@@ -13,6 +13,9 @@ namespace FGTCLB\AcademicPersons\Domain\Model;
 
 use TYPO3\CMS\Extbase\DomainObject\AbstractEntity;
 
+/**
+ * @api
+ */
 class Location extends AbstractEntity
 {
     protected string $title = '';

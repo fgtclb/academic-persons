@@ -20,6 +20,9 @@ use TYPO3\CMS\Extbase\Persistence\ObjectStorage;
 use TYPO3\HtmlSanitizer\Builder\CommonBuilder;
 use TYPO3\HtmlSanitizer\Sanitizer;
 
+/**
+ * @api
+ */
 class Profile extends AbstractEntity
 {
     protected string $gender = '';

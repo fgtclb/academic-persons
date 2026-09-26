@@ -22,6 +22,8 @@ use TYPO3Fluid\Fluid\View\ViewInterface as FluidViewInterface;
  * Fired in {@see ProfileController::detailAction()} included in `detail` and `listanddetail`
  * extbase plugins to allow assigning additional data to the detail view or replace the
  * profile.
+ *
+ * @api
  */
 final class ModifyDetailProfileEvent
 {

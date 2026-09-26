@@ -15,6 +15,9 @@ use FGTCLB\AcademicPersons\Profile\ProfileActionType;
 use FGTCLB\AcademicPersons\Profile\ProfileFactoryInterface;
 use TYPO3\CMS\Frontend\Authentication\FrontendUserAuthentication;
 
+/**
+ * @api
+ */
 final class ChooseProfileFactoryEvent
 {
     public function __construct(

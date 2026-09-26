@@ -9,8 +9,10 @@ use TYPO3\CMS\Extbase\Persistence\QueryResultInterface;
 use TYPO3Fluid\Fluid\View\ViewInterface as FluidViewInterface;
 
 /**
- * Fired in {@see ProfileController::selectedProfilesAction()} included in `academicpersons_selectedprofiles`
- * extbase plugins to allow assigning additional data to the detail view or replace the profiles resultset.
+ * Fired in {@see ProfileController::selectedContractsAction()} of the `academicpersons_selectedcontracts`
+ * Extbase plugin to allow assigning additional data to the view or replacing the contracts result set.
+ *
+ * @api
  */
 final class ModifySelectedContractsEvent
 {

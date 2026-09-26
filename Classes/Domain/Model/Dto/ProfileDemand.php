@@ -11,6 +11,9 @@ declare(strict_types=1);
 
 namespace FGTCLB\AcademicPersons\Domain\Model\Dto;
 
+/**
+ * @api
+ */
 class ProfileDemand implements DemandInterface
 {
     protected string $groupBy = '';

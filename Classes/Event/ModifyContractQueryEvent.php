@@ -24,6 +24,8 @@ use TYPO3\CMS\Extbase\Persistence\QueryInterface;
  * The same shape as {@see ModifyProfileQueryEvent}, minus the demand: a contract query is only
  * ever a lookup of the uids an editor selected, and the demand of the profile plugins does not
  * describe it. The contract of that event applies here unchanged - see its docblock.
+ *
+ * @api
  */
 final class ModifyContractQueryEvent
 {

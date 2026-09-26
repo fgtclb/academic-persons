@@ -29,6 +29,8 @@ use TYPO3\CMS\Core\DataHandling\Model\CorrelationId;
  * recognises its own nested runs. The scope stays random per run, as the DataHandler
  * creates it, because the history store derives the correlation id of every row it
  * writes from it.
+ *
+ * @api
  */
 enum ProfileWriteCorrelation: string
 {

@@ -51,6 +51,8 @@ use TYPO3\CMS\Core\Resource\FileReference;
  * `sys_language_uid`, `l10n_parent`, `t3ver_*`, `deleted`, `hidden` and their kind -
  * are refused with a warning in the log. This event sets metadata; repointing a
  * relation or moving a record is the DataHandler's business.
+ *
+ * @api
  */
 final class ModifyProfileImageMetadataEvent
 {

@@ -11,6 +11,10 @@ and how it behaves in workspaces - the event that lets a project decide
 what is written as the metadata of a profile image, and the plugin action
 context the plugin events carry.
 
+Which classes of this extension are public API, and what that promises, is
+stated for all academic extensions on the `extension points page of
+academic_base <https://docs.typo3.org/p/fgtclb/academic-base/main/en-us/Developers/ExtensionPoints/Index.html>`__.
+
 ..  warning::
 
     **The translation synchronisation is experimental.**
