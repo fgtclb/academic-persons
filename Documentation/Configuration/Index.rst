@@ -327,6 +327,61 @@ The restriction is applied before
 :php:`\FGTCLB\AcademicBase\Event\ModifyTcaSelectFieldItemsEvent` is
 dispatched, so a listener of that event still has the last word.
 
+..  _configuration-crop-variants:
+
+The crop variants of the profile image
+======================================
+
+The image cropper of a profile image offers three crop variants. A template
+requests one by its name, through the `cropVariant` argument of
+:html:`<f:image>` or of the image partial of :guilabel:`EXT:academic_base`:
+
+..  list-table::
+    :header-rows: 1
+
+    *   -   Name
+        -   Aspect ratio
+    *   -   `default`
+        -   Free, 16:9, 3:2, 4:3 and 1:1
+    *   -   `square`
+        -   1:1
+    *   -   `portrait`
+        -   3:4
+
+`default` is the variant TYPO3 offers when a file field configures none, with
+the same ratios, and the templates of this extension render it. A crop an editor
+stored before the update is stored under that name and keeps its meaning.
+
+An image stores a crop for the new variants once an editor opens it in the
+backend form and saves the record. Until then a template that requests `square`
+or `portrait` renders the image uncropped. Where the image already has a crop
+for `default`, the cropper starts `square` from that crop, fitted into its
+ratio, and `portrait` from the whole image, fitted and centred; an image without
+a crop starts both from the whole image.
+
+A site that does not want a variant disables it in TCA, on this field only:
+
+..  code-block:: php
+    :caption: Configuration/TCA/Overrides of the site package
+
+    $GLOBALS['TCA']['tx_academicpersons_domain_model_profile']['columns']['image']['config']['overrideChildTca']['columns']['crop']['config']['cropVariants']['portrait']['disabled'] = true;
+
+Page TSconfig is not the way to do that.
+`TCEFORM.sys_file_reference.crop.config.cropVariants` reaches every image below
+the page it is set on, and on an image field that configures no variants of its
+own it leaves the cropper with no variant at all, not even `default`.
+
+A project that defines crop variants of its own for the profile image does so at
+the same path. A variant it sets by name replaces the one of the same name and
+leaves the others; assigning the whole array replaces all of them.
+
+Crop variants a project configures on `sys_file_reference` for every image are
+merged with these on the profile image: the values of this extension win key by
+key, and a ratio the project adds to a variant of the same name stays. A project
+that restricted `default` to a fixed ratio that way therefore finds all the
+ratios of the TYPO3 default offered on the profile image again, and the free
+ratio preselected on an image without a crop.
+
 ..  _configuration-content-element-header:
 
 The header of the content elements

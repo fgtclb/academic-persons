@@ -292,6 +292,14 @@
         <source>Image</source>
         <target>Bild</target>
       </trans-unit>
+      <trans-unit id="tx_academicpersons_domain_model_profile.columns.image.crop_variant.square">
+        <source>Square</source>
+        <target>Quadratisch</target>
+      </trans-unit>
+      <trans-unit id="tx_academicpersons_domain_model_profile.columns.image.crop_variant.portrait">
+        <source>Portrait</source>
+        <target>Hochformat</target>
+      </trans-unit>
       <trans-unit id="tx_academicpersons_domain_model_profile.columns.last_name.label">
         <source>Last Name</source>
         <target>Nachname</target>

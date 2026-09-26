@@ -259,6 +259,71 @@ $tcaConfiguration = [
                 'behaviour' => [
                     'allowLanguageSynchronization' => true,
                 ],
+                // Templates request a variant by its name. "default" repeats what the cropper
+                // offers when no variant is configured, and stays first, so a crop stored
+                // before the variants existed keeps its meaning.
+                'overrideChildTca' => [
+                    'columns' => [
+                        'crop' => [
+                            'config' => [
+                                'cropVariants' => [
+                                    'default' => [
+                                        'title' => 'LLL:EXT:core/Resources/Private/Language/locallang_wizards.xlf:imwizard.crop_variant.default',
+                                        'allowedAspectRatios' => [
+                                            '16:9' => [
+                                                'title' => 'LLL:EXT:core/Resources/Private/Language/locallang_wizards.xlf:imwizard.ratio.16_9',
+                                                'value' => 16 / 9,
+                                            ],
+                                            '3:2' => [
+                                                'title' => 'LLL:EXT:core/Resources/Private/Language/locallang_wizards.xlf:imwizard.ratio.3_2',
+                                                'value' => 3 / 2,
+                                            ],
+                                            '4:3' => [
+                                                'title' => 'LLL:EXT:core/Resources/Private/Language/locallang_wizards.xlf:imwizard.ratio.4_3',
+                                                'value' => 4 / 3,
+                                            ],
+                                            '1:1' => [
+                                                'title' => 'LLL:EXT:core/Resources/Private/Language/locallang_wizards.xlf:imwizard.ratio.1_1',
+                                                'value' => 1.0,
+                                            ],
+                                            'NaN' => [
+                                                'title' => 'LLL:EXT:core/Resources/Private/Language/locallang_wizards.xlf:imwizard.ratio.free',
+                                                'value' => 0.0,
+                                            ],
+                                        ],
+                                        'selectedRatio' => 'NaN',
+                                        'cropArea' => [
+                                            'x' => 0.0,
+                                            'y' => 0.0,
+                                            'width' => 1.0,
+                                            'height' => 1.0,
+                                        ],
+                                    ],
+                                    'square' => [
+                                        'title' => 'LLL:EXT:academic_persons/Resources/Private/Language/locallang_tca.xlf:tx_academicpersons_domain_model_profile.columns.image.crop_variant.square',
+                                        'allowedAspectRatios' => [
+                                            '1:1' => [
+                                                'title' => 'LLL:EXT:core/Resources/Private/Language/locallang_wizards.xlf:imwizard.ratio.1_1',
+                                                'value' => 1.0,
+                                            ],
+                                        ],
+                                        'selectedRatio' => '1:1',
+                                    ],
+                                    'portrait' => [
+                                        'title' => 'LLL:EXT:academic_persons/Resources/Private/Language/locallang_tca.xlf:tx_academicpersons_domain_model_profile.columns.image.crop_variant.portrait',
+                                        'allowedAspectRatios' => [
+                                            '3:4' => [
+                                                'title' => 'LLL:EXT:academic_persons/Resources/Private/Language/locallang_tca.xlf:tx_academicpersons_domain_model_profile.columns.image.aspect_ratio.3_4',
+                                                'value' => 3 / 4,
+                                            ],
+                                        ],
+                                        'selectedRatio' => '3:4',
+                                    ],
+                                ],
+                            ],
+                        ],
+                    ],
+                ],
             ],
         ],
         'contracts' => [
