@@ -87,13 +87,6 @@ final class AcademicPersonsCardPluginTest extends AbstractAcademicPersonsTestCas
         return $this->renderFrontendPage('https://www.acme.com/home');
     }
 
-    private function setContentElementHeader(string $header): void
-    {
-        $this->getConnectionPool()
-            ->getConnectionForTable('tt_content')
-            ->update('tt_content', ['header' => $header], ['uid' => 1]);
-    }
-
     /**
      * The item partial composes the heading from first, middle and last name, so an empty
      * middle name leaves two spaces in the markup. Matching on `\s+` asserts the rendered
@@ -135,15 +128,6 @@ final class AcademicPersonsCardPluginTest extends AbstractAcademicPersonsTestCas
         $this->assertIsInt($horst);
         $this->assertIsInt($max);
         $this->assertLessThan($max, $horst, 'Horst is selected first and has to render first.');
-    }
-
-    #[Test]
-    public function cardPluginRendersContentElementHeader(): void
-    {
-        $this->setUpTestCase('cardPage');
-        $this->setContentElementHeader('Our team');
-
-        $this->assertStringContainsString('Our team', $this->renderHomePage());
     }
 
     #[Test]

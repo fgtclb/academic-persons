@@ -67,10 +67,11 @@ extensions sort their elements into.
 
 The site settings of this extension — the detail page, the default grouping,
 sorting and pagination of a profile list, the selected letter of the letter
-navigation, the image placeholder and the phone link prefix below — are
-declared with the aggregate set. A site that depends on
-a single component set still gets the shipped defaults, but can only override
-them in :guilabel:`Site Settings` when it depends on `fgtclb/academic-persons`.
+navigation, the image placeholder, the phone link prefix and the
+:ref:`content element header <configuration-content-element-header>` switch
+below — are declared with the aggregate set. A site that depends on a single
+component set still gets the shipped defaults, but can only override them in
+:guilabel:`Site Settings` when it depends on `fgtclb/academic-persons`.
 
 ..  _configuration-phone-link-prefix:
 
@@ -325,6 +326,45 @@ the relation, because a select offers no other source for its value.
 The restriction is applied before
 :php:`\FGTCLB\AcademicBase\Event\ModifyTcaSelectFieldItemsEvent` is
 dispatched, so a listener of that event still has the last word.
+
+..  _configuration-content-element-header:
+
+The header of the content elements
+==================================
+
+The header and the subheader an editor enters on a :guilabel:`Persons List`,
+:guilabel:`Persons Detail`, :guilabel:`Persons List and Detail`,
+:guilabel:`Contacts`, :guilabel:`Profiles: Selected Profiles` or
+:guilabel:`Profiles: Selected Contracts` content element are rendered by the
+content element layout of the site, as for any other content element. The
+layouts of :guilabel:`EXT:fluid_styled_content` and of the bootstrap package do
+that, and the plugins render no header of their own.
+
+A site whose content element layout renders no header, because its element
+templates render it instead, lets the plugins render it:
+
+..  code-block:: typoscript
+    :caption: TypoScript constants
+
+    plugin.tx_academicpersons.renderContentElementHeader = 1
+
+On a site that uses the site set, that is the site setting :guilabel:`Render the
+content element header in the plugins` of `fgtclb/academic-persons`. The
+templates then render the header partial of :guilabel:`EXT:fluid_styled_content`
+above their output, for every header layout except :guilabel:`Hidden`. Do not
+switch it on where the layout renders the header: the header then appears twice.
+
+The extension does not require :guilabel:`EXT:fluid_styled_content`. It adds the
+partial path of that extension below every other one, so a site package that
+ships a :file:`Header/All.html` of its own renders that one instead, and a site
+without :guilabel:`EXT:fluid_styled_content` provides the partial that way.
+
+For the header layout :guilabel:`Default`, the partial takes the heading level
+from :typoscript:`plugin.tx_academicpersons.settings.defaultHeaderType`, which
+is mapped from the constant :typoscript:`styles.content.defaultHeaderType` of
+:guilabel:`EXT:fluid_styled_content`. A site that does not include the
+TypoScript of :guilabel:`EXT:fluid_styled_content` sets the setting itself;
+without it, such a header renders as an empty :html:`<header>` element.
 
 ..  _configuration-hidden-by-default:
 

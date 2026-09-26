@@ -14,6 +14,10 @@
 </f:if>
 
 <div class="academic-persons-list">
+    <f:if condition="{settings.renderContentElementHeader}">
+        <f:render partial="Header/All" arguments="{_all}" />
+    </f:if>
+
     <f:comment>
         A manual selection ignores the letter filter, so every letter would show the whole
         selection: no navigation for it, whatever the content element says.

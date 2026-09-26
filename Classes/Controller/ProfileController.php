@@ -11,6 +11,7 @@ declare(strict_types=1);
 
 namespace FGTCLB\AcademicPersons\Controller;
 
+use FGTCLB\AcademicBase\Controller\GetCurrentContentRecordMethodTrait;
 use FGTCLB\AcademicBase\Domain\Model\Dto\PluginControllerActionContext;
 use FGTCLB\AcademicPersons\Domain\Model\Dto\PluginControllerActionContext as PersonsPluginControllerActionContext;
 use FGTCLB\AcademicPersons\Domain\Model\Dto\ProfileDemand;
@@ -41,6 +42,8 @@ use TYPO3\CMS\Frontend\Page\PageAccessFailureReasons;
 
 final class ProfileController extends ActionController
 {
+    use GetCurrentContentRecordMethodTrait;
+
     /**
      * The demand properties of the list a visitor sets through the request, and the only
      * ones its navigation links carry: the page, the letter and the view mode. Every other
@@ -167,8 +170,8 @@ final class ProfileController extends ActionController
             );
         }
 
+        $this->assignContentElement();
         $this->view->assignMultiple([
-            'data' => $this->getCurrentContentObjectRenderer()?->data,
             'profiles' => $profiles,
             'demand' => $demand,
             'activeListArguments' => $activeListArguments,
@@ -259,8 +262,8 @@ final class ProfileController extends ActionController
             );
         }
 
+        $this->assignContentElement();
         $this->view->assignMultiple([
-            'data' => $this->getCurrentContentObjectRenderer()?->data,
             'profiles' => $profiles,
         ]);
 
@@ -331,8 +334,8 @@ final class ProfileController extends ActionController
             sprintf('profile_detail_view_%d', $profile->getUid()),
         );
 
+        $this->assignContentElement();
         $this->view->assignMultiple([
-            'data' => $this->getCurrentContentObjectRenderer()?->data,
             'profile' => $profile,
             // The public layout: which elements the template renders, in which column and
             // order, and what each of them shows. See `Templates/Profile/Detail.html`.
@@ -351,6 +354,8 @@ final class ProfileController extends ActionController
     {
         $this->assignViewMode($this->resolveViewMode($this->requestedViewMode()));
         if (empty($this->settings['selectedProfiles'])) {
+            // Nothing is selected, and the header of the content element still renders.
+            $this->assignContentElement();
             return $this->htmlResponse();
         }
 
@@ -366,8 +371,8 @@ final class ProfileController extends ActionController
         ));
         $profiles = $event->getProfiles();
 
+        $this->assignContentElement();
         $this->view->assignMultiple([
-            'data' => $this->getCurrentContentObjectRenderer()?->data,
             'profiles' => $this->sortBySelectionOrder($profiles, $profileUids),
         ]);
 
@@ -384,6 +389,8 @@ final class ProfileController extends ActionController
     {
         $this->assignViewMode($this->resolveViewMode($this->requestedViewMode()));
         if (empty($this->settings['selectedContracts'])) {
+            // Nothing is selected, and the header of the content element still renders.
+            $this->assignContentElement();
             return $this->htmlResponse();
         }
 
@@ -399,8 +406,8 @@ final class ProfileController extends ActionController
         ));
         $contracts = $event->getContracts();
 
+        $this->assignContentElement();
         $this->view->assignMultiple([
-            'data' => $this->getCurrentContentObjectRenderer()?->data,
             'contracts' => $this->sortBySelectionOrder($contracts, $contractUids),
         ]);
 
@@ -597,6 +604,20 @@ final class ProfileController extends ActionController
         foreach ($tags as $tag) {
             $cacheCollector?->addCacheTags(new CacheTag($tag));
         }
+    }
+
+    /**
+     * The content element the plugin renders: `data`, its row, and `record`, the record the
+     * header partial of EXT:fluid_styled_content renders the header through on TYPO3 v14.
+     * The templates render that partial while `settings.renderContentElementHeader` is on.
+     */
+    private function assignContentElement(): void
+    {
+        $contentObjectRenderer = $this->getCurrentContentObjectRenderer();
+        $this->view->assignMultiple([
+            'data' => $contentObjectRenderer?->data,
+            'record' => $this->getCurrentContentRecord($contentObjectRenderer),
+        ]);
     }
 
     private function getCurrentContentObjectRenderer(): ?ContentObjectRenderer

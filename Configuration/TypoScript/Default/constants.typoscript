@@ -13,6 +13,8 @@
 plugin.tx_academicpersons {
   # cat=plugin.tx_academicpersons//a; type=string; label=Detail page PID
   detailPid = 0
+  # cat=plugin.tx_academicpersons//a; type=boolean; label=Render the content element header in the plugins: only for a site whose content element layout renders no header
+  renderContentElementHeader = 0
   demand {
     # cat=plugin.tx_academicpersons//a; type=string; label=Group by
     groupBy = lastNameAlpha

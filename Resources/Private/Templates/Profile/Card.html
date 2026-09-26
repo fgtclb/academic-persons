@@ -4,6 +4,10 @@
 >
 
 <div class="academic-persons-card">
+    <f:if condition="{settings.renderContentElementHeader}">
+        <f:render partial="Header/All" arguments="{_all}" />
+    </f:if>
+
     <f:if condition="{profiles}">
         <f:then>
             <f:render

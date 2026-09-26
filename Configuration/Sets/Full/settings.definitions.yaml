@@ -22,6 +22,12 @@ settings:
     category: academic.persons
     type: int
     default: 0
+  plugin.tx_academicpersons.renderContentElementHeader:
+    label: 'Render the content element header in the plugins'
+    description: 'Only for a site whose content element layout renders no header. The layouts of EXT:fluid_styled_content and of the bootstrap package render it, and switched on there the header appears twice.'
+    category: academic.persons
+    type: bool
+    default: false
   plugin.tx_academicpersons.demand.groupBy:
     label: 'Group by'
     category: academic.persons

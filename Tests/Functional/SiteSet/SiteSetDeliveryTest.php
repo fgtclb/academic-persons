@@ -455,6 +455,7 @@ final class SiteSetDeliveryTest extends AbstractAcademicPersonsTestCase
         $this->assertSame(
             [
                 'plugin.tx_academicpersons.detailPid' => 0,
+                'plugin.tx_academicpersons.renderContentElementHeader' => false,
                 'plugin.tx_academicpersons.demand.groupBy' => 'lastNameAlpha',
                 'plugin.tx_academicpersons.demand.sortBy' => 'lastName',
                 'plugin.tx_academicpersons.demand.sortByDirection' => 'asc',

@@ -18,6 +18,10 @@
 <f:asset.module identifier="@fgtclb/academic-persons/frontend/profile.js" />
 
 <div class="container-fluid academic-persons-detail px-0" data-academic-persons-detail>
+    <f:if condition="{settings.renderContentElementHeader}">
+        <f:render partial="Header/All" arguments="{_all}" />
+    </f:if>
+
     <div class="row gx-lg-5 gy-5 align-items-stretch academic-persons-detail__layout">
         <div class="col-12 col-lg-4 d-none d-lg-block academic-persons-detail__aside">
             <div class="sticky-top academic-persons-detail__sticky-navigation" data-academic-persons-sticky-navigation>
