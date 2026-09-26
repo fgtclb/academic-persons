@@ -27,7 +27,7 @@
         <f:render
             partial="Profile/SectionHeader"
             arguments="{
-                header: '{f:translate(key: \'detail.contracts\', extensionName: \'academic_persons\')}',
+                header: '{f:translate(key: \'detail.contracts\', extensionName: \'AcademicPersons\')}',
                 layout: '{data.header_layout}',
                 subheader: '{data.subheader}',
                 detail: 'true'
@@ -59,7 +59,7 @@
                         <ul class="accordion-body">
                             <f:if condition="{contract.room}">
                                 <li>
-                                    <b>{f:translate(key: 'detail.room', extensionName: 'academic_persons')}:</b>
+                                    <b>{f:translate(key: 'detail.room', extensionName: 'AcademicPersons')}:</b>
 
                                     {contract.room}
                                 </li>
@@ -67,7 +67,7 @@
 
                             <f:if condition="{contract.phoneNumbers}">
                                 <li>
-                                    <b>{f:translate(key: 'detail.phoneNumbers', extensionName: 'academic_persons')}:</b>
+                                    <b>{f:translate(key: 'detail.phoneNumbers', extensionName: 'AcademicPersons')}:</b>
 
                                     <f:for each="{contract.phoneNumbers}" as="item" iteration="i">
                                         <f:comment>
@@ -89,7 +89,7 @@
 
                             <f:if condition="{contract.emailAddresses}">
                                 <li>
-                                    <b>{f:translate(key: 'detail.emailAddresses', extensionName: 'academic_persons')}:</b>
+                                    <b>{f:translate(key: 'detail.emailAddresses', extensionName: 'AcademicPersons')}:</b>
 
                                     <f:for each="{contract.emailAddresses}" as="item" iteration="i">
                                         <f:link.email email="{item.email}">
@@ -110,7 +110,7 @@
                                         <b>
                                             {f:translate(
                                                 key: 'detail.physicalAddress.{item.type}',
-                                                extensionName: 'academic_persons'
+                                                extensionName: 'AcademicPersons'
                                             )}:
                                         </b>
                                     </f:if>
@@ -142,7 +142,7 @@
     <f:render
         partial="Profile/SectionHeader"
         arguments="{
-            header: '{f:translate(key: \'detail.additionalInformation\', extensionName: \'academic_persons\')}',
+            header: '{f:translate(key: \'detail.additionalInformation\', extensionName: \'AcademicPersons\')}',
             layout: '{data.header_layout}',
             subheader: '{data.subheader}',
             detail: 'true'
@@ -151,7 +151,7 @@
 
     <f:if condition="{profile.website}">
         <p>
-            <b>{f:translate(key: 'detail.website', extensionName: 'academic_persons')}:</b>
+            <b>{f:translate(key: 'detail.website', extensionName: 'AcademicPersons')}:</b>
 
             <f:link.typolink parameter="{profile.website}" target="_blank" absolute="true">
                 {f:if(
@@ -184,7 +184,7 @@
             <f:if condition="{profile.{field.name}}">
                 <li class="accordion list-group-item" id="{field.name}-accordion">
                     <f:variable name="HeaderTitle">
-                        {f:translate(key: 'detail.{field.name}', extensionName: 'academic_persons')}
+                        {f:translate(key: 'detail.{field.name}', extensionName: 'AcademicPersons')}
                     </f:variable>
 
                     <f:render
@@ -215,7 +215,7 @@
                                     <f:if condition="{field.name} == 'publications' && {profile.publicationsLink}">
                                         <p>
                                             <b>
-                                                {f:translate(key: 'detail.publicationsLink', extensionName: 'academic_persons')}:
+                                                {f:translate(key: 'detail.publicationsLink', extensionName: 'AcademicPersons')}:
                                             </b>
 
                                             <f:link.typolink parameter="{profile.publicationsLink}" target="_blank" absolute="true">
@@ -233,7 +233,7 @@
                                             <f:if condition="{item.yearStart} || {item.yearEnd}">
                                                 <f:then>
                                                     <f:if condition="!{item.yearEnd} && {item.yearStart}">
-                                                        {f:translate(key: 'detail.since', extensionName: 'academic_persons')}
+                                                        {f:translate(key: 'detail.since', extensionName: 'AcademicPersons')}
                                                     </f:if>
 
                                                     {f:if(condition: '{item.yearStart}', then: '{item.yearStart}')}
@@ -243,7 +243,7 @@
                                                     </f:if>
 
                                                     <f:if condition="!{item.yearStart} && {item.yearEnd}">
-                                                        {f:translate(key: 'detail.till', extensionName: 'academic_persons')}
+                                                        {f:translate(key: 'detail.till', extensionName: 'AcademicPersons')}
                                                     </f:if>
 
                                                     {f:if(condition: '{item.yearEnd}', then: '{item.yearEnd}')}:
