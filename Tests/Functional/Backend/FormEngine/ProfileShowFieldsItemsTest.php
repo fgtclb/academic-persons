@@ -50,6 +50,28 @@ final class ProfileShowFieldsItemsTest extends AbstractAcademicPersonsTestCase
         $this->assertSame($expectedDefaultItems, $this->callItemsProcFunc(1, $site, 'fake_table', 'fake_field'));
     }
 
+    /**
+     * The function type of a contract is one of the fields to show, labelled like its column
+     * in the contract form.
+     */
+    #[Test]
+    public function itemsOfferTheFunctionTypeOfAContract(): void
+    {
+        $this->applyFakeTableTca();
+        $items = $this->callItemsProcFunc(1, new Site('acme', 1, []), 'fake_table', 'fake_field');
+
+        $functionTypeItems = array_values(array_filter(
+            $items,
+            static fn(array $item): bool => ($item['value'] ?? null) === 'contracts.functionType',
+        ));
+        $this->assertCount(1, $functionTypeItems);
+        $this->assertSame('contracts', $functionTypeItems[0]['group'] ?? null);
+        $this->assertSame(
+            'LLL:EXT:academic_persons/Resources/Private/Language/locallang_tca.xlf:tx_academicpersons_domain_model_contract.columns.function_type.label',
+            $functionTypeItems[0]['label'] ?? null,
+        );
+    }
+
     #[Test]
     public function itemsProcFuncDispatchesEventWithDefaultItems(): void
     {

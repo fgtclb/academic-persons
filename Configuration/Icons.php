@@ -78,6 +78,10 @@ return [
         'provider' => CurrentColorSvgIconProvider::class,
         'source' => 'EXT:academic_persons/Resources/Public/Icons/room.svg',
     ],
+    'academic-persons-clock' => [
+        'provider' => CurrentColorSvgIconProvider::class,
+        'source' => 'EXT:academic_persons/Resources/Public/Icons/clock.svg',
+    ],
     'academic-persons-detail-plus' => [
         'provider' => CurrentColorSvgIconProvider::class,
         'source' => 'EXT:academic_persons/Resources/Public/Icons/detail-plus.svg',

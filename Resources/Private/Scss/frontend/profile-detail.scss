@@ -139,6 +139,11 @@
     margin: 0.35rem 0;
 }
 
+// The values `profile.details.position.fields` lists for one contract, in one line.
+.academic-persons-detail__position-part + .academic-persons-detail__position-part::before {
+    content: ", ";
+}
+
 // Image
 
 .academic-persons-detail__figure {
@@ -213,6 +218,18 @@
 
 .academic-persons-detail__contact-line {
     display: block;
+}
+
+// Office hours as the editor wrote them: paragraphs and lists keep their gap, not the
+// margins of the page around the block.
+.academic-persons-detail__contact-office-hours {
+    > * {
+        margin-block: 0;
+    }
+
+    > * + * {
+        margin-top: 0.35rem;
+    }
 }
 
 // The record type of a contact row - "work", "private" - next to its value.

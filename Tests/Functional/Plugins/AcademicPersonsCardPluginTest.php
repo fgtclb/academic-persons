@@ -222,6 +222,24 @@ final class AcademicPersonsCardPluginTest extends AbstractAcademicPersonsTestCas
     }
 
     /**
+     * `contracts.functionType` is a relation too. The card renders the name of the function
+     * type for the gender of each profile, and the general name for a profile without one.
+     */
+    #[Test]
+    public function cardPluginRendersTheFunctionTypeNameForTheGenderOfTheProfile(): void
+    {
+        $this->setUpTestCase('cardPage_showFieldsFunctionType');
+
+        $content = (string)preg_replace('/\s+/', ' ', $this->renderHomePage());
+        $this->assertSame(3, substr_count($content, '<b>Function Type:</b>'));
+        $this->assertStringContainsString('<b>Function Type:</b> Head of Department (f) </li>', $content);
+        $this->assertStringContainsString('<b>Function Type:</b> Head of Department (m) </li>', $content);
+        $this->assertStringContainsString('<b>Function Type:</b> Head of Department </li>', $content);
+        // Only the selected field renders.
+        $this->assertStringNotContainsString('Professor', $content);
+    }
+
+    /**
      * A `tel:` URI carries no spaces, while the stored number is written for a reader. The
      * detail view has done this since it was written; the card rendered the stored number
      * into the target unchanged.

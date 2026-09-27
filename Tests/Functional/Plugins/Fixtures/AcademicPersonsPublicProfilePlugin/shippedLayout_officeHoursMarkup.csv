@@ -1,0 +1,16 @@
+"pages",
+,"uid","pid","doktype","deleted","hidden","sys_language_uid","l10n_parent","l18n_cfg","slug","title"
+,1,0,1,0,0,0,0,0,"/","Site Root"
+,2,1,1,0,0,0,0,0,"/home","Home (EN)"
+,100,1,254,0,0,0,0,0,"/sysfolder-records","Recordcollection"
+"tt_content",
+,"uid","pid","deleted","hidden","sys_language_uid","l18n_parent","CType","header","pi_flexform"
+,1,2,0,0,0,0,"academicpersons_detail","Profiles","<?xml version=""1.0"" encoding=""utf-8"" standalone=""yes"" ?><T3FlexForms><data><sheet index=""sDEF""><language index=""lDEF""><field index=""settings.demand.profileList""><value index=""vDEF""></value></field><field index=""settings.fallbackForNonTranslated""><value index=""vDEF"">0</value></field></language></sheet></data></T3FlexForms>"
+"tx_academicpersons_domain_model_profile",
+,"uid","pid","deleted","hidden","sys_language_uid","l10n_parent","title","first_name","middle_name","last_name","slug","contracts"
+,1,100,0,0,0,0,"Prof. Dr.","[EN] Max","","Müllermann","max-muellermann",3
+"tx_academicpersons_domain_model_contract",
+,"uid","pid","deleted","hidden","sys_language_uid","l10n_parent","profile","position","room","office_hours","publish","sorting"
+,1,100,0,0,0,0,1,"Professor of Applied Physics","A 1.23","<p>Tuesday 10:00 to 12:00</p><p>Otherwise <a href=""https://www.acme.com/appointments"">book an appointment</a>.</p>",1,1
+,2,100,0,0,0,0,1,"Dean of Studies","B 2.01","<p onclick=""alert('unsafe-handler')"">Wednesday 14:00 to 16:00</p><script>alert('unsafe-script')</script>",1,2
+,3,100,0,0,0,0,1,"Head of the Examination Board","C 3.14","",1,3

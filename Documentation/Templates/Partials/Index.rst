@@ -103,6 +103,21 @@ option applies, which is why a template should call it rather than filter
 :html:`{profile.contracts}` itself: a copy that loops over
 :html:`{profile.contracts}` keeps working, and ignores the options.
 
+..  _templates-function-type-name:
+
+The name of a function type
+---------------------------
+
+:file:`Profile/Contract/FunctionTypeName.html` renders the name of a function
+type for a profile's gender: the female name for ``ms``, the male name for
+``mr``, and the general name otherwise or where the gendered name is empty. It
+takes the arguments `functionType` and `gender`. The position line of the
+detail view renders it, and so does :file:`Profile/Contract/Field.html` for
+the field ``contracts.functionType`` of the fields to show. For that,
+:file:`Profile/Contract/Item.html` hands the profile's gender to the field
+partial as `gender`. A project copy of :file:`Profile/Contract/Item.html` that
+does not pass it shows the general name.
+
 ..  _templates-item-partials-text:
 
 Two of them render text, not markup

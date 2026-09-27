@@ -311,9 +311,9 @@ final class AcademicPersonsContractDisplayPolicyTest extends AbstractAcademicPer
             ])
         );
 
-        $this->assertStringContainsString('academic-persons-detail__position">Emeritus</p>', $content);
-        $this->assertStringContainsString('academic-persons-detail__position">Professor</p>', $content);
-        $this->assertStringContainsString('academic-persons-detail__position">Dean</p>', $content);
+        $this->assertStringContainsString('academic-persons-detail__position-part--position">Emeritus</span>', $content);
+        $this->assertStringContainsString('academic-persons-detail__position-part--position">Professor</span>', $content);
+        $this->assertStringContainsString('academic-persons-detail__position-part--position">Dean</span>', $content);
         $this->assertStringContainsString('mailto:emeritus@example.com', $content);
         $this->assertStringContainsString('mailto:professor@example.com', $content);
         $this->assertStringContainsString('mailto:dean@example.com', $content);

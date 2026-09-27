@@ -108,7 +108,9 @@ Two keys describe the public layout, everything else is a field:
     renders nothing. :yaml:`position` and :yaml:`contact` take the special
     renderer :yaml:`special: datasFromContracts`, and choose their contracts
     with :yaml:`contracts` and :yaml:`onlyValid` - see
-    :ref:`configuration-sections-profile-contracts`. :yaml:`menuSections` lists
+    :ref:`configuration-sections-profile-contracts`. :yaml:`position` also
+    lists what its line shows, see
+    :ref:`configuration-sections-profile-position-fields`. :yaml:`menuSections` lists
     stable navigation identifiers and :yaml:`menuSectionsDatas` maps each of
     them to the profile relation it shows.
 
@@ -128,6 +130,8 @@ profile's contracts it renders. The shipped file states the defaults:
           special: datasFromContracts
           contracts: all
           onlyValid: false
+          fields:
+            - position
         contact:
           special: datasFromContracts
           contracts: all
@@ -149,6 +153,49 @@ position and the contact data of the first contract only. The unit and function
 type filter of the list elements has no counterpart here: the detail view shows
 one profile, not a restricted list. See :ref:`configuration-contract-display`
 for how the options of the content elements relate.
+
+..  _configuration-sections-profile-position-fields:
+
+What the position line shows
+----------------------------
+
+:yaml:`profile.details.position.fields` lists what the position line shows of
+each contract, in this order. Three values are accepted:
+
+:yaml:`position`
+    The position text of the contract.
+
+:yaml:`functionType`
+    The name of the contract's function type. A profile with the gender
+    ``ms`` gets the female name and one with ``mr`` the male name, where the
+    function type has one. Every other profile, and a function type without
+    the gendered name, gets the general name.
+
+:yaml:`organisationalUnit`
+    The display text of the contract's organisational unit, or its unit name
+    where the display text is empty.
+
+The shipped value is :yaml:`[position]`, the line as it was before the key
+existed. Other values are dropped, and a list that keeps none of the three is
+the shipped value. A contract that has none of the listed values gets no line.
+
+Settings files merge key by key, so a site package that wants the function
+type next to the position states only the list:
+
+..  code-block:: yaml
+    :caption: EXT:my_sitepackage/Configuration/AcademicPersons/Settings.yaml
+
+    profile:
+      details:
+        position:
+          fields:
+            - position
+            - functionType
+
+Each value is rendered in an element of its own, with the classes
+``academic-persons-detail__position-part`` and
+``academic-persons-detail__position-part--<value>``. The shipped stylesheet
+separates them with a comma, and a site package changes that in CSS.
 
 ..  _configuration-sections-profile-rendering:
 
@@ -174,16 +221,17 @@ the two keys as ``publicProfile`` and dispatches every identifier of
         -   The non-empty ones as the parts of the heading
     *   -   :yaml:`position`
         -   :yaml:`special: datasFromContracts`
-        -   The position of every contract :yaml:`contracts` and
-            :yaml:`onlyValid` select
+        -   The values :yaml:`fields` lists of every contract
+            :yaml:`contracts` and :yaml:`onlyValid` select
     *   -   :yaml:`profileImage`
         -   Ordered image properties
         -   Every non-empty one, as a figure
     *   -   :yaml:`contact`
         -   :yaml:`special: datasFromContracts`
-        -   Email addresses, phone numbers, postal addresses and location with
-            room of every contract :yaml:`contracts` and :yaml:`onlyValid`
-            select
+        -   Email addresses, phone numbers, postal addresses, location with
+            room, and office hours of every contract :yaml:`contracts` and
+            :yaml:`onlyValid` select, see
+            :ref:`configuration-sections-profile-office-hours`
     *   -   :yaml:`subline`
         -   An ``LLL:EXT:`` reference
         -   The translated heading, and the point before which the
@@ -223,7 +271,8 @@ page header with the id ``page-header`` and, when the site loads Bootstrap,
 marks the section in view through its ScrollSpy. The icons of the contact rows
 and the fold-out entries are the identifiers ``academic-persons-envelope``,
 ``academic-persons-phone``, ``academic-persons-address``,
-``academic-persons-room``, ``academic-persons-detail-plus`` and
+``academic-persons-room``, ``academic-persons-clock``,
+``academic-persons-detail-plus`` and
 ``academic-persons-detail-minus`` of :file:`Configuration/Icons.php`; a site
 package re-registers an identifier to replace the glyph. They are `Bootstrap
 Icons <https://icons.getbootstrap.com/>`__, and their MIT licence ships beside
@@ -246,6 +295,30 @@ stylesheet touches nothing outside that element.
         body:has(.academic-persons-detail) .my-theme-section {
             overflow: unset;
         }
+
+..  _configuration-sections-profile-office-hours:
+
+Office hours in the contact block
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+A contract with office hours gets a row of its own in the contact block, after
+the location and room, with the label "Office hours" (``detail.officeHours``).
+A contract without them gets no row. The row carries the class
+``academic-persons-detail__contact-row--office-hours``, so a site that does not
+want it hides it in its stylesheet.
+
+The editor of `EXT:academic_persons_edit` stores office hours as HTML, the
+backend form and an import as plain text. The row turns line breaks into
+``<br>`` and then passes the value through the core HTML sanitizer, the
+default build of :html:`<f:sanitize.html>`. Paragraphs, lists, emphasis and
+links are kept. Event handler attributes are removed, and an element the
+sanitizer does not allow, a script among them, is printed as escaped text and
+never runs. A plain text value keeps its lines. HTML from the editor carries no
+line breaks between its blocks, so it renders as it was written.
+
+Plain text is read as HTML as well. A ``<`` in it starts a tag for the
+sanitizer, so ``10:00 < 12:00`` loses the ``<`` and ``Room <A 1.23>`` renders
+as an empty link. Write such values without angle brackets.
 
 ..  _configuration-sections-detail-override:
 

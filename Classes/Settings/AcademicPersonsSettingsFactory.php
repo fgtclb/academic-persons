@@ -54,6 +54,13 @@ class AcademicPersonsSettingsFactory
      */
     private const CONTRACTS_SPECIAL = 'datasFromContracts';
 
+    /**
+     * What the position line of the detail view can show of each contract, and what it shows
+     * when `profile.details.position.fields` keeps none of them.
+     */
+    private const POSITION_FIELDS = ['position', 'functionType', 'organisationalUnit'];
+    private const POSITION_FIELDS_DEFAULT = ['position'];
+
     private const DOCUMENT_VALIDATION_FLAGS = [
         'required',
         'readonly',
@@ -364,6 +371,12 @@ class AcademicPersonsSettingsFactory
             $detail = $this->normalizePublicProfileMap($detailConfiguration);
             if (($detail['special'] ?? '') === self::CONTRACTS_SPECIAL) {
                 $detail = $this->normalizeContractSelection($detailConfiguration, $detail);
+                if ($detailIdentifier === 'position') {
+                    // normalizePublicProfileMap() keeps a string `fields`, which is replaced
+                    // here like any other value that is not a list.
+                    unset($detail['fields']);
+                    $detail['fields'] = $this->normalizePositionFields($detailConfiguration['fields'] ?? null);
+                }
             }
             $details[$detailIdentifier] = $detail;
         }
@@ -393,6 +406,26 @@ class AcademicPersonsSettingsFactory
         ) ?? false;
 
         return $detail;
+    }
+
+    /**
+     * The contract values the position line shows, in the configured order: a list of
+     * `position`, `functionType` and `organisationalUnit`. Other values are dropped, and a
+     * list that keeps none of them is the position alone, what the line showed before the
+     * key existed.
+     *
+     * @return non-empty-list<string>
+     */
+    private function normalizePositionFields(mixed $configuredFields): array
+    {
+        if (!is_array($configuredFields)) {
+            return self::POSITION_FIELDS_DEFAULT;
+        }
+        $fields = array_values(array_filter(
+            $this->normalizePublicProfileList($configuredFields),
+            static fn(string $field): bool => in_array($field, self::POSITION_FIELDS, true),
+        ));
+        return $fields !== [] ? $fields : self::POSITION_FIELDS_DEFAULT;
     }
 
     /**

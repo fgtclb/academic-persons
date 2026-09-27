@@ -33,6 +33,10 @@
         <source>Organisational Unit</source>
         <target>Organisationseinheit</target>
       </trans-unit>
+      <trans-unit id="contracts.functionType">
+        <source>Function Type</source>
+        <target>Funktionsart</target>
+      </trans-unit>
       <trans-unit id="contracts.emailAddresses">
         <source>E-Mail</source>
         <target>E-Mail</target>
@@ -126,6 +130,10 @@
       <trans-unit id="detail.room" resname="detail.room">
         <source>Room</source>
         <target>Raum</target>
+      </trans-unit>
+      <trans-unit id="detail.officeHours" resname="detail.officeHours">
+        <source>Office hours</source>
+        <target>Sprechzeiten</target>
       </trans-unit>
       <trans-unit id="detail.phoneNumbers" resname="detail.phoneNumbers">
         <source>Phone number(s)</source>

@@ -48,6 +48,7 @@ final class AcademicPersonsPublicProfilePluginTest extends AbstractAcademicPerso
         'academic-persons-phone',
         'academic-persons-address',
         'academic-persons-room',
+        'academic-persons-clock',
         'academic-persons-detail-plus',
         'academic-persons-detail-minus',
     ];
@@ -188,7 +189,10 @@ final class AcademicPersonsPublicProfilePluginTest extends AbstractAcademicPerso
         $this->assertStringContainsString('academic-persons-detail__headline-part">[EN] Max</span>', $content);
         $this->assertStringContainsString('academic-persons-detail__headline-part">Müllermann</span>', $content);
         $this->assertSame(3, substr_count($content, 'academic-persons-detail__headline-part"'));
-        $this->assertStringContainsString('academic-persons-detail__position">Professor of Applied Physics</p>', $content);
+        $this->assertStringContainsString('academic-persons-detail__position-part--position">Professor of Applied Physics</span>', $content);
+        // The shipped position line lists the position only. The contract's function type is
+        // shown nowhere else in the shipped layout either.
+        $this->assertStringNotContainsString('Dean of Studies', $content);
         $this->assertStringContainsString('max.muellermann@example.com', $content);
         $this->assertStringContainsString('>+49 30 123456</a>', $content);
         $this->assertStringContainsString('Main Street 1', $content);
@@ -250,6 +254,67 @@ final class AcademicPersonsPublicProfilePluginTest extends AbstractAcademicPerso
 
         $this->assertStringContainsString('href="tel:+496241509123"', $normalized);
         $this->assertStringContainsString('>123</a>', $normalized);
+    }
+
+    /**
+     * The office hours of a contract are a row of the contact block, with their own icon and
+     * label. Plain text office hours, as the backend form and an import store them, keep their
+     * line breaks.
+     */
+    #[Test]
+    public function contactBlockShowsTheOfficeHoursOfAContract(): void
+    {
+        $content = $this->renderShippedProfile();
+        $normalized = (string)preg_replace('/\s+/', ' ', $content);
+
+        $this->assertStringContainsString('data-identifier="academic-persons-clock"', $content);
+        $this->assertStringContainsString('academic-persons-detail__contact-line">Office hours</strong>', $normalized);
+        $this->assertMatchesRegularExpression(
+            '#academic-persons-detail__contact-office-hours">Tuesday 10:00 to 12:00<br ?/?>\s*Thursday by appointment</div>#',
+            $content,
+        );
+    }
+
+    /**
+     * Office hours written in the frontend editor are HTML: their paragraphs and links are
+     * rendered as markup, not as escaped text.
+     */
+    #[Test]
+    public function officeHoursKeepTheParagraphsAndLinksOfTheEditor(): void
+    {
+        $content = $this->renderShippedProfile('shippedLayout_officeHoursMarkup');
+
+        $this->assertStringContainsString('<p>Tuesday 10:00 to 12:00</p>', $content);
+        $this->assertStringContainsString('<a href="https://www.acme.com/appointments">book an appointment</a>', $content);
+    }
+
+    /**
+     * The stored value is never trusted: an event handler attribute is removed, and a script
+     * element is printed as escaped text, so it never runs.
+     */
+    #[Test]
+    public function officeHoursNeverRenderScriptsOrEventHandlers(): void
+    {
+        $content = $this->renderShippedProfile('shippedLayout_officeHoursMarkup');
+
+        $this->assertStringContainsString('Wednesday 14:00 to 16:00', $content);
+        $this->assertStringNotContainsString('<script>alert(\'unsafe-script\')', $content);
+        $this->assertStringContainsString('&lt;script&gt;', $content);
+        $this->assertStringNotContainsString('unsafe-handler', $content);
+    }
+
+    /**
+     * Three contracts, of which the last has no office hours: it gets no office hours row, not
+     * an empty one with a label.
+     */
+    #[Test]
+    public function contractWithoutOfficeHoursGetsNoOfficeHoursRow(): void
+    {
+        $content = $this->renderShippedProfile('shippedLayout_officeHoursMarkup');
+
+        $this->assertSame(3, substr_count($content, 'academic-persons-detail__contact-contract"'));
+        $this->assertSame(2, substr_count($content, 'academic-persons-detail__contact-office-hours"'));
+        $this->assertSame(2, substr_count($content, 'data-identifier="academic-persons-clock"'));
     }
 
     /**

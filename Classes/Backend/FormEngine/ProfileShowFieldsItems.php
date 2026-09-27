@@ -96,6 +96,11 @@ final class ProfileShowFieldsItems
                 'group' => 'contracts',
             ],
             [
+                'label' => $this->getFieldLabel('tx_academicpersons_domain_model_contract', 'function_type'),
+                'value' => 'contracts.functionType',
+                'group' => 'contracts',
+            ],
+            [
                 'label' => $this->getFieldLabel('tx_academicpersons_domain_model_contract', 'organisational_unit'),
                 'value' => 'contracts.organisationalUnit',
                 'group' => 'contracts',

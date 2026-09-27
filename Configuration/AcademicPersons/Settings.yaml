@@ -162,6 +162,9 @@
 # `all` or `first`, the first in the editor's contract order, and `onlyValid`
 # leaves out a contract not valid on the day the page is rendered for; an
 # empty start or end date is open-ended. An invalid value is the default.
+# `position.fields` lists what the position line shows of each contract, in
+# order: `position`, `functionType` and `organisationalUnit`. The function
+# type uses the name for the profile's gender where one is maintained.
 # `menuSections` contains stable navigation identifiers;
 # `menuSectionsDatas` maps each identifier to its Profile relation property.
 #
@@ -196,6 +199,8 @@ profile:
       special: datasFromContracts
       contracts: all
       onlyValid: false
+      fields:
+        - position
     profileImage:
       - image
     contact:

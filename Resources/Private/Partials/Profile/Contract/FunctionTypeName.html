@@ -1,0 +1,22 @@
+<html
+    data-namespace-typo3-fluid="true"
+    xmlns:f="http://typo3.org/ns/TYPO3/CMS/Fluid/ViewHelpers"
+>
+
+<f:comment>
+    The name of a function type for the gender of a profile: the female name for "ms", the male
+    name for "mr", and the general name for any other gender, a profile without one, or where the
+    gendered name is not maintained. The general name is a required field.
+
+    Arguments: "functionType", "gender" (the profile's gender, may be empty).
+</f:comment>
+
+<f:spaceless>
+    <f:if condition="{gender} == 'ms' && {functionType.functionNameFemale}">
+        <f:then>{functionType.functionNameFemale}</f:then>
+        <f:else if="{gender} == 'mr' && {functionType.functionNameMale}">{functionType.functionNameMale}</f:else>
+        <f:else>{functionType.functionName}</f:else>
+    </f:if>
+</f:spaceless>
+
+</html>

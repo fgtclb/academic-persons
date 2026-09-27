@@ -5,10 +5,11 @@
 >
 
 <f:comment>
-    The contact block of every contract: email addresses, phone numbers, postal addresses and
-    the location with its room. The icons are registered in `Configuration/Icons.php` with the
-    currentColor provider of EXT:academic_base and inlined here, so they follow the text colour
-    of the page; `core` is a global Fluid namespace, no declaration is needed for `core:icon`.
+    The contact block of every contract: email addresses, phone numbers, postal addresses, the
+    location with its room, and the office hours. The icons are registered in
+    `Configuration/Icons.php` with the currentColor provider of EXT:academic_base and inlined
+    here, so they follow the text colour of the page. `core` is a global Fluid namespace, so
+    `core:icon` needs no declaration.
 
     Which contracts: "profile.details.contact" in Settings.yaml, "contracts" (all|first) and
     "onlyValid".
@@ -112,6 +113,24 @@
                                             <f:translate key="detail.room" extensionName="AcademicPersons" />: {contract.room}
                                         </span>
                                     </f:if>
+                                </div>
+                            </div>
+                        </f:if>
+                        <f:if condition="{contract.officeHours}">
+                            <div class="academic-persons-detail__contact-row academic-persons-detail__contact-row--office-hours">
+                                <span class="academic-persons-detail__contact-icon">
+                                    <core:icon identifier="academic-persons-clock" alternativeMarkupIdentifier="inline" />
+                                </span>
+                                <div class="academic-persons-detail__contact-content">
+                                    <strong class="academic-persons-detail__contact-line"><f:translate key="detail.officeHours" extensionName="AcademicPersons" /></strong>
+                                    <f:comment>
+                                        The frontend editor stores HTML, the backend form and an import plain
+                                        text. Line breaks become `<br>`, which leaves editor HTML without
+                                        newlines unchanged, and the core sanitizer then keeps paragraphs, links
+                                        and emphasis. It removes event handler attributes and prints an element
+                                        it does not allow, a script among them, as escaped text.
+                                    </f:comment>
+                                    <div class="academic-persons-detail__contact-office-hours">{f:format.nl2br(value: contract.officeHours) -> f:sanitize.html()}</div>
                                 </div>
                             </div>
                         </f:if>

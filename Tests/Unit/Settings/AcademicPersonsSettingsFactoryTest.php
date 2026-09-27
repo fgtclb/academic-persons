@@ -254,7 +254,7 @@ final class AcademicPersonsSettingsFactoryTest extends UnitTestCase
         $this->assertSame(
             [
                 'headline' => ['title', 'firstName'],
-                'position' => ['special' => 'datasFromContracts', 'contracts' => 'all', 'onlyValid' => false],
+                'position' => ['special' => 'datasFromContracts', 'contracts' => 'all', 'onlyValid' => false, 'fields' => ['position']],
                 'subline' => 'LLL:EXT:site/Resources/Private/Language/locallang.xlf:profile.subline',
                 'menuSectionsDatas' => ['researchProjects' => 'scientificResearch'],
             ],
@@ -267,13 +267,77 @@ final class AcademicPersonsSettingsFactoryTest extends UnitTestCase
     {
         $settings = $this->normalize($this->getShippedConfiguration());
 
-        foreach (['position', 'contact'] as $block) {
-            $this->assertSame(
-                ['special' => 'datasFromContracts', 'contracts' => 'all', 'onlyValid' => false],
-                $settings->publicProfile->details[$block],
-                $block,
-            );
+        $this->assertSame(
+            ['special' => 'datasFromContracts', 'contracts' => 'all', 'onlyValid' => false, 'fields' => ['position']],
+            $settings->publicProfile->details['position'],
+        );
+        $this->assertSame(
+            ['special' => 'datasFromContracts', 'contracts' => 'all', 'onlyValid' => false],
+            $settings->publicProfile->details['contact'],
+        );
+    }
+
+    /**
+     * @return \Generator<string, array{0: mixed, 1: list<string>}>
+     */
+    public static function positionFieldsDataProvider(): \Generator
+    {
+        yield 'not configured' => [null, ['position']];
+        yield 'the shipped list' => [['position'], ['position']];
+        yield 'every value, in an order of its own' => [
+            ['organisationalUnit', 'functionType', 'position'],
+            ['organisationalUnit', 'functionType', 'position'],
+        ];
+        yield 'surrounding whitespace and a repetition' => [[' functionType ', 'functionType'], ['functionType']];
+        yield 'an unknown value is dropped' => [['functionType', 'room', 'Position'], ['functionType']];
+        yield 'nothing but unknown values' => [['room'], ['position']];
+        yield 'an empty list' => [[], ['position']];
+        yield 'not a list' => ['functionType', ['position']];
+    }
+
+    /**
+     * `fields` of the position line lists what it shows of each contract, in order. Only
+     * `position`, `functionType` and `organisationalUnit` are accepted. A list that keeps none of
+     * them is the default, the position alone, which is also what the line showed before the key
+     * existed.
+     *
+     * @param list<string> $expected
+     */
+    #[Test]
+    #[DataProvider('positionFieldsDataProvider')]
+    public function thePositionLineCarriesTheAcceptedFields(mixed $fields, array $expected): void
+    {
+        $position = ['special' => 'datasFromContracts'];
+        if ($fields !== null) {
+            $position['fields'] = $fields;
         }
+        $settings = $this->normalize(['profile' => ['details' => ['position' => $position]]]);
+
+        $this->assertSame(
+            ['special' => 'datasFromContracts', 'contracts' => 'all', 'onlyValid' => false, 'fields' => $expected],
+            $settings->publicProfile->details['position'],
+        );
+    }
+
+    /**
+     * The contact block shows every contact row of a contract and has no `fields`, whatever
+     * is configured for it.
+     */
+    #[Test]
+    public function theContactBlockGetsNoFields(): void
+    {
+        $settings = $this->normalize([
+            'profile' => [
+                'details' => [
+                    'contact' => ['special' => 'datasFromContracts', 'fields' => ['functionType']],
+                ],
+            ],
+        ]);
+
+        $this->assertSame(
+            ['special' => 'datasFromContracts', 'contracts' => 'all', 'onlyValid' => false],
+            $settings->publicProfile->details['contact'],
+        );
     }
 
     /**

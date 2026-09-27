@@ -13,8 +13,12 @@
 ,"uid","pid","deleted","hidden","sys_language_uid","l10n_parent","title","first_name","middle_name","last_name","slug","miscellaneous","teaching_area","website","website_title","publications_link","contracts","vita","publications","lectures"
 ,1,100,0,0,0,0,"Prof. Dr.","[EN] Max","","Müllermann","max-muellermann","<p>Chairs the faculty council.</p>","<p>Applied physics.</p>","https://www.acme.com/home","Personal page","https://www.acme.com/home?publications=1",1,1,1,1
 "tx_academicpersons_domain_model_contract",
-,"uid","pid","deleted","hidden","sys_language_uid","l10n_parent","profile","position","location","room","publish","sorting","email_addresses","phone_numbers","physical_addresses"
-,1,100,0,0,0,0,1,"Professor of Applied Physics",1,"A 1.23",1,1,1,1,1
+,"uid","pid","deleted","hidden","sys_language_uid","l10n_parent","profile","position","function_type","location","room","office_hours","publish","sorting","email_addresses","phone_numbers","physical_addresses"
+,1,100,0,0,0,0,1,"Professor of Applied Physics",1,1,"A 1.23","Tuesday 10:00 to 12:00
+Thursday by appointment",1,1,1,1,1
+"tx_academicpersons_domain_model_function_type",
+,"uid","pid","deleted","hidden","sys_language_uid","l10n_parent","function_name","function_name_male","function_name_female"
+,1,100,0,0,0,0,"Dean of Studies","",""
 "tx_academicpersons_domain_model_email",
 ,"uid","pid","deleted","hidden","sys_language_uid","l10n_parent","contract","type","email","sorting"
 ,1,100,0,0,0,0,1,"work","max.muellermann@example.com",1

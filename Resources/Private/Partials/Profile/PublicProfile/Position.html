@@ -5,8 +5,10 @@
 >
 
 <f:comment>
-    The positions of the contracts "profile.details.position" in Settings.yaml selects:
-    "contracts" (all|first) and "onlyValid".
+    The position line of each contract. "profile.details.position" in Settings.yaml selects the
+    contracts - "contracts" (all|first) and "onlyValid" - and "fields" what the line shows of each
+    of them, in order: "position", "functionType" and "organisationalUnit". Every value is an
+    element of its own, and a contract without any of them gets no line.
 </f:comment>
 
 <f:switch expression="{publicProfile.details.position.special}">
@@ -15,13 +17,43 @@
         <f:if condition="{contracts}">
             <div class="academic-persons-detail__positions">
                 <f:for each="{contracts}" as="contract">
-                    <f:if condition="{contract.position}">
-                        <p class="academic-persons-detail__position">{contract.position}</p>
+                    <f:variable name="parts"><f:spaceless>
+                        <f:for each="{publicProfile.details.position.fields}" as="field">
+                            <f:render section="Part" arguments="{field: field, contract: contract, profile: profile}" />
+                        </f:for>
+                    </f:spaceless></f:variable>
+                    <f:if condition="{parts}">
+                        <p class="academic-persons-detail__position">{parts -> f:format.raw()}</p>
                     </f:if>
                 </f:for>
             </div>
         </f:if>
     </f:case>
 </f:switch>
+
+<f:section name="Part">
+    <f:switch expression="{field}">
+        <f:case value="position">
+            <f:if condition="{contract.position}">
+                <span class="academic-persons-detail__position-part academic-persons-detail__position-part--position">{contract.position}</span>
+            </f:if>
+        </f:case>
+        <f:case value="functionType">
+            <f:if condition="{contract.functionType}">
+                <span class="academic-persons-detail__position-part academic-persons-detail__position-part--functionType"><f:spaceless><f:render partial="Profile/Contract/FunctionTypeName" arguments="{functionType: contract.functionType, gender: profile.gender}" /></f:spaceless></span>
+            </f:if>
+        </f:case>
+        <f:case value="organisationalUnit">
+            <f:comment>The display text, and the unit name where it is empty, as in "Profile/Contract/Field".</f:comment>
+            <f:variable name="unitName" value="{contract.organisationalUnit.displayText}" />
+            <f:if condition="!{unitName}">
+                <f:variable name="unitName" value="{contract.organisationalUnit.unitName}" />
+            </f:if>
+            <f:if condition="{unitName}">
+                <span class="academic-persons-detail__position-part academic-persons-detail__position-part--organisationalUnit">{unitName}</span>
+            </f:if>
+        </f:case>
+    </f:switch>
+</f:section>
 
 </html>

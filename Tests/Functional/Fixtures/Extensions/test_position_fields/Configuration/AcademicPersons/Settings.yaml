@@ -1,0 +1,11 @@
+# The position line of the detail view with every value it accepts, in the
+# order the shipped file lists them. The settings files merge recursively, so
+# `special`, `contracts` and `onlyValid` of the shipped block stay, and only
+# the `fields` list is replaced.
+profile:
+  details:
+    position:
+      fields:
+        - position
+        - functionType
+        - organisationalUnit

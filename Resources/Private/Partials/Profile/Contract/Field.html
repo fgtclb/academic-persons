@@ -3,6 +3,11 @@
     xmlns:f="http://typo3.org/ns/TYPO3/CMS/Fluid/ViewHelpers"
 >
 
+<f:comment>
+    One field of a contract, "fieldName". "gender" is the gender of the profile, which selects
+    the name of the function type, and "telPrefix" the prefix of a phone link target.
+</f:comment>
+
 <f:if condition="{contract.{fieldName}} && {fieldName} != 'image'">
     <li class="list-group-item">
         <b>{f:translate(key: 'contracts.{fieldName}', extensionName: 'AcademicPersons')}:</b>
@@ -17,6 +22,13 @@
 
         <f:if condition="{fieldName} == location">
             {contract.location.title}
+        </f:if>
+
+        <f:if condition="{fieldName} == functionType">
+            <f:render
+                partial="Profile/Contract/FunctionTypeName"
+                arguments="{functionType: contract.functionType, gender: gender}"
+            />
         </f:if>
 
         <f:if condition="{fieldName} == organisationalUnit">
