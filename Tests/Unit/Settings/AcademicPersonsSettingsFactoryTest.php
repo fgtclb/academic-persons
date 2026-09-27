@@ -11,6 +11,7 @@ use FGTCLB\AcademicPersons\Settings\AcademicPersonsSettingsFactory;
 use FGTCLB\AcademicPersons\Settings\FrontendUserSyncEntry;
 use FGTCLB\AcademicPersons\Settings\FrontendUserSyncSettings;
 use FGTCLB\AcademicPersons\Settings\LegacySettingsMigrator;
+use FGTCLB\AcademicPersons\Settings\ManagedFieldsSettings;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\Attributes\Test;
 use Symfony\Component\Yaml\Yaml;
@@ -31,10 +32,10 @@ use TYPO3\TestingFramework\Core\Unit\UnitTestCase;
 final class AcademicPersonsSettingsFactoryTest extends UnitTestCase
 {
     #[Test]
-    public function theShippedFileConsistsOfTheFiveTopLevelMaps(): void
+    public function theShippedFileConsistsOfTheSixTopLevelMaps(): void
     {
         $this->assertSame(
-            ['profile', 'special', 'contracts', 'documentSections', 'frontendUserSync'],
+            ['profile', 'special', 'contracts', 'documentSections', 'frontendUserSync', 'managedFields'],
             array_keys($this->getShippedConfiguration()),
         );
     }
@@ -91,7 +92,7 @@ final class AcademicPersonsSettingsFactoryTest extends UnitTestCase
         $this->assertNotNull($website);
         $this->assertSame([NotEmptyValidator::class, UrlValidator::class], $website->validation->validatorClassNames);
         $this->assertArrayNotHasKey('validations', $settings->raw);
-        $this->assertSame(['profile', 'special', 'contracts', 'documentSections', 'frontendUserSync'], array_keys($settings->raw));
+        $this->assertSame(['profile', 'special', 'contracts', 'documentSections', 'frontendUserSync', 'managedFields'], array_keys($settings->raw));
     }
 
     /**
@@ -1184,6 +1185,127 @@ final class AcademicPersonsSettingsFactoryTest extends UnitTestCase
         $this->expectExceptionCode(1790142324);
         $this->expectExceptionMessage($expectedProblem);
         $settings->frontendUserSync->assertValid();
+    }
+
+    /**
+     * The shipped lists are empty: an installation that names no field keeps
+     * every field of every record editable.
+     */
+    #[Test]
+    public function theShippedFileManagesNoField(): void
+    {
+        $settings = $this->normalize($this->getShippedConfiguration());
+
+        $this->assertEquals(new ManagedFieldsSettings(), $settings->managedFields);
+    }
+
+    /**
+     * An entry names a field by its settings key or by the property it addresses,
+     * and is kept as that field's property and column - `emailAddress` is the key
+     * of the property `email`, `phoneNumberType` the key of the property `type`.
+     */
+    #[Test]
+    public function aManagedFieldIsResolvedToItsPropertyAndColumn(): void
+    {
+        $settings = $this->normalize([
+            ...$this->getShippedConfiguration(),
+            'managedFields' => [
+                'profile' => ['title', ' lastName '],
+                'contracts' => ['position', 'organisationalUnit'],
+                'emailAddresses' => ['emailAddress'],
+                'phoneNumbers' => ['phoneNumber', 'type'],
+                'physicalAddresses' => ['streetNumber'],
+            ],
+        ]);
+
+        $this->assertSame(
+            [
+                'profile' => ['title' => 'title', 'lastName' => 'last_name'],
+                'contracts' => ['position' => 'position', 'organisationalUnit' => 'organisational_unit'],
+                'emailAddresses' => ['email' => 'email'],
+                'phoneNumbers' => ['phoneNumber' => 'phone_number', 'type' => 'type'],
+                'physicalAddresses' => ['streetNumber' => 'street_number'],
+            ],
+            $settings->managedFields->fields,
+        );
+        $this->assertSame([], $settings->managedFields->problems);
+    }
+
+    /**
+     * Only the list of the record's own type applies: a table is asked for its
+     * columns, and a table outside the map has none.
+     */
+    #[Test]
+    public function theColumnsOfOneTableComeFromTheListOfItsRecordType(): void
+    {
+        $managedFields = $this->normalize([
+            ...$this->getShippedConfiguration(),
+            'managedFields' => ['contracts' => ['position', 'room'], 'emailAddresses' => ['type']],
+        ])->managedFields;
+
+        $this->assertSame(['position', 'room'], $managedFields->getColumns('tx_academicpersons_domain_model_contract'));
+        $this->assertSame(['type'], $managedFields->getColumns('tx_academicpersons_domain_model_email'));
+        $this->assertSame([], $managedFields->getColumns('tx_academicpersons_domain_model_phone_number'));
+        $this->assertSame([], $managedFields->getColumns('tx_academicpersons_domain_model_profile'));
+        $this->assertSame([], $managedFields->getColumns('pages'));
+    }
+
+    /**
+     * @return \Generator<string, array{mixed, string}>
+     */
+    public static function invalidManagedFieldsMaps(): \Generator
+    {
+        yield 'a list instead of a map' => [
+            ['position'],
+            '`managedFields` must be a map',
+        ];
+        yield 'an unknown record type' => [
+            ['contract' => ['position']],
+            '`managedFields.contract` is not a known record type, use one of: profile, contracts, emailAddresses, phoneNumbers, physicalAddresses',
+        ];
+        yield 'a field the record type does not have' => [
+            ['contracts' => ['position', 'office']],
+            '`managedFields.contracts` names `office`, which is not a field of `contracts.fields`',
+        ];
+        yield 'a database column instead of a field name' => [
+            ['profile' => ['last_name']],
+            '`managedFields.profile` names `last_name`, which is not a field of `profile`',
+        ];
+        yield 'a field of another contact section' => [
+            ['emailAddresses' => ['street']],
+            '`managedFields.emailAddresses` names `street`, which is not a field of `contracts.contactSections.emailAddresses.fields`',
+        ];
+        yield 'a map instead of a list' => [
+            ['contracts' => ['position' => true]],
+            '`managedFields.contracts` must be a list of field names',
+        ];
+        yield 'an entry that is not a name' => [
+            ['contracts' => [['position']]],
+            '`managedFields.contracts` must be a list of field names',
+        ];
+    }
+
+    /**
+     * A mistake in the map is named, not thrown, for the reason the
+     * synchronisation map gives: the graph is also built for the TCA. The
+     * resolver of the managed fields throws it, with the name it could not find.
+     */
+    #[DataProvider('invalidManagedFieldsMaps')]
+    #[Test]
+    public function aMistakeInTheManagedFieldsMapIsRefusedWhereTheMapIsUsed(
+        mixed $managedFields,
+        string $expectedProblem,
+    ): void {
+        $settings = $this->normalize([
+            ...$this->getShippedConfiguration(),
+            'managedFields' => $managedFields,
+        ]);
+
+        $this->assertNotSame([], $settings->contractFields);
+        $this->expectException(\UnexpectedValueException::class);
+        $this->expectExceptionCode(1790536034);
+        $this->expectExceptionMessage($expectedProblem);
+        $settings->managedFields->assertValid();
     }
 
     /**

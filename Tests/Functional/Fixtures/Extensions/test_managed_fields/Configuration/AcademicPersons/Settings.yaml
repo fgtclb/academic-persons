@@ -1,0 +1,15 @@
+# A site package whose profiles are filled by a synchronisation. It names
+# fields by their settings key (`title`, `website`, `position`,
+# `emailAddress`) and by the property they address (`type` is the property of
+# `phoneNumberType`). Nothing of the physical addresses is managed. The names
+# are left out: the shipped settings lock them for every record already.
+managedFields:
+  profile:
+    - title
+    - website
+  contracts:
+    - position
+  emailAddresses:
+    - emailAddress
+  phoneNumbers:
+    - type

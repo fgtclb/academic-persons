@@ -5,7 +5,7 @@
 Profile sections
 ================
 
-:file:`Configuration/AcademicPersons/Settings.yaml` describes a profile in five
+:file:`Configuration/AcademicPersons/Settings.yaml` describes a profile in six
 top-level maps. It ships with :guilabel:`academic_persons`, which owns the
 records and their TCA, and it is the one file the backend record editor, the
 public detail view and the editing frontend of `EXT:academic_persons_edit
@@ -34,6 +34,9 @@ public detail view and the editing frontend of `EXT:academic_persons_edit
         -   Which :sql:`fe_users` column feeds which property when profiles are
             synchronised from frontend users, see
             :ref:`configuration-frontend-user-sync`.
+    *   -   :yaml:`managedFields`
+        -   Which fields are read-only in the backend on the records a
+            synchronisation wrote, see :ref:`configuration-managed-fields`.
 
 The order of every map and list is preserved and is what the editing frontend
 renders. The :ref:`validator flags <configuration-validations>` are documented

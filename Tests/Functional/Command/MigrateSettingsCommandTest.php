@@ -43,9 +43,10 @@ final class MigrateSettingsCommandTest extends AbstractAcademicPersonsTestCase
     /**
      * The printed document is exactly the array the graph of this instance
      * was built from: the four maps, in the shipped order, with the legacy
-     * flags applied - so what the integrator pastes changes nothing. The fifth
-     * map, `frontendUserSync`, is no target of a legacy key and is not printed;
-     * a package that does not name it keeps the shipped one.
+     * flags applied - so what the integrator pastes changes nothing. The other
+     * two maps, `frontendUserSync` and `managedFields`, are no target of a
+     * legacy key and are not printed. A package that does not name them keeps
+     * the shipped ones.
      */
     #[Test]
     public function thePrintedYamlIsTheOverlaidSectionMaps(): void
@@ -67,7 +68,7 @@ final class MigrateSettingsCommandTest extends AbstractAcademicPersonsTestCase
             'The legacy set does not list the year, so it loses the shipped required and number flags',
         );
         $this->assertSame(
-            array_diff_key($this->get(AcademicPersonsSettings::class)->raw, ['frontendUserSync' => true]),
+            array_diff_key($this->get(AcademicPersonsSettings::class)->raw, ['frontendUserSync' => true, 'managedFields' => true]),
             $printed,
         );
     }

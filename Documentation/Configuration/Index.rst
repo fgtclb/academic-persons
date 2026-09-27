@@ -602,5 +602,6 @@ one mechanism per site and the question does not arise.
    Sections/Index
    Validations/Index
    FrontendUserSync/Index
+   ManagedFields/Index
    RouteEnhancers/Index
    Labels/Index

@@ -2,10 +2,10 @@
 # ===================================
 # This file is the single source for the public profile layout, the fields
 # the editing frontend of EXT:academic_persons_edit offers, and the validation
-# metadata applied to frontend requests and to the backend TCA, and the
-# mapping of the frontend user synchronisation. It contains five top-level
-# maps: `profile`, `special`, `contracts`, `documentSections` and
-# `frontendUserSync`.
+# metadata applied to frontend requests and to the backend TCA, the mapping
+# of the frontend user synchronisation, and the fields a synchronisation owns.
+# It contains six top-level maps: `profile`, `special`, `contracts`,
+# `documentSections`, `frontendUserSync` and `managedFields`.
 #
 # Documented at:
 # https://docs.typo3.org/p/fgtclb/academic-persons/main/en-us/Configuration/Sections/Index.html
@@ -842,3 +842,27 @@ frontendUserSync:
       type: ''
     - column: fax
       type: ''
+
+# Managed fields
+# --------------
+# The fields a synchronisation or an import owns, per record type. On a record
+# that carries an import identifier, is not a translation, and whose profile is
+# not excluded with `skip_sync`, the backend form renders these fields
+# read-only, with a note naming the import identifier. Records an editor added
+# have no import identifier and stay editable. The lock applies to the form
+# only: the synchronisation, an import or a script keep writing the fields.
+# - An entry names a field the way the settings above do, by its key or by the
+#   property it addresses: `profile` by a key of `profile`, `contracts` by one
+#   of `contracts.fields`, and the three contact lists by one of their
+#   `contracts.contactSections.<list>.fields`. A field that is not configured
+#   there cannot be managed.
+# - A name that matches no field makes every person record form fail with an
+#   error naming it, until the list is corrected.
+# - The lists are empty, so no field is managed until a package names one. A
+#   list is replaced as a whole by a later package.
+managedFields:
+  profile: []
+  contracts: []
+  emailAddresses: []
+  phoneNumbers: []
+  physicalAddresses: []

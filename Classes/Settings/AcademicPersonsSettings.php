@@ -10,12 +10,13 @@ use FGTCLB\AcademicBase\Settings\ValidationSet;
 /**
  * The typed graph built from `Configuration/AcademicPersons/Settings.yaml`.
  *
- * Its five top-level maps become: the profile sections with their fields
+ * Its six top-level maps become: the profile sections with their fields
  * (`profile`), the special components (`special`), the contract fields and
  * the contact sections a contract owns (`contracts`), the document sections
- * (`documentSections`) and the mapping of the frontend user synchronisation
- * (`frontendUserSync`, {@see FrontendUserSyncSettings}). The public detail
- * layout is read from the same `profile` map into
+ * (`documentSections`), the mapping of the frontend user synchronisation
+ * (`frontendUserSync`, {@see FrontendUserSyncSettings}) and the fields a
+ * synchronisation owns (`managedFields`, {@see ManagedFieldsSettings}). The
+ * public detail layout is read from the same `profile` map into
  * {@see PublicProfileSettings}. `raw` keeps the merged array the graph was
  * built from.
  *
@@ -41,6 +42,7 @@ final class AcademicPersonsSettings
     public readonly array $documentSections;
     public readonly PublicProfileSettings $publicProfile;
     public readonly FrontendUserSyncSettings $frontendUserSync;
+    public readonly ManagedFieldsSettings $managedFields;
     /** @var array<string, mixed> */
     public readonly array $raw;
 
@@ -61,6 +63,7 @@ final class AcademicPersonsSettings
         ?PublicProfileSettings $publicProfile = null,
         array $raw = [],
         ?FrontendUserSyncSettings $frontendUserSync = null,
+        ?ManagedFieldsSettings $managedFields = null,
     ) {
         $this->profileSections = $profileSections;
         $this->specialFields = $specialFields;
@@ -70,6 +73,7 @@ final class AcademicPersonsSettings
         $this->publicProfile = $publicProfile ?? new PublicProfileSettings();
         $this->raw = $raw;
         $this->frontendUserSync = $frontendUserSync ?? new FrontendUserSyncSettings();
+        $this->managedFields = $managedFields ?? new ManagedFieldsSettings();
     }
 
     /**
@@ -82,6 +86,7 @@ final class AcademicPersonsSettings
      *     publicProfile?: PublicProfileSettings,
      *     raw?: array<string, mixed>,
      *     frontendUserSync?: FrontendUserSyncSettings,
+     *     managedFields?: ManagedFieldsSettings,
      * } $array
      */
     public static function __set_state(array $array): self
@@ -100,6 +105,9 @@ final class AcademicPersonsSettings
             frontendUserSync: $array['frontendUserSync'] ?? new FrontendUserSyncSettings(problems: [
                 'The cached settings predate the map; flush the TYPO3 caches.',
             ]),
+            // Read as an empty map, a graph cached before this one existed locks nothing,
+            // which is what it did when it was cached.
+            managedFields: $array['managedFields'] ?? null,
         );
     }
 

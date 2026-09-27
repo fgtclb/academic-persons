@@ -10,6 +10,13 @@
   >
     <header/>
     <body>
+      <!-- Managed fields -->
+
+      <trans-unit id="managedField.description">
+        <source>Maintained by the synchronisation (%s), so it is read-only here.</source>
+        <target>Wird von der Synchronisation gepflegt (%s) und ist hier daher schreibgeschützt.</target>
+      </trans-unit>
+
       <!-- Addresses -->
 
       <trans-unit id="tx_academicpersons_domain_model_address.columns.additional.label">

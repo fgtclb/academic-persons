@@ -125,17 +125,153 @@ class AcademicPersonsSettingsFactory
      */
     public function normalize(array $settings): AcademicPersonsSettings
     {
+        $profileSections = $this->normalizeProfileSections($settings);
         $contractFields = $this->normalizeContractFields($settings);
+        $contractContactSections = $this->normalizeContractContactSections($settings);
         return new AcademicPersonsSettings(
-            profileSections: $this->normalizeProfileSections($settings),
+            profileSections: $profileSections,
             specialFields: $this->normalizeSpecialFields($settings),
             contractFields: $contractFields,
-            contractContactSections: $this->normalizeContractContactSections($settings),
+            contractContactSections: $contractContactSections,
             documentSections: $this->normalizeDocumentSections($settings, $contractFields),
             publicProfile: $this->normalizePublicProfile($settings),
             raw: $settings,
             frontendUserSync: $this->normalizeFrontendUserSync($settings),
+            managedFields: $this->normalizeManagedFields(
+                $settings,
+                $profileSections,
+                $contractFields,
+                $contractContactSections,
+            ),
         );
+    }
+
+    /**
+     * The `managedFields` map. Each entry names a field of the settings by its
+     * key or by the property it addresses, the same names `profile`,
+     * `contracts.fields` and `contracts.contactSections` use, and is kept as
+     * that field's property and column. Like the synchronisation map, nothing
+     * here throws, see {@see ManagedFieldsSettings}.
+     *
+     * @param array<string, mixed> $settings
+     * @param array<string, ProfileSection> $profileSections
+     * @param array<string, ContractField> $contractFields
+     * @param array<string, ContractContactSection> $contractContactSections
+     */
+    private function normalizeManagedFields(
+        array $settings,
+        array $profileSections,
+        array $contractFields,
+        array $contractContactSections,
+    ): ManagedFieldsSettings {
+        $configuration = $settings['managedFields'] ?? [];
+        if (!is_array($configuration) || ($configuration !== [] && array_is_list($configuration))) {
+            return new ManagedFieldsSettings(problems: ['`managedFields` must be a map.']);
+        }
+        $recordTypes = array_keys(ManagedFieldsSettings::RECORD_TYPE_TABLES);
+        $fields = [];
+        $problems = [];
+        foreach ($configuration as $recordType => $identifiers) {
+            if (!in_array($recordType, $recordTypes, true)) {
+                $problems[] = sprintf(
+                    '`managedFields.%s` is not a known record type, use one of: %s.',
+                    $recordType,
+                    implode(', ', $recordTypes),
+                );
+                continue;
+            }
+            // The loader drops a key set to `~`, an array handed in directly may still carry it.
+            $identifiers ??= [];
+            if (!is_array($identifiers) || !array_is_list($identifiers)) {
+                $problems[] = sprintf('`managedFields.%s` must be a list of field names.', $recordType);
+                continue;
+            }
+            foreach ($identifiers as $identifier) {
+                if (!is_string($identifier) || trim($identifier) === '') {
+                    $problems[] = sprintf('`managedFields.%s` must be a list of field names.', $recordType);
+                    continue;
+                }
+                $identifier = trim($identifier);
+                $field = match ($recordType) {
+                    'profile' => $this->findProfileField($profileSections, $identifier),
+                    'contracts' => $this->findContractField($contractFields, $identifier),
+                    default => $this->findContractContactField($contractContactSections[$recordType] ?? null, $identifier),
+                };
+                if ($field === null) {
+                    $problems[] = sprintf(
+                        '`managedFields.%s` names `%s`, which is not a field of `%s`.',
+                        $recordType,
+                        $identifier,
+                        match ($recordType) {
+                            'profile' => 'profile',
+                            'contracts' => 'contracts.fields',
+                            default => 'contracts.contactSections.' . $recordType . '.fields',
+                        },
+                    );
+                    continue;
+                }
+                $fields[$recordType][$field->propertyName] = $field->fieldName;
+            }
+        }
+        return new ManagedFieldsSettings(fields: $fields, problems: $problems);
+    }
+
+    /**
+     * @param array<string, ProfileSection> $profileSections
+     */
+    private function findProfileField(array $profileSections, string $identifier): ?ProfileField
+    {
+        foreach ($profileSections as $section) {
+            $field = $section->getField($identifier);
+            if ($field !== null) {
+                return $field;
+            }
+        }
+        foreach ($profileSections as $section) {
+            foreach ($section->fields as $field) {
+                if ($field->propertyName === $identifier) {
+                    return $field;
+                }
+            }
+        }
+        return null;
+    }
+
+    /**
+     * @param array<string, ContractField> $contractFields
+     */
+    private function findContractField(array $contractFields, string $identifier): ?ContractField
+    {
+        if (isset($contractFields[$identifier])) {
+            return $contractFields[$identifier];
+        }
+        foreach ($contractFields as $field) {
+            if ($field->propertyName === $identifier) {
+                return $field;
+            }
+        }
+        return null;
+    }
+
+    /**
+     * Looked up in the section of the record type alone: every contact section has a
+     * field for the property `type`.
+     */
+    private function findContractContactField(?ContractContactSection $section, string $identifier): ?ContractContactField
+    {
+        if ($section === null) {
+            return null;
+        }
+        $field = $section->getField($identifier);
+        if ($field !== null) {
+            return $field;
+        }
+        foreach ($section->fields as $candidate) {
+            if ($candidate->propertyName === $identifier) {
+                return $candidate;
+            }
+        }
+        return null;
     }
 
     /**

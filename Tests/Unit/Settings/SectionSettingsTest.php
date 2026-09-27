@@ -12,6 +12,7 @@ use FGTCLB\AcademicPersons\Settings\ContractField;
 use FGTCLB\AcademicPersons\Settings\DocumentSection;
 use FGTCLB\AcademicPersons\Settings\FrontendUserSyncEntry;
 use FGTCLB\AcademicPersons\Settings\FrontendUserSyncSettings;
+use FGTCLB\AcademicPersons\Settings\ManagedFieldsSettings;
 use FGTCLB\AcademicPersons\Settings\ProfileField;
 use FGTCLB\AcademicPersons\Settings\ProfileSection;
 use FGTCLB\AcademicPersons\Settings\PublicProfileSettings;
@@ -260,6 +261,19 @@ final class SectionSettingsTest extends UnitTestCase
     }
 
     /**
+     * A graph cached before the map existed has no `managedFields`. Read as an
+     * empty map it locks nothing, as it did when it was cached.
+     */
+    #[Test]
+    public function aGraphCachedBeforeTheManagedFieldsMapManagesNothing(): void
+    {
+        $restored = AcademicPersonsSettings::__set_state(['raw' => []]);
+
+        $restored->managedFields->assertValid();
+        $this->assertSame([], $restored->managedFields->getColumns('tx_academicpersons_domain_model_contract'));
+    }
+
+    /**
      * Every value object of the graph, nested as the factory nests them, through
      * `var_export()` and back. A property missing from a `__set_state()` is lost
      * on every request but the first - the defect only the cached path shows.
@@ -316,6 +330,10 @@ final class SectionSettingsTest extends UnitTestCase
                 emailAddresses: [new FrontendUserSyncEntry(['email' => 'email'])],
                 phoneNumbers: [new FrontendUserSyncEntry(['phoneNumber' => 'mobile'], 'mobile')],
                 problems: ['`frontendUserSync.profile.nickname` is not supported.'],
+            ),
+            managedFields: new ManagedFieldsSettings(
+                fields: ['contracts' => ['position' => 'position'], 'emailAddresses' => ['email' => 'email']],
+                problems: ['`managedFields.contracts` names `office`, which is not a field of `contracts.fields`.'],
             ),
         );
 

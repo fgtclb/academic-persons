@@ -209,6 +209,9 @@ The consequences, which surprise people who did not expect them:
 
 If the profile names are maintained in TYPO3 rather than synchronised from
 elsewhere, remove the two flags as described below.
+Where some profiles are synchronised and others are created by editors, lock
+the names on the synchronised ones only, with
+:ref:`managed fields <configuration-managed-fields-example>`.
 
 ..  _configuration-validations-backend:
 

@@ -244,7 +244,7 @@ final class LegacySettingsMigratorTest extends UnitTestCase
         $this->assertSame([], $untouched->notes);
         $this->assertSame(['validations'], $migrated->migratedKeys);
         $this->assertSame([], $migrator->getLegacyKeys($migrated->settings));
-        $this->assertSame(['profile', 'special', 'contracts', 'documentSections', 'frontendUserSync'], array_keys($migrated->settings));
+        $this->assertSame(['profile', 'special', 'contracts', 'documentSections', 'frontendUserSync', 'managedFields'], array_keys($migrated->settings));
     }
 
     /**

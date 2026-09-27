@@ -1,0 +1,6 @@
+# A site package that misspells a contract field. The settings are built
+# nevertheless, and the mistake is reported when a person record form is
+# compiled.
+managedFields:
+  contracts:
+    - positon
