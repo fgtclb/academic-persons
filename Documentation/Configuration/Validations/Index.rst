@@ -78,6 +78,10 @@ Flag names are matched case insensitively. Anything not listed here is ignored.
         -   The field must not be edited at all. See the note below.
     *   -   :yaml:`readonly`
         -   The field is shown but cannot be written.
+    *   -   :yaml:`frontendreadonly`
+        -   The field is shown but cannot be written in the frontend editing
+            form. The backend record editor keeps it editable. See the note
+            below.
     *   -   :yaml:`email`
         -   The value must be a valid email address, and the field is rendered
             as an email input.
@@ -93,6 +97,12 @@ Flag names are matched case insensitively. Anything not listed here is ignored.
     :yaml:`disabled` additionally implies :yaml:`readonly`. FormEngine has no
     equivalent of the HTML :html:`disabled` attribute, so a disabled field is
     presented as read only in the backend.
+
+    :yaml:`frontendreadonly` locks the field for profile owners only. It
+    cancels :yaml:`required` in the frontend editing form, because an owner
+    cannot correct a value they cannot edit, while the backend record editor
+    still requires the field. Listed together with :yaml:`readonly` or
+    :yaml:`disabled`, the field is locked in the backend as well.
 
 ..  _configuration-validations-defaults:
 
@@ -134,8 +144,10 @@ elsewhere, remove those entries as described below.
 Effects in the TYPO3 backend
 ============================
 
-The settings are merged into the TCA of the matching table, so a locked field is
-read only in the record editor and a required field is marked as such:
+The settings are merged into the TCA of the matching table, so a field locked
+with :yaml:`readonly` or :yaml:`disabled` is read only in the record editor and
+a required field is marked as such. :yaml:`frontendreadonly` is the one lock
+that does not reach the TCA. The sets map to these tables:
 
 ..  list-table::
     :header-rows: 1
@@ -169,10 +181,22 @@ the same configuration is used three times:
     :html:`readonly` and :html:`required` attributes.
 #.  :yaml:`required` and :yaml:`email` add server side validation of the
     submitted form.
-#.  A :yaml:`disabled` or :yaml:`readonly` property is **never written** to the
-    record, whatever the request contains. This is deliberate: it protects
-    already stored data, and it is what prevents a locked field from being
-    emptied when a form is submitted.
+#.  A :yaml:`disabled`, :yaml:`readonly` or :yaml:`frontendreadonly` property
+    is **never written** to the record, whatever the request contains. This is
+    deliberate: it protects already stored data, and it is what prevents a
+    locked field from being emptied when a form is submitted.
+
+..  note::
+    Browsers ignore the :html:`readonly` attribute on a select and on a
+    checkbox. A select or checkbox configured :yaml:`readonly` or
+    :yaml:`frontendreadonly` therefore stays operable in the form, and a value
+    the owner changes there is discarded when the form is saved. Text fields
+    and text areas are locked in the browser as well.
+
+    A record an owner creates in the frontend, such as a new contract, is
+    stored without a value for a field locked with :yaml:`frontendreadonly`,
+    even when the backend requires it. The backend record editor asks for it
+    the next time the record is saved there.
 
 ..  _configuration-validations-override:
 
@@ -231,9 +255,29 @@ shortened here for readability:
         title:
           - required
 
+Example - keeping the synchronised profile names away from their owners while
+backend editors can still correct them. :yaml:`frontendreadonly` replaces
+:yaml:`disabled`, :yaml:`required` keeps the first and last name required in
+the backend record editor, as the TCA of the profile table declares them, and
+the other five sets are repeated unchanged as above:
+
+..  code-block:: yaml
+
+    validations:
+      profile:
+        firstName:
+          - required
+          - frontendreadonly
+        middleName:
+          - frontendreadonly
+        lastName:
+          - required
+          - frontendreadonly
+
 ..  note::
     Because both editing contexts read the same configuration, an override
-    always changes them together. Unlocking the profile names for the frontend
-    editing form also makes those columns writable in the backend record editor.
+    changes them together, with :yaml:`frontendreadonly` as the one exception.
+    Unlocking the profile names for the frontend editing form also makes those
+    columns writable in the backend record editor.
 
 There is no TypoScript and no site set equivalent for these settings.

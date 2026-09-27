@@ -98,7 +98,9 @@ class AcademicPersonsSettingsFactory
                     $validators = array_map('strtolower', $validators);
                     $readOnly = in_array('readonly', $validators, true);
                     $disabled = in_array('disabled', $validators, true);
-                    $required = !$disabled && !$readOnly && in_array('required', $validators, true);
+                    $frontendReadOnly = in_array('frontendreadonly', $validators, true);
+                    $backendRequired = !$disabled && !$readOnly && in_array('required', $validators, true);
+                    $required = $backendRequired && !$frontendReadOnly;
                     $inputType = 'text';
                     /** @var class-string<ValidatorInterface>[] $validatorClassNames */
                     $validatorClassNames = [];
@@ -111,8 +113,15 @@ class AcademicPersonsSettingsFactory
                     $tcaConfig['required'] = false;
                     if ($required) {
                         $validatorClassNames[] = NotEmptyValidator::class;
+                    }
+                    if ($backendRequired) {
                         $tcaConfig['required'] = true;
                         $tcaConfig['minitems'] = 1;
+                    }
+                    if ($frontendReadOnly) {
+                        // Set after the TCA fragment on purpose, so the backend form stays
+                        // exactly as it would be without the flag.
+                        $readOnly = true;
                     }
                     if (in_array('email', $validators, true)) {
                         $validatorClassNames[] = EmailAddressValidator::class;

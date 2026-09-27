@@ -1,0 +1,21 @@
+# One property per combination the settings factory has to tell apart.
+validations:
+  testSet:
+    required:
+      - required
+    frontendReadOnly:
+      - frontendreadonly
+    mixedCase:
+      - FrontendReadOnly
+    withReadOnly:
+      - frontendreadonly
+      - readonly
+    withDisabled:
+      - disabled
+      - frontendreadonly
+    withRequired:
+      - required
+      - frontendreadonly
+    withEmail:
+      - email
+      - frontendreadonly

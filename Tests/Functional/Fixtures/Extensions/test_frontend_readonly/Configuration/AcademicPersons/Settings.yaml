@@ -1,0 +1,55 @@
+# A site package that locks the profile website, the contract position and room
+# and the address street for profile owners while backend editors keep them.
+# The middle name lists `readonly` as well, which keeps the backend lock.
+# The settings files are merged by their top-level keys, so this restates the
+# complete shipped `validations` map with those changes. `room` spells the flag
+# in mixed case on purpose.
+validations:
+  contract:
+    position:
+      - required
+      - frontendreadonly
+    room:
+      - FrontendReadOnly
+  emailAddress:
+    email:
+      - required
+      - email
+    type:
+      - required
+  phoneNumber:
+    phoneNumber:
+      - required
+    type:
+      - required
+  physicalAddress:
+    street:
+      - required
+      - frontendreadonly
+    streetNumber:
+      - required
+      - number
+    zip:
+      - required
+      - number
+    city:
+      - required
+    country:
+      - required
+  profile:
+    firstName:
+      - disabled
+      - required
+    middleName:
+      - frontendreadonly
+      - readonly
+    lastName:
+      - disabled
+    website:
+      - frontendreadonly
+  profileInformation:
+    year:
+      - required
+      - number
+    title:
+      - required
