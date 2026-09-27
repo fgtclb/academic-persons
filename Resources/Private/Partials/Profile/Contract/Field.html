@@ -12,12 +12,18 @@
     <li class="list-group-item">
         <b>{f:translate(key: 'contracts.{fieldName}', extensionName: 'AcademicPersons')}:</b>
 
-        <f:if condition="
-            {fieldName} == position
-            || {fieldName} == room
-            || {fieldName} == officeHours
-        ">
+        <f:if condition="{fieldName} == position || {fieldName} == room">
             {contract.{fieldName}}
+        </f:if>
+
+        <f:if condition="{fieldName} == officeHours">
+            <f:comment>
+                The frontend editor stores HTML, the backend form and an import plain text.
+                Rendered as in the contact block of the detail view: line breaks become `<br>`,
+                then the core sanitizer keeps paragraphs, lists and links, removes event
+                handler attributes and prints an element it does not allow as escaped text.
+            </f:comment>
+            {f:format.nl2br(value: contract.officeHours) -> f:sanitize.html()}
         </f:if>
 
         <f:if condition="{fieldName} == location">

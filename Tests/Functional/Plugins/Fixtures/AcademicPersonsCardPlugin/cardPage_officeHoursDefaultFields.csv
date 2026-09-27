@@ -1,0 +1,20 @@
+"pages",
+,"uid","pid","doktype","deleted","hidden","sys_language_uid","l10n_parent","l18n_cfg","slug","title"
+,1,0,1,0,0,0,0,0,"/","Site Root"
+,2,1,1,0,0,0,0,0,"/home","Home (EN)"
+,3,1,1,0,0,0,0,0,"/profiles","Profiles"
+,100,1,254,0,0,0,0,0,"/sysfolder-records","Recordcollection"
+"tx_academicpersons_domain_model_profile",
+,"uid","pid","deleted","hidden","sys_language_uid","l10n_parent","first_name","last_name","slug","contracts"
+,1,100,0,0,0,0,"Max","Müllermann","max-muellermann",1
+,2,100,0,0,0,0,"Horst","Huber","horst-huber",1
+,3,100,0,0,0,0,"Erika","Beispiel","erika-beispiel",1
+"tx_academicpersons_domain_model_contract",
+,"uid","pid","deleted","hidden","sys_language_uid","l10n_parent","profile","position","room","office_hours","sorting"
+,1,100,0,0,0,0,1,"Professor & Dean","<b>A 1.01</b>","<p>Tuesday 10:00 to 12:00</p><p>Otherwise <a href=""https://www.acme.com/appointments"">book an appointment</a>.</p>",1
+,2,100,0,0,0,0,2,"Lecturer","","<p onclick=""alert('unsafe-handler')"">Wednesday 14:00 to 16:00</p><script>alert('unsafe-script')</script>",1
+,3,100,0,0,0,0,3,"Assistant","","Monday 09:00 to 11:00
+Friday by appointment",1
+"tt_content",
+,"uid","pid","deleted","hidden","sys_language_uid","l18n_parent","CType","header","pi_flexform"
+,1,2,0,0,0,0,"academicpersons_card","","<?xml version=""1.0"" encoding=""utf-8"" standalone=""yes"" ?><T3FlexForms><data><sheet index=""sDEF""><language index=""lDEF""><field index=""settings.demand.profileList""><value index=""vDEF"">1,2,3</value></field><field index=""settings.detailPid""><value index=""vDEF"">3</value></field><field index=""settings.showHiddenRecords""><value index=""vDEF"">0</value></field><field index=""settings.fallbackForNonTranslated""><value index=""vDEF"">0</value></field><field index=""settings.showFields""><value index=""vDEF""></value></field></language></sheet></data></T3FlexForms>"

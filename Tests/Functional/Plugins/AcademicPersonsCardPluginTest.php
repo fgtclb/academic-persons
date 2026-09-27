@@ -240,6 +240,79 @@ final class AcademicPersonsCardPluginTest extends AbstractAcademicPersonsTestCas
     }
 
     /**
+     * Office hours written in the frontend editor are HTML. The card renders their paragraphs
+     * and links as markup, not as escaped text.
+     */
+    #[Test]
+    public function cardPluginRendersTheParagraphsAndLinksOfOfficeHours(): void
+    {
+        $this->setUpTestCase('cardPage_officeHours');
+
+        $content = $this->renderHomePage();
+        $this->assertStringContainsString('<p>Tuesday 10:00 to 12:00</p>', $content);
+        $this->assertStringContainsString('<a href="https://www.acme.com/appointments">book an appointment</a>', $content);
+        $this->assertStringNotContainsString('&lt;p&gt;Tuesday', $content);
+    }
+
+    /**
+     * The stored value is never trusted: an event handler attribute is removed, and a script
+     * element is printed as escaped text, so it never runs.
+     */
+    #[Test]
+    public function cardPluginNeverRendersScriptsOrEventHandlersOfOfficeHours(): void
+    {
+        $this->setUpTestCase('cardPage_officeHours');
+
+        $content = $this->renderHomePage();
+        $this->assertStringContainsString('<p>Wednesday 14:00 to 16:00</p>', $content);
+        $this->assertStringNotContainsString('unsafe-handler', $content);
+        $this->assertStringNotContainsString('<script>alert(\'unsafe-script\')', $content);
+        $this->assertStringContainsString('&lt;script&gt;', $content);
+    }
+
+    /**
+     * Office hours from the backend form or an import are plain text. Their lines stay lines.
+     */
+    #[Test]
+    public function cardPluginKeepsTheLinesOfPlainTextOfficeHours(): void
+    {
+        $this->setUpTestCase('cardPage_officeHours');
+
+        $this->assertMatchesRegularExpression(
+            '#Monday 09:00 to 11:00<br ?/?>\s*Friday by appointment#',
+            $this->renderHomePage(),
+        );
+    }
+
+    /**
+     * Position and room are plain text fields and stay escaped next to the office hours.
+     */
+    #[Test]
+    public function cardPluginKeepsPositionAndRoomEscaped(): void
+    {
+        $this->setUpTestCase('cardPage_officeHours');
+
+        $content = $this->renderHomePage();
+        $this->assertStringContainsString('Professor &amp; Dean', $content);
+        $this->assertStringContainsString('&lt;b&gt;A 1.01&lt;/b&gt;', $content);
+        $this->assertStringNotContainsString('<b>A 1.01</b>', $content);
+    }
+
+    /**
+     * Without a selection the card shows its default fields, office hours among them, and
+     * renders them the same way.
+     */
+    #[Test]
+    public function cardPluginRendersOfficeHoursAsMarkupWithTheDefaultFields(): void
+    {
+        $this->setUpTestCase('cardPage_officeHoursDefaultFields');
+
+        $content = $this->renderHomePage();
+        $this->assertStringContainsString('<p>Tuesday 10:00 to 12:00</p>', $content);
+        $this->assertStringNotContainsString('&lt;p&gt;Tuesday', $content);
+    }
+
+    /**
      * A `tel:` URI carries no spaces, while the stored number is written for a reader. The
      * detail view has done this since it was written; the card rendered the stored number
      * into the target unchanged.

@@ -320,6 +320,11 @@ Plain text is read as HTML as well. A ``<`` in it starts a tag for the
 sanitizer, so ``10:00 < 12:00`` loses the ``<`` and ``Room <A 1.23>`` renders
 as an empty link. Write such values without angle brackets.
 
+The contract fields of the list, list and detail, card, selected profiles and
+selected contracts elements, and of the contacts element of
+`EXT:academic_contacts4pages`, render office hours the same way, when office
+hours are among their fields to show.
+
 ..  _configuration-sections-detail-override:
 
 What an override of the detail template loses
