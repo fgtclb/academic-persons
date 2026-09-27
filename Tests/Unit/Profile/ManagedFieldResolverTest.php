@@ -4,11 +4,15 @@ declare(strict_types=1);
 
 namespace FGTCLB\AcademicPersons\Tests\Unit\Profile;
 
+use FGTCLB\AcademicPersons\Domain\Model\Contract;
+use FGTCLB\AcademicPersons\Domain\Model\Profile;
 use FGTCLB\AcademicPersons\Profile\ManagedFieldResolver;
 use FGTCLB\AcademicPersons\Settings\AcademicPersonsSettings;
 use FGTCLB\AcademicPersons\Settings\ManagedFieldsSettings;
 use PHPUnit\Framework\Attributes\Test;
 use TYPO3\CMS\Core\Database\ConnectionPool;
+use TYPO3\CMS\Core\Schema\TcaSchemaFactory;
+use TYPO3\CMS\Extbase\DomainObject\AbstractDomainObject;
 use TYPO3\TestingFramework\Core\Unit\UnitTestCase;
 
 /**
@@ -94,11 +98,78 @@ final class ManagedFieldResolverTest extends UnitTestCase
         $this->assertSame([], $resolver->getManagedColumns('tx_academicpersons_domain_model_profile', ['skip_sync' => '1'] + $row));
     }
 
+    /**
+     * The editor asks with the model it writes. A profile model carries its
+     * own flag, so it is decided without a query, and the answer names
+     * properties rather than columns.
+     */
+    #[Test]
+    public function aProfileModelIsDecidedByItsOwnFlag(): void
+    {
+        $resolver = $this->resolver(
+            new ManagedFieldsSettings(fields: ['profile' => ['title' => 'title', 'lastName' => 'last_name']]),
+            $this->connectionPoolThatIsNeverAsked(),
+        );
+        $profile = $this->profile('fe_users:1');
+
+        $this->assertSame(['title', 'lastName'], $resolver->getManagedProperties($profile));
+        $profile->setSkipSync(true);
+        $this->assertSame([], $resolver->getManagedProperties($profile));
+    }
+
+    /**
+     * A model that is not stored yet and one without an import identifier cost
+     * no query and have nothing managed. A model overlaid in another language
+     * is decided on its default-language record, which
+     * `theManagedPropertiesOfAnOverlay()` of the functional test covers.
+     */
+    #[Test]
+    public function aModelThatCannotBeManagedIsAnsweredWithoutAQuery(): void
+    {
+        $resolver = $this->resolver(
+            new ManagedFieldsSettings(fields: ['contracts' => ['position' => 'position']]),
+            $this->connectionPoolThatIsNeverAsked(),
+        );
+        $this->assertSame([], $resolver->getManagedProperties(new Contract()));
+        $this->assertSame([], $resolver->getManagedProperties($this->contract('')));
+    }
+
+    #[Test]
+    public function aMistakeInTheMapIsThrownForEveryModel(): void
+    {
+        $resolver = $this->resolver(new ManagedFieldsSettings(
+            problems: ['`managedFields.contracts` names `office`, which is not a field of `contracts.fields`.'],
+        ));
+
+        $this->expectException(\UnexpectedValueException::class);
+        $this->expectExceptionCode(1790536034);
+        $resolver->getManagedProperties($this->contract(''));
+    }
+
+    private function profile(string $importIdentifier): Profile
+    {
+        $profile = new Profile();
+        $profile->_setProperty('uid', 1);
+        $profile->_setProperty(AbstractDomainObject::PROPERTY_LANGUAGE_UID, 0);
+        $profile->setImportIdentifier($importIdentifier);
+        return $profile;
+    }
+
+    private function contract(string $importIdentifier): Contract
+    {
+        $contract = new Contract();
+        $contract->_setProperty('uid', 1);
+        $contract->_setProperty(AbstractDomainObject::PROPERTY_LANGUAGE_UID, 0);
+        $contract->setImportIdentifier($importIdentifier);
+        return $contract;
+    }
+
     private function resolver(ManagedFieldsSettings $managedFields, ?ConnectionPool $connectionPool = null): ManagedFieldResolver
     {
         return new ManagedFieldResolver(
             new AcademicPersonsSettings(managedFields: $managedFields),
             $connectionPool ?? $this->createMock(ConnectionPool::class),
+            $this->createStub(TcaSchemaFactory::class),
         );
     }
 

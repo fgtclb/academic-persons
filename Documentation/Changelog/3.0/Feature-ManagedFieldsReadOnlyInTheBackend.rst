@@ -32,9 +32,9 @@ Impact
 Nothing changes for an installation that does not name a field: the shipped
 lists are empty.
 
-The lock applies to the backend form only. The synchronisation, an import and
-a script keep writing the fields, and the editing frontend of
-:guilabel:`EXT:academic_persons_edit` does not read the map.
+The lock applies to the backend form and to the profile editor of
+:guilabel:`EXT:academic_persons_edit`, which reads the same map. The
+synchronisation, an import and a script keep writing the fields.
 
 A name that matches no field of its record type makes every person record form
 fail with the exception ``1790536034``, which names it.

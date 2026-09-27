@@ -11,11 +11,19 @@ declare(strict_types=1);
 
 namespace FGTCLB\AcademicPersons\Profile;
 
+use FGTCLB\AcademicPersons\Domain\Model\Address;
+use FGTCLB\AcademicPersons\Domain\Model\Contract;
+use FGTCLB\AcademicPersons\Domain\Model\Email;
+use FGTCLB\AcademicPersons\Domain\Model\PhoneNumber;
+use FGTCLB\AcademicPersons\Domain\Model\Profile;
 use FGTCLB\AcademicPersons\Settings\AcademicPersonsSettings;
 use FGTCLB\AcademicPersons\Settings\ManagedFieldsSettings;
 use TYPO3\CMS\Core\Database\Connection;
 use TYPO3\CMS\Core\Database\ConnectionPool;
 use TYPO3\CMS\Core\Database\Query\Restriction\DeletedRestriction;
+use TYPO3\CMS\Core\Schema\Field\FieldTranslationBehaviour;
+use TYPO3\CMS\Core\Schema\TcaSchemaFactory;
+use TYPO3\CMS\Extbase\DomainObject\AbstractDomainObject;
 
 /**
  * Answers which fields of a person record a synchronisation owns, as the
@@ -33,6 +41,10 @@ use TYPO3\CMS\Core\Database\Query\Restriction\DeletedRestriction;
  * profile form at once, and its contracts and contact records only once the
  * profile is published.
  *
+ * The backend form asks with a row and gets database columns, the frontend
+ * editor asks with a domain model and gets its property names. Both answers
+ * come from the same checks.
+ *
  * @internal not part of public API.
  */
 final readonly class ManagedFieldResolver
@@ -48,6 +60,7 @@ final readonly class ManagedFieldResolver
     public function __construct(
         private AcademicPersonsSettings $settings,
         private ConnectionPool $connectionPool,
+        private TcaSchemaFactory $tcaSchemaFactory,
     ) {}
 
     /**
@@ -80,6 +93,117 @@ final readonly class ManagedFieldResolver
             return [];
         }
         return $columns;
+    }
+
+    /**
+     * The managed properties of a record, given as its domain model.
+     *
+     * The model is the record the caller writes. A model overlaid in another
+     * language is a translation, which the synchronisation does not write, so
+     * only the managed properties whose column all languages share
+     * (`l10n_mode` `exclude`) are managed on it, decided on its
+     * default-language record: the backend shows those read-only on a
+     * translation as well. The contract of a contact and the profile of a
+     * contract are read from the database by the record's uid, because a
+     * relation of the model may be empty when its parent is hidden.
+     *
+     * @return list<string>
+     * @throws \UnexpectedValueException when the map has a problem
+     */
+    public function getManagedProperties(Profile|Contract|Address|Email|PhoneNumber $record): array
+    {
+        $tableName = $this->getTableName($record);
+        $managedFields = $this->settings->managedFields;
+        $managedFields->assertValid();
+        if ((int)$record->_getProperty(AbstractDomainObject::PROPERTY_LANGUAGE_UID) > 0) {
+            return $this->getSharedProperties($tableName, $this->getManagedPropertiesOfDefaultLanguage($record));
+        }
+        $properties = $managedFields->getProperties($tableName);
+        $uid = (int)$record->getUid();
+        if ($properties === []
+            || $uid <= 0
+            || trim($record->getImportIdentifier()) === ''
+        ) {
+            return [];
+        }
+        $synchronised = match (true) {
+            $record instanceof Profile => !$record->getSkipSync(),
+            $record instanceof Contract => $this->isSynchronised(
+                $tableName,
+                $this->findRow($tableName, $uid, 'profile') ?? [],
+            ),
+            default => $this->isSynchronised($tableName, $this->findRow($tableName, $uid, 'contract') ?? []),
+        };
+        return $synchronised ? $properties : [];
+    }
+
+    /**
+     * The managed properties of the default-language record behind a domain
+     * model, also when the model is overlaid in another language.
+     *
+     * A model of a translated site language carries the uid of its
+     * default-language record, and that is the row Extbase removes on a
+     * delete. Whether a row may be deleted is therefore decided here, on the
+     * stored default-language row, while its fields follow the record the
+     * editor writes, see {@see self::getManagedProperties()}.
+     *
+     * @return list<string>
+     * @throws \UnexpectedValueException when the map has a problem
+     */
+    public function getManagedPropertiesOfDefaultLanguage(Profile|Contract|Address|Email|PhoneNumber $record): array
+    {
+        $tableName = $this->getTableName($record);
+        $managedFields = $this->settings->managedFields;
+        $managedFields->assertValid();
+        $properties = $managedFields->getProperties($tableName);
+        $uid = (int)$record->getUid();
+        if ($properties === [] || $uid <= 0) {
+            return [];
+        }
+        $parentColumn = match ($tableName) {
+            self::PROFILE_TABLE => 'skip_sync',
+            self::CONTRACT_TABLE => 'profile',
+            default => 'contract',
+        };
+        $row = $this->findRow($tableName, $uid, 'import_identifier', 'sys_language_uid', $parentColumn);
+        if ($row === null
+            || $this->getImportIdentifier($row) === ''
+            || $this->getInt($row, 'sys_language_uid') > 0
+            || !$this->isSynchronised($tableName, $row)
+        ) {
+            return [];
+        }
+        return $properties;
+    }
+
+    /**
+     * @param list<string> $properties
+     * @return list<string> the properties whose column all languages share
+     */
+    private function getSharedProperties(string $tableName, array $properties): array
+    {
+        if ($properties === []) {
+            return [];
+        }
+        $columns = $this->settings->managedFields->getColumnsByProperty($tableName);
+        $schema = $this->tcaSchemaFactory->get($tableName);
+        return array_values(array_filter(
+            $properties,
+            static fn(string $property): bool => isset($columns[$property])
+                && $schema->hasField($columns[$property])
+                && $schema->getField($columns[$property])->getTranslationBehaviour() === FieldTranslationBehaviour::Excluded,
+        ));
+    }
+
+    private function getTableName(Profile|Contract|Address|Email|PhoneNumber $record): string
+    {
+        return match (true) {
+            $record instanceof Profile => self::PROFILE_TABLE,
+            $record instanceof Contract => self::CONTRACT_TABLE,
+            $record instanceof Address => ManagedFieldsSettings::RECORD_TYPE_TABLES['physicalAddresses'],
+            $record instanceof Email => ManagedFieldsSettings::RECORD_TYPE_TABLES['emailAddresses'],
+            $record instanceof PhoneNumber => ManagedFieldsSettings::RECORD_TYPE_TABLES['phoneNumbers'],
+        };
     }
 
     /**
@@ -118,7 +242,7 @@ final readonly class ManagedFieldResolver
     /**
      * @return array<string, mixed>|null
      */
-    private function findRow(string $tableName, int $uid, string $column): ?array
+    private function findRow(string $tableName, int $uid, string ...$columns): ?array
     {
         if ($uid <= 0) {
             return null;
@@ -128,7 +252,7 @@ final readonly class ManagedFieldResolver
             ->removeAll()
             ->add(new DeletedRestriction());
         $row = $queryBuilder
-            ->select($column)
+            ->select(...$columns)
             ->from($tableName)
             ->where($queryBuilder->expr()->eq('uid', $queryBuilder->createNamedParameter($uid, Connection::PARAM_INT)))
             ->executeQuery()

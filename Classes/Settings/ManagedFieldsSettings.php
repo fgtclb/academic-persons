@@ -85,4 +85,33 @@ final class ManagedFieldsSettings
         }
         return array_values($this->fields[$recordType] ?? []);
     }
+
+    /**
+     * The managed domain model properties of a table, empty for a table that
+     * is no record type of the map.
+     *
+     * @return list<string>
+     */
+    public function getProperties(string $tableName): array
+    {
+        $recordType = array_search($tableName, self::RECORD_TYPE_TABLES, true);
+        if ($recordType === false) {
+            return [];
+        }
+        return array_keys($this->fields[$recordType] ?? []);
+    }
+
+    /**
+     * The database column of each managed property of a table.
+     *
+     * @return array<string, string> property => column
+     */
+    public function getColumnsByProperty(string $tableName): array
+    {
+        $recordType = array_search($tableName, self::RECORD_TYPE_TABLES, true);
+        if ($recordType === false) {
+            return [];
+        }
+        return $this->fields[$recordType] ?? [];
+    }
 }

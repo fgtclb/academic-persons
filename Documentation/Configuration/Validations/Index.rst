@@ -273,7 +273,11 @@ the same flags are used three times:
 #.  A :yaml:`disabled`, :yaml:`readonly` or :yaml:`frontendreadonly` property
     is **never written** to the record, whatever the request contains. This is
     deliberate: it protects already stored data, and it is what prevents a
-    locked field from being emptied when a form is submitted.
+    locked field from being emptied when a form is submitted. A submitted value
+    for it is ignored and the other values of the request are stored, so a
+    contract or contact with a locked field is saved as usual. The same holds
+    for a field the synchronisation owns on the record, see
+    :ref:`configuration-managed-fields-editor`.
 
 ..  note::
     A record an owner creates in the editing frontend, such as a new contract,
