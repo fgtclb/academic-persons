@@ -181,6 +181,29 @@ final class ProfileImageMetadataServiceTest extends AbstractAcademicPersonsTestC
         );
     }
 
+    /**
+     * A hidden profile is still the owner's profile, and the owner still uploads its
+     * image in the profile editor: both writes name the file after it all the same.
+     */
+    #[Test]
+    public function bothWritesNameTheFileAfterAHiddenProfile(): void
+    {
+        $this->getConnectionPool()
+            ->getConnectionForTable(self::TABLE_PROFILE)
+            ->update(self::TABLE_PROFILE, ['hidden' => 1], ['uid' => 1]);
+        $subject = $this->get(ProfileImageMetadataService::class);
+
+        $this->assertSame(
+            ['title' => 'Erika Musterfrau', 'alternative' => 'Erika Musterfrau'],
+            $subject->initializeFileMetadata($this->getFile(1), 1),
+        );
+        $this->assertNotNull($subject->updateForProfileUid(1));
+        $this->assertSame(
+            [['uid' => 1, 'title' => 'Erika Musterfrau', 'alternative' => 'Erika Musterfrau']],
+            $this->fetchReferenceMetadata(),
+        );
+    }
+
     #[Test]
     public function initializeFileMetadataWritesNothingWithoutAProfileToNameTheFileAfter(): void
     {

@@ -327,6 +327,34 @@ The restriction is applied before
 :php:`\FGTCLB\AcademicBase\Event\ModifyTcaSelectFieldItemsEvent` is
 dispatched, so a listener of that event still has the last word.
 
+..  _configuration-hidden-profiles:
+
+Profiles that are not public
+============================
+
+A profile whose :guilabel:`Visible` switch is off, the :sql:`hidden` field of
+the record, is left out of every public output: the lists with their counts,
+letters and pages, the selected profiles, and the detail page, which answers
+with the page-not-found response of the site. The field is shared by every
+language of the profile. With :composer:`fgtclb/academic-persons-edit`
+installed, owners switch it themselves in the profile editor, and the
+documentation of that extension describes how an installation takes the switch
+away from them.
+
+An internal directory, one that only logged-in visitors reach, lists those
+profiles as well. Put the list and the detail element on a page restricted to a
+frontend user group and switch :guilabel:`Show hidden records` on in both. Two
+limits apply:
+
+*   The directory lists every hidden profile, whether its owner or an editor
+    hid it. An installation that has to tell the two apart needs a field of its
+    own.
+*   :guilabel:`EXT:academic_contacts4pages` never shows a hidden profile as a
+    contact of a page, whatever :guilabel:`Show hidden records` says.
+
+Start time, end time and the frontend user groups of a profile keep applying in
+both directories.
+
 ..  _configuration-crop-variants:
 
 The crop variants of the profile image

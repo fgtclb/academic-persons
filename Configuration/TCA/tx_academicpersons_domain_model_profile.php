@@ -3,6 +3,8 @@
 declare(strict_types=1);
 
 use FGTCLB\AcademicBase\Settings\TcaValidationMerger;
+use FGTCLB\AcademicBase\Settings\Validation;
+use FGTCLB\AcademicBase\Settings\ValidationSet;
 use FGTCLB\AcademicPersons\Settings\AcademicPersonsSettings;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
@@ -638,10 +640,20 @@ foreach ($profileInformationRelations as $columnIdentifier => $recordType) {
 }
 
 // @todo MAIN TCA Files should be kept without dynamic calls, and following should be done in override files.
-// Every profile section of Settings.yaml plus the special fields addressing a profile column.
+// Every profile section of Settings.yaml plus the special fields addressing a profile column,
+// except the owner's visibility switch of the profile editor: it writes the `disabled` enable
+// column, and taking it away from owners must not take the checkbox away from backend editors.
+$profileUpdateValidationSet = GeneralUtility::makeInstance(AcademicPersonsSettings::class)->getProfileUpdateValidationSet();
+$disabledColumn = $tcaConfiguration['ctrl']['enablecolumns']['disabled'];
 $tcaConfiguration = (new TcaValidationMerger())->merge(
     $tcaConfiguration,
-    GeneralUtility::makeInstance(AcademicPersonsSettings::class)->getProfileUpdateValidationSet(),
+    new ValidationSet(
+        identifier: $profileUpdateValidationSet->identifier,
+        validations: array_filter(
+            $profileUpdateValidationSet->validations,
+            static fn(Validation $validation): bool => $validation->fieldName !== $disabledColumn,
+        ),
+    ),
 );
 
 // The 'searchFields' TCA ctrl option was removed in TYPO3 v14 (Breaking #106972);

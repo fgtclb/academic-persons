@@ -359,7 +359,7 @@ final class AcademicPersonsSettingsFactoryTest extends UnitTestCase
             array_keys($settings->getProfileSection('information')?->fields ?? []),
         );
         $this->assertSame(['miscellaneous'], array_keys($settings->getProfileSection('aboutme')?->fields ?? []));
-        $this->assertSame(['title', 'image', 'skipSync'], array_keys($settings->specialFields));
+        $this->assertSame(['title', 'image', 'skipSync', 'hidden'], array_keys($settings->specialFields));
         $this->assertSame(
             [
                 'position',
@@ -589,9 +589,9 @@ final class AcademicPersonsSettingsFactoryTest extends UnitTestCase
 
     /**
      * The three name fields are `readonly` and `disabled`, which is what keeps them
-     * for the synchronisation from the frontend user. The special `skipSync` is the
-     * one special field addressing a profile column directly, so it joins the
-     * profile update set; the composed title and the image do not.
+     * for the synchronisation from the frontend user. The special `skipSync` and
+     * `hidden` are the special fields addressing a profile column directly, so they
+     * join the profile update set; the composed title and the image do not.
      */
     #[Test]
     public function theShippedProfileLocksTheNameFieldsAndAddsSkipSyncToTheUpdateSet(): void
@@ -624,6 +624,7 @@ final class AcademicPersonsSettingsFactoryTest extends UnitTestCase
         $this->assertSame(1000, $settings->getProfileField('miscellaneous')?->validation->characterLimit);
 
         $this->assertTrue($settings->getSpecialField('skipSync')?->hasDirectProfileProperty());
+        $this->assertTrue($settings->getSpecialField('hidden')?->hasDirectProfileProperty());
         $this->assertFalse($title->hasDirectProfileProperty());
         $this->assertFalse($settings->getSpecialField('image')?->hasDirectProfileProperty());
         $this->assertSame(['title', 'firstName', 'middleName', 'lastName'], $title->fieldIdentifiers);
@@ -642,6 +643,7 @@ final class AcademicPersonsSettingsFactoryTest extends UnitTestCase
                 'teachingArea',
                 'miscellaneous',
                 'skipSync',
+                'hidden',
             ],
             array_keys($settings->getProfileUpdateValidationSet()->validations),
         );

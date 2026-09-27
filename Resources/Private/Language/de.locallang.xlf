@@ -260,6 +260,10 @@
         <source>If you do not want to sync your profile, you can adjust this setting here. When this setting is enabled, your profile will not be synced.</source>
         <target>Wenn Sie Ihr Profil nicht synchronisieren möchten, können Sie diese Einstellung hier anpassen. Ist diese Einstellung aktiviert, wird Ihr Profil nicht synchronisiert.</target>
       </trans-unit>
+      <trans-unit id="helptext.hidden" resname="helptext.hidden">
+        <source>Switch this off to take your profile out of the public directory. Nothing is deleted, and you can switch it on again later.</source>
+        <target>Schalten Sie dies aus, um Ihr Profil aus dem öffentlichen Personenverzeichnis zu nehmen. Es wird nichts gelöscht, und Sie können es später wieder einschalten.</target>
+      </trans-unit>
       <trans-unit id="helptext.contracts.position" resname="helptext.contracts.position">
         <source>Enter the position or role associated with this employment contract.</source>
         <target>Geben Sie die Position oder Rolle an, die mit diesem Beschäftigungsvertrag verbunden ist.</target>

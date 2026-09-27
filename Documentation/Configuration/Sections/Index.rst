@@ -356,10 +356,16 @@ The special map
         type: special
         fieldType: check
         renderType: checkbox
+      hidden:
+        type: special
+        fieldType: check
+        renderType: checkbox
 
 :yaml:`title` composes the display name from the listed profile properties,
-:yaml:`image` is the profile image and :yaml:`skipSync` the switch that keeps
-a profile out of the synchronisation from its frontend user. A special entry
+:yaml:`image` is the profile image, :yaml:`skipSync` the switch that keeps
+a profile out of the synchronisation from its frontend user, and
+:yaml:`hidden` the owner's switch :guilabel:`Show my profile publicly`, see
+:ref:`configuration-hidden-profiles`. A special entry
 with a :yaml:`fieldType` and without composed :yaml:`fields` addresses one
 profile column directly and takes part in the profile validation; the other
 two do not.

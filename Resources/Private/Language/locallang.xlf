@@ -199,6 +199,9 @@
       <trans-unit id="helptext.skipSync" resname="helptext.skipSync">
         <source>If you do not want to sync your profile, you can adjust this setting here. When this setting is enabled, your profile will not be synced.</source>
       </trans-unit>
+      <trans-unit id="helptext.hidden" resname="helptext.hidden">
+        <source>Switch this off to take your profile out of the public directory. Nothing is deleted, and you can switch it on again later.</source>
+      </trans-unit>
       <trans-unit id="helptext.contracts.position" resname="helptext.contracts.position">
         <source>Enter the position or role associated with this employment contract.</source>
       </trans-unit>

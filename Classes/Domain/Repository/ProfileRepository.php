@@ -23,6 +23,7 @@ use FGTCLB\AcademicPersons\Event\ModifyProfileQueryEvent;
 use Psr\EventDispatcher\EventDispatcherInterface;
 use TYPO3\CMS\Core\Context\Context;
 use TYPO3\CMS\Core\Context\LanguageAspect;
+use TYPO3\CMS\Core\Context\VisibilityAspect;
 use TYPO3\CMS\Core\Database\Query\Restriction\WorkspaceRestriction;
 use TYPO3\CMS\Core\Schema\Capability\TcaSchemaCapability;
 use TYPO3\CMS\Core\Schema\TcaSchemaFactory;
@@ -555,6 +556,55 @@ class ProfileRepository extends Repository
         /** @var Profile|null $profile */
         $profile = $query->execute()->getFirst();
         return $profile;
+    }
+
+    /**
+     * Find the profiles of a frontend user for the owner, hidden ones included. Only the
+     * hidden flag is lifted: start time, end time and frontend user group keep deciding,
+     * like {@see self::findByUidIncludingHidden()}. The profile editor lists and opens the
+     * owner's profiles through it, so that an owner who hid a profile can show it again.
+     *
+     * The query is executed right here, with the visibility aspect of the context lifted
+     * to hidden content for its duration and restored afterwards. Extbase overlays the
+     * translation through `PageRepository`, which reads that aspect and not the query
+     * settings: without it a hidden profile would be returned in its default language in
+     * a translated site language, and every edit made there would write the default
+     * record.
+     *
+     * The relations of `Profile` that load eagerly, the image reference and the frontend
+     * users, are read within the same window, so a hidden image reference or a disabled
+     * frontend user is included for the owner. Everything else is lazy and loads later
+     * with the visibility of the request.
+     *
+     * @todo TYPO3 v14.3.7 mirrors the ignored enable fields into the context Extbase
+     *       overlays with, which makes the lift redundant there. Drop it once v13 and
+     *       v14.3.6 are no longer supported.
+     *
+     * @return list<Profile>
+     */
+    public function findByFrontendUserIncludingHidden(int $frontendUserUid): array
+    {
+        $query = $this->createQuery();
+        $query->getQuerySettings()->setRespectStoragePage(false);
+        $this->includeHiddenRecords($query);
+        $query->setOrderings(self::FALLBACK_ORDERINGS);
+        $query->matching($query->contains('frontendUsers', $frontendUserUid));
+
+        $context = GeneralUtility::makeInstance(Context::class);
+        $visibilityAspect = $context->getAspect('visibility');
+        $context->setAspect('visibility', new VisibilityAspect(
+            includeHiddenPages: (bool)$visibilityAspect->get('includeHiddenPages'),
+            includeHiddenContent: true,
+            includeDeletedRecords: (bool)$visibilityAspect->get('includeDeletedRecords'),
+            includeScheduledRecords: (bool)$visibilityAspect->get('includeScheduledRecords'),
+        ));
+        try {
+            /** @var list<Profile> $profiles */
+            $profiles = array_values($query->execute()->toArray());
+        } finally {
+            $context->setAspect('visibility', $visibilityAspect);
+        }
+        return $profiles;
     }
 
     /**

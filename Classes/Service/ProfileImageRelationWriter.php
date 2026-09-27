@@ -318,14 +318,13 @@ final readonly class ProfileImageRelationWriter
      * The configured system columns of the profile table this class reads. They are
      * TCA `ctrl` configuration, not constants, so they are read from the schema.
      *
-     * @return array{language: string, deleted: string}
+     * @return array{language: string}
      */
     private function getProfileColumnNames(): array
     {
         $schema = $this->tcaSchemaFactory->get(self::PROFILE_TABLE);
         return [
             'language' => $schema->getCapability(TcaSchemaCapability::Language)->getLanguageField()->getName(),
-            'deleted' => $schema->getCapability(TcaSchemaCapability::SoftDelete)->getFieldName(),
         ];
     }
 
@@ -350,18 +349,28 @@ final readonly class ProfileImageRelationWriter
      * DataHandler addresses versioned records through their live uid and overlays them
      * itself, so writing against a version uid would publish draft state as live.
      *
+     * Only deleted rows are excluded. A hidden profile, or one outside its start and
+     * end time, is still the owner's profile, and its image is written like any other.
+     *
      * @return array{pid: int, languageUid: int}
      */
     private function getProfileRecord(int $profileUid): array
     {
         $columns = $this->getProfileColumnNames();
-        $record = $this->connectionPool
-            ->getConnectionForTable(self::PROFILE_TABLE)
-            ->select(
-                ['pid', $columns['language'], 't3ver_oid'],
-                self::PROFILE_TABLE,
-                ['uid' => $profileUid, $columns['deleted'] => 0],
+        $queryBuilder = $this->connectionPool->getQueryBuilderForTable(self::PROFILE_TABLE);
+        $queryBuilder->getRestrictions()
+            ->removeAll()
+            ->add(GeneralUtility::makeInstance(DeletedRestriction::class));
+        $record = $queryBuilder
+            ->select('pid', $columns['language'], 't3ver_oid')
+            ->from(self::PROFILE_TABLE)
+            ->where(
+                $queryBuilder->expr()->eq(
+                    'uid',
+                    $queryBuilder->createNamedParameter($profileUid, Connection::PARAM_INT),
+                ),
             )
+            ->executeQuery()
             ->fetchAssociative();
         if ($record === false) {
             throw new \UnexpectedValueException(

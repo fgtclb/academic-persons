@@ -229,6 +229,11 @@ as such:
         -   :sql:`tx_academicpersons_domain_model_profile_information`, as
             ``columnsOverrides`` of the record type of that section
 
+:yaml:`special.hidden` is the one exception. Its flags decide whether owners may
+show or hide their profile in the profile editor, and an installation sets them
+when editors are meant to decide instead, so they never make the backend
+checkbox :guilabel:`Visible` read only.
+
 The property name is translated to the database column automatically:
 :yaml:`firstName` addresses :sql:`first_name`; a field that names a
 :yaml:`fieldName` addresses that column instead.

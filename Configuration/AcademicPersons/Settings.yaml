@@ -340,6 +340,14 @@ special:
     fieldType: check
     renderType: checkbox
     helptext: 'LLL:EXT:academic_persons/Resources/Private/Language/locallang.xlf:helptext.skipSync'
+  # The owner's "Show my profile publicly" switch. It writes the profile's
+  # `hidden` column, inverted. `readonly` or `disabled` keeps it from owners,
+  # `~` removes it. Backend editors keep the checkbox either way.
+  hidden:
+    type: special
+    fieldType: check
+    renderType: checkbox
+    helptext: 'LLL:EXT:academic_persons/Resources/Private/Language/locallang.xlf:helptext.hidden'
 # Contract section
 # ----------------
 # `documentSections.contracts` references this type. `fields` is the ordered

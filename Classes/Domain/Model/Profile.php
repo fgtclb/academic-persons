@@ -97,6 +97,7 @@ class Profile extends AbstractEntity
     protected ObjectStorage $frontendUsers;
     protected string $importIdentifier = '';
     protected bool $skipSync = false;
+    protected bool $hidden = false;
 
     public function __construct()
     {
@@ -523,6 +524,16 @@ class Profile extends AbstractEntity
     public function setSkipSync(bool $skipSync): void
     {
         $this->skipSync = $skipSync;
+    }
+
+    public function getHidden(): bool
+    {
+        return $this->hidden;
+    }
+
+    public function setHidden(bool $hidden): void
+    {
+        $this->hidden = $hidden;
     }
 
     /**

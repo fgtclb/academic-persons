@@ -16,12 +16,14 @@ use FGTCLB\AcademicPersons\Event\ModifyProfileImageMetadataEvent;
 use Psr\EventDispatcher\EventDispatcherInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Log\LoggerInterface;
+use TYPO3\CMS\Core\Database\Connection;
 use TYPO3\CMS\Core\Database\ConnectionPool;
+use TYPO3\CMS\Core\Database\Query\Restriction\DeletedRestriction;
 use TYPO3\CMS\Core\Resource\File;
 use TYPO3\CMS\Core\Resource\Index\MetaDataRepository;
 use TYPO3\CMS\Core\Resource\ResourceFactory;
-use TYPO3\CMS\Core\Schema\Capability\TcaSchemaCapability;
 use TYPO3\CMS\Core\Schema\TcaSchemaFactory;
+use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
  * Keeps the title and alternative text of a profile's image reference equal to the
@@ -363,19 +365,30 @@ final readonly class ProfileImageMetadataService
     /**
      * The text both writers use: the name of the profile record, composed from its
      * title and its name columns. Null when no such record exists.
+     *
+     * Only deleted rows are excluded. A hidden profile, or one outside its start and
+     * end time, is still the owner's profile, and its image gets its metadata like
+     * any other.
      */
     private function composeMetadataText(int $profileUid): ?string
     {
         if ($profileUid <= 0) {
             return null;
         }
-        $profileRecord = $this->connectionPool
-            ->getConnectionForTable(self::PROFILE_TABLE)
-            ->select(
-                ['title', 'first_name', 'middle_name', 'last_name'],
-                self::PROFILE_TABLE,
-                ['uid' => $profileUid, $this->getDeletedColumnName() => 0],
+        $queryBuilder = $this->connectionPool->getQueryBuilderForTable(self::PROFILE_TABLE);
+        $queryBuilder->getRestrictions()
+            ->removeAll()
+            ->add(GeneralUtility::makeInstance(DeletedRestriction::class));
+        $profileRecord = $queryBuilder
+            ->select('title', 'first_name', 'middle_name', 'last_name')
+            ->from(self::PROFILE_TABLE)
+            ->where(
+                $queryBuilder->expr()->eq(
+                    'uid',
+                    $queryBuilder->createNamedParameter($profileUid, Connection::PARAM_INT),
+                ),
             )
+            ->executeQuery()
             ->fetchAssociative();
         if ($profileRecord === false) {
             return null;
@@ -386,17 +399,6 @@ final readonly class ProfileImageMetadataService
             (string)($profileRecord['middle_name'] ?? ''),
             (string)($profileRecord['last_name'] ?? ''),
         );
-    }
-
-    /**
-     * The configured soft-delete column of the profile table. It is TCA `ctrl`
-     * configuration, not a constant, so it is read from the schema.
-     */
-    private function getDeletedColumnName(): string
-    {
-        return $this->tcaSchemaFactory->get(self::PROFILE_TABLE)
-            ->getCapability(TcaSchemaCapability::SoftDelete)
-            ->getFieldName();
     }
 
     private function buildMetadataText(string ...$parts): string
