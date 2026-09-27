@@ -9,7 +9,6 @@ use FGTCLB\TestingHelper\FunctionalTestCase\FrontendPluginRenderingTrait;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\Attributes\Test;
 use SBUERK\TYPO3\Testing\SiteHandling\SiteBasedTestTrait;
-use TESTS\TestProfileQueryConstraints\EventListener\ReplaceListDemandListener;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Core\Utility\HttpUtility;
 use TYPO3\CMS\Frontend\Page\CacheHashCalculator;
@@ -48,14 +47,11 @@ final class AcademicPersonsListNavigationStateTest extends AbstractAcademicPerso
     {
         $this->configurationToUseInTestInstance = $this->frontendPluginTestConfiguration();
         $this->addCoreExtensionsToLoad('typo3/cms-fluid-styled-content');
-        $this->addTestExtensionsToLoad('tests/test-profile-query-constraints');
         parent::setUp();
-        ReplaceListDemandListener::$alphabetFilter = null;
     }
 
     protected function tearDown(): void
     {
-        ReplaceListDemandListener::$alphabetFilter = null;
         $this->removeWrittenSiteConfiguration();
         parent::tearDown();
     }
@@ -308,29 +304,6 @@ final class AcademicPersonsListNavigationStateTest extends AbstractAcademicPerso
         $letterPage = $this->render($this->letterHref($this->render('/home'), 'B'));
 
         $this->assertSame(['alphabetFilter' => '', 'viewMode' => 'table'], $this->demand($this->letterHref($letterPage, 'B'), $pluginNamespace));
-    }
-
-    /**
-     * The active list arguments are what the visitor asked for, read before the list
-     * event: a listener that hands the view a demand of its own - with a letter here -
-     * acts again on the request a link leads to, so its value does not travel in the URL.
-     */
-    #[Test]
-    public function aListenerOfTheListEventDoesNotChangeTheActiveListArguments(): void
-    {
-        $this->setUpTestCase('list', [self::FIXTURE_TEMPLATE]);
-        ReplaceListDemandListener::$alphabetFilter = 'b';
-
-        $xpath = $this->render('/home');
-
-        $this->assertSame([], $this->activeListArguments($xpath));
-        // The replaced demand did reach the view: under a letter the list is not paginated,
-        // and B is the current letter.
-        $this->assertSame(0, $this->nodes($xpath, sprintf('//nav[%s]', $this->hasClass(self::PAGINATION_CLASS)))->length);
-        $this->assertSame(
-            'B',
-            trim($this->nodes($xpath, sprintf('//nav[%s]//*[@aria-current="page"]', $this->hasClass(self::LETTER_NAVIGATION_CLASS)))->item(0)?->textContent ?? ''),
-        );
     }
 
     /**

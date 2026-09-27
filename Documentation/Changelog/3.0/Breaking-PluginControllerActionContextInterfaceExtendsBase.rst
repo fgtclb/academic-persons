@@ -27,7 +27,10 @@ request the plugin renders in, and :php:`null` when the request carries none,
 exactly as the :guilabel:`academic_base` context does.
 
 The events keep the types they declare, so a listener typed against the
-persons interface is called as before.
+persons interface is called as before. Of the persons events that declared it,
+only the page title placeholder event is left: the list, detail, selected
+profiles and selected contracts events are removed in 3.0, see
+:ref:`breaking-removed-profile-view-events`.
 
 Impact
 ======
@@ -63,8 +66,9 @@ Add the method to the implementing class:
     }
 
 Keep implementing the persons interface for as long as the object is handed
-to a persons event: the events declare it throughout 3.x, and an object that
-implements only the :guilabel:`academic_base` interface is a type error there.
+to the page title placeholder event: it declares the persons interface
+throughout 3.x, and an object that implements only the :guilabel:`academic_base`
+interface is a type error there.
 Switch to the :guilabel:`academic_base` interface with 4.0, see
 :ref:`deprecation-persons-plugin-controller-action-context`.
 

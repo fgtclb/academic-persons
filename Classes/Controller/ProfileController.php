@@ -11,16 +11,13 @@ declare(strict_types=1);
 
 namespace FGTCLB\AcademicPersons\Controller;
 
+use FGTCLB\AcademicBase\Controller\DispatchModifyPluginViewEventMethodTrait;
 use FGTCLB\AcademicBase\Controller\GetCurrentContentRecordMethodTrait;
 use FGTCLB\AcademicPersons\Domain\Model\Dto\PluginControllerActionContext;
 use FGTCLB\AcademicPersons\Domain\Model\Dto\ProfileDemand;
 use FGTCLB\AcademicPersons\Domain\Model\Profile;
 use FGTCLB\AcademicPersons\Domain\Repository\ContractRepository;
 use FGTCLB\AcademicPersons\Domain\Repository\ProfileRepository;
-use FGTCLB\AcademicPersons\Event\ModifyDetailProfileEvent;
-use FGTCLB\AcademicPersons\Event\ModifyListProfilesEvent;
-use FGTCLB\AcademicPersons\Event\ModifySelectedContractsEvent;
-use FGTCLB\AcademicPersons\Event\ModifySelectedProfilesEvent;
 use FGTCLB\AcademicPersons\PageTitle\ProfileTitleProvider;
 use FGTCLB\AcademicPersons\Settings\AcademicPersonsSettings;
 use GeorgRinger\NumberedPagination\NumberedPagination;
@@ -41,6 +38,7 @@ use TYPO3\CMS\Frontend\Page\PageAccessFailureReasons;
 
 final class ProfileController extends ActionController
 {
+    use DispatchModifyPluginViewEventMethodTrait;
     use GetCurrentContentRecordMethodTrait;
 
     /**
@@ -108,21 +106,8 @@ final class ProfileController extends ActionController
     {
         $this->adoptSettings($demand);
         $activeListArguments = $this->activeListArguments($demand);
-        // Read before the list event as well: the mode names a partial, and a demand a
-        // listener hands back is not resolved again.
         $viewMode = $demand->getViewMode() !== '' ? $demand->getViewMode() : $this->defaultViewMode();
-        $pluginControllerActionContext = $this->pluginControllerActionContext();
-        $profiles = $this->profileRepository->findByDemand($demand, $pluginControllerActionContext);
-
-        /** @var ModifyListProfilesEvent $event */
-        $event = $this->eventDispatcher->dispatch(new ModifyListProfilesEvent(
-            profiles: $profiles,
-            view: $this->view,
-            pluginControllerActionContext: $pluginControllerActionContext,
-            profileDemand: $demand,
-        ));
-        $demand = $event->getProfileDemand();
-        $profiles = $event->getProfiles();
+        $profiles = $this->profileRepository->findByDemand($demand, $this->pluginControllerActionContext());
 
         if ($demand->getAlphabetFilter() !== '') {
             $this->settings['paginationEnabled'] = '0';
@@ -161,8 +146,7 @@ final class ProfileController extends ActionController
         }
 
         // Which letters lead to a list that is not empty - only when the navigation is rendered,
-        // which it is not for a manual selection: that ignores the letter filter. The demand is
-        // the one the listeners handed back, so the letters answer for the list they changed.
+        // which it is not for a manual selection: that ignores the letter filter.
         if ((bool)($this->settings['alphabetPaginationEnabled'] ?? false) && !$manualSelection) {
             $this->view->assign(
                 'alphabetFilterLetters',
@@ -178,6 +162,7 @@ final class ProfileController extends ActionController
         ]);
         $this->assignViewMode($viewMode);
         $this->addCacheTags('profile_list_view');
+        $this->dispatchModifyPluginViewEvent($this->request, $this->settings, $this->view, $this->eventDispatcher);
 
         return $this->htmlResponse();
     }
@@ -266,6 +251,7 @@ final class ProfileController extends ActionController
         $this->view->assignMultiple([
             'profiles' => $profiles,
         ]);
+        $this->dispatchModifyPluginViewEvent($this->request, $this->settings, $this->view, $this->eventDispatcher);
 
         return $this->htmlResponse();
     }
@@ -310,22 +296,11 @@ final class ProfileController extends ActionController
             );
         }
 
-        $pluginControllerActionContext = $this->pluginControllerActionContext();
-        /** @var ModifyDetailProfileEvent $event */
-        $event = $this->eventDispatcher->dispatch(new ModifyDetailProfileEvent(
-            $profile,
-            $this->view,
-            $pluginControllerActionContext,
-            ProfileTitleProvider::DETAIL_PAGE_TITLE_FORMAT,
-            $this->resolveDetailPageTitleFormat(),
-        ));
-        $profile = $event->getProfile();
-
         // Add page title based on profile name
         $this->profileTitleProvider->setFromProfile(
-            $pluginControllerActionContext,
+            $this->pluginControllerActionContext(),
             $profile,
-            $event->getPageTitleFormatToUse(),
+            $this->resolveDetailPageTitleFormat(),
         );
 
         // Set additional detail page cache tags
@@ -341,6 +316,8 @@ final class ProfileController extends ActionController
             // order, and what each of them shows. See `Templates/Profile/Detail.html`.
             'publicProfile' => $this->academicPersonsSettings->publicProfile,
         ]);
+        $this->dispatchModifyPluginViewEvent($this->request, $this->settings, $this->view, $this->eventDispatcher);
+
         return $this->htmlResponse();
     }
 
@@ -356,26 +333,19 @@ final class ProfileController extends ActionController
         if (empty($this->settings['selectedProfiles'])) {
             // Nothing is selected, and the header of the content element still renders.
             $this->assignContentElement();
+            $this->dispatchModifyPluginViewEvent($this->request, $this->settings, $this->view, $this->eventDispatcher);
             return $this->htmlResponse();
         }
 
         $profileUids = GeneralUtility::intExplode(',', $this->settings['selectedProfiles'], true);
         $showHiddenRecords = (bool)($this->settings['showHiddenRecords'] ?? false);
-        $pluginControllerActionContext = $this->pluginControllerActionContext();
-        $profiles = $this->profileRepository->findByUidsWithContext($profileUids, $pluginControllerActionContext, $showHiddenRecords);
-
-        /** @var ModifySelectedProfilesEvent $event */
-        $event = $this->eventDispatcher->dispatch(new ModifySelectedProfilesEvent(
-            $profiles,
-            $this->view,
-            $pluginControllerActionContext,
-        ));
-        $profiles = $event->getProfiles();
+        $profiles = $this->profileRepository->findByUidsWithContext($profileUids, $this->pluginControllerActionContext(), $showHiddenRecords);
 
         $this->assignContentElement();
         $this->view->assignMultiple([
             'profiles' => $this->sortBySelectionOrder($profiles, $profileUids),
         ]);
+        $this->dispatchModifyPluginViewEvent($this->request, $this->settings, $this->view, $this->eventDispatcher);
 
         return $this->htmlResponse();
     }
@@ -392,26 +362,19 @@ final class ProfileController extends ActionController
         if (empty($this->settings['selectedContracts'])) {
             // Nothing is selected, and the header of the content element still renders.
             $this->assignContentElement();
+            $this->dispatchModifyPluginViewEvent($this->request, $this->settings, $this->view, $this->eventDispatcher);
             return $this->htmlResponse();
         }
 
         $contractUids = GeneralUtility::intExplode(',', $this->settings['selectedContracts'], true);
         $showHiddenRecords = (bool)($this->settings['showHiddenRecords'] ?? false);
-        $pluginControllerActionContext = $this->pluginControllerActionContext();
-        $contracts = $this->contractRepository->findByUidsWithContext($contractUids, $pluginControllerActionContext, $showHiddenRecords);
-
-        /** @var ModifySelectedContractsEvent $event */
-        $event = $this->eventDispatcher->dispatch(new ModifySelectedContractsEvent(
-            $contracts,
-            $this->view,
-            $pluginControllerActionContext,
-        ));
-        $contracts = $event->getContracts();
+        $contracts = $this->contractRepository->findByUidsWithContext($contractUids, $this->pluginControllerActionContext(), $showHiddenRecords);
 
         $this->assignContentElement();
         $this->view->assignMultiple([
             'contracts' => $this->sortBySelectionOrder($contracts, $contractUids),
         ]);
+        $this->dispatchModifyPluginViewEvent($this->request, $this->settings, $this->view, $this->eventDispatcher);
 
         return $this->htmlResponse();
     }
@@ -420,10 +383,9 @@ final class ProfileController extends ActionController
      * The visitor's choices the list is shown with, as its navigation links carry them.
      *
      * Read from the mapped demand, so a value the property mapping rejected never reaches a
-     * link, and before the list event, as the partner list reads its link arguments: a
-     * listener acts again on the request a link leads to, so what it changes need not
-     * travel in the URL. A value equal to its default is left out, so the first page and
-     * the list without a letter keep the URLs they always had.
+     * link. A listener of `ModifyProfileDemandEvent` acts again on the request a link leads
+     * to, so what it changes need not travel in the URL. A value equal to its default is left
+     * out, so the first page and the list without a letter keep the URLs they always had.
      *
      * The page is the one requested, not the one the paginator clamps it to. A page link
      * replaces it and a letter link drops it; the view mode switch keeps it as it is, and
@@ -628,30 +590,35 @@ final class ProfileController extends ActionController
     }
 
     /**
-     * The context of the action, for its event and for the repository, which hands it to the
-     * listeners of `ModifyProfileQueryEvent` and `ModifyContractQueryEvent`. Those are typed
-     * against the `academic_base` interface, and the persons interface extends it.
+     * The context of the action, for the repository, which hands it to the listeners of
+     * `ModifyProfileQueryEvent` and `ModifyContractQueryEvent`, and for the page title, which
+     * hands it to the listeners of `ModifyProfileTitlePlaceholderReplacementEvent`. The query
+     * events are typed against the `academic_base` interface, and the persons interface
+     * extends it. `ModifyPluginViewEvent` gets a context of its own, see
+     * `DispatchModifyPluginViewEventMethodTrait`.
      *
      * It carries the settings as they are when it is built, so an action that changes a setting
      * and queries again builds a new one.
      *
      * @todo Build the `academic_base` context in 4.0 (ACE-747), when the persons one is
-     *       removed and the persons events declare the `academic_base` interface.
+     *       removed and the title placeholder event declares the `academic_base` interface.
      */
     private function pluginControllerActionContext(): PluginControllerActionContext
     {
         return new PluginControllerActionContext($this->request, $this->settings);
     }
 
+    /**
+     * The page title format of the content element, or the default one while it sets none.
+     */
     private function resolveDetailPageTitleFormat(): string
     {
-        // Determine pageTitleFormat form FlexForm settings
         if (isset($this->settings['pageTitleFormat'])
             && is_string($this->settings['pageTitleFormat'])
             && trim($this->settings['pageTitleFormat'], ' ') !== ''
         ) {
             return trim($this->settings['pageTitleFormat'], ' ');
         }
-        return '';
+        return ProfileTitleProvider::DETAIL_PAGE_TITLE_FORMAT;
     }
 }

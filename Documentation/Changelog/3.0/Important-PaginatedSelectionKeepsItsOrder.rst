@@ -22,8 +22,8 @@ which let two pages show the same profile, or none show it, on PostgreSQL.
 The selection is now sorted before it is paginated, and the pages are cut out of
 the sorted list. The selection branch of
 :php:`ProfileRepository::resolveDemandForQuery()` orders by :sql:`uid` ascending
-as well now, like every other branch: that result is what listeners of
-:php:`ModifyListProfilesEvent` receive, and it has to be the same list twice.
+as well now, like every other branch: any caller that renders or limits the
+result without sorting it gets the same list twice.
 
 Impact
 ======

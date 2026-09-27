@@ -130,7 +130,7 @@ class ProfileRepository extends Repository
      *
      * Two limits, both shared with the list's own pagination count, which is SQL only as well:
      * in a workspace preview a profile deleted or hidden only in the workspace still counts, and
-     * a listener of `ModifyListProfilesEvent` that replaces the result is not reflected. Live
+     * a listener of `ModifyPluginViewEvent` that assigns other profiles is not reflected. Live
      * and in the frontend, the answer is exact. Outside the frontend Extbase applies no
      * versioning rules to the records of a query, so there the letters agree with the list's
      * count - live records only - and not necessarily with its records.
@@ -411,8 +411,8 @@ class ProfileRepository extends Repository
         // handled first. The order of the selection is not reproducible in the query - `in()`
         // does not preserve it - so `ProfileController::listAction()` restores it in PHP and
         // paginates the restored list. The query still gets the deterministic fallback
-        // ordering, because the result is what listeners of `ModifyListProfilesEvent` receive
-        // and an unordered result is not the same list twice (ACE-482, ACE-491).
+        // ordering: another caller of `findByDemand()` that renders or limits the result as it
+        // comes must get the same list twice (ACE-482, ACE-491).
         if ($demand->getProfileList() !== '') {
             $profileUidArray = GeneralUtility::intExplode(',', $demand->getProfileList(), true);
             $this->matchSelectedUidsAcrossLanguages($query);

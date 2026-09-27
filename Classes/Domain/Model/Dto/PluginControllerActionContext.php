@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace FGTCLB\AcademicPersons\Domain\Model\Dto;
 
-use FGTCLB\AcademicPersons\Controller\ProfileController;
-use FGTCLB\AcademicPersons\Event\ModifyDetailProfileEvent;
+use FGTCLB\AcademicPersons\Event\ModifyProfileTitlePlaceholderReplacementEvent;
+use FGTCLB\AcademicPersons\PageTitle\ProfileTitleProvider;
 use Psr\Http\Message\ServerRequestInterface;
 use TYPO3\CMS\Core\Http\ApplicationType;
 use TYPO3\CMS\Core\Site\Entity\Site;
@@ -15,7 +15,7 @@ use TYPO3\CMS\Frontend\ContentObject\ContentObjectRenderer;
 
 /**
  * Generic context object used to provide plugin controller action related context information, either in views
- * or dispatched events, for example {@see ModifyDetailProfileEvent} in {@see ProfileController::detailAction()}.
+ * or dispatched events, for example {@see ModifyProfileTitlePlaceholderReplacementEvent} in {@see ProfileTitleProvider}.
  *
  * @deprecated since 3.0, will be removed in 4.0 together with {@see PluginControllerActionContextInterface}.
  *             The persons plugins then hand the context of `academic_base` to their events.

@@ -57,12 +57,14 @@ The steps at a glance
         -   Re-applies project overrides to the new template tree, makes the
             JSON page type reachable, moves repository customizations to the
             query events, drops a project hook that announced backend
-            saves, and completes a project's own plugin action context.
+            saves, completes a project's own plugin action context, and
+            moves listeners of the removed profile view events.
         -   The editor cannot save, an overridden detail view loses the
             configurable layout, a repository override is either a fatal
             error or silently unused, every backend save is announced and
-            synchronised twice, and a project's own plugin action context
-            is a fatal error.
+            synchronised twice, a project's own plugin action context
+            is a fatal error, and a listener of a removed event is no longer
+            called.
 
 ..  note::
     The TYPO3 core update itself is not a step of this page; it is an upgrade
@@ -394,12 +396,27 @@ Classes implementing the plugin action context
 A class of a project that implements
 :php:`\FGTCLB\AcademicPersons\Domain\Model\Dto\PluginControllerActionContextInterface`
 adds :php:`getContentObjectRenderer()`, or is a fatal error. It keeps
-implementing the persons interface while it is handed to a persons event, which
-declares that type throughout 3.x, and switches
+implementing the persons interface while it is handed to the page title
+placeholder event, which declares that type throughout 3.x, and switches
 to the interface of :guilabel:`academic_base` with 4.0, when the persons one is
 removed. See
 :ref:`breaking-plugin-controller-action-context-interface-extends-base` and
 :ref:`deprecation-persons-plugin-controller-action-context`.
+
+Listeners of the removed profile view events
+--------------------------------------------
+
+The list, detail, selected profiles and selected contracts plugins no longer
+dispatch :php:`ModifyListProfilesEvent`, :php:`ModifyDetailProfileEvent`,
+:php:`ModifySelectedProfilesEvent` and :php:`ModifySelectedContractsEvent`.
+A listener of one of them raises no error, it is simply never called again.
+Search the project code for the four class names: a listener that assigns view
+variables moves to :php:`ModifyPluginViewEvent` of :guilabel:`academic_base`, a
+change of the demand to :php:`ModifyProfileDemandEvent`, and a change of the
+detail page title format to the setting of the content element, or to
+:typoscript:`plugin.tx_academicpersons.settings.pageTitleFormat` for every
+content element that sets none. See
+:ref:`breaking-removed-profile-view-events`.
 
 ..  _upgrade-verify:
 

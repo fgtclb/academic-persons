@@ -9,7 +9,6 @@ use FGTCLB\TestingHelper\FunctionalTestCase\FrontendPluginRenderingTrait;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\Attributes\Test;
 use SBUERK\TYPO3\Testing\SiteHandling\SiteBasedTestTrait;
-use TESTS\TestProfileQueryConstraints\EventListener\ReplaceListDemandListener;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Core\Utility\HttpUtility;
 use TYPO3\CMS\Frontend\Page\CacheHashCalculator;
@@ -51,14 +50,12 @@ final class AcademicPersonsListViewModesTest extends AbstractAcademicPersonsTest
     {
         $this->configurationToUseInTestInstance = $this->frontendPluginTestConfiguration();
         $this->addCoreExtensionsToLoad('typo3/cms-fluid-styled-content');
-        $this->addTestExtensionsToLoad('tests/test-profile-view-modes', 'tests/test-profile-query-constraints');
+        $this->addTestExtensionsToLoad('tests/test-profile-view-modes');
         parent::setUp();
-        ReplaceListDemandListener::$viewMode = null;
     }
 
     protected function tearDown(): void
     {
-        ReplaceListDemandListener::$viewMode = null;
         $this->removeWrittenSiteConfiguration();
         parent::tearDown();
     }
@@ -648,23 +645,6 @@ final class AcademicPersonsListViewModesTest extends AbstractAcademicPersonsTest
 
         $this->assertSame(['Name', 'Position', 'Room'], $this->tableHeaders($xpath));
         $this->assertSame(['Prof. Dr. Anna Adams', 'Professor', 'B 1.02'], $this->tableRows($xpath)[0]);
-    }
-
-    /**
-     * The mode is read before the list event: a demand a listener hands back renders in
-     * the mode the request resolved, whatever mode it names.
-     */
-    #[Test]
-    public function aListenerOfTheListEventDoesNotChangeTheViewMode(): void
-    {
-        $this->setUpTestCase();
-        $this->setViewMode(self::LIST_ELEMENT, 'list', true);
-        ReplaceListDemandListener::$viewMode = 'table';
-
-        $xpath = $this->render('/home');
-
-        $this->assertGreaterThan(0, $this->gridItemCount($xpath));
-        $this->assertSame(0, $this->nodes($xpath, '//table')->length);
     }
 
     /**

@@ -6,6 +6,7 @@ namespace FGTCLB\AcademicPersons\Tests\Functional\Plugins;
 
 use FGTCLB\AcademicPersons\Tests\Functional\AbstractAcademicPersonsTestCase;
 use FGTCLB\TestingHelper\FunctionalTestCase\FrontendPluginRenderingTrait;
+use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\Attributes\Test;
 use SBUERK\TYPO3\Testing\SiteHandling\SiteBasedTestTrait;
 use TYPO3\CMS\Core\Information\Typo3Version;
@@ -84,6 +85,45 @@ final class AcademicPersonsDetailPluginTest extends AbstractAcademicPersonsTestC
             ])
         );
         $this->assertStringContainsString('#1: [EN] Max Müllermann', $content);
+    }
+
+    /**
+     * @return array<string, array{string, string}>
+     */
+    public static function pageTitles(): array
+    {
+        return [
+            'default format' => ['defaultLanguageOnly', 'Home: [EN] Max Müllermann'],
+            'format of the content element' => ['defaultLanguageOnly_pageTitleFormat', 'Home: Müllermann, [EN] Max'],
+        ];
+    }
+
+    /**
+     * The page title of a profile is built from the format the content element sets, and from
+     * the default format while it sets none.
+     */
+    #[DataProvider('pageTitles')]
+    #[Test]
+    public function thePageTitleFollowsTheFormatOfTheContentElement(string $dataSet, string $expectedTitle): void
+    {
+        $this->importCSVDataSet(__DIR__ . '/Fixtures/AcademicPersonsDetailPlugin/' . $dataSet . '.csv');
+        $this->setUpFrontendRootPageForTestCase();
+        $this->writeFrontendPluginTestSite([
+            $this->buildDefaultLanguageConfiguration('EN', '/'),
+        ]);
+
+        $content = $this->renderFrontendPage(
+            'https://www.acme.com/home?' . http_build_query([
+                'tx_academicpersons_detail' => [
+                    'controller' => 'Profile',
+                    'action' => 'detail',
+                    'profile' => 1,
+                ],
+                'cHash' => '13c8ec3ab2a317651a40bd164df8a366',
+            ])
+        );
+        $this->assertSame(1, preg_match('#<title>([^<]*)</title>#', $content, $matches));
+        $this->assertSame($expectedTitle, html_entity_decode($matches[1]));
     }
 
     #[Test]

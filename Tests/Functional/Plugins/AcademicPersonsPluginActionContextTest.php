@@ -11,13 +11,13 @@ use SBUERK\TYPO3\Testing\SiteHandling\SiteBasedTestTrait;
 use TESTS\TestPluginActionContext\EventListener\RecordPluginActionContextListener;
 
 /**
- * What a listener of the persons plugin events finds in the context the event carries, while a
- * real plugin renders.
+ * What a listener finds in the context an event carries while a persons plugin renders.
  *
  * `EXT:test_plugin_action_context` records the content element each context names. It declares
- * the `academic_base` interface for the list event and the title placeholder event, and the
- * deprecated persons interface for the detail event - the two kinds of listener a project has
- * in 3.x, and both have to be called.
+ * the `academic_base` interface for the profile query event, which gets the persons context,
+ * and for the plugin view event, and both interfaces for the title placeholder event, the one
+ * persons event that still declares the deprecated persons interface - the two kinds of
+ * listener a project has in 3.x, and both have to be called.
  */
 final class AcademicPersonsPluginActionContextTest extends AbstractAcademicPersonsTestCase
 {
@@ -86,7 +86,10 @@ final class AcademicPersonsPluginActionContextTest extends AbstractAcademicPerso
         $content = $this->renderFrontendPage('https://www.acme.com/list');
 
         $this->assertStringContainsString('Müllermann', $content);
-        $this->assertSame(['list' => [7]], RecordPluginActionContextListener::$contentElements);
+        $this->assertSame([7], RecordPluginActionContextListener::$contentElements['view'] ?? null);
+        $query = RecordPluginActionContextListener::$contentElements['query'] ?? [];
+        $this->assertNotSame([], $query);
+        $this->assertSame([7], array_values(array_unique($query)));
     }
 
     #[Test]
@@ -104,11 +107,13 @@ final class AcademicPersonsPluginActionContextTest extends AbstractAcademicPerso
         );
 
         $this->assertStringContainsString('#1: [EN] Max Müllermann', $content);
-        $this->assertSame([1], RecordPluginActionContextListener::$contentElements['detail'] ?? null);
+        $this->assertSame([1], RecordPluginActionContextListener::$contentElements['view'] ?? null);
         // The page title of the detail view is built from the context of the detail action, one
         // event per placeholder of the title format.
-        $title = RecordPluginActionContextListener::$contentElements['title'] ?? [];
-        $this->assertNotSame([], $title);
-        $this->assertSame([1], array_values(array_unique($title)));
+        foreach (['title', 'title (persons context)'] as $event) {
+            $title = RecordPluginActionContextListener::$contentElements[$event] ?? [];
+            $this->assertNotSame([], $title, $event);
+            $this->assertSame([1], array_values(array_unique($title)), $event);
+        }
     }
 }

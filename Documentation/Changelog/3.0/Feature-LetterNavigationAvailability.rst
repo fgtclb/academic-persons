@@ -36,9 +36,9 @@ dispatched twice for a list that shows the navigation - once for the list, once
 for its letters. A listener that narrows the list narrows the letters as long
 as it answers both calls alike.
 
-The letters do not reflect a listener of :php:`ModifyListProfilesEvent` that
-replaces the result, and in a workspace preview a profile deleted or hidden only
-in the workspace still makes its letter available - the same precision as the
-list's pagination count. See :ref:`developers-letter-availability`.
+The letters do not reflect a listener of :php:`ModifyPluginViewEvent` that
+assigns other profiles to the view, and in a workspace preview a profile deleted
+or hidden only in the workspace still makes its letter available - the same
+precision as the list's pagination count. See :ref:`developers-letter-availability`.
 
 .. index:: Frontend, Fluid, PHP-API, ext:academic_persons

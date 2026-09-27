@@ -14,6 +14,10 @@ context the plugin events carry.
 Which classes of this extension are public API, and what that promises, is
 stated for all academic extensions on the `extension points page of
 academic_base <https://docs.typo3.org/p/fgtclb/academic-base/main/en-us/Developers/ExtensionPoints/Index.html>`__.
+A further variable for the templates of a plugin comes from a listener of
+:php:`ModifyPluginViewEvent` of :guilabel:`academic_base`, which every plugin of
+this extension dispatches when it renders; that page describes it with an
+example.
 
 ..  warning::
 
@@ -178,10 +182,9 @@ letter.
 Two things the letters do not see, both shared with the list's own pagination
 count, which is computed in SQL as well:
 
-*   a listener of :php:`ModifyListProfilesEvent` that **replaces** the result -
-    the letters are computed from the query, not from the records that event
-    hands on. Nor can that listener assign letters of its own: the list action
-    assigns `alphabetFilterLetters` after the event and would overwrite them;
+*   a listener of :php:`ModifyPluginViewEvent` that assigns other profiles to
+    the view - the letters are computed from the query, not from the records
+    the view renders;
 *   in a workspace preview, a profile deleted or hidden only in the workspace -
     it still makes its letter available. Live, the letters are exact.
 
@@ -214,12 +217,9 @@ also read before the events, so a demand a listener hands back cannot name a
 partial.
 
 The value is read from the mapped demand before any event of the list is
-dispatched, :php:`ModifyProfileDemandEvent`, :php:`ModifyProfileQueryEvent` and
-:php:`ModifyListProfilesEvent` alike. A listener acts again on the request a
-link leads to, so what it changes need not travel in the URL. Nor can a listener
-of :php:`ModifyListProfilesEvent` assign a value of its own through the view:
-the list action assigns `activeListArguments` after the event and would
-overwrite it.
+dispatched, :php:`ModifyProfileDemandEvent` and :php:`ModifyProfileQueryEvent`
+alike. A listener acts again on the request a link leads to, so what it changes
+need not travel in the URL.
 
 ..  _developers-trigger:
 
@@ -514,22 +514,23 @@ content element and the content element itself.
 
     *   -   Event
         -   Declared context type
-    *   -   :php:`ModifyListProfilesEvent`, :php:`ModifyDetailProfileEvent`,
-            :php:`ModifySelectedProfilesEvent`,
-            :php:`ModifySelectedContractsEvent`,
-            :php:`ModifyProfileTitlePlaceholderReplacementEvent`
+    *   -   :php:`ModifyProfileTitlePlaceholderReplacementEvent`
         -   the interface of this extension, deprecated
     *   -   :php:`ModifyProfileQueryEvent`, :php:`ModifyContractQueryEvent`
         -   the interface of :guilabel:`academic_base`, :php:`null` where the
             query has no plugin behind it
+    *   -   :php:`\FGTCLB\AcademicBase\Event\ModifyPluginViewEvent` of
+            :guilabel:`academic_base`, which every plugin of this extension
+            dispatches when it renders
+        -   the interface of :guilabel:`academic_base`
 
 Type a listener against
 :php:`\FGTCLB\AcademicBase\Domain\Model\Dto\PluginControllerActionContextInterface`,
 whichever of the events it listens to. The interface of this extension extends
 it and declares nothing of its own, so every context a persons event carries
 satisfies it, and the same code serves the events of the other academic
-extensions. The interface of this extension is removed in 4.0, and the events
-above then declare the :guilabel:`academic_base` one; see
+extensions. The interface of this extension is removed in 4.0, and the title
+placeholder event then declares the :guilabel:`academic_base` one; see
 :ref:`deprecation-persons-plugin-controller-action-context`.
 
 ..  code-block:: php
@@ -542,7 +543,7 @@ above then declare the :guilabel:`academic_base` one; see
     namespace MyVendor\MyExtension\EventListener;
 
     use FGTCLB\AcademicBase\Domain\Model\Dto\PluginControllerActionContextInterface;
-    use FGTCLB\AcademicPersons\Event\ModifyListProfilesEvent;
+    use FGTCLB\AcademicPersons\Event\ModifyProfileTitlePlaceholderReplacementEvent;
     use Psr\Log\LoggerInterface;
     use TYPO3\CMS\Core\Attribute\AsEventListener;
 
@@ -551,14 +552,14 @@ above then declare the :guilabel:`academic_base` one; see
         public function __construct(private readonly LoggerInterface $logger) {}
 
         #[AsEventListener(identifier: 'my-extension/log-plugin-content-element')]
-        public function __invoke(ModifyListProfilesEvent $event): void
+        public function __invoke(ModifyProfileTitlePlaceholderReplacementEvent $event): void
         {
             $this->log($event->getPluginControllerActionContext());
         }
 
         private function log(PluginControllerActionContextInterface $context): void
         {
-            $this->logger->info('Profile list rendered', [
+            $this->logger->info('Profile page title built', [
                 'plugin' => $context->getPluginName(),
                 'contentElement' => $context->getContentObjectRenderer()?->data['uid'] ?? null,
             ]);
