@@ -93,6 +93,9 @@ the list and has no effect.
         -   The field must not be edited at all. See the note below.
     *   -   :yaml:`readonly`
         -   The field is shown but cannot be written.
+    *   -   :yaml:`frontendreadonly`
+        -   The field is shown but cannot be written in the editing frontend.
+            The backend record editor keeps it editable. See the note below.
     *   -   :yaml:`email`
         -   The value must be a valid email address; the field is rendered as an
             email input and the TCA column becomes an ``email`` column.
@@ -129,6 +132,12 @@ Validator class names and validator options cannot be put in the list.
     :yaml:`disabled` additionally implies :yaml:`readonly`. FormEngine has no
     equivalent of the HTML :html:`disabled` attribute, so a disabled field is
     presented as read only in the backend.
+
+    :yaml:`frontendreadonly` locks the field for profile owners only. It
+    cancels :yaml:`required` in the editing frontend, because an owner cannot
+    correct a value they cannot edit, while the backend record editor still
+    requires the field. Listed together with :yaml:`readonly` or
+    :yaml:`disabled`, the field is locked in the backend as well.
 
 ..  _configuration-validations-limits:
 
@@ -207,8 +216,9 @@ Effects in the TYPO3 backend
 ============================
 
 The flags of every section are merged into the TCA of the matching table, so a
-locked field is read only in the record editor and a required field is marked
-as such:
+field locked with :yaml:`readonly` or :yaml:`disabled` is read only in the
+record editor and a required field is marked as such. :yaml:`frontendreadonly`
+is the one lock that does not reach the TCA. The sections map to these tables:
 
 ..  list-table::
     :header-rows: 1
@@ -257,10 +267,16 @@ the same flags are used three times:
     flags select.
 #.  :yaml:`required`, :yaml:`email` and :yaml:`url` add server side validation
     of the submitted data, and a character limit is enforced.
-#.  A :yaml:`disabled` or :yaml:`readonly` property is **never written** to the
-    record, whatever the request contains. This is deliberate: it protects
-    already stored data, and it is what prevents a locked field from being
-    emptied when a form is submitted.
+#.  A :yaml:`disabled`, :yaml:`readonly` or :yaml:`frontendreadonly` property
+    is **never written** to the record, whatever the request contains. This is
+    deliberate: it protects already stored data, and it is what prevents a
+    locked field from being emptied when a form is submitted.
+
+..  note::
+    A record an owner creates in the editing frontend, such as a new contract,
+    is stored without a value for a field locked with :yaml:`frontendreadonly`,
+    even when the backend requires it. The backend record editor asks for it
+    the next time the record is saved there.
 
 Validation never falls back from one section to another: a contact record is
 validated against its contact section, a timeline entry against the section of
@@ -301,10 +317,31 @@ A flag is added the same way, by restating the list with it:
         validators:
           - required
 
+Example - keeping the synchronised profile names away from their owners while
+backend editors can still correct them. :yaml:`frontendreadonly` replaces both
+shipped flags, and :yaml:`required` keeps the first and last name required in
+the backend record editor, as the TCA of the profile table declares them:
+
+..  code-block:: yaml
+
+    profile:
+      firstName:
+        validators:
+          - required
+          - frontendreadonly
+      middleName:
+        validators:
+          - frontendreadonly
+      lastName:
+        validators:
+          - required
+          - frontendreadonly
+
 ..  note::
     Because both editing contexts read the same configuration, an override
-    always changes them together. Unlocking the profile names for the editing
-    frontend also makes those columns writable in the backend record editor.
+    changes them together, with :yaml:`frontendreadonly` as the one exception.
+    Unlocking the profile names for the editing frontend also makes those
+    columns writable in the backend record editor.
 
 There is no TypoScript and no site set equivalent for these settings.
 
@@ -376,9 +413,10 @@ How the legacy keys map:
 
 A field is matched by its key or by the property it names, so
 :yaml:`emailAddress.email` reaches the :yaml:`emailAddress` field whose
-:yaml:`propertyName` is :yaml:`email`. A legacy set decides the five flags the
-old shape knew - :yaml:`required`, :yaml:`readonly`, :yaml:`disabled`,
-:yaml:`email` and :yaml:`number` - for **every** field of its target: a field
+:yaml:`propertyName` is :yaml:`email`. A legacy set decides the six flags the
+old shape knew - :yaml:`required`, :yaml:`readonly`, :yaml:`frontendreadonly`
+(added in 2.4), :yaml:`disabled`, :yaml:`email` and :yaml:`number` - for
+**every** field of its target: a field
 the set does not list has none of them, exactly as an unlisted property was
 unconfigured before, which is what made the 2.x example above unlock the
 profile names by not listing them. The flags the old shape could not express

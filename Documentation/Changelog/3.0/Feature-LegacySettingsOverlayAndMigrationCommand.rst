@@ -16,13 +16,14 @@ installation keeps behaving as it was configured on the day of the update:
 the backend record editor and the editing frontend see the flags the override
 declared, not the shipped defaults.
 
-The mapping is an overlay on the shipped maps. A legacy set decides the five
+The mapping is an overlay on the shipped maps. A legacy set decides the six
 flags the old shape knew - :yaml:`required`, :yaml:`readonly`,
-:yaml:`disabled`, :yaml:`email` and :yaml:`number` - for every field of its
-target; a field the set does not list has none of them, exactly as it was
-unconfigured before, and the flags the old shape could not express -
-:yaml:`url`, :yaml:`date`, :yaml:`tel`, :yaml:`textarea`, :yaml:`html` -
-stay as the section maps declare them. Two things are not mapped losslessly
+:yaml:`disabled`, :yaml:`email`, :yaml:`number` and, since 2.4,
+:yaml:`frontendreadonly` - for every field of its target. A field the set
+does not list has none of them, exactly as it was unconfigured before, and the
+flags the old shape could not express - :yaml:`url`, :yaml:`date`,
+:yaml:`tel`, :yaml:`textarea`, :yaml:`html` - stay as the section maps declare
+them. Two things are not mapped losslessly
 and are reported:
 
 *   An eighth timeline entry type declared under

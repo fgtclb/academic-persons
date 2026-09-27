@@ -98,7 +98,7 @@ final class LegacySettingsMigratorTest extends UnitTestCase
         foreach (['cooperation', 'lecture', 'publication', 'curriculum_vitae'] as $type) {
             $validations = $this->documentValidations($settings, $type);
             $this->assertTrue($validations['title']->required, $type);
-            // The legacy set does not list the year, so it loses the five flags
+            // The legacy set does not list the year, so it loses the six flags
             // the old shape knew - here `required` and `number`, which is all the
             // shipped section declares - and no validation is left for it.
             $this->assertArrayNotHasKey('year', $validations, $type . ': the year was not listed');
@@ -110,6 +110,39 @@ final class LegacySettingsMigratorTest extends UnitTestCase
             $this->documentValidations($settings, 'lecture')['link']->validatorClassNames,
         );
         $this->assertTrue($settings->getDocumentValidationSet('contracts')->validations['position']->required);
+    }
+
+    /**
+     * `frontendreadonly` is a flag of the old shape since 2.4. A legacy set
+     * that lists it keeps the frontend-only lock where it was, and a field the
+     * set does not list loses it, as it loses `readonly`.
+     */
+    #[Test]
+    public function aLegacySetDecidesTheFrontendOnlyLockAsWell(): void
+    {
+        $configuration = $this->shippedWith([
+            'validations' => [
+                'profile' => ['title' => ['FrontendReadOnly']],
+                'contract' => ['position' => ['required', 'frontendreadonly']],
+            ],
+        ]);
+        $configuration['profile']['website']['validators'][] = 'frontendreadonly';
+
+        $settings = $this->normalize((new LegacySettingsMigrator())->migrate($configuration)->settings);
+
+        $title = $settings->getProfileField('title')?->validation;
+        $this->assertNotNull($title);
+        $this->assertTrue($title->readOnly);
+        $this->assertFalse($title->tcaConfig['readOnly']);
+        $position = $settings->getContractField('position')?->validation;
+        $this->assertNotNull($position);
+        $this->assertTrue($position->readOnly);
+        $this->assertFalse($position->required);
+        $this->assertTrue($position->tcaConfig['required']);
+        $website = $settings->getProfileField('website')?->validation;
+        $this->assertNotNull($website);
+        $this->assertFalse($website->readOnly, 'The legacy set does not list the website.');
+        $this->assertSame(['url'], $website->flags);
     }
 
     /**

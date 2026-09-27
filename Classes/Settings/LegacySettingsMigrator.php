@@ -15,15 +15,15 @@ use Psr\Log\LoggerAwareTrait;
  * property of six record types, and `profileInformationsTypes`, the seven
  * timeline entry types. Both are strictly less expressive than the section
  * graph, so they overlay the merged array instead of replacing it: a legacy
- * set states the `required`, `readonly`, `disabled`, `email` and `number`
- * flags of every field of its target - a field the set does not list loses
- * those five, exactly as it was unconfigured before - and the flags the old
- * shape could not express (`url`, `date`, `tel`, `textarea`, `html`) stay as
- * the section maps declare them. One thing is not mapped losslessly: an
- * eighth timeline type declared through YAML alone cannot be restored,
- * because it needs a profile relation the settings never created. The `type` and `fieldName` of a timeline type are
- * reported rather than mapped, for the same reason: the profile relations are
- * TCA since 3.0.
+ * set states the `required`, `readonly`, `frontendreadonly`, `disabled`,
+ * `email` and `number` flags of every field of its target - a field the set
+ * does not list loses those six, exactly as it was unconfigured before - and
+ * the flags the old shape could not express (`url`, `date`, `tel`,
+ * `textarea`, `html`) stay as the section maps declare them. One thing is
+ * not mapped losslessly: an eighth timeline type declared through YAML alone
+ * cannot be restored, because it needs a profile relation the settings never
+ * created. The `type` and `fieldName` of a timeline type are reported rather
+ * than mapped, for the same reason: the profile relations are TCA since 3.0.
  *
  * Transitional: the mapping exists so an installation keeps behaving as
  * configured on the day of the update, and it is removed in 4.0. Every
@@ -41,10 +41,12 @@ final class LegacySettingsMigrator implements LoggerAwareInterface
     public const LEGACY_KEYS = ['validations', 'profileInformationsTypes'];
 
     /**
-     * The five flags the old shape knew. A legacy set decides these for every
-     * field of its target; every other flag of a field is kept.
+     * The six flags the old shape knew. A legacy set decides these for every
+     * field of its target, and every other flag of a field is kept. 2.4 added
+     * `frontendreadonly`, so a 2.4 installation keeps its frontend-only lock
+     * exactly where its legacy set lists it.
      */
-    private const LEGACY_FLAGS = ['required', 'disabled', 'readonly', 'email', 'number'];
+    private const LEGACY_FLAGS = ['required', 'disabled', 'readonly', 'frontendreadonly', 'email', 'number'];
 
     /**
      * The path of the field map each legacy validation set addresses.
@@ -288,7 +290,7 @@ final class LegacySettingsMigrator implements LoggerAwareInterface
     /**
      * Applies one legacy set to a map of fields: every listed property is
      * matched by field key or by `propertyName`, and every field of the map
-     * gets its five legacy flags from the set - or none.
+     * gets its six legacy flags from the set - or none.
      *
      * @param array<int|string, mixed> $fields
      * @param array<int|string, mixed> $properties

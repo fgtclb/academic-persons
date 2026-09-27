@@ -1,0 +1,30 @@
+# A site package that locks a profile field, two contract fields and an
+# address field for profile owners while backend editors keep them. The
+# middle name lists `readonly` as well, which keeps the backend lock. The
+# settings files merge recursively and a list replaces the shipped one, so
+# every entry repeats the flags it keeps. `room` spells the flag in mixed
+# case on purpose.
+profile:
+  title:
+    validators:
+      - frontendreadonly
+  middleName:
+    validators:
+      - frontendreadonly
+      - readonly
+contracts:
+  fields:
+    position:
+      validators:
+        - required
+        - frontendreadonly
+    room:
+      validators:
+        - FrontendReadOnly
+  contactSections:
+    physicalAddresses:
+      fields:
+        street:
+          validators:
+            - required
+            - frontendreadonly

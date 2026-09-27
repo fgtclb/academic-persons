@@ -92,7 +92,10 @@
 # - `required`: applies Extbase NotEmpty validation plus HTML/TCA required.
 # - `email`: applies Extbase EmailAddress validation and an email input/TCA.
 # - `url`: applies Extbase URL validation and an URL input.
-# - `readonly`: displays the value as read-only and ignores submitted changes.
+# - `readonly`: displays the value as read-only and ignores submitted changes,
+#   in the frontend editor and in the backend record editor.
+# - `frontendreadonly`: the same in the frontend editor only. The backend
+#   record editor keeps the field editable, and required when it is `required`.
 # - `disabled`: disables the control, implies read-only and ignores `required`.
 # - `date`: uses a date control; the TCA column keeps its own date type.
 # - `number`: uses a number control and the number TCA type.

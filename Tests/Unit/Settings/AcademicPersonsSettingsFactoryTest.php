@@ -855,6 +855,37 @@ final class AcademicPersonsSettingsFactoryTest extends UnitTestCase
     }
 
     /**
+     * `frontendreadonly: true` in the expanded map is the flag of the short list.
+     */
+    #[Test]
+    public function aDocumentFieldTakesTheFrontendOnlyLockInTheExpandedMap(): void
+    {
+        $settings = $this->normalize([
+            'documentSections' => [
+                'publications' => [
+                    'label' => 'Publications',
+                    'type' => 'publication',
+                    'fieldName' => 'publications',
+                    'validators' => [
+                        'title' => [
+                            'required' => true,
+                            'frontendreadonly' => true,
+                        ],
+                    ],
+                ],
+            ],
+        ]);
+
+        $title = $settings->getDocumentValidationSet('publications')->get('title');
+        $this->assertNotNull($title);
+        $this->assertSame(['required', 'frontendreadonly'], $title->flags);
+        $this->assertTrue($title->readOnly);
+        $this->assertFalse($title->required);
+        $this->assertFalse($title->tcaConfig['readOnly']);
+        $this->assertTrue($title->tcaConfig['required']);
+    }
+
+    /**
      * The profile counterpart: `characterLimit` counts only on a `ckeditor` control.
      */
     #[Test]

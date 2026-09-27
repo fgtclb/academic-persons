@@ -64,6 +64,7 @@ class AcademicPersonsSettingsFactory
     private const DOCUMENT_VALIDATION_FLAGS = [
         'required',
         'readonly',
+        'frontendreadonly',
         'disabled',
         'email',
         'url',
