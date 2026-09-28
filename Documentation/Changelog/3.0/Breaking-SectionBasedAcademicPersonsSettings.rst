@@ -27,15 +27,15 @@ There is still **one file, one factory and one cache entry**. The public
 detail layout - :yaml:`structure` and :yaml:`details` - lives in the same
 :yaml:`profile` map as the editable fields, and since the files merge
 recursively an override changes one of the two without restating the
-other. The backend TCA **does** consume the graph: five
-TCA files of this extension merge the validation set of their own section,
-exactly as they merged the flat sets before, and the sixth - the profile
-information table, one table shared by the seven timeline types - merges a
-:php:`types` fragment so a section's flags land in the
-:php:`columnsOverrides` of its own record type. The normalised graph is cached in
-the core cache under ``AcademicPersons_Settings_v3``, the identifier the move
-of the validation primitives to `EXT:academic_base` introduced in the same
-release; it is not changed a second time.
+other. The backend TCA **does** consume the graph: the validation set of
+each section is merged into the TCA of its table, and the profile information
+table, one table shared by the seven timeline types, gets a :php:`types`
+fragment so a section's flags land in the :php:`columnsOverrides` of its
+own record type. This happens after the TCA overrides, see
+:ref:`breaking-settings-apply-after-tca-overrides`. The normalised graph is
+cached in the core cache under ``AcademicPersons_Settings_v3``, the identifier
+the move of the validation primitives to `EXT:academic_base` introduced in the
+same release; it is not changed a second time.
 
 What an integrator sees:
 

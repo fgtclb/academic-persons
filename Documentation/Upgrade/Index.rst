@@ -275,6 +275,11 @@ reduced to its deltas;
 :bash:`vendor/bin/typo3 academic:persons:settings:migrate --delta` prints them,
 and names the entries a copied map leaves out.
 
+A site package that sets ``required`` or ``readOnly`` of a person column in
+its TCA overrides loses that value to the settings since 3.0.0, which are
+applied after every override. Move such a lock into the settings, see
+:ref:`breaking-settings-apply-after-tca-overrides`.
+
 :ref:`configuration-validations-migration` has the complete key mapping and what
 is deliberately not mapped;
 :ref:`breaking-section-based-academic-persons-settings` describes the new shape.

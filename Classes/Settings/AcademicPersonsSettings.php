@@ -20,7 +20,7 @@ use FGTCLB\AcademicBase\Settings\ValidationSet;
  * {@see PublicProfileSettings}. `raw` keeps the merged array the graph was
  * built from.
  *
- * The lookups fail softly: a TCA file or a form asks for identifiers an
+ * The lookups fail softly: the TCA listener or a form asks for identifiers an
  * installation need not configure, and an unknown one yields null or an
  * empty validation set carrying the requested identifier. Validation never
  * falls back from one section to another - a contact section, a document
@@ -227,7 +227,7 @@ final class AcademicPersonsSettings
      * Every validation that may participate in an update of the profile
      * record: all profile sections plus the special fields addressing a
      * direct profile property, such as `skipSync`. This is the set the
-     * profile TCA merges.
+     * TCA listener merges into the profile table.
      */
     public function getProfileUpdateValidationSet(): ValidationSet
     {

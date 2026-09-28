@@ -256,6 +256,16 @@ record type only**: a required title of publications does not make the title
 of a lecture required. The :yaml:`fieldType` and :yaml:`renderType` of a field
 never reach the TCA - the column keeps the type its TCA file declares.
 
+The flags are applied once the TCA is compiled, after every
+:file:`Configuration/TCA/Overrides` file. A site package that replaces one of
+these columns keeps what the settings say about it, and a ``required`` or
+``readOnly`` its TCA override sets on a configured column is replaced by the
+settings. State a lock in the settings instead. A value that has to differ in
+the backend only is set by a listener of
+:php:`TYPO3\CMS\Core\Configuration\Event\AfterTcaCompilationEvent` ordered
+after ``academic-persons/apply-settings-to-tca``, see
+:ref:`breaking-settings-apply-after-tca-overrides`.
+
 ..  _configuration-validations-frontend:
 
 Effects in the editing frontend

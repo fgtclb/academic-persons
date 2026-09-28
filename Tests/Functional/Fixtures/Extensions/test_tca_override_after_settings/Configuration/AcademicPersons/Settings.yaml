@@ -1,0 +1,14 @@
+# The teaching area becomes required. The TCA override of this package
+# replaces its column, as a site package does to change a label or the rich
+# text configuration. `nickname` names a column no TCA declares.
+profile:
+  teachingArea:
+    validators:
+      - html
+      - required
+  nickname:
+    section: information
+    fieldType: input
+    renderType: text
+    validators:
+      - required
