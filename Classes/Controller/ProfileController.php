@@ -107,11 +107,13 @@ final class ProfileController extends ActionController
         $this->adoptSettings($demand);
         $activeListArguments = $this->activeListArguments($demand);
         $viewMode = $demand->getViewMode() !== '' ? $demand->getViewMode() : $this->defaultViewMode();
-        $profiles = $this->profileRepository->findByDemand($demand, $this->pluginControllerActionContext());
-
+        // A letter switches the pagination off. Decided before the context is built, so the
+        // one context of the rendering carries it for the queries and the view event alike.
         if ($demand->getAlphabetFilter() !== '') {
             $this->settings['paginationEnabled'] = '0';
         }
+        $context = $this->pluginControllerActionContext();
+        $profiles = $this->profileRepository->findByDemand($demand, $context);
 
         // If profiles were selected manually, sort them by order in selection. This has to
         // happen before the pagination below, which splits exactly this list into pages.
@@ -150,7 +152,7 @@ final class ProfileController extends ActionController
         if ((bool)($this->settings['alphabetPaginationEnabled'] ?? false) && !$manualSelection) {
             $this->view->assign(
                 'alphabetFilterLetters',
-                $this->profileRepository->findAlphabetFilterLetters($demand, $this->pluginControllerActionContext()),
+                $this->profileRepository->findAlphabetFilterLetters($demand, $context),
             );
         }
 
@@ -162,7 +164,7 @@ final class ProfileController extends ActionController
         ]);
         $this->assignViewMode($viewMode);
         $this->addCacheTags('profile_list_view');
-        $this->dispatchModifyPluginViewEvent($this->request, $this->settings, $this->view, $this->eventDispatcher);
+        $this->dispatchModifyPluginViewEvent($context, $this->view, $this->eventDispatcher);
 
         return $this->htmlResponse();
     }
@@ -220,6 +222,7 @@ final class ProfileController extends ActionController
      */
     public function cardAction(): ResponseInterface
     {
+        $context = $this->pluginControllerActionContext();
         $profiles = [];
         if (isset($this->settings['demand'])
             && is_array($this->settings['demand'])
@@ -242,7 +245,7 @@ final class ProfileController extends ActionController
             }
             $profileDemand->setShowHiddenRecords((bool)($this->settings['showHiddenRecords'] ?? false));
             $profiles = $this->sortBySelectionOrder(
-                $this->profileRepository->findByDemand($profileDemand, $this->pluginControllerActionContext()),
+                $this->profileRepository->findByDemand($profileDemand, $context),
                 GeneralUtility::intExplode(',', $this->settings['demand']['profileList'], true),
             );
         }
@@ -251,7 +254,7 @@ final class ProfileController extends ActionController
         $this->view->assignMultiple([
             'profiles' => $profiles,
         ]);
-        $this->dispatchModifyPluginViewEvent($this->request, $this->settings, $this->view, $this->eventDispatcher);
+        $this->dispatchModifyPluginViewEvent($context, $this->view, $this->eventDispatcher);
 
         return $this->htmlResponse();
     }
@@ -296,9 +299,10 @@ final class ProfileController extends ActionController
             );
         }
 
+        $context = $this->pluginControllerActionContext();
         // Add page title based on profile name
         $this->profileTitleProvider->setFromProfile(
-            $this->pluginControllerActionContext(),
+            $context,
             $profile,
             $this->resolveDetailPageTitleFormat(),
         );
@@ -316,7 +320,7 @@ final class ProfileController extends ActionController
             // order, and what each of them shows. See `Templates/Profile/Detail.html`.
             'publicProfile' => $this->academicPersonsSettings->publicProfile,
         ]);
-        $this->dispatchModifyPluginViewEvent($this->request, $this->settings, $this->view, $this->eventDispatcher);
+        $this->dispatchModifyPluginViewEvent($context, $this->view, $this->eventDispatcher);
 
         return $this->htmlResponse();
     }
@@ -329,23 +333,24 @@ final class ProfileController extends ActionController
 
     public function selectedProfilesAction(): ResponseInterface
     {
+        $context = $this->pluginControllerActionContext();
         $this->assignViewMode($this->resolveViewMode($this->requestedViewMode()));
         if (empty($this->settings['selectedProfiles'])) {
             // Nothing is selected, and the header of the content element still renders.
             $this->assignContentElement();
-            $this->dispatchModifyPluginViewEvent($this->request, $this->settings, $this->view, $this->eventDispatcher);
+            $this->dispatchModifyPluginViewEvent($context, $this->view, $this->eventDispatcher);
             return $this->htmlResponse();
         }
 
         $profileUids = GeneralUtility::intExplode(',', $this->settings['selectedProfiles'], true);
         $showHiddenRecords = (bool)($this->settings['showHiddenRecords'] ?? false);
-        $profiles = $this->profileRepository->findByUidsWithContext($profileUids, $this->pluginControllerActionContext(), $showHiddenRecords);
+        $profiles = $this->profileRepository->findByUidsWithContext($profileUids, $context, $showHiddenRecords);
 
         $this->assignContentElement();
         $this->view->assignMultiple([
             'profiles' => $this->sortBySelectionOrder($profiles, $profileUids),
         ]);
-        $this->dispatchModifyPluginViewEvent($this->request, $this->settings, $this->view, $this->eventDispatcher);
+        $this->dispatchModifyPluginViewEvent($context, $this->view, $this->eventDispatcher);
 
         return $this->htmlResponse();
     }
@@ -358,23 +363,24 @@ final class ProfileController extends ActionController
 
     public function selectedContractsAction(): ResponseInterface
     {
+        $context = $this->pluginControllerActionContext();
         $this->assignViewMode($this->resolveViewMode($this->requestedViewMode()));
         if (empty($this->settings['selectedContracts'])) {
             // Nothing is selected, and the header of the content element still renders.
             $this->assignContentElement();
-            $this->dispatchModifyPluginViewEvent($this->request, $this->settings, $this->view, $this->eventDispatcher);
+            $this->dispatchModifyPluginViewEvent($context, $this->view, $this->eventDispatcher);
             return $this->htmlResponse();
         }
 
         $contractUids = GeneralUtility::intExplode(',', $this->settings['selectedContracts'], true);
         $showHiddenRecords = (bool)($this->settings['showHiddenRecords'] ?? false);
-        $contracts = $this->contractRepository->findByUidsWithContext($contractUids, $this->pluginControllerActionContext(), $showHiddenRecords);
+        $contracts = $this->contractRepository->findByUidsWithContext($contractUids, $context, $showHiddenRecords);
 
         $this->assignContentElement();
         $this->view->assignMultiple([
             'contracts' => $this->sortBySelectionOrder($contracts, $contractUids),
         ]);
-        $this->dispatchModifyPluginViewEvent($this->request, $this->settings, $this->view, $this->eventDispatcher);
+        $this->dispatchModifyPluginViewEvent($context, $this->view, $this->eventDispatcher);
 
         return $this->htmlResponse();
     }
@@ -590,15 +596,15 @@ final class ProfileController extends ActionController
     }
 
     /**
-     * The context of the action, for the repository, which hands it to the listeners of
-     * `ModifyProfileQueryEvent` and `ModifyContractQueryEvent`, and for the page title, which
-     * hands it to the listeners of `ModifyProfileTitlePlaceholderReplacementEvent`. The query
-     * events are typed against the `academic_base` interface, and the persons interface
-     * extends it. `ModifyPluginViewEvent` gets a context of its own, see
-     * `DispatchModifyPluginViewEventMethodTrait`.
+     * The context of the action. Every action builds it once, after its settings are settled,
+     * and hands the same object to the repository, which hands it to the listeners of
+     * `ModifyProfileQueryEvent` and `ModifyContractQueryEvent`, to the page title, which hands
+     * it to the listeners of `ModifyProfileTitlePlaceholderReplacementEvent`, and to
+     * `ModifyPluginViewEvent`. The query and view events are typed against the `academic_base`
+     * interface, and the persons interface extends it.
      *
-     * It carries the settings as they are when it is built, so an action that changes a setting
-     * and queries again builds a new one.
+     * It carries the settings as they are when it is built, so an action settles its settings
+     * before it builds the context.
      *
      * @todo Build the `academic_base` context in 4.0 (ACE-747), when the persons one is
      *       removed and the title placeholder event declares the `academic_base` interface.
