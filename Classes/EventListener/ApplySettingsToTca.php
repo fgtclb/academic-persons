@@ -8,6 +8,7 @@ use FGTCLB\AcademicBase\Settings\TcaValidationMerger;
 use FGTCLB\AcademicBase\Settings\Validation;
 use FGTCLB\AcademicBase\Settings\ValidationSet;
 use FGTCLB\AcademicPersons\Settings\AcademicPersonsSettings;
+use FGTCLB\AcademicPersons\Settings\ProjectProfileFieldCheck;
 use TYPO3\CMS\Core\Attribute\AsEventListener;
 use TYPO3\CMS\Core\Configuration\Event\AfterTcaCompilationEvent;
 use TYPO3\CMS\Core\Utility\ArrayUtility;
@@ -29,6 +30,13 @@ use TYPO3\CMS\Core\Utility\ArrayUtility;
  * listener of its own after `academic-persons/apply-settings-to-tca`. That
  * identifier is public API, the class is not.
  *
+ * A project field of the settings, one declared `custom`, is merged like any other
+ * field once {@see ProjectProfileFieldCheck} allows its column. A column it refuses
+ * gets nothing and raises an `E_USER_DEPRECATED` notice naming it. A notice rather
+ * than an exception, because a typo must not take the backend and the install tool
+ * down with the TCA, and rather than a log entry alone, because a test run fails on
+ * it. The frontend editor refuses the same column when it is used.
+ *
  * @internal not part of public API.
  */
 #[AsEventListener(
@@ -43,6 +51,7 @@ final readonly class ApplySettingsToTca
     public function __construct(
         private AcademicPersonsSettings $academicPersonsSettings,
         private TcaValidationMerger $tcaValidationMerger,
+        private ProjectProfileFieldCheck $projectProfileFieldCheck,
     ) {}
 
     public function __invoke(AfterTcaCompilationEvent $event): void
@@ -80,7 +89,8 @@ final readonly class ApplySettingsToTca
      * Every profile section plus the special fields addressing a profile column,
      * except the owner's visibility switch of the profile editor: it writes the
      * `disabled` enable column, and taking it away from owners must not take the
-     * checkbox away from backend editors.
+     * checkbox away from backend editors. A project field whose column is refused
+     * is left out as well.
      *
      * @param array<string, mixed> $tca
      */
@@ -88,13 +98,45 @@ final readonly class ApplySettingsToTca
     {
         $validationSet = $this->academicPersonsSettings->getProfileUpdateValidationSet();
         $disabledColumn = $tca[self::PROFILE_TABLE]['ctrl']['enablecolumns']['disabled'] ?? null;
+        $refusedProperties = $this->findRefusedProjectFields($tca);
         return new ValidationSet(
             identifier: $validationSet->identifier,
             validations: array_filter(
                 $validationSet->validations,
-                static fn(Validation $validation): bool => $validation->fieldName !== $disabledColumn,
+                static fn(Validation $validation, string $propertyName): bool => $validation->fieldName !== $disabledColumn
+                    && !in_array($propertyName, $refusedProperties, true),
+                ARRAY_FILTER_USE_BOTH,
             ),
         );
+    }
+
+    /**
+     * The property names of the project fields whose column is refused, each one
+     * announced with a notice.
+     *
+     * @param array<string, mixed> $tca
+     * @return list<string>
+     */
+    private function findRefusedProjectFields(array $tca): array
+    {
+        $profileTca = $tca[self::PROFILE_TABLE] ?? null;
+        if (!is_array($profileTca) || !is_array($profileTca['columns'] ?? null)) {
+            return [];
+        }
+        $refusedProperties = [];
+        foreach ($this->academicPersonsSettings->getCustomProfileFields() as $propertyName => $field) {
+            $problem = $this->projectProfileFieldCheck->findProblem($field, $profileTca);
+            if ($problem === null) {
+                continue;
+            }
+            $refusedProperties[] = $propertyName;
+            trigger_error(
+                $problem . ' The settings of the field are not applied to the TCA, and the frontend profile editor'
+                . ' fails until the settings or the TCA are corrected.',
+                E_USER_DEPRECATED,
+            );
+        }
+        return $refusedProperties;
     }
 
     /**

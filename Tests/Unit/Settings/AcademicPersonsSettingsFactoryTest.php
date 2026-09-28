@@ -1309,6 +1309,59 @@ final class AcademicPersonsSettingsFactoryTest extends UnitTestCase
     }
 
     /**
+     * A project field is submitted under its identifier and names its column itself,
+     * whatever `propertyName` says, and a regular field keeps deriving both.
+     */
+    #[Test]
+    public function aProjectFieldIsKeptWithItsIdentifierAndColumn(): void
+    {
+        $settings = $this->normalize(['profile' => [
+            'namePrefix' => [
+                'custom' => true,
+                'section' => 'information',
+                'propertyName' => 'somethingElse',
+                'fieldName' => ' tx_site_prefix ',
+                'fieldType' => 'input',
+                'renderType' => 'text',
+                'validators' => ['required'],
+            ],
+            'title' => ['section' => 'information', 'fieldType' => 'input', 'renderType' => 'text'],
+        ]]);
+
+        $field = $settings->getProfileField('namePrefix');
+        $this->assertNotNull($field);
+        $this->assertTrue($field->custom);
+        $this->assertSame('namePrefix', $field->propertyName);
+        $this->assertSame('tx_site_prefix', $field->fieldName);
+        $this->assertSame('tx_site_prefix', $field->validation->fieldName);
+        $this->assertTrue($field->validation->required);
+        $this->assertSame(['namePrefix' => $field], $settings->getCustomProfileFields());
+        $this->assertFalse($settings->getProfileField('title')?->custom);
+        $this->assertArrayHasKey('namePrefix', $settings->getProfileUpdateValidationSet()->validations);
+    }
+
+    /**
+     * Without a column the field is still kept, so the TCA listener and the editor can
+     * name the mistake instead of the field disappearing without a word. Only `true`
+     * declares a project field.
+     */
+    #[Test]
+    public function aProjectFieldWithoutAColumnIsKeptWithAnEmptyOne(): void
+    {
+        $settings = $this->normalize(['profile' => [
+            'namePrefix' => ['custom' => true, 'section' => 'information', 'fieldType' => 'input', 'renderType' => 'text'],
+            'nickname' => ['custom' => 'yes', 'section' => 'information', 'fieldType' => 'input', 'renderType' => 'text'],
+        ]]);
+
+        $this->assertSame('', $settings->getProfileField('namePrefix')?->fieldName);
+        $nickname = $settings->getProfileField('nickname');
+        $this->assertNotNull($nickname);
+        $this->assertFalse($nickname->custom);
+        $this->assertSame('nickname', $nickname->fieldName);
+        $this->assertSame(['namePrefix'], array_keys($settings->getCustomProfileFields()));
+    }
+
+    /**
      * @return array<string, mixed>
      */
     private function getShippedConfiguration(): array

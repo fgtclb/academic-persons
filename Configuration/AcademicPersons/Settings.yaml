@@ -27,7 +27,9 @@
 # configuration can expose, hide, order and validate supported fields, but it
 # does not create database columns, domain properties or new renderers. Keep
 # identifiers stable unless the corresponding PHP, Fluid and TCA code changes
-# with them.
+# with them. The one exception is a project field below `profile`: a column a
+# site package adds to the profile table with its own SQL and TCA, and makes
+# editable in the frontend editor with `custom: true`. See "Project fields".
 #
 # Ordering and visibility
 # -----------------------
@@ -78,6 +80,35 @@
 # the generated control. Field labels come from the existing language keys;
 # `label` configures the Contract or document-section heading, not individual
 # field labels.
+#
+# Project fields
+# --------------
+# A site package that adds a column to the profile table declares it below
+# `profile` with `custom: true` to make it editable in the frontend editor:
+#
+#   namePrefix:
+#     custom: true
+#     section: information
+#     fieldName: tx_mysite_name_prefix   # required, the column of the package
+#     fieldType: input
+#     renderType: text                   # text, textarea, ckeditor or checkbox
+#     validators:
+#       - required
+#
+# The identifier is the name the editor submits the value under, and it must not
+# be a property of the profile model. `propertyName` is ignored. The column has
+# to be in the profile TCA with the type input, text, email, link, number or
+# check, and must be neither a system column nor a column of the profile model.
+# A check column takes the checkbox renderer and no other column does, ckeditor
+# takes a text column, an email column needs the `email` validator and a link
+# column the `url` validator and `allowedTypes` that include `url`. A field with
+# the `url` validator takes web addresses only (http and https). A column that
+# is not allowed raises a deprecation notice naming it while the TCA is
+# compiled, and the frontend editor fails with a message naming it. The
+# validators reach the backend form of the column like those of any other field.
+# The editor writes the value to the row of the edited language through the
+# DataHandler, and a column with `l10n_mode: exclude` to the default-language
+# row.
 #
 # Validator syntax and effects
 # ----------------------------

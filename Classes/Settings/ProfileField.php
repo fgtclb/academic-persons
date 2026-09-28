@@ -13,6 +13,13 @@ use Symfony\Component\DependencyInjection\Attribute\Exclude;
  * the TCA column keeps its own type. `helptext` is the label reference or text
  * rendered next to the control.
  *
+ * A `custom` field is a project field: a column a site package adds to the
+ * profile table, which no property of the profile model or of the form data of
+ * the editor carries. Its property name is its identifier, and its column is the
+ * one its `fieldName` names, which stays empty when the settings name none.
+ * Whether the column may be used is checked against the TCA by
+ * {@see ProjectProfileFieldCheck}, never here.
+ *
  * @internal not part of public API.
  */
 #[Exclude]
@@ -28,6 +35,7 @@ final class ProfileField
         public readonly Validation $validation,
         public readonly int $position,
         public readonly string $helptext = '',
+        public readonly bool $custom = false,
     ) {}
 
     /**
@@ -41,6 +49,7 @@ final class ProfileField
      *     validation: Validation,
      *     position: int,
      *     helptext?: string,
+     *     custom?: bool,
      * } $array
      */
     public static function __set_state(array $array): self
@@ -55,6 +64,7 @@ final class ProfileField
             validation: $array['validation'],
             position: $array['position'],
             helptext: $array['helptext'] ?? '',
+            custom: $array['custom'] ?? false,
         );
     }
 
@@ -63,7 +73,7 @@ final class ProfileField
         return $this->identifier !== ''
             && $this->section !== ''
             && $this->propertyName !== ''
-            && $this->fieldName !== ''
+            && ($this->fieldName !== '' || $this->custom)
             && $this->fieldType !== ''
             && $this->renderType !== '';
     }

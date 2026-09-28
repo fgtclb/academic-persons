@@ -636,8 +636,13 @@ class AcademicPersonsSettingsFactory
             }
             $sectionIdentifier = (string)($options['section'] ?? '');
             $renderType = (string)($options['renderType'] ?? '');
-            $propertyName = (string)($options['propertyName'] ?? $identifier);
-            $fieldName = (string)($options['fieldName'] ?? GeneralUtility::camelCaseToLowerCaseUnderscored($propertyName));
+            // A project field is submitted under its identifier and has no property a
+            // column name could be derived from, so it names its column itself.
+            $custom = ($options['custom'] ?? false) === true;
+            $propertyName = $custom ? (string)$identifier : (string)($options['propertyName'] ?? $identifier);
+            $fieldName = $custom
+                ? trim((string)($options['fieldName'] ?? ''))
+                : (string)($options['fieldName'] ?? GeneralUtility::camelCaseToLowerCaseUnderscored($propertyName));
             $field = new ProfileField(
                 identifier: (string)$identifier,
                 section: $sectionIdentifier,
@@ -654,6 +659,7 @@ class AcademicPersonsSettingsFactory
                 ),
                 position: count($groupedFields[$sectionIdentifier] ?? []),
                 helptext: trim((string)($options['helptext'] ?? '')),
+                custom: $custom,
             );
             if (!$field->isValid()) {
                 continue;

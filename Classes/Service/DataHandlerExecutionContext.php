@@ -30,7 +30,9 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
  *
  * This service is stateless: all run state lives in local variables and callback arguments.
  *
- * @internal owned by the record synchronization of EXT:academic_persons, no public API.
+ * @internal for the DataHandler runs of the academic extensions: the record synchronization,
+ *           the profile image and visibility writes and the project fields of the profile
+ *           editor. No public API.
  */
 #[Autoconfigure(public: true)]
 final class DataHandlerExecutionContext

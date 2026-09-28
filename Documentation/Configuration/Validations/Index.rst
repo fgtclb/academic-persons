@@ -266,6 +266,15 @@ the backend only is set by a listener of
 after ``academic-persons/apply-settings-to-tca``, see
 :ref:`breaking-settings-apply-after-tca-overrides`.
 
+A project field, declared with :yaml:`custom: true`, gets its flags only when
+its column may be used: the column is in the profile TCA, it is no system column
+and no column of the shipped profile model, its type is ``input``, ``text``,
+``email``, ``link``, ``number`` or ``check``, and the renderer and validators of
+the field fit that type. Any other column gets nothing and raises a deprecation
+notice naming the field, the column and the reason. The backend and the install
+tool keep working. A regular field whose column the TCA does not have is left
+out without a notice.
+
 ..  _configuration-validations-frontend:
 
 Effects in the editing frontend

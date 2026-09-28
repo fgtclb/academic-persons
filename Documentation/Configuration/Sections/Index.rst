@@ -408,11 +408,19 @@ Every other key is a field, and fields share one shape across
     *   -   :yaml:`options`
         -   Contract selects only: :yaml:`organisationalUnits`,
             :yaml:`functionTypes` or :yaml:`locations`.
+    *   -   :yaml:`custom`
+        -   Profile fields only: :yaml:`true` declares a project field, a
+            column a site package adds to the profile table and makes
+            editable in the profile editor. Its :yaml:`fieldName` is required,
+            and its key is its property name. See `project fields
+            <https://docs.typo3.org/p/fgtclb/academic-persons-edit/main/en-us/Configuration/Settings/Index.html#configuration-editor-project-fields>`__
+            of academic_persons_edit.
 
 A field is dropped silently when it has no section (profile fields), no
 :yaml:`fieldType` or no :yaml:`renderType`. Removing a field from the file
 removes it from the editing frontend and from the validation; it never removes
-a column or stored data.
+a column or stored data. Apart from a project field, the settings describe
+columns and properties the extensions ship and create none.
 
 ..  _configuration-sections-special:
 

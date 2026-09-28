@@ -136,6 +136,25 @@ final class AcademicPersonsSettings
         return null;
     }
 
+    /**
+     * The project fields of every profile section, keyed by their property name,
+     * which is their identifier.
+     *
+     * @return array<string, ProfileField>
+     */
+    public function getCustomProfileFields(): array
+    {
+        $fields = [];
+        foreach ($this->profileSections as $section) {
+            foreach ($section->fields as $field) {
+                if ($field->custom) {
+                    $fields[$field->propertyName] = $field;
+                }
+            }
+        }
+        return $fields;
+    }
+
     public function getSpecialField(string $identifier): ?SpecialField
     {
         return $this->specialFields[$identifier] ?? null;
