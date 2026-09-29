@@ -71,12 +71,50 @@ settings:
     category: academic.persons
     type: string
     default: 'name,position,emailAddresses,phoneNumbers,room'
+  plugin.tx_academicpersons.image.list.cropVariant:
+    label: 'Image | Crop variant of the lists'
+    description: 'The crop variant of a profile image in the list, list and detail, selected profiles and selected contracts elements, and in the contacts of a page. A name the image does not define shows it uncropped.'
+    category: academic.persons
+    type: string
+    default: 'default'
+  plugin.tx_academicpersons.image.card.cropVariant:
+    label: 'Image | Crop variant of the card'
+    description: 'The crop variant of a profile image in the card element. A name the image does not define shows it uncropped.'
+    category: academic.persons
+    type: string
+    default: 'default'
+  plugin.tx_academicpersons.image.detail.cropVariant:
+    label: 'Image | Crop variant of the profile detail'
+    description: 'The crop variant of the profile image in the public profile. A name the image does not define shows it uncropped.'
+    category: academic.persons
+    type: string
+    default: 'default'
+  # A settings node holds either a value or children, never both, so the generic
+  # placeholder is "placeholder.default" rather than "placeholder" itself.
   plugin.tx_academicpersons.image.placeholder.default:
     label: 'Image | Placeholder of a profile without image'
-    description: 'An EXT: path to a public file. Empty shows no image.'
+    description: 'An EXT: path to a public file. Empty shows no image, unless a placeholder of the profile gender applies.'
     category: academic.persons
     type: string
     default: 'EXT:academic_persons/Resources/Public/Images/ProfilePlaceholder.svg'
+  plugin.tx_academicpersons.image.placeholder.mr:
+    label: 'Image | Placeholder of a profile of the gender "mr" without image'
+    description: 'An EXT: path to a public file. Empty uses the default placeholder.'
+    category: academic.persons
+    type: string
+    default: ''
+  plugin.tx_academicpersons.image.placeholder.ms:
+    label: 'Image | Placeholder of a profile of the gender "ms" without image'
+    description: 'An EXT: path to a public file. Empty uses the default placeholder.'
+    category: academic.persons
+    type: string
+    default: ''
+  plugin.tx_academicpersons.image.placeholder.diverse:
+    label: 'Image | Placeholder of a profile of the gender "diverse" without image'
+    description: 'An EXT: path to a public file. Empty uses the default placeholder.'
+    category: academic.persons
+    type: string
+    default: ''
   plugin.tx_academicpersons.phoneNumbers.telPrefix:
     label: 'Phone numbers | Prefix of a phone link target'
     description: 'Prepended to the "tel:" target of every phone number, never to its visible text. For an installation that stores extensions only.'

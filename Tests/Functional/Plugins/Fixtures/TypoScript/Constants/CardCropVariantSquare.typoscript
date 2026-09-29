@@ -1,0 +1,2 @@
+# The card content element renders the square crop of a profile image.
+plugin.tx_academicpersons.image.card.cropVariant = square

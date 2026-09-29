@@ -1,0 +1,2 @@
+# A placeholder of its own for the profiles of the gender "mr".
+plugin.tx_academicpersons.image.placeholder.mr = EXT:test_profile_placeholders/Resources/Public/Images/PersonMr.svg

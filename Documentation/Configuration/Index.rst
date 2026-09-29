@@ -67,11 +67,12 @@ extensions sort their elements into.
 
 The site settings of this extension — the detail page, the default grouping,
 sorting and pagination of a profile list, the selected letter of the letter
-navigation, the image placeholder, the phone link prefix and the
-:ref:`content element header <configuration-content-element-header>` switch
-below — are declared with the aggregate set. A site that depends on a single
-component set still gets the shipped defaults, but can only override them in
-:guilabel:`Site Settings` when it depends on `fgtclb/academic-persons`.
+navigation, the crop variants and placeholders of the profile image, the phone
+link prefix and the :ref:`content element header
+<configuration-content-element-header>` switch below — are declared with the
+aggregate set. A site that depends on a single component set still gets the
+shipped defaults, but can only override them in :guilabel:`Site Settings` when
+it depends on `fgtclb/academic-persons`.
 
 ..  _configuration-phone-link-prefix:
 
@@ -397,8 +398,10 @@ requests one by its name, through the `cropVariant` argument of
         -   3:4
 
 `default` is the variant TYPO3 offers when a file field configures none, with
-the same ratios, and the templates of this extension render it. A crop an editor
-stored before the update is stored under that name and keeps its meaning.
+the same ratios, and the templates of this extension render it unless a site
+chooses another one per view, see :ref:`templates-profile-image-crop-variant`.
+A crop an editor stored before the update is stored under that name and keeps
+its meaning.
 
 An image stores a crop for the new variants once an editor opens it in the
 backend form and saves the record. Until then a template that requests `square`

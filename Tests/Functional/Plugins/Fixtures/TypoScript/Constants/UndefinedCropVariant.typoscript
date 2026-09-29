@@ -1,0 +1,6 @@
+# A crop variant name the profile image does not define, for every view.
+plugin.tx_academicpersons.image {
+  list.cropVariant = undefined
+  card.cropVariant = undefined
+  detail.cropVariant = undefined
+}

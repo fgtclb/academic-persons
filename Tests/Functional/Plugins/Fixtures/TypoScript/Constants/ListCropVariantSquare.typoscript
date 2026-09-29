@@ -1,0 +1,2 @@
+# Every element that renders profile items, apart from the card, renders the square crop.
+plugin.tx_academicpersons.image.list.cropVariant = square

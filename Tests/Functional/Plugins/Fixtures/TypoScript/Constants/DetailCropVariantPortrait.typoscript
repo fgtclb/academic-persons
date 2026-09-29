@@ -1,0 +1,2 @@
+# The public profile renders the portrait crop of a profile image.
+plugin.tx_academicpersons.image.detail.cropVariant = portrait

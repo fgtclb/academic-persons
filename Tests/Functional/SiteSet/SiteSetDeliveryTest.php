@@ -12,6 +12,8 @@ use SBUERK\TYPO3\Testing\SiteHandling\SiteBasedTestTrait;
 use TYPO3\CMS\Backend\Utility\BackendUtility;
 use TYPO3\CMS\Core\Site\Set\SetDefinition;
 use TYPO3\CMS\Core\Site\Set\SetRegistry;
+use TYPO3\CMS\Core\TypoScript\AST\AstBuilderInterface;
+use TYPO3\CMS\Core\TypoScript\TypoScriptStringFactory;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
@@ -464,7 +466,13 @@ final class SiteSetDeliveryTest extends AbstractAcademicPersonsTestCase
                 'plugin.tx_academicpersons.alphabet.activeLetterResets' => false,
                 'plugin.tx_academicpersons.viewMode.allowed' => 'list,table',
                 'plugin.tx_academicpersons.table.columns' => 'name,position,emailAddresses,phoneNumbers,room',
+                'plugin.tx_academicpersons.image.list.cropVariant' => 'default',
+                'plugin.tx_academicpersons.image.card.cropVariant' => 'default',
+                'plugin.tx_academicpersons.image.detail.cropVariant' => 'default',
                 'plugin.tx_academicpersons.image.placeholder.default' => 'EXT:academic_persons/Resources/Public/Images/ProfilePlaceholder.svg',
+                'plugin.tx_academicpersons.image.placeholder.mr' => '',
+                'plugin.tx_academicpersons.image.placeholder.ms' => '',
+                'plugin.tx_academicpersons.image.placeholder.diverse' => '',
                 'plugin.tx_academicpersons.phoneNumbers.telPrefix' => '',
             ],
             $definitions,
@@ -478,6 +486,31 @@ final class SiteSetDeliveryTest extends AbstractAcademicPersonsTestCase
                 $set->settingsDefinitions,
                 sprintf('The set "%s" declares settings of its own.', $setName),
             );
+        }
+    }
+
+    /**
+     * A site that uses the site set and the static template reads the constants after the
+     * site settings, so a constant whose default differs from the declared one resets what
+     * the integrator configured. Every declared setting therefore has a constant of the same
+     * path and the same default.
+     */
+    #[Test]
+    public function everySettingDefaultEqualsItsConstant(): void
+    {
+        $aggregate = $this->setRegistry()->getSet(self::AGGREGATE_SET);
+        $this->assertNotNull($aggregate);
+        $constants = $this->get(TypoScriptStringFactory::class)->parseFromString(
+            (string)file_get_contents(__DIR__ . '/../../../Configuration/TypoScript/Default/constants.typoscript'),
+            $this->get(AstBuilderInterface::class),
+        )->flatten();
+
+        foreach ($aggregate->settingsDefinitions as $definition) {
+            $this->assertArrayHasKey($definition->key, $constants, sprintf('No constant for the setting "%s".', $definition->key));
+            $default = $definition->default;
+            $this->assertIsScalar($default, sprintf('The setting "%s" has no scalar default.', $definition->key));
+            $default = is_bool($default) ? (string)(int)$default : (string)$default;
+            $this->assertSame($default, $constants[$definition->key], sprintf('The constant "%s" has another default.', $definition->key));
         }
     }
 

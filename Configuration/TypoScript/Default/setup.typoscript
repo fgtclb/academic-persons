@@ -30,8 +30,16 @@ plugin.tx_academicpersons {
       columns = {$plugin.tx_academicpersons.table.columns}
     }
     image {
+      # The card template names its view, every other element that renders profile items
+      # reads the list crop variant, see "Profile/Item/Image.html".
+      list.cropVariant = {$plugin.tx_academicpersons.image.list.cropVariant}
+      card.cropVariant = {$plugin.tx_academicpersons.image.card.cropVariant}
+      detail.cropVariant = {$plugin.tx_academicpersons.image.detail.cropVariant}
       placeholder {
         default = {$plugin.tx_academicpersons.image.placeholder.default}
+        mr = {$plugin.tx_academicpersons.image.placeholder.mr}
+        ms = {$plugin.tx_academicpersons.image.placeholder.ms}
+        diverse = {$plugin.tx_academicpersons.image.placeholder.diverse}
       }
     }
     phoneNumbers {

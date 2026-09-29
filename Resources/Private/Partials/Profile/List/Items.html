@@ -22,6 +22,8 @@
     - contracts:       the contracts to render instead, one item each
     - class:           an additional class of the row, for a caller that has one
     - groupedProfiles: set by a grouped list, so the item picks the lower heading level
+    - imageView:       the view whose crop variant the item image renders, "card" from the
+                       card. Every other caller leaves it out and gets "list".
     - settings:        the plugin settings, handed to every item
     - data:            the content element record, handed to every item
 </f:comment>
@@ -38,7 +40,8 @@
                             contract: contract,
                             settings: settings,
                             data: data,
-                            groupedProfiles: groupedProfiles
+                            groupedProfiles: groupedProfiles,
+                            imageView: imageView
                         }"
                     />
                 </div>
@@ -53,7 +56,8 @@
                             profile: profile,
                             settings: settings,
                             data: data,
-                            groupedProfiles: groupedProfiles
+                            groupedProfiles: groupedProfiles,
+                            imageView: imageView
                         }"
                     />
                 </div>

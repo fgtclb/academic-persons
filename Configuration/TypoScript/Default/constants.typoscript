@@ -42,9 +42,27 @@ plugin.tx_academicpersons {
     columns = name,position,emailAddresses,phoneNumbers,room
   }
   image {
+    list {
+      # cat=plugin.tx_academicpersons//a; type=string; label=Crop variant of a profile image in the lists: list, list and detail, selected profiles, selected contracts and the contacts of a page
+      cropVariant = default
+    }
+    card {
+      # cat=plugin.tx_academicpersons//a; type=string; label=Crop variant of a profile image in the card
+      cropVariant = default
+    }
+    detail {
+      # cat=plugin.tx_academicpersons//a; type=string; label=Crop variant of the profile image in the public profile
+      cropVariant = default
+    }
     placeholder {
-      # cat=plugin.tx_academicpersons//a; type=string; label=Placeholder of a profile without image: an EXT: path to a public file, empty for none
+      # cat=plugin.tx_academicpersons//a; type=string; label=Placeholder of a profile without image: an EXT: path to a public file, empty for none unless a placeholder of the profile gender applies
       default = EXT:academic_persons/Resources/Public/Images/ProfilePlaceholder.svg
+      # cat=plugin.tx_academicpersons//a; type=string; label=Placeholder of a profile of the gender "mr" without image: an EXT: path to a public file, empty for the default placeholder
+      mr =
+      # cat=plugin.tx_academicpersons//a; type=string; label=Placeholder of a profile of the gender "ms" without image: an EXT: path to a public file, empty for the default placeholder
+      ms =
+      # cat=plugin.tx_academicpersons//a; type=string; label=Placeholder of a profile of the gender "diverse" without image: an EXT: path to a public file, empty for the default placeholder
+      diverse =
     }
   }
   phoneNumbers {

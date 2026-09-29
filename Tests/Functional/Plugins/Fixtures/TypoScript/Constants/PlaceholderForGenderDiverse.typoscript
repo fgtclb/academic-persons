@@ -1,0 +1,2 @@
+# A placeholder of its own for the profiles of the gender "diverse".
+plugin.tx_academicpersons.image.placeholder.diverse = EXT:test_profile_placeholders/Resources/Public/Images/PersonDiverse.svg

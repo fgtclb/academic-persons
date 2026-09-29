@@ -7,9 +7,20 @@
     The image of a profile item. A content element that limits the shown fields and leaves
     the image out renders nothing here, placeholder included.
 
+    All content elements share one settings array, so the view is an argument: the card
+    template passes "card", and every other caller, the contacts of EXT:academic_contacts4pages
+    included, leaves it out and gets "list". It selects the crop variant
+    "settings.image.<view>.cropVariant".
+
+    A profile without an image gets the placeholder of its gender,
+    "settings.image.placeholder.<gender>", and the default placeholder when that one is empty
+    or the profile has no gender. The placeholder keeps an empty alternative text: it shows
+    nobody, and the name is the heading of the same item.
+
     Arguments:
-    - profile:  the profile whose image is rendered
-    - settings: the plugin settings, read for "showFields" and the placeholder
+    - profile:   the profile whose image is rendered
+    - imageView: "card" or "list", "list" when it is left out
+    - settings:  the plugin settings, read for "showFields", the crop variant and the placeholder
 </f:comment>
 
 <f:if condition="{settings.showFields}">
@@ -26,6 +37,17 @@
     </f:else>
 </f:if>
 <f:if condition="{showImage}">
+    <f:variable name="imageView" value="{f:if(condition: imageView, then: imageView, else: 'list')}" />
+    <f:variable name="placeholder" value="{settings.image.placeholder.default}" />
+    <f:comment>
+        Only a profile with a gender builds the key: "placeholder." with an empty last
+        segment is no setting.
+    </f:comment>
+    <f:if condition="{profile.gender}">
+        <f:if condition="{settings.image.placeholder.{profile.gender}}">
+            <f:variable name="placeholder" value="{settings.image.placeholder.{profile.gender}}" />
+        </f:if>
+    </f:if>
     <f:comment>
         The shared partial of EXT:academic_base: the image, or the placeholder for a
         profile without one.
@@ -35,7 +57,8 @@
         arguments="{
             image: profile.image,
             preset: 'card',
-            placeholder: settings.image.placeholder.default,
+            cropVariant: '{settings.image.{imageView}.cropVariant}',
+            placeholder: placeholder,
             class: 'academic-persons-item__image card-img-top img-fluid'
         }"
     />

@@ -1,0 +1,2 @@
+# A placeholder path whose file does not exist, as after a deploy that forgot it.
+plugin.tx_academicpersons.image.placeholder.default = EXT:test_profile_placeholders/Resources/Public/Images/Missing.svg
