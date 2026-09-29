@@ -1,0 +1,12 @@
+# What a site package ships to take the organisational unit and the function
+# type from its directory: the unit from the `company` column, matched by its
+# unique name and created on page 7 when it is missing, and the function type
+# from a column of its own, matched by its name and never created.
+frontendUserSync:
+  contract:
+    organisationalUnit:
+      column: company
+      create: true
+      storagePid: 7
+    functionType:
+      column: tx_test_function

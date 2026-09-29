@@ -9,6 +9,7 @@ use FGTCLB\AcademicPersons\Domain\Model\Profile;
 use FGTCLB\AcademicPersons\Domain\Repository\AddressRepository;
 use FGTCLB\AcademicPersons\Domain\Repository\EmailRepository;
 use FGTCLB\AcademicPersons\Domain\Repository\PhoneNumberRepository;
+use FGTCLB\AcademicPersons\Profile\ContractRelationResolver;
 use FGTCLB\AcademicPersons\Profile\FrontendUserPhoneNumberTypeResolver;
 use FGTCLB\AcademicPersons\Profile\FrontendUserProfileMapper;
 use FGTCLB\AcademicPersons\Profile\ProfileFactory;
@@ -18,6 +19,7 @@ use FGTCLB\AcademicPersons\Settings\FrontendUserSyncSettings;
 use FGTCLB\AcademicPersons\Types\PhoneNumberTypes;
 use PHPUnit\Framework\Attributes\Test;
 use TYPO3\CMS\Core\Configuration\ExtensionConfiguration;
+use TYPO3\CMS\Core\Database\ConnectionPool;
 use TYPO3\CMS\Extbase\Persistence\PersistenceManagerInterface;
 use TYPO3\TestingFramework\Core\Unit\UnitTestCase;
 
@@ -133,6 +135,7 @@ final class ProfileFactoryTest extends UnitTestCase
                 $this->createMock(ExtensionConfiguration::class),
                 $this->createMock(PhoneNumberTypes::class),
             ),
+            new ContractRelationResolver($this->createMock(ConnectionPool::class), $persistenceManager),
         ));
         $subject->injectPersistenceManagerInterface($persistenceManager);
         return $subject;

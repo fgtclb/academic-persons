@@ -29,6 +29,16 @@ The shipped map
       contract:
         position: ''
         room: ''
+        organisationalUnit:
+          column: ''
+          matchBy: uniqueName
+          create: false
+          storagePid: 0
+        functionType:
+          column: ''
+          matchBy: functionName
+          create: false
+          storagePid: 0
       physicalAddresses:
         - street: address
           zip: zip
@@ -70,7 +80,9 @@ on every run, and an empty column clears it.
             :yaml:`supervisedDoctoralThesis` and :yaml:`teachingArea`.
     *   -   :yaml:`contract`
         -   Properties of the imported contract: :yaml:`position` and
-            :yaml:`room`.
+            :yaml:`room`, and its relations :yaml:`organisationalUnit` and
+            :yaml:`functionType`, each a map of its own, see
+            :ref:`configuration-frontend-user-sync-relations`.
     *   -   :yaml:`physicalAddresses`
         -   A list. Each entry is one address and maps :yaml:`street`,
             :yaml:`streetNumber`, :yaml:`additional`, :yaml:`zip`,
@@ -91,6 +103,76 @@ configured one.
 The gender and the two letters the list navigation files a profile under are
 not part of the map: the gender is a fixed selection, and the letters are
 derived from the names.
+
+..  _configuration-frontend-user-sync-relations:
+
+Organisational unit and function type
+=====================================
+
+The organisational unit and the function type of the imported contract are
+records of their own. A column names one of them by a value the record
+carries, and the synchronisation assigns the record that matches:
+
+..  list-table::
+    :header-rows: 1
+
+    *   -   Key
+        -   Meaning
+    *   -   :yaml:`column`
+        -   The :sql:`fe_users` column holding the value. ``''`` or ``~``: the
+            relation is not synchronised, and an editor's choice stays.
+    *   -   :yaml:`matchBy`
+        -   The field of the record the value is compared with:
+            :yaml:`uniqueName` (the default) or :yaml:`unitName` for an
+            organisational unit, :yaml:`functionName` for a function type.
+    *   -   :yaml:`create`
+        -   ``true`` creates a missing record. ``false``, the default, leaves
+            the relation empty instead.
+    *   -   :yaml:`storagePid`
+        -   The page a created record is stored on. Required with
+            :yaml:`create: true`, a record is never created on page 0.
+
+A record matches when its field holds exactly the value, after the blanks
+around the value are removed. Case and accents count on every database, on
+MySQL and MariaDB too, whose collation would ignore them. Hidden records match,
+so a unit an editor hid is assigned rather than created a second time, and so
+do records on any page, whatever :yaml:`storagePid` says. Deleted records,
+drafts of a workspace and translations never match: the value is compared with
+the default language.
+When several records match, the one with the lowest uid is assigned, the same
+one on every database. Keep the values unique to avoid relying on that.
+
+A created organisational unit takes the value as its name, and as its unique
+name when it is matched by the unique name. A created function type takes it as
+its name. Everything else is left for an editor, including the translations.
+The record is saved right away, so the next frontend user with the same value,
+and the next run, find it instead of creating another one. Runs of the two
+commands in parallel can still create one record twice: run them one after the
+other. The names hold 255 characters. On PostgreSQL, and on MySQL and MariaDB
+in their default strict mode, creating a longer value stops the command with a
+database error. Without strict mode it is cut to 255 characters, never matches
+again and is created anew on every run. Keep the values shorter.
+
+A mapped relation belongs to the synchronisation. An empty column clears it,
+and so does a value that matches nothing when :yaml:`create` is off. A relation
+that is not mapped is never touched.
+
+The employee type is not synchronised, and an editor's choice stays. Its
+categories carry no type in :guilabel:`EXT:academic_persons`, so a title can
+match categories of any purpose. A project that takes the employee type from
+the frontend user data sets it in a listener of its own.
+
+..  code-block:: yaml
+    :caption: EXT:my_sitepackage/Configuration/AcademicPersons/Settings.yaml
+
+    frontendUserSync:
+      contract:
+        organisationalUnit:
+          column: company
+          create: true
+          storagePid: 42
+        functionType:
+          column: tx_project_function
 
 ..  _configuration-frontend-user-sync-records:
 
@@ -124,13 +206,13 @@ An entry has to map at least one column. To stop synchronising a whole list,
 set it to ``[]``.
 
 The imported contract itself exists for as long as one of its mapped sources -
-a contract property or a column of any entry - is set. When all of them are
-empty, :bash:`academic:updateprofiles` removes the contract, together with
-every address, e-mail address and phone number of it, the ones an editor added
-included; :bash:`academic:createprofiles` creates it with every new profile,
-as it did before the map. A map that names no source of the contract at all -
-no contract property and three empty lists - does not synchronise the contract:
-it is neither created nor removed nor written.
+a contract property, a relation or a column of any entry - is set. When all of
+them are empty, :bash:`academic:updateprofiles` removes the contract, together
+with every address, e-mail address and phone number of it, the ones an editor
+added included; :bash:`academic:createprofiles` creates it with every new
+profile, as it did before the map. A map that names no source of the contract
+at all - no contract property, no relation and three empty lists - does not
+synchronise the contract: it is neither created nor removed nor written.
 
 ..  _configuration-frontend-user-sync-override:
 
@@ -166,10 +248,12 @@ A mistake in the map - an unknown property, a value that is not a string, a
 list where a map belongs, an entry that maps no column, two entries of one list
 named by the same first column, a phone number read from the column
 :sql:`phone`, whose identifier is the one of the telephone records written
-before 2.4 - does not break the site. The synchronisation
-refuses to run on it: the default profile factory, and every factory using the
-mapper below, throws an exception with the code ``1790142324`` before anything
-is written, and its message names every mistake with its path.
+before 2.4, a relation matched by a field it does not offer, or one that
+creates records without a :yaml:`storagePid` - does not break the site. The
+synchronisation refuses to run on it: the default profile factory, and every
+factory using the mapper below, throws an exception with the code
+``1790142324`` before anything is written, and its message names every mistake
+with its path.
 
 The map cannot tell a column name from a typo. The default profile factory
 therefore also compares it with the frontend user record it synchronises and
@@ -203,8 +287,12 @@ array keyed like an :sql:`fe_users` record, with its :sql:`uid`:
     Whether one mapped contract source is set.
 
 :php:`applyContract(array $frontendUserData, Contract $contract, int $pid)`
-    Writes the mapped contract properties and synchronises the addresses,
-    e-mail addresses and phone numbers of the contract.
+    Writes the mapped contract properties and relations, and synchronises the
+    addresses, e-mail addresses and phone numbers of the contract. When it
+    creates an organisational unit or function type, it saves everything the
+    persistence manager holds at that moment. A factory that adds its profile
+    before calling it gets the profile saved half-written, and completed when
+    it saves at the end.
 
 Creating the profile and the imported contract, and removing that contract,
 stays with the factory, as :php:`\FGTCLB\AcademicPersons\Profile\ProfileFactory`

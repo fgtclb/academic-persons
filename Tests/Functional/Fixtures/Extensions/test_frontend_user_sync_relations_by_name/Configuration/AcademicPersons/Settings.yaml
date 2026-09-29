@@ -1,0 +1,12 @@
+# The other shape of the relation map: the organisational unit is matched by
+# its name and never created, and a missing function type is created on
+# page 8.
+frontendUserSync:
+  contract:
+    organisationalUnit:
+      column: company
+      matchBy: unitName
+    functionType:
+      column: tx_test_function
+      create: true
+      storagePid: 8

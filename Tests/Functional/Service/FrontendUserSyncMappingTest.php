@@ -158,11 +158,19 @@ final class FrontendUserSyncMappingTest extends AbstractAcademicPersonsTestCase
             ->select(['website'], 'tx_academicpersons_domain_model_profile', ['uid' => 60])
             ->fetchAssociative();
         $this->assertSame(['website' => 'https://editor.example/'], $profile);
+        // The organisational unit and the function type are not mapped, and the employee type cannot be.
         $contract = $this->getConnectionPool()
             ->getConnectionForTable('tx_academicpersons_domain_model_contract')
-            ->select(['position'], 'tx_academicpersons_domain_model_contract', ['uid' => 60])
+            ->select(
+                ['position', 'organisational_unit', 'function_type', 'employee_type'],
+                'tx_academicpersons_domain_model_contract',
+                ['uid' => 60],
+            )
             ->fetchAssociative();
-        $this->assertSame(['position' => 'Dean'], $contract);
+        $this->assertSame(
+            ['position' => 'Dean', 'organisational_unit' => 60, 'function_type' => 60, 'employee_type' => 60],
+            $contract,
+        );
     }
 
     /**

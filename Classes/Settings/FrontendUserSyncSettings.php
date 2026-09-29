@@ -8,8 +8,9 @@ use Symfony\Component\DependencyInjection\Attribute\Exclude;
 
 /**
  * The `frontendUserSync` map: which `fe_users` column feeds which profile and
- * contract property, and which columns become the physical addresses, e-mail
- * addresses and phone numbers of the imported contract. Only mapped
+ * contract property, which one names the organisational unit and the function
+ * type of the contract, and which columns become the physical addresses,
+ * e-mail addresses and phone numbers of the imported contract. Only mapped
  * properties are kept; a property mapped to `''` is not synchronised.
  *
  * A mistake in the map - an unknown property, a value that is not a string, a
@@ -48,6 +49,15 @@ final class FrontendUserSyncSettings
         'room',
     ];
 
+    /**
+     * The contract relations a column can name, each with the properties of
+     * the related record it can be matched by. The first one is the default.
+     */
+    public const RELATION_MATCH_FIELDS = [
+        'organisationalUnit' => ['uniqueName', 'unitName'],
+        'functionType' => ['functionName'],
+    ];
+
     public const PHYSICAL_ADDRESS_PROPERTIES = [
         'street',
         'streetNumber',
@@ -61,6 +71,7 @@ final class FrontendUserSyncSettings
     /**
      * @param array<string, non-empty-string> $profile profile property => `fe_users` column
      * @param array<string, non-empty-string> $contract contract property => `fe_users` column
+     * @param array<string, FrontendUserSyncRelation> $relations contract relation => how it is looked up
      * @param list<FrontendUserSyncEntry> $physicalAddresses
      * @param list<FrontendUserSyncEntry> $emailAddresses columns keyed `email`
      * @param list<FrontendUserSyncEntry> $phoneNumbers columns keyed `phoneNumber`
@@ -69,6 +80,7 @@ final class FrontendUserSyncSettings
     public function __construct(
         public readonly array $profile = [],
         public readonly array $contract = [],
+        public readonly array $relations = [],
         public readonly array $physicalAddresses = [],
         public readonly array $emailAddresses = [],
         public readonly array $phoneNumbers = [],
@@ -79,6 +91,7 @@ final class FrontendUserSyncSettings
      * @param array{
      *     profile?: array<string, non-empty-string>,
      *     contract?: array<string, non-empty-string>,
+     *     relations?: array<string, FrontendUserSyncRelation>,
      *     physicalAddresses?: list<FrontendUserSyncEntry>,
      *     emailAddresses?: list<FrontendUserSyncEntry>,
      *     phoneNumbers?: list<FrontendUserSyncEntry>,
@@ -90,6 +103,7 @@ final class FrontendUserSyncSettings
         return new self(
             profile: $array['profile'] ?? [],
             contract: $array['contract'] ?? [],
+            relations: $array['relations'] ?? [],
             physicalAddresses: $array['physicalAddresses'] ?? [],
             emailAddresses: $array['emailAddresses'] ?? [],
             phoneNumbers: $array['phoneNumbers'] ?? [],
@@ -114,12 +128,13 @@ final class FrontendUserSyncSettings
 
     /**
      * Whether the map names any source of the imported contract - a contract
-     * property or a contact entry. Without one, the contract is not
-     * synchronised: it is neither created nor removed nor written.
+     * property, a relation or a contact entry. Without one, the contract is
+     * not synchronised: it is neither created nor removed nor written.
      */
     public function mapsContract(): bool
     {
         return $this->contract !== []
+            || $this->relations !== []
             || $this->physicalAddresses !== []
             || $this->emailAddresses !== []
             || $this->phoneNumbers !== [];
@@ -133,6 +148,9 @@ final class FrontendUserSyncSettings
     public function getColumns(): array
     {
         $columns = [...array_values($this->profile), ...array_values($this->contract)];
+        foreach ($this->relations as $relation) {
+            $columns[] = $relation->column;
+        }
         foreach ([...$this->physicalAddresses, ...$this->emailAddresses, ...$this->phoneNumbers] as $entry) {
             $columns = [...$columns, ...array_values($entry->columns)];
         }
@@ -141,9 +159,10 @@ final class FrontendUserSyncSettings
 
     /**
      * Whether the frontend user carries anything the imported contract is made
-     * of: a mapped contract property or a column of any contact entry. Without
-     * it, an update removes the imported contract, or does not create one -
-     * provided the map names a source at all, see {@see self::mapsContract()}.
+     * of: a mapped contract property or relation, or a column of any contact
+     * entry. Without it, an update removes the imported contract, or does not
+     * create one - provided the map names a source at all, see
+     * {@see self::mapsContract()}.
      *
      * @param array<string, mixed> $frontendUserData
      */
@@ -151,6 +170,12 @@ final class FrontendUserSyncSettings
     {
         foreach ($this->contract as $column) {
             if (!empty($frontendUserData[$column])) {
+                return true;
+            }
+        }
+        // A relation value counts as the mapper reads it: trimmed, and `'0'` names a record.
+        foreach ($this->relations as $relation) {
+            if (trim((string)($frontendUserData[$relation->column] ?? '')) !== '') {
                 return true;
             }
         }

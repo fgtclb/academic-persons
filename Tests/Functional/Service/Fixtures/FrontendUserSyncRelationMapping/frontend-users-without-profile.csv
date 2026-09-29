@@ -1,0 +1,4 @@
+"fe_users"
+,"uid","pid","username","deleted","usergroup","disable","tx_extbase_type","first_name","last_name","email","company","tx_test_function"
+,70,200,"first",0,"10",0,"Tx_Academicpersonsedit_Domain_Model_FrontendUser","Fiona","First","fiona@example.org","X","Professor"
+,71,200,"second",0,"10",0,"Tx_Academicpersonsedit_Domain_Model_FrontendUser","Sam","Second","sam@example.org","X",""

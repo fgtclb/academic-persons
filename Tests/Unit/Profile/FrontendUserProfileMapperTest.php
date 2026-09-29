@@ -5,19 +5,25 @@ declare(strict_types=1);
 namespace FGTCLB\AcademicPersons\Tests\Unit\Profile;
 
 use FGTCLB\AcademicPersons\Domain\Model\Contract;
+use FGTCLB\AcademicPersons\Domain\Model\FunctionType;
+use FGTCLB\AcademicPersons\Domain\Model\OrganisationalUnit;
 use FGTCLB\AcademicPersons\Domain\Model\Profile;
 use FGTCLB\AcademicPersons\Domain\Repository\AddressRepository;
 use FGTCLB\AcademicPersons\Domain\Repository\EmailRepository;
 use FGTCLB\AcademicPersons\Domain\Repository\PhoneNumberRepository;
+use FGTCLB\AcademicPersons\Profile\ContractRelationResolver;
 use FGTCLB\AcademicPersons\Profile\FrontendUserPhoneNumberTypeResolver;
 use FGTCLB\AcademicPersons\Profile\FrontendUserProfileMapper;
 use FGTCLB\AcademicPersons\Settings\AcademicPersonsSettings;
 use FGTCLB\AcademicPersons\Settings\FrontendUserSyncEntry;
+use FGTCLB\AcademicPersons\Settings\FrontendUserSyncRelation;
 use FGTCLB\AcademicPersons\Settings\FrontendUserSyncSettings;
 use FGTCLB\AcademicPersons\Types\PhoneNumberTypes;
 use PHPUnit\Framework\Attributes\Test;
 use TYPO3\CMS\Core\Configuration\Exception\ExtensionConfigurationPathDoesNotExistException;
 use TYPO3\CMS\Core\Configuration\ExtensionConfiguration;
+use TYPO3\CMS\Core\Database\ConnectionPool;
+use TYPO3\CMS\Extbase\Domain\Model\Category;
 use TYPO3\CMS\Extbase\Persistence\PersistenceManagerInterface;
 use TYPO3\TestingFramework\Core\Unit\UnitTestCase;
 
@@ -224,6 +230,15 @@ final class FrontendUserProfileMapperTest extends UnitTestCase
         $this->assertFalse($subject->hasContractData(['uid' => 7, 'tx_position' => '0', 'telephone' => '']));
         $this->assertFalse($subject->hasContractData(['uid' => 7, 'tx_position' => '', 'telephone' => '0']));
         $this->assertFalse($subject->hasContractData(['uid' => 7, 'email' => 'unmapped@example.org']));
+
+        $relationOnly = $this->mapper(new FrontendUserSyncSettings(
+            relations: ['organisationalUnit' => new FrontendUserSyncRelation('company', 'uniqueName')],
+        ));
+        $this->assertTrue($relationOnly->hasContractData(['uid' => 7, 'company' => 'PHYS']));
+        // A relation reads its value trimmed, and `'0'` is a value it looks up.
+        $this->assertTrue($relationOnly->hasContractData(['uid' => 7, 'company' => '0']));
+        $this->assertFalse($relationOnly->hasContractData(['uid' => 7, 'company' => '  ']));
+        $this->assertFalse($relationOnly->hasContractData(['uid' => 7, 'company' => '']));
     }
 
     /**
@@ -244,6 +259,34 @@ final class FrontendUserProfileMapperTest extends UnitTestCase
         $this->assertTrue($this->mapper(new FrontendUserSyncSettings(
             emailAddresses: [new FrontendUserSyncEntry(['email' => 'email'])],
         ))->mapsContract());
+        $this->assertTrue($this->mapper(new FrontendUserSyncSettings(
+            relations: ['functionType' => new FrontendUserSyncRelation('tx_function', 'functionName')],
+        ))->mapsContract());
+    }
+
+    /**
+     * A mapped relation belongs to the synchronisation: an empty source value,
+     * or one of blanks only, clears it without a lookup. A relation that is not
+     * mapped, and the employee type, which cannot be mapped, keep what an
+     * editor assigned.
+     */
+    #[Test]
+    public function anEmptyRelationSourceClearsTheRelationAndAnUnmappedOneIsKept(): void
+    {
+        $organisationalUnit = new OrganisationalUnit();
+        $employeeType = new Category();
+        $contract = new Contract();
+        $contract->setOrganisationalUnit($organisationalUnit);
+        $contract->setFunctionType(new FunctionType());
+        $contract->setEmployeeType($employeeType);
+
+        $this->mapper(new FrontendUserSyncSettings(
+            relations: ['functionType' => new FrontendUserSyncRelation('tx_function', 'functionName', true, 7)],
+        ))->applyContract(['uid' => 7, 'tx_function' => '  ', 'company' => 'PHYS'], $contract, 5);
+
+        $this->assertNull($contract->getFunctionType());
+        $this->assertSame($organisationalUnit, $contract->getOrganisationalUnit());
+        $this->assertSame($employeeType, $contract->getEmployeeType());
     }
 
     /**
@@ -260,8 +303,9 @@ final class FrontendUserProfileMapperTest extends UnitTestCase
             physicalAddresses: [new FrontendUserSyncEntry(['street' => 'adress', 'city' => 'city'])],
             emailAddresses: [new FrontendUserSyncEntry(['email' => 'e_mail'])],
             phoneNumbers: [new FrontendUserSyncEntry(['phoneNumber' => 'telphone'])],
+            relations: ['organisationalUnit' => new FrontendUserSyncRelation('compnay', 'uniqueName')],
         ));
-        $complete = ['uid' => 7, 'lastname' => '', 'tx_positon' => '', 'adress' => '', 'city' => '', 'e_mail' => '', 'telphone' => ''];
+        $complete = ['uid' => 7, 'lastname' => '', 'tx_positon' => '', 'compnay' => '', 'adress' => '', 'city' => '', 'e_mail' => '', 'telphone' => ''];
 
         $subject->assertColumnsExist($complete);
         try {
@@ -270,7 +314,7 @@ final class FrontendUserProfileMapperTest extends UnitTestCase
         } catch (\UnexpectedValueException $exception) {
             $this->assertSame(1790142326, $exception->getCode());
             $this->assertStringEndsWith(
-                'does not have: uid, lastname, tx_positon, adress, e_mail, telphone.',
+                'does not have: uid, lastname, tx_positon, compnay, adress, e_mail, telphone.',
                 $exception->getMessage(),
             );
         }
@@ -334,6 +378,10 @@ final class FrontendUserProfileMapperTest extends UnitTestCase
             $this->createMock(PhoneNumberRepository::class),
             $this->createMock(PersistenceManagerInterface::class),
             new FrontendUserPhoneNumberTypeResolver($extensionConfiguration, $phoneNumberTypes),
+            new ContractRelationResolver(
+                $this->createMock(ConnectionPool::class),
+                $this->createMock(PersistenceManagerInterface::class),
+            ),
         );
     }
 }

@@ -32,12 +32,19 @@ use TYPO3\CMS\Extbase\Persistence\PersistenceManagerInterface;
  * a frontend user record, or any array keyed like one, and must carry `uid`.
  *
  * The profile and the contract, and whether to create or remove the contract,
- * stay with the factory. What this class decides are the property values and
- * the contact records of the contract: it matches an imported record by its
- * import identifier, including hidden records, updates it, creates the missing
- * one and removes one whose source columns are all empty. Records without that
- * identifier - the ones an editor added - are never touched, and neither is
- * the visibility of any record.
+ * stay with the factory. What this class decides are the property values, the
+ * organisational unit and function type, and the contact records of the
+ * contract: it matches an imported record by its import identifier, including
+ * hidden records, updates it, creates the missing one and removes one whose
+ * source columns are all empty. Records without that identifier - the ones an
+ * editor added - are never touched, and neither is the visibility of any
+ * record.
+ *
+ * A mapped organisational unit or function type is looked up by
+ * {@see ContractRelationResolver}. Where the map allows creating a missing
+ * one, the new record is persisted at once, and so is everything else the
+ * persistence manager holds at that moment: a profile the caller added
+ * before calling {@see self::applyContract()} is written half-built.
  *
  * Each method throws an \UnexpectedValueException (1790142324) when the map
  * has a problem, before it writes anything. The map is not checked against
@@ -55,6 +62,7 @@ final readonly class FrontendUserProfileMapper
         private PhoneNumberRepository $phoneNumberRepository,
         private PersistenceManagerInterface $persistenceManager,
         private FrontendUserPhoneNumberTypeResolver $phoneNumberTypeResolver,
+        private ContractRelationResolver $contractRelationResolver,
     ) {}
 
     /**
@@ -134,8 +142,10 @@ final readonly class FrontendUserProfileMapper
     }
 
     /**
-     * Sets the mapped contract properties and synchronises the physical
-     * addresses, e-mail addresses and phone numbers of the contract.
+     * Sets the mapped contract properties and relations, and synchronises the
+     * physical addresses, e-mail addresses and phone numbers of the contract.
+     * A mapped relation whose column is empty, or names no record that exists
+     * or may be created, is cleared.
      *
      * @param array<string, mixed> $frontendUserData
      * @param int<0, max> $pid
@@ -155,6 +165,18 @@ final readonly class FrontendUserProfileMapper
             match ($property) {
                 'position' => $contract->setPosition($value),
                 'room' => $contract->setRoom($value),
+                default => throw $this->unsupportedProperty('contract', $property),
+            };
+        }
+        foreach ($settings->relations as $property => $relation) {
+            $value = trim((string)($frontendUserData[$relation->column] ?? ''));
+            match ($property) {
+                'organisationalUnit' => $contract->setOrganisationalUnit(
+                    $value === '' ? null : $this->contractRelationResolver->resolveOrganisationalUnit($relation, $value),
+                ),
+                'functionType' => $contract->setFunctionType(
+                    $value === '' ? null : $this->contractRelationResolver->resolveFunctionType($relation, $value),
+                ),
                 default => throw $this->unsupportedProperty('contract', $property),
             };
         }

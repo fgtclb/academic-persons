@@ -310,10 +310,29 @@ class AcademicPersonsSettingsFactory
             FrontendUserSyncSettings::PROFILE_PROPERTIES,
             $problems,
         );
+        $contractConfiguration = $configuration['contract'] ?? [];
+        $relations = [];
+        if (is_array($contractConfiguration)) {
+            foreach (FrontendUserSyncSettings::RELATION_MATCH_FIELDS as $property => $matchFields) {
+                if (!array_key_exists($property, $contractConfiguration)) {
+                    continue;
+                }
+                $relation = $this->normalizeFrontendUserSyncRelation(
+                    $contractConfiguration[$property],
+                    sprintf('frontendUserSync.contract.%s', $property),
+                    $matchFields,
+                    $problems,
+                );
+                unset($contractConfiguration[$property]);
+                if ($relation !== null) {
+                    $relations[$property] = $relation;
+                }
+            }
+        }
         $contract = $this->normalizeFrontendUserSyncMap(
-            $configuration['contract'] ?? [],
+            $contractConfiguration,
             'frontendUserSync.contract',
-            FrontendUserSyncSettings::CONTRACT_PROPERTIES,
+            [...FrontendUserSyncSettings::CONTRACT_PROPERTIES, ...array_keys(FrontendUserSyncSettings::RELATION_MATCH_FIELDS)],
             $problems,
         );
         $physicalAddresses = [];
@@ -387,10 +406,78 @@ class AcademicPersonsSettingsFactory
         return new FrontendUserSyncSettings(
             profile: $profile,
             contract: $contract,
+            relations: $relations,
             physicalAddresses: $physicalAddresses,
             emailAddresses: $emailAddresses,
             phoneNumbers: $phoneNumbers,
             problems: $problems,
+        );
+    }
+
+    /**
+     * A relation of the contract: the column naming the related record, the
+     * field it is matched by, and whether a missing record is created on
+     * which page. A relation without a column is not synchronised, but a
+     * mistake in it is still named - a site package may set the column
+     * later, or another package may.
+     *
+     * @param non-empty-list<non-empty-string> $matchFields
+     * @param list<string> $problems
+     */
+    private function normalizeFrontendUserSyncRelation(
+        mixed $configuration,
+        string $path,
+        array $matchFields,
+        array &$problems,
+    ): ?FrontendUserSyncRelation {
+        if ($configuration === null) {
+            return null;
+        }
+        if (!is_array($configuration) || ($configuration !== [] && array_is_list($configuration))) {
+            $problems[] = sprintf('`%s` must be a map with `column`, `matchBy`, `create` and `storagePid`.', $path);
+            return null;
+        }
+        foreach (array_keys($configuration) as $key) {
+            if (!in_array($key, ['column', 'matchBy', 'create', 'storagePid'], true)) {
+                $problems[] = sprintf('`%s.%s` is not supported, use one of: column, matchBy, create, storagePid.', $path, $key);
+            }
+        }
+        $column = $configuration['column'] ?? '';
+        if (!is_string($column)) {
+            $problems[] = sprintf('`%s.column` must be a column name or \'\'.', $path);
+            $column = '';
+        }
+        $matchBy = $configuration['matchBy'] ?? $matchFields[0];
+        if (!in_array($matchBy, $matchFields, true)) {
+            $problems[] = sprintf('`%s.matchBy` must be one of: %s.', $path, implode(', ', $matchFields));
+            $matchBy = $matchFields[0];
+        }
+        $create = $configuration['create'] ?? false;
+        if (!is_bool($create)) {
+            $problems[] = sprintf('`%s.create` must be true or false.', $path);
+            $create = false;
+        }
+        $storagePid = $configuration['storagePid'] ?? 0;
+        if (!is_int($storagePid) || $storagePid < 0) {
+            $problems[] = sprintf('`%s.storagePid` must be a page uid.', $path);
+            $storagePid = 0;
+        }
+        if ($create && $storagePid === 0) {
+            $problems[] = sprintf(
+                '`%s` creates missing records and needs a `storagePid`: they are never created on page 0.',
+                $path,
+            );
+            $create = false;
+        }
+        $column = trim($column);
+        if ($column === '') {
+            return null;
+        }
+        return new FrontendUserSyncRelation(
+            column: $column,
+            matchBy: $matchBy,
+            create: $create,
+            storagePid: $storagePid,
         );
     }
 

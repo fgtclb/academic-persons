@@ -830,6 +830,14 @@ documentSections:
 # stays.
 # - `profile` and `contract` map single properties. The contract supports
 #   `position` and `room`; the profile its text and link fields.
+# - `contract.organisationalUnit` and `contract.functionType` name the related
+#   record by a value of its own: `column` is the `fe_users` column, `matchBy`
+#   the field the value is compared with, exactly - `uniqueName` or `unitName`
+#   for a unit, `functionName` for a function type. Hidden records and records
+#   on every page match, the lowest uid wins. `create: true` creates a missing
+#   record on the page `storagePid`, which it needs. An empty value, or one
+#   that matches nothing and may not be created, clears the relation. The
+#   employee type is never synchronised.
 # - `physicalAddresses`, `emailAddresses` and `phoneNumbers` are lists: every
 #   entry maps at least one column and becomes one record of the imported
 #   contract. A record whose columns are all empty is removed; records an
@@ -857,6 +865,16 @@ frontendUserSync:
   contract:
     position: ''
     room: ''
+    organisationalUnit:
+      column: ''
+      matchBy: uniqueName
+      create: false
+      storagePid: 0
+    functionType:
+      column: ''
+      matchBy: functionName
+      create: false
+      storagePid: 0
   physicalAddresses:
     - street: address
       zip: zip

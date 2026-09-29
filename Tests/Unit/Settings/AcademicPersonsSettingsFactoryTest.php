@@ -9,6 +9,7 @@ use FGTCLB\AcademicBase\Settings\ValidationNormalizer;
 use FGTCLB\AcademicPersons\Settings\AcademicPersonsSettings;
 use FGTCLB\AcademicPersons\Settings\AcademicPersonsSettingsFactory;
 use FGTCLB\AcademicPersons\Settings\FrontendUserSyncEntry;
+use FGTCLB\AcademicPersons\Settings\FrontendUserSyncRelation;
 use FGTCLB\AcademicPersons\Settings\FrontendUserSyncSettings;
 use FGTCLB\AcademicPersons\Settings\LegacySettingsMigrator;
 use FGTCLB\AcademicPersons\Settings\ManagedFieldsSettings;
@@ -1113,6 +1114,48 @@ final class AcademicPersonsSettingsFactoryTest extends UnitTestCase
     }
 
     /**
+     * A relation entry is kept with the defaults of what it leaves out: the
+     * first field it can be matched by, and no creation. Without a column, or
+     * as `~`, the relation is not synchronised and is absent from the map.
+     */
+    #[Test]
+    public function aContractRelationIsKeptWithTheDefaultsOfWhatItLeavesOut(): void
+    {
+        $settings = $this->normalize([
+            'frontendUserSync' => [
+                'contract' => [
+                    'position' => 'tx_project_position',
+                    'organisationalUnit' => ['column' => ' company ', 'matchBy' => 'unitName', 'create' => true, 'storagePid' => 7],
+                    'functionType' => ['column' => 'tx_project_function'],
+                ],
+            ],
+        ])->frontendUserSync;
+
+        $this->assertSame(['position' => 'tx_project_position'], $settings->contract);
+        $this->assertEquals(
+            [
+                'organisationalUnit' => new FrontendUserSyncRelation('company', 'unitName', true, 7),
+                'functionType' => new FrontendUserSyncRelation('tx_project_function', 'functionName', false, 0),
+            ],
+            $settings->relations,
+        );
+        $this->assertSame([], $settings->problems);
+
+        $unmapped = $this->normalize([
+            'frontendUserSync' => [
+                'contract' => [
+                    'organisationalUnit' => ['column' => '', 'matchBy' => 'uniqueName', 'create' => false, 'storagePid' => 0],
+                    'functionType' => null,
+                ],
+            ],
+        ])->frontendUserSync;
+
+        $this->assertSame([], $unmapped->relations);
+        $this->assertFalse($unmapped->mapsContract());
+        $this->assertSame([], $unmapped->problems);
+    }
+
+    /**
      * @return \Generator<string, array{array<string, mixed>, string}>
      */
     public static function invalidFrontendUserSyncMaps(): \Generator
@@ -1176,6 +1219,42 @@ final class AcademicPersonsSettingsFactoryTest extends UnitTestCase
         yield 'a phone number with a type and no column' => [
             ['phoneNumbers' => [['type' => 'mobile']]],
             '`frontendUserSync.phoneNumbers.0` maps no column',
+        ];
+        yield 'a relation that is no map' => [
+            ['contract' => ['organisationalUnit' => 'company']],
+            '`frontendUserSync.contract.organisationalUnit` must be a map',
+        ];
+        yield 'an unknown key of a relation' => [
+            ['contract' => ['functionType' => ['column' => 'tx_function', 'categoryType' => 'staff']]],
+            '`frontendUserSync.contract.functionType.categoryType` is not supported',
+        ];
+        yield 'a relation column that is not a string' => [
+            ['contract' => ['functionType' => ['column' => ['tx_function']]]],
+            '`frontendUserSync.contract.functionType.column` must be a column name',
+        ];
+        yield 'a field the organisational unit is not matched by' => [
+            ['contract' => ['organisationalUnit' => ['column' => 'company', 'matchBy' => 'unique_name']]],
+            '`frontendUserSync.contract.organisationalUnit.matchBy` must be one of: uniqueName, unitName',
+        ];
+        yield 'a field the function type is not matched by' => [
+            ['contract' => ['functionType' => ['column' => 'tx_function', 'matchBy' => 'uniqueName']]],
+            '`frontendUserSync.contract.functionType.matchBy` must be one of: functionName',
+        ];
+        yield 'a creation switch that is not a boolean' => [
+            ['contract' => ['functionType' => ['column' => 'tx_function', 'create' => 'yes', 'storagePid' => 7]]],
+            '`frontendUserSync.contract.functionType.create` must be true or false',
+        ];
+        yield 'a storage page that is no page uid' => [
+            ['contract' => ['functionType' => ['column' => 'tx_function', 'create' => true, 'storagePid' => -1]]],
+            '`frontendUserSync.contract.functionType.storagePid` must be a page uid',
+        ];
+        yield 'creation without a storage page' => [
+            ['contract' => ['organisationalUnit' => ['column' => 'company', 'create' => true]]],
+            '`frontendUserSync.contract.organisationalUnit` creates missing records and needs a `storagePid`',
+        ];
+        yield 'creation without a storage page, on a relation that is not mapped' => [
+            ['contract' => ['organisationalUnit' => ['column' => '', 'create' => true, 'storagePid' => 0]]],
+            '`frontendUserSync.contract.organisationalUnit` creates missing records and needs a `storagePid`',
         ];
         yield 'the column phone, the identifier of the telephone records before ACE-365' => [
             ['phoneNumbers' => [['column' => 'fax'], ['column' => 'phone', 'type' => 'mobile']]],
