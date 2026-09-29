@@ -9,6 +9,7 @@ use FGTCLB\AcademicBase\Settings\Validation;
 use FGTCLB\AcademicBase\Settings\ValidationNormalizer;
 use FGTCLB\AcademicBase\Settings\ValidationSet;
 use FGTCLB\AcademicPersons\Service\ContractDisplay;
+use Psr\Log\LoggerInterface;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
@@ -50,6 +51,13 @@ class AcademicPersonsSettingsFactory
     ];
 
     /**
+     * Contract properties 3.0 removed. A site package that copied the shipped map
+     * before the update may still name them. The editor could neither show their
+     * value nor store it, so they are left out with a warning.
+     */
+    private const REMOVED_CONTRACT_PROPERTIES = ['publish'];
+
+    /**
      * The `special` renderer of a detail block that shows the profile's contracts.
      */
     private const CONTRACTS_SPECIAL = 'datasFromContracts';
@@ -79,6 +87,7 @@ class AcademicPersonsSettingsFactory
         protected readonly SettingsFileLoader $settingsFileLoader,
         protected readonly ValidationNormalizer $validationNormalizer,
         protected readonly LegacySettingsMigrator $legacySettingsMigrator,
+        protected readonly LoggerInterface $logger,
     ) {}
 
     public function get(): AcademicPersonsSettings
@@ -740,6 +749,16 @@ class AcademicPersonsSettingsFactory
                 continue;
             }
             $propertyName = (string)($options['propertyName'] ?? $identifier);
+            if (in_array($propertyName, self::REMOVED_CONTRACT_PROPERTIES, true)) {
+                $this->logger->warning(
+                    'The contract field "{identifier}" of Configuration/AcademicPersons/Settings.yaml is ignored: the'
+                    . ' contract property "{property}" was removed in academic_persons 3.0. Remove'
+                    . ' "contracts.fields.{identifier}" from the settings file of your site package. Whether a'
+                    . ' contract is shown is its visibility, which the frontend editor sets with the hide action.',
+                    ['identifier' => (string)$identifier, 'property' => $propertyName],
+                );
+                continue;
+            }
             $fieldName = (string)($options['fieldName'] ?? GeneralUtility::camelCaseToLowerCaseUnderscored($propertyName));
             $renderType = (string)($options['renderType'] ?? '');
             $field = new ContractField(

@@ -232,9 +232,6 @@
       <trans-unit id="helptext.contracts.officeHours" resname="helptext.contracts.officeHours">
         <source>Enter the office hours and, if useful, instructions for arranging an appointment.</source>
       </trans-unit>
-      <trans-unit id="helptext.contracts.publish" resname="helptext.contracts.publish">
-        <source>Control whether this employment contract and its contact details are shown on the public profile.</source>
-      </trans-unit>
       <trans-unit id="helptext.contractContact.street" resname="helptext.contractContact.street">
         <source>Enter the street name without the building number.</source>
       </trans-unit>

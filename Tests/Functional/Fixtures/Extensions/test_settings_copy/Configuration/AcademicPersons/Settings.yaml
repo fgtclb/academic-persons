@@ -41,7 +41,3 @@ contracts:
         - required
       helptext: 'LLL:EXT:academic_persons/Resources/Private/Language/locallang.xlf:helptext.contracts.location'
     officeHours: ~
-    publish:
-      fieldType: check
-      renderType: checkbox
-      helptext: 'LLL:EXT:academic_persons/Resources/Private/Language/locallang.xlf:helptext.contracts.publish'

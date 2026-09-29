@@ -35,7 +35,6 @@ CREATE TABLE tx_academicpersons_domain_model_contract (
     phone_numbers int(11) unsigned DEFAULT '0' NOT NULL,
     email_addresses int(11) unsigned DEFAULT '0' NOT NULL,
 
-    publish smallint(5) unsigned DEFAULT '0' NOT NULL,
     sorting int(11) unsigned DEFAULT '0' NOT NULL,
 
     -- The sort order within the organisational unit. The profile owns the shared

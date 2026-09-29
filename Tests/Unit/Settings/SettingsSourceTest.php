@@ -9,6 +9,7 @@ use FGTCLB\AcademicBase\Settings\ValidationNormalizer;
 use FGTCLB\AcademicPersons\Settings\AcademicPersonsSettingsFactory;
 use FGTCLB\AcademicPersons\Settings\LegacySettingsMigrator;
 use PHPUnit\Framework\Attributes\Test;
+use Psr\Log\NullLogger;
 use Symfony\Component\Yaml\Yaml;
 use TYPO3\CMS\Core\Cache\Frontend\PhpFrontend;
 use TYPO3\CMS\Core\Package\PackageManager;
@@ -64,7 +65,6 @@ final class SettingsSourceTest extends UnitTestCase
                 'location',
                 'room',
                 'officeHours',
-                'publish',
             ],
             array_keys($configuration['contracts']['fields']),
         );
@@ -94,6 +94,7 @@ final class SettingsSourceTest extends UnitTestCase
             new SettingsFileLoader($this->createMock(PhpFrontend::class), $this->createMock(PackageManager::class)),
             new ValidationNormalizer(),
             new LegacySettingsMigrator(),
+            new NullLogger(),
         );
 
         $settings = $factory->normalize($configuration);

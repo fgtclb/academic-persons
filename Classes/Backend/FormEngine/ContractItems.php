@@ -89,7 +89,6 @@ final class ContractItems
     private function getDefaultContractItems(array $parameters): array
     {
         // @todo: Check how to handle hidden and deleted records in selection and existing relations
-        // @todo: Check how to handle publish property of contracts in selection existing relations
         $contractRepository = GeneralUtility::makeInstance(ContractRepository::class);
         $contracts = $contractRepository->getContractItemsForTcaItemsProcFunc($parameters);
 

@@ -1,0 +1,6 @@
+# The declaration the Important changelog entry of academic_persons shows: the
+# wizard ships unregistered, and a site package that wants it declares it.
+services:
+  FGTCLB\AcademicPersons\Upgrades\MigrateContractPublishToHiddenUpgradeWizard:
+    autowire: true
+    autoconfigure: true

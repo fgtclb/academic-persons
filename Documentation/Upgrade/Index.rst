@@ -158,6 +158,13 @@ unsigned because the corrected TCA declares a lower bound of ``0``.
     and never drops it on its own. Accepting such an offer is a decision of the
     installation, not a step of this upgrade.
 
+The contract column :sql:`publish` is such a column. Only a project whose own
+code gave it a meaning, and left unpublished contracts out, registers and runs
+``academicPersons_migrateContractPublishToHidden`` now, before it lets the
+analyzer drop the column. The wizard is not registered by default, because on
+every other installation it would hide all contracts. See
+:ref:`important-contract-publish-to-hidden-wizard`.
+
 ..  _upgrade-step-inline-sorting:
 
 4. Seed the sort order of the organisational unit contracts

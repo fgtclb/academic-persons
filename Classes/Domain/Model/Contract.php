@@ -32,7 +32,6 @@ class Contract extends AbstractEntity
     protected ?Location $location = null;
     protected string $room = '';
     protected string $officeHours = '';
-    protected bool $publish = false;
     protected int $sorting = 0;
     protected bool $hidden = false;
     protected string $importIdentifier = '';
@@ -181,22 +180,6 @@ class Contract extends AbstractEntity
     public function getOfficeHours(): string
     {
         return $this->officeHours;
-    }
-
-    public function setPublish(bool $publish): self
-    {
-        $this->publish = $publish;
-        return $this;
-    }
-
-    public function isPublish(): bool
-    {
-        return $this->publish;
-    }
-
-    public function getPublish(): bool
-    {
-        return $this->publish;
     }
 
     public function setSorting(int $sorting): self

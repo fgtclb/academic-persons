@@ -452,10 +452,6 @@ contracts:
       validators:
         - html
       helptext: 'LLL:EXT:academic_persons/Resources/Private/Language/locallang.xlf:helptext.contracts.officeHours'
-    publish:
-      fieldType: check
-      renderType: checkbox
-      helptext: 'LLL:EXT:academic_persons/Resources/Private/Language/locallang.xlf:helptext.contracts.publish'
   contactSections:
     physicalAddresses:
       fields:

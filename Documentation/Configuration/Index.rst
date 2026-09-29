@@ -355,6 +355,26 @@ limits apply:
 Start time, end time and the frontend user groups of a profile keep applying in
 both directories.
 
+..  _configuration-hidden-contracts:
+
+Contracts that are not public
+=============================
+
+A contract has one visibility, its :guilabel:`Visible` switch, the :sql:`hidden`
+field of the record. A hidden contract is left out of the lists, the detail
+view and the selected contracts, together with its position, addresses, e-mail
+addresses and phone numbers, while the profile itself is still shown. The field
+is shared by every language of the contract. With
+:composer:`fgtclb/academic-persons-edit` installed, owners show and hide their
+contracts themselves with the hide action of each contract row.
+
+:guilabel:`Show hidden records` of the selected contracts element shows hidden
+contracts as well, for an internal directory.
+
+Until 3.0 a contract also had a :guilabel:`Show this contract online?` toggle,
+which no public view read. It is removed, see
+:ref:`breaking-contract-publish-field-removed`.
+
 ..  _configuration-crop-variants:
 
 The crop variants of the profile image

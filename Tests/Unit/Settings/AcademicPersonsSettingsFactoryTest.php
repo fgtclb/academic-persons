@@ -14,6 +14,10 @@ use FGTCLB\AcademicPersons\Settings\LegacySettingsMigrator;
 use FGTCLB\AcademicPersons\Settings\ManagedFieldsSettings;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\Attributes\Test;
+use Psr\Log\AbstractLogger;
+use Psr\Log\LoggerInterface;
+use Psr\Log\LogLevel;
+use Psr\Log\NullLogger;
 use Symfony\Component\Yaml\Yaml;
 use TYPO3\CMS\Core\Cache\Frontend\PhpFrontend;
 use TYPO3\CMS\Core\Package\PackageInterface;
@@ -401,6 +405,39 @@ final class AcademicPersonsSettingsFactoryTest extends UnitTestCase
         $this->assertSame(['special' => 'somethingElse'], $settings->publicProfile->details['contact']);
     }
 
+    /**
+     * A site package that copied the shipped map before 3.0 still names the
+     * removed `publish` field. The editor would show a switch it can neither
+     * fill nor store, so the field is left out, and the integrator is told why
+     * and what to remove.
+     */
+    #[Test]
+    public function theRemovedPublishFieldOfACopiedMapIsLeftOutWithAWarning(): void
+    {
+        $configuration = $this->getShippedConfiguration();
+        $configuration['contracts']['fields']['publish'] = [
+            'fieldType' => 'check',
+            'renderType' => 'checkbox',
+        ];
+        $logger = new class () extends AbstractLogger {
+            /** @var list<array{level: string, message: string, context: array<string, mixed>}> */
+            public array $records = [];
+
+            public function log($level, string|\Stringable $message, array $context = []): void
+            {
+                $this->records[] = ['level' => (string)$level, 'message' => (string)$message, 'context' => $context];
+            }
+        };
+        $settings = $this->factory($this->createMock(PhpFrontend::class), logger: $logger)->normalize($configuration);
+
+        $this->assertArrayNotHasKey('publish', $settings->contractFields);
+        $this->assertArrayHasKey('officeHours', $settings->contractFields);
+        $this->assertCount(1, $logger->records);
+        $this->assertSame(LogLevel::WARNING, $logger->records[0]['level']);
+        $this->assertSame(['identifier' => 'publish', 'property' => 'publish'], $logger->records[0]['context']);
+        $this->assertStringContainsString('contracts.fields.{identifier}', $logger->records[0]['message']);
+    }
+
     #[Test]
     public function theShippedFileIsLoadedIntoTheCompleteSectionGraph(): void
     {
@@ -435,7 +472,6 @@ final class AcademicPersonsSettingsFactoryTest extends UnitTestCase
                 'location',
                 'room',
                 'officeHours',
-                'publish',
             ],
             array_keys($settings->contractFields),
         );
@@ -1267,6 +1303,10 @@ final class AcademicPersonsSettingsFactoryTest extends UnitTestCase
             ['contracts' => ['position', 'office']],
             '`managedFields.contracts` names `office`, which is not a field of `contracts.fields`',
         ];
+        yield 'the contract field removed in 3.0' => [
+            ['contracts' => ['position', 'publish']],
+            '`managedFields.contracts` names `publish`, which is not a field of `contracts.fields`',
+        ];
         yield 'a database column instead of a field name' => [
             ['profile' => ['last_name']],
             '`managedFields.profile` names `last_name`, which is not a field of `profile`',
@@ -1379,12 +1419,16 @@ final class AcademicPersonsSettingsFactoryTest extends UnitTestCase
         return $this->factory($this->createMock(PhpFrontend::class))->normalize($configuration);
     }
 
-    private function factory(PhpFrontend $cache, ?PackageManager $packageManager = null): AcademicPersonsSettingsFactory
-    {
+    private function factory(
+        PhpFrontend $cache,
+        ?PackageManager $packageManager = null,
+        LoggerInterface $logger = new NullLogger(),
+    ): AcademicPersonsSettingsFactory {
         return new AcademicPersonsSettingsFactory(
             new SettingsFileLoader($cache, $packageManager ?? $this->createMock(PackageManager::class)),
             new ValidationNormalizer(),
             new LegacySettingsMigrator(),
+            $logger,
         );
     }
 

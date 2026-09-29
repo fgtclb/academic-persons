@@ -13,6 +13,7 @@ use FGTCLB\AcademicPersons\Settings\LegacySettingsMigrator;
 use PHPUnit\Framework\Attributes\Test;
 use Psr\Log\AbstractLogger;
 use Psr\Log\LogLevel;
+use Psr\Log\NullLogger;
 use Symfony\Component\Yaml\Yaml;
 use TYPO3\CMS\Core\Cache\Frontend\PhpFrontend;
 use TYPO3\CMS\Core\Package\PackageManager;
@@ -429,6 +430,7 @@ final class LegacySettingsMigratorTest extends UnitTestCase
             new SettingsFileLoader($this->createMock(PhpFrontend::class), $this->createMock(PackageManager::class)),
             new ValidationNormalizer(),
             new LegacySettingsMigrator(),
+            new NullLogger(),
         );
         return $factory->normalize($configuration);
     }

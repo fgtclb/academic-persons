@@ -75,16 +75,4 @@ final class ContractTest extends UnitTestCase
     {
         $this->assertSame('', (new Contract())->getOfficeHours());
     }
-
-    #[Test]
-    public function getPublishReturnsFalseForNewModel(): void
-    {
-        $this->assertFalse((new Contract())->getPublish());
-    }
-
-    #[Test]
-    public function isPublishReturnsFalseForNewModel(): void
-    {
-        $this->assertFalse((new Contract())->isPublish());
-    }
 }

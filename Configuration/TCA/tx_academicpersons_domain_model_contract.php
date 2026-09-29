@@ -95,21 +95,6 @@ $tcaConfiguration = [
                 'maxitems' => 1,
             ],
         ],
-        'publish' => [
-            'label' => 'LLL:EXT:academic_persons/Resources/Private/Language/locallang_tca.xlf:tx_academicpersons_domain_model_contract.columns.publish.label',
-            'exclude' => true,
-            'config' => [
-                'type' => 'check',
-                'renderType' => 'checkboxToggle',
-                'items' => [
-                    [
-                        'label' => '',
-                        'labelChecked' => 'Enabled',
-                        'labelUnchecked' => 'Disabled',
-                    ],
-                ],
-            ],
-        ],
         'organisational_unit' => [
             'label' => 'LLL:EXT:academic_persons/Resources/Private/Language/locallang_tca.xlf:tx_academicpersons_domain_model_contract.columns.organisational_unit.label',
             'l10n_mode' => 'exclude',
@@ -337,7 +322,6 @@ $tcaConfiguration = [
         'general' => [
             'showitem' => implode(',', [
                 'profile',
-                'publish',
                 '--linebreak--',
                 'position',
                 '--linebreak--',

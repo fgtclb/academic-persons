@@ -102,10 +102,6 @@
         <source>Position</source>
         <target>Position</target>
       </trans-unit>
-      <trans-unit id="tx_academicpersons_domain_model_contract.columns.publish.label">
-        <source>Show this contract online?</source>
-        <target>Diesen Vertrag online anzeigen?</target>
-      </trans-unit>
       <trans-unit id="tx_academicpersons_domain_model_contract.columns.room.label">
         <source>Room</source>
         <target>Zimmer</target>

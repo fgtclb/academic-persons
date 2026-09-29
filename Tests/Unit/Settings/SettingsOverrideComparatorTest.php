@@ -189,7 +189,6 @@ final class SettingsOverrideComparatorTest extends UnitTestCase
                 'contracts.fields.location',
                 'contracts.fields.room',
                 'contracts.fields.officeHours',
-                'contracts.fields.publish',
                 'contracts.fields.validFrom.fieldType',
                 'contracts.fields.validFrom.renderType',
                 'contracts.fields.validFrom.helptext',

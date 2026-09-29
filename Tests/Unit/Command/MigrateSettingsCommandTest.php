@@ -11,6 +11,7 @@ use FGTCLB\AcademicPersons\Settings\AcademicPersonsSettingsFactory;
 use FGTCLB\AcademicPersons\Settings\LegacySettingsMigrator;
 use FGTCLB\AcademicPersons\Settings\SettingsOverrideComparator;
 use PHPUnit\Framework\Attributes\Test;
+use Psr\Log\NullLogger;
 use Symfony\Component\Console\Tester\CommandTester;
 use Symfony\Component\Yaml\Yaml;
 use TYPO3\CMS\Core\Cache\Frontend\PhpFrontend;
@@ -69,7 +70,7 @@ final class MigrateSettingsCommandTest extends UnitTestCase
         $tester->execute([]);
         $printed = Yaml::parse($tester->getDisplay());
 
-        $factory = new AcademicPersonsSettingsFactory($loader, new ValidationNormalizer(), new LegacySettingsMigrator());
+        $factory = new AcademicPersonsSettingsFactory($loader, new ValidationNormalizer(), new LegacySettingsMigrator(), new NullLogger());
         $this->assertSame(array_diff_key($factory->get()->raw, ['frontendUserSync' => true, 'managedFields' => true]), $printed);
     }
 

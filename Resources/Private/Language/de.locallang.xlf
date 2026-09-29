@@ -304,10 +304,6 @@
         <source>Enter the office hours and, if useful, instructions for arranging an appointment.</source>
         <target>Geben Sie die Sprechzeiten und bei Bedarf Hinweise zur Terminvereinbarung an.</target>
       </trans-unit>
-      <trans-unit id="helptext.contracts.publish" resname="helptext.contracts.publish">
-        <source>Control whether this employment contract and its contact details are shown on the public profile.</source>
-        <target>Legen Sie fest, ob dieser Beschäftigungsvertrag und seine Kontaktdaten im öffentlichen Profil angezeigt werden.</target>
-      </trans-unit>
       <trans-unit id="helptext.contractContact.street" resname="helptext.contractContact.street">
         <source>Enter the street name without the building number.</source>
         <target>Geben Sie den Straßennamen ohne Hausnummer an.</target>
