@@ -1,0 +1,56 @@
+<html
+    lang="en"
+    xmlns:f="http://typo3.org/ns/TYPO3/CMS/Fluid/ViewHelpers"
+    xmlns:persons="http://typo3.org/ns/FGTCLB/AcademicPersons/ViewHelpers"
+    data-namespace-typo3-fluid="true"
+>
+
+<f:comment>
+    The shipped templates render no filter form yet, so this one prints what the list
+    action assigned for it: whether "filterOptions" holds any options, the options of
+    each filter in their order, each with its uid, and the function type filter the
+    list kept. The links per function type are the example of the templates chapter of
+    the manual, as it is printed there.
+</f:comment>
+<div
+    class="test-filter-options"
+    data-any="{f:if(condition: filterOptions, then: '1', else: '0')}"
+    data-function-type-filter="{demand.functionTypeFilter}"
+>
+    <ul class="test-filter-options__function-types">
+        <f:for each="{filterOptions.functionTypes}" as="option">
+            <li data-uid="{option.uid}">{option.functionName}</li>
+        </f:for>
+    </ul>
+    <ul class="test-filter-options__organisational-units">
+        <f:for each="{filterOptions.organisationalUnits}" as="option">
+            <li data-uid="{option.uid}">{option.unitName}</li>
+        </f:for>
+    </ul>
+</div>
+
+<nav class="test-filter-links">
+    <f:for each="{filterOptions.functionTypes}" as="functionType">
+        <f:link.action
+            arguments="{demand: '{persons:listArguments(arguments: activeListArguments, overrides: {functionTypeFilter: functionType.uid}, remove: \'currentPage\')}'}"
+        >{functionType.functionName}</f:link.action>
+    </f:for>
+</nav>
+
+<f:if condition="{settings.paginationEnabled} && {paginator.paginatedItems}">
+    <f:then>
+        <f:variable name="profilesToList" value="{paginator.paginatedItems}" />
+    </f:then>
+    <f:else>
+        <f:variable name="profilesToList" value="{profiles}" />
+    </f:else>
+</f:if>
+
+<div class="academic-persons-list">
+    <f:render
+        partial="Profile/List/ItemList"
+        arguments="{_all}"
+    />
+</div>
+
+</html>

@@ -36,4 +36,38 @@ class OrganisationalUnitRepository extends Repository
         $query->setOrderings(['uid' => QueryInterface::ORDER_ASCENDING]);
         return $query->execute();
     }
+
+    /**
+     * The options of the visitor filter by organisational unit of the persons list: the records
+     * with these uids, the ones the content element is restricted to, or every record
+     * while it is restricted to none. Ordered by name, as a visitor looks for one, with
+     * the uid as the tiebreaker for two records of the same name.
+     *
+     * The restriction names default language uids. A translated request finds its records
+     * by the uid of the translation, so the uids are matched here, against the uid a record
+     * carries in every language, rather than in the query. The query keeps its language
+     * handling, and the options are translated and follow the language mode of the site.
+     *
+     * Storage pages are ignored as in {@see self::findAll()}, and for the same reason: the
+     * restriction of the content element does not look at them either.
+     *
+     * @param int[] $uids
+     * @return list<OrganisationalUnit>
+     */
+    public function findFilterOptions(array $uids): array
+    {
+        $query = $this->createQuery();
+        $query->getQuerySettings()->setRespectStoragePage(false);
+        $query->setOrderings([
+            'unitName' => QueryInterface::ORDER_ASCENDING,
+            'uid' => QueryInterface::ORDER_ASCENDING,
+        ]);
+        $options = [];
+        foreach ($query->execute() as $option) {
+            if ($option instanceof OrganisationalUnit && ($uids === [] || in_array($option->getUid(), $uids, true))) {
+                $options[] = $option;
+            }
+        }
+        return $options;
+    }
 }

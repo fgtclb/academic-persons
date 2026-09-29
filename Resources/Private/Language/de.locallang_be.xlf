@@ -137,6 +137,22 @@
         <source>Function Types</source>
         <target>Funktionstypen</target>
       </trans-unit>
+      <trans-unit id="flexform.el.filter.functionType.label">
+        <source>Visitors may filter by function type</source>
+        <target>Besucher dürfen nach Funktionstyp filtern</target>
+      </trans-unit>
+      <trans-unit id="flexform.el.filter.functionType.description">
+        <source>Lets a visitor narrow the list to the profiles with a contract of one function type. The function types offered are the ones selected above, or all of them while none is selected.</source>
+        <target>Erlaubt Besuchern, die Liste auf die Profile mit einem Vertrag eines Funktionstyps einzuschränken. Angeboten werden die oben ausgewählten Funktionstypen oder alle, solange keiner ausgewählt ist.</target>
+      </trans-unit>
+      <trans-unit id="flexform.el.filter.organisationalUnit.label">
+        <source>Visitors may filter by organisational unit</source>
+        <target>Besucher dürfen nach Organisationseinheit filtern</target>
+      </trans-unit>
+      <trans-unit id="flexform.el.filter.organisationalUnit.description">
+        <source>Lets a visitor narrow the list to the profiles with a contract in one organisational unit. The units offered are the ones selected above, or all of them while none is selected.</source>
+        <target>Erlaubt Besuchern, die Liste auf die Profile mit einem Vertrag in einer Organisationseinheit einzuschränken. Angeboten werden die oben ausgewählten Organisationseinheiten oder alle, solange keine ausgewählt ist.</target>
+      </trans-unit>
       <trans-unit id="flexform.el.groupBy.label">
         <source>Group By (is given priority in sorting if activ)</source>
         <target>Gruppieren nach (wird vorrangig bei der Sortierung berücksichtigt)</target>

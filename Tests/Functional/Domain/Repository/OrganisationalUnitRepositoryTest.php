@@ -196,4 +196,55 @@ final class OrganisationalUnitRepositoryTest extends AbstractAcademicPersonsTest
         sort($sortedByUnitName);
         $this->assertNotSame($sortedByUnitName, $unitNames);
     }
+
+    /**
+     * The options of the visitor filter as the persons list offers them, uid to name.
+     *
+     * @param list<OrganisationalUnit> $result
+     * @return list<array{0: int, 1: string}>
+     */
+    private function options(array $result): array
+    {
+        $options = [];
+        foreach ($result as $record) {
+            $options[] = [(int)$record->getUid(), $record->getUnitName()];
+        }
+        return $options;
+    }
+
+    /**
+     * Unlike {@see OrganisationalUnitRepository::findAll()}, the options of the visitor filter are
+     * ordered by name, and two records of the same name by uid. Uid order would put
+     * "Zeta" first. Hidden records and translations are no options.
+     *
+     * The fixture writes one tied pair in descending uid order ("Alpha", 4 before 2) and
+     * one in ascending order ("Omega", 7 before 8). Without the uid tiebreaker, PostgreSQL
+     * 10 returned "Omega" as 8, 7 and fails this test, on TYPO3 v13 and v14. SQLite
+     * returns ties in uid order and cannot fail it.
+     */
+    #[Test]
+    public function findFilterOptionsOrdersEveryRecordByNameAndUid(): void
+    {
+        $this->importCSVDataSet(__DIR__ . '/Fixtures/OrganisationalUnitRepository/filterOptions.csv');
+
+        $this->assertSame(
+            [[2, 'Alpha Unit'], [4, 'Alpha Unit'], [3, 'Mu Unit'], [7, 'Omega Unit'], [8, 'Omega Unit'], [1, 'Zeta Unit']],
+            $this->options($this->subject()->findFilterOptions([])),
+        );
+    }
+
+    /**
+     * A content element restricted to some records offers those, in the same order, and
+     * never a hidden one it still names.
+     */
+    #[Test]
+    public function findFilterOptionsReturnsTheRestrictedRecordsOrderedByName(): void
+    {
+        $this->importCSVDataSet(__DIR__ . '/Fixtures/OrganisationalUnitRepository/filterOptions.csv');
+
+        $this->assertSame(
+            [[4, 'Alpha Unit'], [7, 'Omega Unit'], [8, 'Omega Unit'], [1, 'Zeta Unit']],
+            $this->options($this->subject()->findFilterOptions([1, 4, 5, 7, 8])),
+        );
+    }
 }

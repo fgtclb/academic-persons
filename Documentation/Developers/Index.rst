@@ -206,8 +206,8 @@ navigation carry into their links - see
 templates. Which demand properties a visitor may set is one list in
 :php:`ProfileController`, and it decides both what the property mapping accepts
 from the request and what the links carry, so the two cannot differ. Today it
-holds the page, the letter and the view mode; a value equal to its default is
-left out.
+holds the page, the letter, the view mode and the two visitor filters. A value
+equal to its default is left out.
 
 The view mode is resolved before that: the list action checks the requested
 mode against the switch of the content element and the allowed modes, and
@@ -215,6 +215,15 @@ writes the result back into the demand - empty for the default mode, and for a
 mode it rejected, so neither ever reaches a link. The mode the list renders is
 also read before the events, so a demand a listener hands back cannot name a
 partial.
+
+The filters are checked before that as well. A value that is not a whole
+number never reaches the property mapping, and the list action resets a
+function type or unit that is not one of the options of the filter to `0`,
+which includes every value while the content element does not offer the
+filter. :php:`ProfileDemand::getFunctionTypeFilter()` and
+:php:`getOrganisationalUnitFilter()` therefore hold an offered uid in the
+default language, or `0`, when a listener of :php:`ModifyProfileDemandEvent`
+receives the demand. A value the listener sets itself is applied as it is.
 
 The value is read from the mapped demand before any event of the list is
 dispatched, :php:`ModifyProfileDemandEvent` and :php:`ModifyProfileQueryEvent`

@@ -1,0 +1,3 @@
+# The list template of this fixture folder, which prints the filter options the list
+# action assigned, see its own comment.
+plugin.tx_academicpersons.view.templateRootPaths.20 = EXT:academic_persons/Tests/Functional/Plugins/Fixtures/AcademicPersonsVisitorListFilter/Templates/

@@ -443,6 +443,20 @@ class ProfileRepository extends Repository
             $filters[] = $query->in('contracts.organisationalUnit', $demand->getOrganisationalUnits());
         }
 
+        // The visitor filters narrow the restriction above, they never replace it. Extbase
+        // joins a property path once per query and reuses its alias, so every condition on
+        // `contracts.*` applies to one and the same contract: a profile is listed as
+        // "professor in unit X" only with a contract that is both.
+        if (method_exists($demand, 'getFunctionTypeFilter')
+            && $demand->getFunctionTypeFilter() > 0) {
+            $filters[] = $query->equals('contracts.functionType', $demand->getFunctionTypeFilter());
+        }
+
+        if (method_exists($demand, 'getOrganisationalUnitFilter')
+            && $demand->getOrganisationalUnitFilter() > 0) {
+            $filters[] = $query->equals('contracts.organisationalUnit', $demand->getOrganisationalUnitFilter());
+        }
+
         if ($demand->getAlphabetFilter() != '') {
             $filters[] = $query->like('last_name', $demand->getAlphabetFilter() . '%');
         }

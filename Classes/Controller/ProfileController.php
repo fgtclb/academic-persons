@@ -15,8 +15,12 @@ use FGTCLB\AcademicBase\Controller\DispatchModifyPluginViewEventMethodTrait;
 use FGTCLB\AcademicBase\Controller\GetCurrentContentRecordMethodTrait;
 use FGTCLB\AcademicPersons\Domain\Model\Dto\PluginControllerActionContext;
 use FGTCLB\AcademicPersons\Domain\Model\Dto\ProfileDemand;
+use FGTCLB\AcademicPersons\Domain\Model\FunctionType;
+use FGTCLB\AcademicPersons\Domain\Model\OrganisationalUnit;
 use FGTCLB\AcademicPersons\Domain\Model\Profile;
 use FGTCLB\AcademicPersons\Domain\Repository\ContractRepository;
+use FGTCLB\AcademicPersons\Domain\Repository\FunctionTypeRepository;
+use FGTCLB\AcademicPersons\Domain\Repository\OrganisationalUnitRepository;
 use FGTCLB\AcademicPersons\Domain\Repository\ProfileRepository;
 use FGTCLB\AcademicPersons\PageTitle\ProfileTitleProvider;
 use FGTCLB\AcademicPersons\Settings\AcademicPersonsSettings;
@@ -27,6 +31,7 @@ use TYPO3\CMS\Core\Pagination\ArrayPaginator;
 use TYPO3\CMS\Core\Pagination\SimplePagination;
 use TYPO3\CMS\Core\Utility\ExtensionManagementUtility;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
+use TYPO3\CMS\Core\Utility\MathUtility;
 use TYPO3\CMS\Extbase\Annotation\IgnoreValidation;
 use TYPO3\CMS\Extbase\DomainObject\AbstractEntity;
 use TYPO3\CMS\Extbase\Mvc\Controller\ActionController;
@@ -43,14 +48,20 @@ final class ProfileController extends ActionController
 
     /**
      * The demand properties of the list a visitor sets through the request, and the only
-     * ones its navigation links carry: the page, the letter and the view mode. Every other
-     * property the property mapping allows is one of `settings.demand`, which the content
-     * element sets and which wins over the request.
+     * ones its navigation links carry: the page, the letter, the view mode and the two
+     * filters. Every other property the property mapping allows is one of `settings.demand`,
+     * which the content element sets and which wins over the request.
      *
      * A change that lets a visitor set another value adds it here, and the pagination and
      * the letter navigation carry it without an edit of their own.
      */
-    private const VISITOR_DEMAND_PROPERTIES = ['currentPage', 'alphabetFilter', 'viewMode'];
+    private const VISITOR_DEMAND_PROPERTIES = ['currentPage', 'alphabetFilter', 'viewMode', 'functionTypeFilter', 'organisationalUnitFilter'];
+
+    /**
+     * The demand properties of the visitor filters, each a uid a visitor picks from the
+     * options of the filter.
+     */
+    private const VISITOR_FILTERS = ['functionTypeFilter', 'organisationalUnitFilter'];
 
     /**
      * A view mode names the partial `Profile/ViewMode/<Mode>.html` that renders it, so it
@@ -74,6 +85,8 @@ final class ProfileController extends ActionController
 
     public function __construct(
         private readonly ContractRepository $contractRepository,
+        private readonly FunctionTypeRepository $functionTypeRepository,
+        private readonly OrganisationalUnitRepository $organisationalUnitRepository,
         private readonly ProfileRepository $profileRepository,
         private readonly ProfileTitleProvider $profileTitleProvider,
         private readonly AcademicPersonsSettings $academicPersonsSettings,
@@ -86,6 +99,19 @@ final class ProfileController extends ActionController
             $demandArray = $this->request->getArgument('demand');
             if (!is_array($demandArray)) {
                 $demandArray = [];
+            }
+        }
+
+        // A filter value that is not a whole number is dropped. The property mapping would
+        // fail the whole list on an array or a value that is not numeric, and cut "1.5" or
+        // "1e3" down to a number the visitor did not ask for. Whether the content element
+        // offers the filter, and which numbers are its options, is decided in the action,
+        // see adoptVisitorFilters().
+        foreach (self::VISITOR_FILTERS as $property) {
+            if (array_key_exists($property, $demandArray)
+                && !MathUtility::canBeInterpretedAsInteger($demandArray[$property])
+            ) {
+                unset($demandArray[$property]);
             }
         }
 
@@ -105,6 +131,8 @@ final class ProfileController extends ActionController
     public function listAction(ProfileDemand $demand): ResponseInterface
     {
         $this->adoptSettings($demand);
+        $filterOptions = $this->filterOptions($demand);
+        $this->adoptVisitorFilters($demand, $filterOptions);
         $activeListArguments = $this->activeListArguments($demand);
         $viewMode = $demand->getViewMode() !== '' ? $demand->getViewMode() : $this->defaultViewMode();
         // A letter switches the pagination off. Decided before the context is built, so the
@@ -161,6 +189,7 @@ final class ProfileController extends ActionController
             'profiles' => $profiles,
             'demand' => $demand,
             'activeListArguments' => $activeListArguments,
+            'filterOptions' => $filterOptions,
         ]);
         $this->assignViewMode($viewMode);
         $this->addCacheTags('profile_list_view');
@@ -467,6 +496,64 @@ final class ProfileController extends ActionController
         // a link that way.
         $viewMode = $this->resolveViewMode($demand->getViewMode());
         $demand->setViewMode($viewMode === $this->defaultViewMode() ? '' : $viewMode);
+    }
+
+    /**
+     * The options of the visitor filters the content element offers, keyed `functionTypes`
+     * and `organisationalUnits`: the records the element is restricted to, or all of them,
+     * ordered by name. A filter the element does not offer has no key, and a manual
+     * selection, which ignores the filters, gets an empty array.
+     *
+     * @return array{functionTypes?: list<FunctionType>, organisationalUnits?: list<OrganisationalUnit>}
+     */
+    private function filterOptions(ProfileDemand $demand): array
+    {
+        if ($demand->getProfileList() !== '') {
+            return [];
+        }
+        $options = [];
+        if ((bool)($this->settings['filter']['functionType'] ?? false)) {
+            $options['functionTypes'] = $this->functionTypeRepository->findFilterOptions($demand->getFunctionTypes());
+        }
+        if ((bool)($this->settings['filter']['organisationalUnit'] ?? false)) {
+            $options['organisationalUnits'] = $this->organisationalUnitRepository->findFilterOptions($demand->getOrganisationalUnits());
+        }
+        return $options;
+    }
+
+    /**
+     * Keep a visitor filter value only while it is one of the options, and reset it to `0`
+     * otherwise: a record that does not exist or is hidden, one outside the restriction of
+     * the content element, a filter the element does not offer, and every value under a
+     * manual selection. So a visitor never widens what the editor restricted, and a link
+     * never carries a value the list ignored.
+     *
+     * @param array{functionTypes?: list<FunctionType>, organisationalUnits?: list<OrganisationalUnit>} $filterOptions
+     */
+    private function adoptVisitorFilters(ProfileDemand $demand, array $filterOptions): void
+    {
+        $demand->setFunctionTypeFilter(
+            $this->offeredUid($demand->getFunctionTypeFilter(), $filterOptions['functionTypes'] ?? [])
+        );
+        $demand->setOrganisationalUnitFilter(
+            $this->offeredUid($demand->getOrganisationalUnitFilter(), $filterOptions['organisationalUnits'] ?? [])
+        );
+    }
+
+    /**
+     * @param list<AbstractEntity> $options
+     */
+    private function offeredUid(int $uid, array $options): int
+    {
+        if ($uid <= 0) {
+            return 0;
+        }
+        foreach ($options as $option) {
+            if ($option->getUid() === $uid) {
+                return $uid;
+            }
+        }
+        return 0;
     }
 
     /**

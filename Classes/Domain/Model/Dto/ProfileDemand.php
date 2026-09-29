@@ -37,6 +37,9 @@ class ProfileDemand implements DemandInterface
      */
     protected array $organisationalUnits = [];
 
+    protected int $functionTypeFilter = 0;
+    protected int $organisationalUnitFilter = 0;
+
     /**
      * Does not have any effect when {@see self::getProfileList()} is not empty.
      */
@@ -178,6 +181,58 @@ class ProfileDemand implements DemandInterface
     public function setOrganisationalUnits(array $organisationalUnits): ProfileDemand
     {
         $this->organisationalUnits = $organisationalUnits;
+        return $this;
+    }
+
+    /**
+     * The function type a visitor filters the list by, `0` for none. It narrows the list to
+     * the profiles with a contract of this type, within {@see self::getFunctionTypes()}, the
+     * restriction of the content element, which a visitor never changes. The list action
+     * resets a value that is not one of the filter options to `0`.
+     *
+     * Does not have any effect when {@see self::getProfileList()} is not empty.
+     */
+    public function getFunctionTypeFilter(): int
+    {
+        return $this->functionTypeFilter;
+    }
+
+    /**
+     * The function type a visitor filters the list by, `0` for none. It narrows the list to
+     * the profiles with a contract of this type, within {@see self::getFunctionTypes()}, the
+     * restriction of the content element, which a visitor never changes. The list action
+     * resets a value that is not one of the filter options to `0`.
+     *
+     * Does not have any effect when {@see self::getProfileList()} is not empty.
+     */
+    public function setFunctionTypeFilter(int $functionTypeFilter): self
+    {
+        $this->functionTypeFilter = $functionTypeFilter;
+        return $this;
+    }
+
+    /**
+     * The organisational unit a visitor filters the list by, `0` for none, as
+     * {@see self::getFunctionTypeFilter()} for the function type. With both set, the function
+     * type and the unit have to be on the same contract.
+     *
+     * Does not have any effect when {@see self::getProfileList()} is not empty.
+     */
+    public function getOrganisationalUnitFilter(): int
+    {
+        return $this->organisationalUnitFilter;
+    }
+
+    /**
+     * The organisational unit a visitor filters the list by, `0` for none, as
+     * {@see self::getFunctionTypeFilter()} for the function type. With both set, the function
+     * type and the unit have to be on the same contract.
+     *
+     * Does not have any effect when {@see self::getProfileList()} is not empty.
+     */
+    public function setOrganisationalUnitFilter(int $organisationalUnitFilter): self
+    {
+        $this->organisationalUnitFilter = $organisationalUnitFilter;
         return $this;
     }
 

@@ -279,12 +279,48 @@ letter link and :guilabel:`A-Z` drop the page, so a new letter starts on the
 first page.
 
 Besides page and letter, a visitor chooses the :ref:`view mode
-<templates-view-modes>`, where the element offers the switch; a link carries it
-while it differs from the default. It reaches `activeListArguments` like the
-other two, and both navigations carry it without an edit. A project copy of
-either partial, and a list template that does not pass `activeListArguments` on,
-keeps the links it has and drops the view mode on the next click, until it
-adopts the view helper as above.
+<templates-view-modes>`, where the element offers the switch, and the
+:ref:`filters <templates-visitor-filters>`, where the element offers them. A
+link carries each while it differs from the default. They reach
+`activeListArguments` like the other two, and both navigations carry them
+without an edit. A project copy of either partial, and a list template that
+does not pass `activeListArguments` on, keeps the links it has and drops the
+view mode and the filters on the next click, until it adopts the view helper as
+above.
+
+..  _templates-visitor-filters:
+
+The options of the visitor filters
+----------------------------------
+
+While the content element offers a :ref:`filter for visitors
+<configuration-visitor-filters>`, the list action assigns its options to
+`filterOptions`: `filterOptions.functionTypes` holds the function types,
+`filterOptions.organisationalUnits` the organisational units, each ordered by
+name in the language of the page. Each is known by its uid in the default
+language, which is the value a link carries. A filter the element does not
+offer has no key, and a manual selection gets no options at all. The active
+values are `demand.functionTypeFilter` and `demand.organisationalUnitFilter`,
+`0` for none.
+
+The shipped templates render no filter form yet. A project links a filtered
+list with the action link view helper, which adds the cHash the cached list
+needs, and keeps the other choices of the visitor:
+
+..  code-block:: html
+    :caption: A link per function type
+
+    <html
+        xmlns:f="http://typo3.org/ns/TYPO3/CMS/Fluid/ViewHelpers"
+        xmlns:persons="http://typo3.org/ns/FGTCLB/AcademicPersons/ViewHelpers"
+        data-namespace-typo3-fluid="true"
+    >
+
+    <f:for each="{filterOptions.functionTypes}" as="functionType">
+        <f:link.action
+            arguments="{demand: '{persons:listArguments(arguments: activeListArguments, overrides: {functionTypeFilter: functionType.uid}, remove: \'currentPage\')}'}"
+        >{functionType.functionName}</f:link.action>
+    </f:for>
 
 :file:`Profile/List/Items.html`, the grid the view mode ``list`` renders,
 carries the Bootstrap row and column classes, so overriding it changes the grid

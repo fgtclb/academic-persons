@@ -224,6 +224,36 @@
                     <size>3</size>
                 </config>
             </settings.functionTypes>
+            <settings.filter.functionType>
+                <label>LLL:EXT:academic_persons/Resources/Private/Language/locallang_be.xlf:flexform.el.filter.functionType.label</label>
+                <description>LLL:EXT:academic_persons/Resources/Private/Language/locallang_be.xlf:flexform.el.filter.functionType.description</description>
+                <config>
+                    <type>check</type>
+                    <renderType>checkboxToggle</renderType>
+                    <default>0</default>
+                    <items>
+                        <numIndex index="0" type="array">
+                            <label></label>
+                            <value>1</value>
+                        </numIndex>
+                    </items>
+                </config>
+            </settings.filter.functionType>
+            <settings.filter.organisationalUnit>
+                <label>LLL:EXT:academic_persons/Resources/Private/Language/locallang_be.xlf:flexform.el.filter.organisationalUnit.label</label>
+                <description>LLL:EXT:academic_persons/Resources/Private/Language/locallang_be.xlf:flexform.el.filter.organisationalUnit.description</description>
+                <config>
+                    <type>check</type>
+                    <renderType>checkboxToggle</renderType>
+                    <default>0</default>
+                    <items>
+                        <numIndex index="0" type="array">
+                            <label></label>
+                            <value>1</value>
+                        </numIndex>
+                    </items>
+                </config>
+            </settings.filter.organisationalUnit>
             <settings.contracts.display>
                 <label>LLL:EXT:academic_persons/Resources/Private/Language/locallang_be.xlf:flexform.el.contracts.display.label</label>
                 <description>LLL:EXT:academic_persons/Resources/Private/Language/locallang_be.xlf:flexform.el.contracts.display.description</description>

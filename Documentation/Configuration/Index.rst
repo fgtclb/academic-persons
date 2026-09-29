@@ -187,6 +187,54 @@ and an entry in the allowed modes, see
 :ref:`adding a view mode <templates-view-modes-own>`; its URL is described in
 :ref:`the route enhancers <configuration-route-enhancers-view-modes>`.
 
+..  _configuration-visitor-filters:
+
+Filters for visitors
+====================
+
+A visitor can narrow the list and list-and-detail elements to one function type
+or one organisational unit, where the element allows it. Two fields of the
+content element, on the sheet :guilabel:`Settings` below :guilabel:`Function
+Types`, switch the filters on. Both are off by default, and a list that does
+not switch them on shows what it showed before:
+
+:guilabel:`Visitors may filter by function type`
+    The list takes a function type from the request and shows only the profiles
+    with a contract of that type.
+
+:guilabel:`Visitors may filter by organisational unit`
+    The same for an organisational unit. The unit has to match exactly, a
+    contract in a unit below it does not count.
+
+With both filters set, the function type and the unit have to be on the same
+contract: a person who is a professor in one unit and a lecturer in another is
+not listed among the professors of the second one. A profile with several
+matching contracts is listed once, and the pagination and the letter
+navigation count only the profiles the filter leaves.
+
+The options of a filter are the function types or units the element is
+restricted to in :guilabel:`Function Types` and :guilabel:`Organisational
+Units`, or all of them while it is restricted to none, ordered by name. A
+visitor can therefore never see more than the editor chose. The list ignores a
+value that is not one of the options: a number of a record that does not exist
+or is hidden, a record outside the restriction, anything that is not a whole
+number, and any value while the field is off. It then renders as if no filter
+had been given. A manual selection of profiles ignores both filters.
+
+The request carries the uid of the record in the default language, as the
+demand arguments `functionTypeFilter` and `organisationalUnitFilter` of the
+plugin. The shipped templates do not render a filter form yet. The list
+template receives the options as `filterOptions`, see
+:ref:`templates-visitor-filters`. The page and
+letter links keep an active filter.
+
+The filters select profiles, and do not change which contracts of a profile are
+shown. :guilabel:`Only contracts of the selected organisational units and
+function types` below applies the restriction of the element, not the choice of
+the visitor.
+
+The card element shares the fields with the list and hides both.
+
 ..  _configuration-contract-display:
 
 Which contracts a profile shows
@@ -196,7 +244,8 @@ A profile has one or more contracts, sorted by the editor. Every view shows all
 of them unless it is told otherwise.
 
 **The list and list-and-detail elements** offer three fields in their plugin
-options, on the sheet :guilabel:`Settings` below :guilabel:`Function Types`:
+options, on the sheet :guilabel:`Settings` below the :ref:`filters for visitors
+<configuration-visitor-filters>`:
 
 :guilabel:`Contracts per profile`
     All contracts (the default), or only the first one.
