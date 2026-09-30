@@ -1,0 +1,21 @@
+"fe_users"
+,"uid","pid","username","deleted","usergroup","disable","tx_extbase_type","first_name","last_name","email"
+,80,200,"skipped",0,"10",0,"Tx_Academicpersonsedit_Domain_Model_FrontendUser","Samuel","Skipped","sam@example.org"
+,81,200,"listed",0,"10",0,"Tx_Academicpersonsedit_Domain_Model_FrontendUser","Lara","LISTED","lara@example.org"
+,82,200,"twice",0,"10",0,"Tx_Academicpersonsedit_Domain_Model_FrontendUser","Tom","Twice","tom@example.org"
+"tx_academicpersons_feuser_mm"
+,"uid_local","uid_foreign","sorting","sorting_foreign"
+,80,80,1,0
+,81,81,1,0
+,82,82,1,0
+,83,82,2,0
+"tx_academicpersons_domain_model_profile"
+,"uid","pid","first_name","last_name","gender","import_identifier"
+,80,200,"Sam","Skipped","","fe_users:80"
+,81,200,"Lara","Listed","","fe_users:81"
+,82,200,"Thomas","Twice","","fe_users:82"
+,83,200,"Thomas","Twice","","fe_users:82"
+"tx_academicpersons_domain_model_contract"
+,"uid","pid","profile","room","import_identifier"
+,80,200,80,"C 3.01","fe_users:80"
+,81,200,81,"B 1.01","fe_users:81"

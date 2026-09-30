@@ -3,7 +3,7 @@
 declare(strict_types=1);
 
 /*
- * This file is part of the "academic_persons_edit" Extension for TYPO3 CMS.
+ * This file is part of the "academic_persons" Extension for TYPO3 CMS.
  *
  * For the full copyright and license information, please read the
  * LICENSE file that was distributed with this source code.
@@ -14,7 +14,9 @@ namespace FGTCLB\AcademicPersons\Profile;
 use FGTCLB\AcademicPersons\Domain\Model\FrontendUser;
 use FGTCLB\AcademicPersons\Domain\Model\Profile;
 use FGTCLB\AcademicPersons\Domain\Repository\ProfileRepository;
+use FGTCLB\AcademicPersons\Event\AfterProfileMappedFromFrontendUserEvent;
 use FGTCLB\AcademicPersons\Event\AfterProfileUpdateEvent;
+use FGTCLB\AcademicPersons\Event\BeforeProfileMappedFromFrontendUserEvent;
 use FGTCLB\AcademicPersons\Event\ProfileUpdateOrigin;
 use Psr\EventDispatcher\EventDispatcherInterface;
 use Symfony\Contracts\Service\Attribute\Required;
@@ -26,6 +28,18 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Extbase\Persistence\PersistenceManagerInterface;
 use TYPO3\CMS\Frontend\Authentication\FrontendUserAuthentication;
 
+/**
+ * The base of a profile factory. It loads the frontend user and its profiles,
+ * dispatches the events of the synchronisation around the mapping, and saves
+ * and announces the profiles. A subclass builds the profile in
+ * {@see self::createProfileFromFrontendUser()} and updates it in
+ * {@see self::updateProfileFromFrontendUser()}, the two methods meant to be
+ * implemented. A subclass that overrides {@see self::createProfileForUser()}
+ * or {@see self::updateProfileForUser()} dispatches the events only where it
+ * calls the parent method.
+ *
+ * @api
+ */
 abstract class AbstractProfileFactory implements ProfileFactoryInterface
 {
     protected PersistenceManagerInterface $persistenceManager;
@@ -97,8 +111,24 @@ abstract class AbstractProfileFactory implements ProfileFactoryInterface
             return null;
         }
 
+        /** @var BeforeProfileMappedFromFrontendUserEvent $beforeMappingEvent */
+        $beforeMappingEvent = $this->eventDispatcher->dispatch(
+            new BeforeProfileMappedFromFrontendUserEvent($userData, ProfileActionType::Create),
+        );
+        if ($beforeMappingEvent->isSkipped()) {
+            return null;
+        }
+        $userData = $beforeMappingEvent->getFrontendUserData();
+
         $profileForDefaultLanguage = $this->createProfileFromFrontendUser($userData);
+        if ($profileForDefaultLanguage === null) {
+            // The factory has no profile for this frontend user. Nothing is saved or announced.
+            return null;
+        }
         $profileForDefaultLanguage->getFrontendUsers()->attach($frontendUser);
+        $this->eventDispatcher->dispatch(
+            new AfterProfileMappedFromFrontendUserEvent($profileForDefaultLanguage, $userData, ProfileActionType::Create),
+        );
         $this->persistenceManager->add($profileForDefaultLanguage);
 
         $this->persistenceManager->persistAll();
@@ -164,7 +194,21 @@ abstract class AbstractProfileFactory implements ProfileFactoryInterface
                 // that side door (ACE-490).
                 continue;
             }
-            $this->updateProfileFromFrontendUser($userData, $profile);
+            // Every profile starts from the data of the frontend user, so a listener that changed
+            // it for one profile does not change it for the next.
+            /** @var BeforeProfileMappedFromFrontendUserEvent $beforeMappingEvent */
+            $beforeMappingEvent = $this->eventDispatcher->dispatch(
+                new BeforeProfileMappedFromFrontendUserEvent($userData, ProfileActionType::Update, $profile),
+            );
+            if ($beforeMappingEvent->isSkipped()) {
+                // Left out of `$updatedProfiles`, so it is neither saved nor announced.
+                continue;
+            }
+            $profileData = $beforeMappingEvent->getFrontendUserData();
+            $this->updateProfileFromFrontendUser($profileData, $profile);
+            $this->eventDispatcher->dispatch(
+                new AfterProfileMappedFromFrontendUserEvent($profile, $profileData, ProfileActionType::Update),
+            );
             $this->persistenceManager->update($profile);
             $updatedProfiles[] = $profile;
         }
@@ -188,9 +232,13 @@ abstract class AbstractProfileFactory implements ProfileFactoryInterface
     }
 
     /**
+     * Builds the profile for a frontend user, or returns `null` when there is none to
+     * create: the synchronisation then saves nothing for that frontend user and goes on
+     * with the next one. A factory that always creates one may declare `Profile`.
+     *
      * @param array<string, int|string|null> $frontendUserData
      */
-    abstract protected function createProfileFromFrontendUser(array $frontendUserData): Profile;
+    abstract protected function createProfileFromFrontendUser(array $frontendUserData): ?Profile;
 
     /**
      * @param array<string, int|string|null> $frontendUserData

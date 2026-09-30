@@ -1,0 +1,5 @@
+"fe_users"
+,"uid","pid","username","deleted","usergroup","disable","tx_extbase_type","first_name","last_name","email"
+,70,200,"skipped",0,"10",0,"Tx_Academicpersonsedit_Domain_Model_FrontendUser","Sam","Skipped","sam@example.org"
+,71,200,"declined",0,"10",0,"Tx_Academicpersonsedit_Domain_Model_FrontendUser","Dana","Declined","dana@example.org"
+,72,200,"listed",0,"10",0,"Tx_Academicpersonsedit_Domain_Model_FrontendUser","Lara","LISTED","lara@example.org"

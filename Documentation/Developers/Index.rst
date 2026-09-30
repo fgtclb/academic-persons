@@ -5,7 +5,8 @@ For developers
 ==============
 
 This chapter documents the programmatic surface this extension ships: the two
-events that let a project narrow what the plugins show, the translation
+events that let a project narrow what the plugins show, the two events of the
+frontend user synchronisation, the translation
 synchronisation - the event that triggers it, the service interface behind it,
 and how it behaves in workspaces - the event that lets a project decide
 what is written as the metadata of a profile image, and the plugin action
@@ -230,6 +231,173 @@ dispatched, :php:`ModifyProfileDemandEvent` and :php:`ModifyProfileQueryEvent`
 alike. A listener acts again on the request a link leads to, so what it changes
 need not travel in the URL.
 
+..  _developers-frontend-user-sync-events:
+
+Taking part in the frontend user synchronisation
+================================================
+
+The commands :bash:`academic:createprofiles` and
+:bash:`academic:updateprofiles` build profiles from the data of frontend
+users, following the map described in :ref:`configuration-frontend-user-sync`.
+Two events let a project add data of its own and adjust the result, without a
+profile factory of its own. :php:`AbstractProfileFactory` dispatches them, so
+every factory extending it does, a project's factory included, unless it
+overrides :php:`createProfileForUser()` or :php:`updateProfileForUser()`
+without calling the parent method.
+
+..  list-table::
+    :header-rows: 1
+
+    *   -   Event
+        -   Dispatched
+        -   A listener can
+    *   -   :php:`\FGTCLB\AcademicPersons\Event\BeforeProfileMappedFromFrontendUserEvent`
+        -   before the data of a frontend user is mapped: once per frontend
+            user when a profile is created, and once per synchronised profile
+            of the frontend user when profiles are updated, not for a profile
+            whose :sql:`skip_sync` flag is set
+        -   add or change values, or skip the frontend user on creation and
+            the profile on update
+    *   -   :php:`\FGTCLB\AcademicPersons\Event\AfterProfileMappedFromFrontendUserEvent`
+        -   after the mapping, before the profile is saved
+        -   change the profile
+
+For one frontend user, a run goes through these steps:
+
+#.  :php:`ChooseProfileFactoryEvent` chooses the factory.
+#.  :php:`BeforeProfileMappedFromFrontendUserEvent` carries the data of the
+    frontend user, the action (:php:`ProfileActionType::Create` or
+    :php:`ProfileActionType::Update`) and, on update, the profile.
+    :php:`getProfile()` is :php:`null` when a profile is created.
+#.  The factory maps the data onto the profile and its imported contract.
+#.  :php:`AfterProfileMappedFromFrontendUserEvent` carries the profile, the
+    data the mapping used, with the values added in step 2, and the action.
+#.  The profile is saved, and :php:`AfterProfileUpdateEvent` announces it, see
+    :ref:`developers-trigger`.
+
+On update, steps 2 to 4 repeat for every synchronised profile of the frontend
+user, and step 5 then saves and announces them together. Each event of step 2
+starts from the data of the frontend user, not from what a listener set for
+the profile before.
+
+Adding values
+-------------
+
+A value a listener adds is read by the map like a column of the frontend user.
+Name it :samp:`{source}.{key}`, for example ``ldap.room``: no column of a TYPO3
+table contains a dot, so such a key never hides a real column. The convention
+is not enforced. Keep :sql:`uid` and :sql:`pid` as they are, the default
+factory stores the profile on the page :sql:`pid` and names the imported
+records after :sql:`uid`.
+
+The default factory refuses a map that reads a key the data does not have,
+with the code ``1790142326``. A listener that adds a key the map reads
+therefore adds it for every frontend user, as ``''`` when its source has no
+value.
+
+..  code-block:: yaml
+    :caption: EXT:my_sitepackage/Configuration/AcademicPersons/Settings.yaml
+
+    frontendUserSync:
+      contract:
+        room: ldap.room
+
+Skipping
+--------
+
+After :php:`skip()` on creation, :bash:`academic:createprofiles` creates no
+profile for the frontend user and goes on with the next one. The next run asks
+again, because the frontend user still has no profile. On update, the event
+belongs to one profile, and :bash:`academic:updateprofiles` leaves that profile
+as it is and does not announce it, like a profile whose :sql:`skip_sync` flag
+is set. The other profiles of the frontend user are updated as usual, so a
+listener that should skip the whole frontend user skips every one of its
+events. Listeners after the one that skipped still run, and :php:`isSkipped()`
+tells them.
+
+Listeners are shared services, one object for the whole run and every frontend
+user of it. Keep nothing of one frontend user in a property of the listener,
+and fetch what it needs per event:
+
+..  code-block:: php
+    :caption: EXT:my_sitepackage/Classes/EventListener/AddDirectoryData.php
+
+    <?php
+
+    declare(strict_types=1);
+
+    namespace MyVendor\MySitepackage\EventListener;
+
+    use FGTCLB\AcademicPersons\Event\BeforeProfileMappedFromFrontendUserEvent;
+    use FGTCLB\AcademicPersons\Profile\ProfileActionType;
+    use MyVendor\MySitepackage\Directory\DirectoryClient;
+    use TYPO3\CMS\Core\Attribute\AsEventListener;
+
+    final readonly class AddDirectoryData
+    {
+        public function __construct(
+            private DirectoryClient $directoryClient,
+        ) {}
+
+        #[AsEventListener(identifier: 'my-sitepackage/add-directory-data')]
+        public function __invoke(BeforeProfileMappedFromFrontendUserEvent $event): void
+        {
+            $frontendUserData = $event->getFrontendUserData();
+            $entry = $this->directoryClient->findByUsername((string)$frontendUserData['username']);
+            if ($entry === null && $event->getAction() === ProfileActionType::Create) {
+                // Unknown to the directory: no profile is created for the frontend user.
+                $event->skip();
+                return;
+            }
+            // An existing profile keeps being updated, with empty directory values when the entry is gone.
+            $event->setFrontendUserData([
+                ...$frontendUserData,
+                'ldap.room' => $entry?->room ?? '',
+                'ldap.gender' => $entry?->gender ?? '',
+            ]);
+        }
+    }
+
+Adjusting the mapped profile
+----------------------------
+
+A listener of :php:`AfterProfileMappedFromFrontendUserEvent` translates a
+value of the source into one the profile offers, or derives a value from
+others. What it sets on the profile and its contracts is saved with the
+profile:
+
+..  code-block:: php
+    :caption: EXT:my_sitepackage/Classes/EventListener/MapGender.php
+
+    <?php
+
+    declare(strict_types=1);
+
+    namespace MyVendor\MySitepackage\EventListener;
+
+    use FGTCLB\AcademicPersons\Event\AfterProfileMappedFromFrontendUserEvent;
+    use TYPO3\CMS\Core\Attribute\AsEventListener;
+
+    final readonly class MapGender
+    {
+        private const GENDERS = ['w' => 'ms', 'm' => 'mr', 'd' => 'diverse'];
+
+        #[AsEventListener(identifier: 'my-sitepackage/map-gender')]
+        public function __invoke(AfterProfileMappedFromFrontendUserEvent $event): void
+        {
+            $source = (string)($event->getFrontendUserData()['ldap.gender'] ?? '');
+            $event->getProfile()->setGender(self::GENDERS[$source] ?? '');
+        }
+    }
+
+Listeners of one event are ordered with the :php:`before` and :php:`after`
+arguments of :php:`#[AsEventListener]`. Use TYPO3's attribute,
+:php:`TYPO3\CMS\Core\Attribute\AsEventListener`: Symfony's registers nothing,
+and the listener never runs.
+
+A factory of its own may decline to create a profile, see
+:ref:`configuration-frontend-user-sync-factories`.
+
 ..  _developers-trigger:
 
 The trigger: AfterProfileUpdateEvent
@@ -246,7 +414,8 @@ records — has changed and was persisted. It is dispatched
     (:php:`AbstractProfileFactory::updateProfileForUser()`, command
     :bash:`academic:updateprofiles`), per profile the update runs through —
     even when every value already matched. A profile whose :sql:`skip_sync`
-    flag is set is neither updated nor announced;
+    flag is set, or that a listener of :php:`BeforeProfileMappedFromFrontendUserEvent`
+    skips, is neither updated nor announced;
 *   by `EXT:academic_persons_edit` after every persisting frontend edit action;
 *   after a **DataHandler save** of a live, default-language profile: the
     backend form, and any code that writes profiles through the DataHandler.

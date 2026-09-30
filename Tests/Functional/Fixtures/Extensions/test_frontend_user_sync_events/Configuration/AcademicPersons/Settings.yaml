@@ -1,0 +1,6 @@
+# The room of the contract comes from a directory service: a listener of the
+# synchronisation data event adds it as `ldap.room`, and the map reads it like
+# a column.
+frontendUserSync:
+  contract:
+    room: ldap.room

@@ -61,7 +61,9 @@ profiles, contracts, contact records and import identifiers as before.
 The keys
 ========
 
-Every value is the name of an :sql:`fe_users` column. A property mapped to
+Every value is the name of an :sql:`fe_users` column, or of a value a listener
+adds to the frontend user data, see
+:ref:`developers-frontend-user-sync-events`. A property mapped to
 ``''`` or ``~`` is not synchronised: the synchronisation neither writes nor
 clears it, and the value an editor entered stays. A mapped property is written
 on every run, and an empty column clears it.
@@ -157,11 +159,6 @@ A mapped relation belongs to the synchronisation. An empty column clears it,
 and so does a value that matches nothing when :yaml:`create` is off. A relation
 that is not mapped is never touched.
 
-The employee type is not synchronised, and an editor's choice stays. Its
-categories carry no type in :guilabel:`EXT:academic_persons`, so a title can
-match categories of any purpose. A project that takes the employee type from
-the frontend user data sets it in a listener of its own.
-
 ..  code-block:: yaml
     :caption: EXT:my_sitepackage/Configuration/AcademicPersons/Settings.yaml
 
@@ -173,6 +170,88 @@ the frontend user data sets it in a listener of its own.
           storagePid: 42
         functionType:
           column: tx_project_function
+
+The employee type is not synchronised, and an editor's choice stays. Its
+categories carry no type in :guilabel:`EXT:academic_persons`, so a title can
+match categories of any purpose. A project that takes the employee type from
+the frontend user data sets it in a listener of
+:php:`AfterProfileMappedFromFrontendUserEvent`, see
+:ref:`developers-frontend-user-sync-events`. The listener reads the value from
+the frontend user data, looks the category up with a query of its own and sets
+it on the imported contract. The query is ordered, and the title is compared in
+PHP, because MySQL and MariaDB ignore case and accents when they compare it.
+That way the same category wins on every database. With
+:guilabel:`EXT:category_types` installed, the query can be restricted to one
+category type:
+
+..  code-block:: php
+    :caption: EXT:my_sitepackage/Classes/EventListener/SetEmployeeType.php
+
+    <?php
+
+    declare(strict_types=1);
+
+    namespace MyVendor\MySitepackage\EventListener;
+
+    use FGTCLB\AcademicPersons\Event\AfterProfileMappedFromFrontendUserEvent;
+    use TYPO3\CMS\Core\Attribute\AsEventListener;
+    use TYPO3\CMS\Core\Database\Connection;
+    use TYPO3\CMS\Core\Database\ConnectionPool;
+    use TYPO3\CMS\Extbase\Domain\Model\Category;
+    use TYPO3\CMS\Extbase\Persistence\PersistenceManagerInterface;
+
+    final readonly class SetEmployeeType
+    {
+        public function __construct(
+            private ConnectionPool $connectionPool,
+            private PersistenceManagerInterface $persistenceManager,
+        ) {}
+
+        #[AsEventListener(identifier: 'my-sitepackage/set-employee-type')]
+        public function __invoke(AfterProfileMappedFromFrontendUserEvent $event): void
+        {
+            $frontendUserData = $event->getFrontendUserData();
+            $title = trim((string)($frontendUserData['tx_project_employee_type'] ?? ''));
+            $category = $title === '' ? null : $this->findCategory($title);
+            $importIdentifier = 'fe_users:' . $frontendUserData['uid'];
+            foreach ($event->getProfile()->getContracts() as $contract) {
+                if ($contract->getImportIdentifier() === $importIdentifier) {
+                    $contract->setEmployeeType($category);
+                }
+            }
+        }
+
+        private function findCategory(string $title): ?Category
+        {
+            $queryBuilder = $this->connectionPool->getQueryBuilderForTable('sys_category');
+            $result = $queryBuilder
+                ->select('uid', 'title')
+                ->from('sys_category')
+                ->where(
+                    $queryBuilder->expr()->eq('title', $queryBuilder->createNamedParameter($title)),
+                    // A category type the project registers, EXT:category_types only.
+                    $queryBuilder->expr()->eq('type', $queryBuilder->createNamedParameter('employee_type')),
+                    $queryBuilder->expr()->in(
+                        'sys_language_uid',
+                        $queryBuilder->quoteArrayBasedValueListToIntegerList([0, -1]),
+                    ),
+                    $queryBuilder->expr()->eq('t3ver_wsid', $queryBuilder->createNamedParameter(0, Connection::PARAM_INT)),
+                )
+                ->orderBy('uid')
+                ->executeQuery();
+            while ($row = $result->fetchAssociative()) {
+                if ($row['title'] === $title) {
+                    $category = $this->persistenceManager->getObjectByIdentifier((int)$row['uid'], Category::class);
+                    return $category instanceof Category ? $category : null;
+                }
+            }
+            return null;
+        }
+    }
+
+Like the relations above, the listener then owns the employee type of the
+imported contract: it clears it where the column is empty or names no
+category.
 
 ..  _configuration-frontend-user-sync-records:
 
@@ -241,8 +320,10 @@ whole, so a package adding a phone number repeats the shipped ones:
           type: mobile
 
 The columns are not created by this map; they are columns of :sql:`fe_users`
-the installation already has, for instance filled by an LDAP import. Flush the
-TYPO3 caches after changing the map.
+the installation already has, for instance filled by an LDAP import, or values
+a listener adds to the frontend user data while the synchronisation runs, see
+:ref:`developers-frontend-user-sync-events`. Flush the TYPO3 caches after
+changing the map.
 
 A mistake in the map - an unknown property, a value that is not a string, a
 list where a map belongs, an entry that maps no column, two entries of one list
@@ -297,3 +378,15 @@ array keyed like an :sql:`fe_users` record, with its :sql:`uid`:
 Creating the profile and the imported contract, and removing that contract,
 stays with the factory, as :php:`\FGTCLB\AcademicPersons\Profile\ProfileFactory`
 shows.
+
+A factory extending :php:`\FGTCLB\AcademicPersons\Profile\AbstractProfileFactory`
+dispatches the events of :ref:`developers-frontend-user-sync-events` without
+any code of its own. Its :php:`createProfileFromFrontendUser()` may return
+:php:`null` when it has no profile for a frontend user, for example when the
+directory it reads does not know the user. :bash:`academic:createprofiles` then
+saves nothing for that frontend user, announces nothing and goes on with the
+next one. A factory that always creates a profile may keep :php:`Profile` as
+its return type.
+
+Before a factory of its own, check whether a listener is enough: a factory
+replaces the default one as a whole, and does not pick up later fixes to it.
