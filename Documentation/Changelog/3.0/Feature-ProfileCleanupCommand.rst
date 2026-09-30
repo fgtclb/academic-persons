@@ -44,8 +44,9 @@ with :bash:`--dry-run`: deleting is the default for profiles whose frontend
 users are all deleted.
 
 A profile deleted or restored in the backend now clears the cached list and
-detail pages as well. Before, they kept showing a deleted profile until the
-cache expired.
+detail pages as well. Before, an installation without the automatic cache
+tagging of the core kept showing a deleted profile until the cache expired. It
+is off in instances upgraded from a TYPO3 version before v13.3.
 
 A project that ships a command of its own named
 :bash:`academic:cleanupprofiles` keeps running that one: of two commands with

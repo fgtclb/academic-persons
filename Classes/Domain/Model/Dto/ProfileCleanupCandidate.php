@@ -12,9 +12,10 @@ declare(strict_types=1);
 namespace FGTCLB\AcademicPersons\Domain\Model\Dto;
 
 /**
- * A live default-language profile whose linked frontend users are all gone or
- * inactive, as {@see \FGTCLB\AcademicPersons\Provider\InactiveFrontendUserProfileProvider}
- * finds it for `academic:cleanupprofiles`.
+ * A live profile of the default language or of all languages whose linked
+ * frontend users are all gone or inactive, as
+ * {@see \FGTCLB\AcademicPersons\Provider\InactiveFrontendUserProfileProvider} finds it
+ * for `academic:cleanupprofiles`.
  *
  * @internal for the profile cleanup of academic_persons, no public API.
  */
