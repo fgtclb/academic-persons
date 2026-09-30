@@ -12,9 +12,15 @@ declare(strict_types=1);
 namespace FGTCLB\AcademicPersons\Hook;
 
 use TYPO3\CMS\Core\Cache\CacheManager;
+use TYPO3\CMS\Core\Database\Connection;
+use TYPO3\CMS\Core\Database\ConnectionPool;
 use TYPO3\CMS\Core\DataHandling\DataHandler;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
+/**
+ * DataHandler hooks of the profile table, registered in `ext_localconf.php` as a
+ * `processDatamapClass` and a `processCmdmapClass`.
+ */
 final class DataHandlerHooks
 {
     public function processDatamap_beforeStart(DataHandler $dataHandler): void
@@ -41,6 +47,40 @@ final class DataHandlerHooks
             'profile_list_view',
             sprintf('profile_detail_view_%d', $id),
         ]);
+    }
+
+    /**
+     * Flushes the list and the detail view of a profile that is deleted or restored.
+     * {@see processDatamap_afterDatabaseOperations()} covers saves only, and the core
+     * flushes the page of the record and the tags of its table and uid, which the
+     * plugins do not carry. The detail view is tagged with the uid of the
+     * default-language record, so a translation flushes the tag of its parent too.
+     *
+     * @param int|string $id
+     */
+    public function processCmdmap_postProcess(string $command, string $table, $id, mixed $value, DataHandler $dataHandler): void
+    {
+        if ($table !== 'tx_academicpersons_domain_model_profile' || !in_array($command, ['delete', 'undelete'], true)) {
+            return;
+        }
+        $profileUid = (int)$id;
+        if ($profileUid <= 0) {
+            return;
+        }
+        $tags = ['profile_list_view', sprintf('profile_detail_view_%d', $profileUid)];
+        $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)
+            ->getQueryBuilderForTable('tx_academicpersons_domain_model_profile');
+        $queryBuilder->getRestrictions()->removeAll();
+        $parentUid = (int)$queryBuilder
+            ->select('l10n_parent')
+            ->from('tx_academicpersons_domain_model_profile')
+            ->where($queryBuilder->expr()->eq('uid', $queryBuilder->createNamedParameter($profileUid, Connection::PARAM_INT)))
+            ->executeQuery()
+            ->fetchOne();
+        if ($parentUid > 0) {
+            $tags[] = sprintf('profile_detail_view_%d', $parentUid);
+        }
+        GeneralUtility::makeInstance(CacheManager::class)->flushCachesByTags($tags);
     }
 
     private function setAlphaValuesForProfile(DataHandler $dataHandler): void

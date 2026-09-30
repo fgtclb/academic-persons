@@ -296,5 +296,6 @@ one mechanism per site and the question does not arise.
 
    General/Index
    Validations/Index
+   ProfileCleanup/Index
    RouteEnhancers/Index
    Labels/Index
