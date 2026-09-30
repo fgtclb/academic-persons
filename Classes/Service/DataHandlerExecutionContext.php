@@ -31,8 +31,8 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
  * This service is stateless: all run state lives in local variables and callback arguments.
  *
  * @internal for the DataHandler runs of the academic extensions: the record synchronization,
- *           the profile image and visibility writes and the project fields of the profile
- *           editor. No public API.
+ *           the profile image and visibility writes, the project fields of the profile
+ *           editor and the profile cleanup command. No public API.
  */
 #[Autoconfigure(public: true)]
 final class DataHandlerExecutionContext

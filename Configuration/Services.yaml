@@ -64,6 +64,12 @@ services:
         command: 'academic:updateprofiles'
         description: 'This command updates profiles for all frontend users that have a profile.'
 
+  FGTCLB\AcademicPersons\Command\CleanupProfilesCommand:
+    tags:
+      - name: console.command
+        command: 'academic:cleanupprofiles'
+        description: 'This command hides or deletes profiles whose frontend users are all disabled, expired or deleted.'
+
   FGTCLB\AcademicPersons\Command\MigrateSettingsCommand:
     tags:
       - name: console.command

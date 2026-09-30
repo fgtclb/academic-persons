@@ -29,8 +29,9 @@ use TYPO3\CMS\Core\Site\SiteFinder;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
- * DataHandler hooks of the profile table, registered in `ext_localconf.php`. The
- * class is a public, constructor-injected service and holds no state of its own.
+ * DataHandler hooks of the profile table, registered in `ext_localconf.php` as a
+ * `processDatamapClass` and a `processCmdmapClass`. The class is a public,
+ * constructor-injected service and holds no state of its own.
  */
 final class DataHandlerHooks
 {
@@ -153,6 +154,39 @@ final class DataHandlerHooks
             'profile_list_view',
             sprintf('profile_detail_view_%d', $profileUid),
         ]);
+    }
+
+    /**
+     * Flushes the list and the detail view of a profile that is deleted or restored.
+     * {@see processDatamap_afterDatabaseOperations()} covers saves only, and the core
+     * flushes the page of the record and the tags of its table and uid, which the
+     * plugins do not carry. The detail view is tagged with the uid of the
+     * default-language record, so a translation flushes the tag of its parent too.
+     *
+     * @param int|string $id
+     */
+    public function processCmdmap_postProcess(string $command, string $table, $id, mixed $value, DataHandler $dataHandler): void
+    {
+        if ($table !== self::PROFILE_TABLE || !in_array($command, ['delete', 'undelete'], true)) {
+            return;
+        }
+        $profileUid = (int)$id;
+        if ($profileUid <= 0) {
+            return;
+        }
+        $tags = ['profile_list_view', sprintf('profile_detail_view_%d', $profileUid)];
+        $queryBuilder = $this->connectionPool->getQueryBuilderForTable(self::PROFILE_TABLE);
+        $queryBuilder->getRestrictions()->removeAll();
+        $parentUid = (int)$queryBuilder
+            ->select('l10n_parent')
+            ->from(self::PROFILE_TABLE)
+            ->where($queryBuilder->expr()->eq('uid', $queryBuilder->createNamedParameter($profileUid, Connection::PARAM_INT)))
+            ->executeQuery()
+            ->fetchOne();
+        if ($parentUid > 0) {
+            $tags[] = sprintf('profile_detail_view_%d', $parentUid);
+        }
+        GeneralUtility::makeInstance(CacheManager::class)->flushCachesByTags($tags);
     }
 
     /**

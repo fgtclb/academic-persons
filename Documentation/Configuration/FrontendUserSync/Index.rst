@@ -11,6 +11,10 @@ and onto one contract of it, the imported contract. Which column feeds which
 property is the :yaml:`frontendUserSync` map of
 :file:`Configuration/AcademicPersons/Settings.yaml`.
 
+Neither command changes whether a profile is shown. Hiding or deleting the
+profiles of disabled and deleted frontend users is the job of
+:bash:`academic:cleanupprofiles`, see :ref:`configuration-profile-cleanup`.
+
 ..  _configuration-frontend-user-sync-shipped:
 
 The shipped map

@@ -674,6 +674,7 @@ one mechanism per site and the question does not arise.
    Sections/Index
    Validations/Index
    FrontendUserSync/Index
+   ProfileCleanup/Index
    ManagedFields/Index
    RouteEnhancers/Index
    Labels/Index
