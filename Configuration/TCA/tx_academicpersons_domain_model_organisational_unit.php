@@ -215,7 +215,7 @@ $tcaConfiguration = [
 // inclusion list on v13, which still evaluates 'searchFields'.
 // @todo Remove once TYPO3 v13 support is dropped.
 if ((new \TYPO3\CMS\Core\Information\Typo3Version())->getMajorVersion() < 14) {
-    $tcaConfiguration['ctrl']['searchFields'] = 'function_name';
+    $tcaConfiguration['ctrl']['searchFields'] = 'unit_name,unique_name';
 }
 
 return $tcaConfiguration;

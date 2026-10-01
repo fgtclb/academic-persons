@@ -303,7 +303,7 @@ $tcaConfiguration = [
 // inclusion list on v13, which still evaluates 'searchFields'.
 // @todo Remove once TYPO3 v13 support is dropped.
 if ((new \TYPO3\CMS\Core\Information\Typo3Version())->getMajorVersion() < 14) {
-    $tcaConfiguration['ctrl']['searchFields'] = 'title,description';
+    $tcaConfiguration['ctrl']['searchFields'] = 'title,bodytext';
 }
 
 return $tcaConfiguration;
