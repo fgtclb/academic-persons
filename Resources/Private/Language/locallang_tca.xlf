@@ -15,6 +15,18 @@
         <source>Maintained by the synchronisation (%s), so it is read-only here.</source>
       </trans-unit>
 
+      <!-- Import identifier -->
+
+      <trans-unit id="generic.palettes.import.label">
+        <source>Import</source>
+      </trans-unit>
+      <trans-unit id="generic.columns.import_identifier.label">
+        <source>Import identifier</source>
+      </trans-unit>
+      <trans-unit id="generic.columns.import_identifier.description">
+        <source>The key of this record in the source it was imported from, as source:key, for instance fe_users:12. The synchronisation and imports find the record by it.</source>
+      </trans-unit>
+
       <!-- Addresses -->
 
       <trans-unit id="tx_academicpersons_domain_model_address.columns.additional.label">

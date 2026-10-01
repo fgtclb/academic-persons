@@ -17,6 +17,21 @@
         <target>Wird von der Synchronisation gepflegt (%s) und ist hier daher schreibgeschützt.</target>
       </trans-unit>
 
+      <!-- Import identifier -->
+
+      <trans-unit id="generic.palettes.import.label">
+        <source>Import</source>
+        <target>Import</target>
+      </trans-unit>
+      <trans-unit id="generic.columns.import_identifier.label">
+        <source>Import identifier</source>
+        <target>Import-Kennung</target>
+      </trans-unit>
+      <trans-unit id="generic.columns.import_identifier.description">
+        <source>The key of this record in the source it was imported from, as source:key, for instance fe_users:12. The synchronisation and imports find the record by it.</source>
+        <target>Der Schlüssel dieses Datensatzes in der Quelle, aus der er importiert wurde, als Quelle:Schlüssel, zum Beispiel fe_users:12. Die Synchronisation und Importe finden den Datensatz darüber.</target>
+      </trans-unit>
+
       <!-- Addresses -->
 
       <trans-unit id="tx_academicpersons_domain_model_address.columns.additional.label">

@@ -14,6 +14,7 @@ CREATE TABLE tx_academicpersons_domain_model_address (
     country varchar(255) DEFAULT '' NOT NULL,
     sorting int(11) unsigned DEFAULT '0' NOT NULL,
     import_identifier varchar(170) DEFAULT '' NOT NULL,
+    key idx_import_identifier(`import_identifier`),
 );
 
 CREATE TABLE tx_academicpersons_domain_model_contract (

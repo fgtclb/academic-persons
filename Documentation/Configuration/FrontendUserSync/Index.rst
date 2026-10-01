@@ -276,6 +276,14 @@ updates it and never changes its visibility. It creates the record when it is
 missing and removes it when every column of its entry is empty. Records an
 editor added carry no import identifier and are never touched.
 
+The backend form of a record shows its identifier read-only in the palette
+:guilabel:`Import` of the tab :guilabel:`Extended`. On a profile the palette
+also holds :guilabel:`Disable profile sync`. A record without an identifier
+shows neither. The list module and the backend search find a profile by its
+identifier. How import code of a project finds a record by it, and how the
+contact records become searchable, is described in :ref:`Finding what an
+import wrote <developers-import-identifier>`.
+
 The identifier follows the map, not the data:
 
 *   Moving another entry to the front of the address or e-mail list makes it

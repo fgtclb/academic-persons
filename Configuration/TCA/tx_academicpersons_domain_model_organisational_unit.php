@@ -177,8 +177,15 @@ $tcaConfiguration = [
         ],
         'import_identifier' => [
             'label' => 'LLL:EXT:academic_persons/Resources/Private/Language/locallang_tca.xlf:generic.columns.import_identifier.label',
+            'description' => 'LLL:EXT:academic_persons/Resources/Private/Language/locallang_tca.xlf:generic.columns.import_identifier.description',
+            // Written by the synchronisation and by imports, never by an editor.
+            // DataHandler does not read readOnly, so those writes are unaffected.
+            'displayCond' => 'FIELD:import_identifier:REQ:true',
             'config' => [
-                'type' => 'passthrough',
+                'type' => 'input',
+                'readOnly' => true,
+                'size' => 30,
+                'max' => 170,
             ],
         ],
     ],
@@ -187,6 +194,12 @@ $tcaConfiguration = [
             'showitem' => implode(',', [
                 'sys_language_uid;LLL:EXT:frontend/Resources/Private/Language/locallang_ttc.xlf:sys_language_uid_formlabel',
                 'l10n_parent',
+            ]),
+        ],
+        'import' => [
+            'label' => 'LLL:EXT:academic_persons/Resources/Private/Language/locallang_tca.xlf:generic.palettes.import.label',
+            'showitem' => implode(',', [
+                'import_identifier',
             ]),
         ],
     ],
@@ -205,6 +218,7 @@ $tcaConfiguration = [
                 '--div--;LLL:EXT:core/Resources/Private/Language/Form/locallang_tabs.xlf:language',
                 '--palette--;;language',
                 '--div--;LLL:EXT:core/Resources/Private/Language/Form/locallang_tabs.xlf:extended',
+                '--palette--;;import',
             ]),
         ],
     ],
@@ -215,7 +229,7 @@ $tcaConfiguration = [
 // inclusion list on v13, which still evaluates 'searchFields'.
 // @todo Remove once TYPO3 v13 support is dropped.
 if ((new \TYPO3\CMS\Core\Information\Typo3Version())->getMajorVersion() < 14) {
-    $tcaConfiguration['ctrl']['searchFields'] = 'unit_name,unique_name';
+    $tcaConfiguration['ctrl']['searchFields'] = 'unit_name,unique_name,import_identifier';
 }
 
 return $tcaConfiguration;

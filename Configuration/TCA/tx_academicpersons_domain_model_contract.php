@@ -313,8 +313,15 @@ $tcaConfiguration = [
         ],
         'import_identifier' => [
             'label' => 'LLL:EXT:academic_persons/Resources/Private/Language/locallang_tca.xlf:generic.columns.import_identifier.label',
+            'description' => 'LLL:EXT:academic_persons/Resources/Private/Language/locallang_tca.xlf:generic.columns.import_identifier.description',
+            // Written by the synchronisation and by imports, never by an editor.
+            // DataHandler does not read readOnly, so those writes are unaffected.
+            'displayCond' => 'FIELD:import_identifier:REQ:true',
             'config' => [
-                'type' => 'passthrough',
+                'type' => 'input',
+                'readOnly' => true,
+                'size' => 30,
+                'max' => 170,
             ],
         ],
     ],
@@ -340,6 +347,12 @@ $tcaConfiguration = [
                 'office_hours',
             ]),
         ],
+        'import' => [
+            'label' => 'LLL:EXT:academic_persons/Resources/Private/Language/locallang_tca.xlf:generic.palettes.import.label',
+            'showitem' => implode(',', [
+                'import_identifier',
+            ]),
+        ],
     ],
     'types' => [
         '0' => [
@@ -353,6 +366,8 @@ $tcaConfiguration = [
                 'phone_numbers',
                 '--div--;' . 'LLL:EXT:academic_persons/Resources/Private/Language/locallang_tca.xlf:tx_academicpersons_domain_model_contract.div.employeeType.label',
                 'employee_type',
+                '--div--;LLL:EXT:core/Resources/Private/Language/Form/locallang_tabs.xlf:extended',
+                '--palette--;;import',
             ]),
         ],
     ],
