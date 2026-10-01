@@ -8,6 +8,7 @@ use FGTCLB\AcademicPersons\Tests\Functional\AbstractAcademicPersonsTestCase;
 use FGTCLB\TestingHelper\FunctionalTestCase\FrontendPluginRenderingTrait;
 use PHPUnit\Framework\Attributes\Test;
 use SBUERK\TYPO3\Testing\SiteHandling\SiteBasedTestTrait;
+use TYPO3\CMS\Core\Cache\Backend\TransientMemoryBackend;
 
 /**
  * The parts of the profile item and the profile list an integrator can override on their
@@ -30,7 +31,9 @@ use SBUERK\TYPO3\Testing\SiteHandling\SiteBasedTestTrait;
  */
 final class AcademicPersonsProfileTemplatePartialsTest extends AbstractAcademicPersonsTestCase
 {
-    use FrontendPluginRenderingTrait;
+    use FrontendPluginRenderingTrait {
+        frontendPluginTestConfiguration as sharedFrontendPluginTestConfiguration;
+    }
     use SiteBasedTestTrait;
 
     protected const LANGUAGE_PRESETS = [
@@ -60,6 +63,33 @@ final class AcademicPersonsProfileTemplatePartialsTest extends AbstractAcademicP
     {
         $this->removeWrittenSiteConfiguration();
         parent::tearDown();
+    }
+
+    /**
+     * The Extbase class schema cache stays in memory for this class. TYPO3 core writes it
+     * from the destructor of the reflection service, and when the garbage collector runs that
+     * destructor inside another serialize(), the outer payload ends up with back-references
+     * it cannot be read back with. On TYPO3 v14 with PHP 8.5 and MySQL 8.0 this class hit it
+     * in CI once the test classes of ACE-508 changed which classes run before it in the same
+     * process (the defect is recorded with ACE-725, the same workaround with ACE-729, ACE-740,
+     * ACE-744 and ACE-795). An in-memory cache is never serialized.
+     *
+     * @param array<string, mixed> $additionalConfiguration
+     * @return array<string, mixed>
+     */
+    protected function frontendPluginTestConfiguration(array $additionalConfiguration = []): array
+    {
+        return $this->sharedFrontendPluginTestConfiguration(array_replace_recursive([
+            'SYS' => [
+                'caching' => [
+                    'cacheConfigurations' => [
+                        'extbase' => [
+                            'backend' => TransientMemoryBackend::class,
+                        ],
+                    ],
+                ],
+            ],
+        ], $additionalConfiguration));
     }
 
     /**
