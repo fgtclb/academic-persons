@@ -41,11 +41,11 @@
 
         <f:if condition="{filterOptions.functionTypes}">
             <div class="col-auto">
-                <label class="form-label" for="academic-persons-filter-{contentElementUid}-function-type">
+                <label class="form-label" for="academic-persons-filter-function-type-{contentElementUid}">
                     {f:translate(key: 'list.filter.functionType', extensionName: 'AcademicPersons')}
                 </label>
                 <f:form.select
-                    id="academic-persons-filter-{contentElementUid}-function-type"
+                    id="academic-persons-filter-function-type-{contentElementUid}"
                     name="demand[functionTypeFilter]"
                     class="form-select"
                     options="{filterOptions.functionTypes}"
@@ -60,11 +60,11 @@
 
         <f:if condition="{filterOptions.organisationalUnits}">
             <div class="col-auto">
-                <label class="form-label" for="academic-persons-filter-{contentElementUid}-organisational-unit">
+                <label class="form-label" for="academic-persons-filter-organisational-unit-{contentElementUid}">
                     {f:translate(key: 'list.filter.organisationalUnit', extensionName: 'AcademicPersons')}
                 </label>
                 <f:form.select
-                    id="academic-persons-filter-{contentElementUid}-organisational-unit"
+                    id="academic-persons-filter-organisational-unit-{contentElementUid}"
                     name="demand[organisationalUnitFilter]"
                     class="form-select"
                     options="{filterOptions.organisationalUnits}"
