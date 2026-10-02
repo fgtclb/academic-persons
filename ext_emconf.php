@@ -11,18 +11,19 @@ $EM_CONF[$_EXTKEY] = [
     'author_company' => 'FGTCLB GmbH',
     'constraints' => [
         'depends' => [
-            'typo3' => '13.4.0-14.3.99',
-            'extbase' => '13.4.0-14.3.99',
-            'fluid' => '13.4.0-14.3.99',
-            'frontend' => '13.4.0-14.3.99',
-            'install' => '13.4.0-14.3.99',
-            'rte_ckeditor' => '13.4.0-14.3.99',
+            'typo3' => '13.4.35-14.3.99',
+            'core' => '13.4.35-14.3.99',
+            'extbase' => '13.4.35-14.3.99',
+            'fluid' => '13.4.35-14.3.99',
+            'frontend' => '13.4.35-14.3.99',
+            'install' => '13.4.35-14.3.99',
+            'rte_ckeditor' => '13.4.35-14.3.99',
             'environment_state_manager' => '2.0.1-2.99.99',
             'academic_base' => '3.0.0',
         ],
         'suggests' => [
             'numbered_pagination' => '2.1.0-2.99.99',
-            'reports' => '13.4.0-14.3.99',
+            'reports' => '13.4.35-14.3.99',
         ],
     ],
 ];
