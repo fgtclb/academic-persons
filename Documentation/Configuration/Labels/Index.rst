@@ -100,6 +100,18 @@ or the code fills in, a category type or a field name for example.
         - :file:`Partials/Profile/List/AlphabetPagination.html`
     *   - :xml:`list.alphabetFilter.showAll`
         - :file:`Partials/Profile/List/AlphabetPagination.html`
+    *   - :xml:`list.filter.functionType`
+        - :file:`Partials/Profile/List/Filter.html`
+    *   - :xml:`list.filter.functionType.all`
+        - :file:`Partials/Profile/List/Filter.html`
+    *   - :xml:`list.filter.navigation`
+        - :file:`Partials/Profile/List/Filter.html`
+    *   - :xml:`list.filter.organisationalUnit`
+        - :file:`Partials/Profile/List/Filter.html`
+    *   - :xml:`list.filter.organisationalUnit.all`
+        - :file:`Partials/Profile/List/Filter.html`
+    *   - :xml:`list.filter.submit`
+        - :file:`Partials/Profile/List/Filter.html`
     *   - :xml:`list.noContractsFound`
         - :file:`Partials/Profile/List/EmptyState.html`
     *   - :xml:`list.noProfilesFound`

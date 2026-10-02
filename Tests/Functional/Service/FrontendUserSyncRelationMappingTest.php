@@ -104,6 +104,11 @@ final class FrontendUserSyncRelationMappingTest extends AbstractAcademicPersonsT
         $this->assertSame(['uid' => 5, 'pid' => 7, 'deleted' => 1, 'hidden' => 0, 'sys_language_uid' => 0, 'unit_name' => 'Deleted unit'], $units[0]);
         $createdUid = $units[1]['uid'];
         $this->assertSame(['pid' => 7, 'deleted' => 0, 'hidden' => 0, 'sys_language_uid' => 0, 'unit_name' => 'X'], array_diff_key($units[1], ['uid' => true]));
+        // The slug a save would generate, so the filter routes of the list reach the unit.
+        $this->assertSame(
+            'x',
+            $this->getConnectionPool()->getConnectionForTable(self::UNIT_TABLE)->select(['slug'], self::UNIT_TABLE, ['uid' => $createdUid])->fetchOne(),
+        );
         $this->assertSame(
             [
                 'fe_users:70' => ['organisational_unit' => $createdUid, 'function_type' => 11],

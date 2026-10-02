@@ -18,6 +18,9 @@ use TYPO3\CMS\Core\Context\LanguageAspect;
 use TYPO3\CMS\Core\Database\Connection;
 use TYPO3\CMS\Core\Database\ConnectionPool;
 use TYPO3\CMS\Core\Database\Query\Restriction\DeletedRestriction;
+use TYPO3\CMS\Core\DataHandling\Model\RecordStateFactory;
+use TYPO3\CMS\Core\DataHandling\SlugHelper;
+use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Extbase\DomainObject\AbstractEntity;
 use TYPO3\CMS\Extbase\Persistence\PersistenceManagerInterface;
 
@@ -35,7 +38,9 @@ use TYPO3\CMS\Extbase\Persistence\PersistenceManagerInterface;
  * A created record is persisted at once, so the next lookup finds it, even one
  * for another profile of the same frontend user that the synchronisation
  * persists together with this one. Persisting writes everything pending in
- * the persistence manager at that moment, not only the new record.
+ * the persistence manager at that moment, not only the new record. Then it
+ * gets the slug a backend save would give it, which the filter routes of the
+ * persons list read and Extbase does not write.
  *
  * @internal not part of public API.
  */
@@ -74,6 +79,7 @@ final readonly class ContractRelationResolver
             $organisationalUnit->setUniqueName($value);
         }
         $this->persist($organisationalUnit);
+        $this->writeSlug(self::ORGANISATIONAL_UNIT_TABLE, $organisationalUnit);
         return $organisationalUnit;
     }
 
@@ -97,6 +103,7 @@ final readonly class ContractRelationResolver
         $functionType->setPid($relation->storagePid);
         $functionType->setFunctionName($value);
         $this->persist($functionType);
+        $this->writeSlug(self::FUNCTION_TYPE_TABLE, $functionType);
         return $functionType;
     }
 
@@ -171,5 +178,29 @@ final readonly class ContractRelationResolver
     {
         $this->persistenceManager->add($record);
         $this->persistenceManager->persistAll();
+    }
+
+    /**
+     * Generates the slug from the persisted row with the TCA of the field, unique in
+     * the table for its language, as the DataHandler does on a save.
+     *
+     * @param non-empty-string $table
+     */
+    private function writeSlug(string $table, AbstractEntity $record): void
+    {
+        $uid = (int)$record->getUid();
+        $connection = $this->connectionPool->getConnectionForTable($table);
+        $row = $connection->select(['*'], $table, ['uid' => $uid])->fetchAssociative();
+        $configuration = $GLOBALS['TCA'][$table]['columns']['slug']['config'] ?? null;
+        if (!is_array($row) || !is_array($configuration)) {
+            return;
+        }
+        $pid = (int)$row['pid'];
+        $slugHelper = GeneralUtility::makeInstance(SlugHelper::class, $table, 'slug', $configuration);
+        $slug = $slugHelper->buildSlugForUniqueInTable(
+            $slugHelper->generate($row, $pid),
+            RecordStateFactory::forName($table)->fromArray($row, $pid, $uid),
+        );
+        $connection->update($table, ['slug' => $slug], ['uid' => $uid]);
     }
 }

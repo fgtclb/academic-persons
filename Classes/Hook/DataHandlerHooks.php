@@ -29,13 +29,23 @@ use TYPO3\CMS\Core\Site\SiteFinder;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
- * DataHandler hooks of the profile table, registered in `ext_localconf.php` as a
- * `processDatamapClass` and a `processCmdmapClass`. The class is a public,
- * constructor-injected service and holds no state of its own.
+ * DataHandler hooks of the profile table and of the records the visitor filters of a
+ * list offer, registered in `ext_localconf.php` as a `processDatamapClass` and a
+ * `processCmdmapClass`. The class is a public, constructor-injected service and holds
+ * no state of its own.
  */
 final class DataHandlerHooks
 {
     private const PROFILE_TABLE = 'tx_academicpersons_domain_model_profile';
+
+    /**
+     * The records the visitor filters of a list offer. The cached lists show them in
+     * their filter form, so a change of one of them has to reach those lists.
+     */
+    private const FILTER_TABLES = [
+        'tx_academicpersons_domain_model_function_type',
+        'tx_academicpersons_domain_model_organisational_unit',
+    ];
 
     /**
      * The profile columns the image metadata is composed from.
@@ -79,6 +89,7 @@ final class DataHandlerHooks
      */
     public function processDatamap_afterAllOperations(DataHandler $dataHandler): void
     {
+        $this->flushListsForFilterRecords(array_keys($dataHandler->datamap));
         if (!isset($dataHandler->datamap[self::PROFILE_TABLE])
             || !$dataHandler->isOuterMostInstance()
             || (int)$dataHandler->BE_USER->workspace !== 0
@@ -187,6 +198,32 @@ final class DataHandlerHooks
             $tags[] = sprintf('profile_detail_view_%d', $parentUid);
         }
         GeneralUtility::makeInstance(CacheManager::class)->flushCachesByTags($tags);
+    }
+
+    /**
+     * Flushes the cached lists when a run of the DataHandler wrote a function type or an
+     * organisational unit, once per run however many of them it holds. The options of
+     * the filter form are read when the list is cached, so a changed record has to reach
+     * the cached lists. A command that writes records through a nested run, such as a
+     * copy, flushes from that run as well.
+     *
+     * @param array<int|string> $tables
+     */
+    private function flushListsForFilterRecords(array $tables): void
+    {
+        if (array_intersect(self::FILTER_TABLES, $tables) === []) {
+            return;
+        }
+        GeneralUtility::makeInstance(CacheManager::class)->flushCachesByTags(['profile_list_view']);
+    }
+
+    /**
+     * Flushes the lists once for a run of commands that touches a function type or an
+     * organisational unit: a delete, a restore, a move, a copy or a translation.
+     */
+    public function processCmdmap_afterFinish(DataHandler $dataHandler): void
+    {
+        $this->flushListsForFilterRecords(array_keys($dataHandler->cmdmap));
     }
 
     /**

@@ -150,7 +150,8 @@ one on every database. Keep the values unique to avoid relying on that.
 
 A created organisational unit takes the value as its name, and as its unique
 name when it is matched by the unique name. A created function type takes it as
-its name. Everything else is left for an editor, including the translations.
+its name. Both get the URL segment a save would generate from that name.
+Everything else is left for an editor, including the translations.
 The record is saved right away, so the next frontend user with the same value,
 and the next run, find it instead of creating another one. Runs of the two
 commands in parallel can still create one record twice: run them one after the

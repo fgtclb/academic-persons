@@ -27,6 +27,13 @@
         <source>The key of this record in the source it was imported from, as source:key, for instance fe_users:12. The synchronisation and imports find the record by it.</source>
       </trans-unit>
 
+      <trans-unit id="generic.columns.filter_slug.label">
+        <source>URL segment</source>
+      </trans-unit>
+      <trans-unit id="generic.columns.filter_slug.description">
+        <source>The URL segment of a persons list filtered by this record. Generated from the name when the record is created, and unique for each language.</source>
+      </trans-unit>
+
       <!-- Addresses -->
 
       <trans-unit id="tx_academicpersons_domain_model_address.columns.additional.label">

@@ -100,6 +100,31 @@ $tcaConfiguration = [
                 'required' => true,
             ],
         ],
+        'slug' => [
+            'label' => 'LLL:EXT:academic_persons/Resources/Private/Language/locallang_tca.xlf:generic.columns.filter_slug.label',
+            'description' => 'LLL:EXT:academic_persons/Resources/Private/Language/locallang_tca.xlf:generic.columns.filter_slug.description',
+            // Not an exclude field: the DataHandler generates the slug of a new record only
+            // when the user may write the field, and every new record needs one.
+            // Unique in the whole installation: with uniqueInSite the route enhancer would
+            // ignore a record stored in another site when it resolves a URL, and a list may
+            // show the records of a folder in another site.
+            'config' => [
+                'type' => 'slug',
+                'size' => 50,
+                'generatorOptions' => [
+                    'fields' => [
+                        'unit_name',
+                    ],
+                    'prefixParentPageSlug' => false,
+                    'replacements' => [
+                        '/' => '-',
+                    ],
+                ],
+                'fallbackCharacter' => '-',
+                'eval' => 'unique',
+                'default' => '',
+            ],
+        ],
         'unique_name' => [
             'label' => 'LLL:EXT:academic_persons/Resources/Private/Language/locallang_tca.xlf:tx_academicpersons_domain_model_organisational_unit.columns.unique_name.label',
             'config' => [
@@ -209,6 +234,7 @@ $tcaConfiguration = [
                 '--div--;LLL:EXT:core/Resources/Private/Language/Form/locallang_tabs.xlf:general',
                 'parent',
                 'unit_name',
+                'slug',
                 'unique_name',
                 'display_text',
                 'long_text',

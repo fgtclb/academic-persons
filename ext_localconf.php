@@ -12,6 +12,7 @@ use FGTCLB\AcademicPersons\Backend\FormEngine\ManagedFieldsReadOnly;
 use FGTCLB\AcademicPersons\Controller\ProfileController;
 use FGTCLB\AcademicPersons\Hook\ContractSortingHook;
 use FGTCLB\AcademicPersons\Hook\DataHandlerHooks;
+use FGTCLB\AcademicPersons\Routing\Aspect\PersonsFilterSlugMapper;
 use TYPO3\CMS\Backend\Form\FormDataProvider\TcaColumnsProcessFieldDescriptions;
 use TYPO3\CMS\Backend\Form\FormDataProvider\TcaFlexPrepare;
 use TYPO3\CMS\Extbase\Utility\ExtensionUtility;
@@ -36,9 +37,11 @@ if (!defined('ACADEMIC_PERSONS_CASCADE_REMOVE')) {
         'AcademicPersons',
         'List',
         [
-            ProfileController::class => 'list',
+            ProfileController::class => 'list,filter',
         ],
-        [],
+        [
+            ProfileController::class => 'filter',
+        ],
         ExtensionUtility::PLUGIN_TYPE_CONTENT_ELEMENT
     );
 
@@ -79,9 +82,12 @@ if (!defined('ACADEMIC_PERSONS_CASCADE_REMOVE')) {
             ProfileController::class => implode(',', [
                 'list',
                 'detail',
+                'filter',
             ]),
         ],
-        [],
+        [
+            ProfileController::class => 'filter',
+        ],
         ExtensionUtility::PLUGIN_TYPE_CONTENT_ELEMENT
     );
 
@@ -94,6 +100,8 @@ if (!defined('ACADEMIC_PERSONS_CASCADE_REMOVE')) {
         [],
         ExtensionUtility::PLUGIN_TYPE_CONTENT_ELEMENT
     );
+
+    $GLOBALS['TYPO3_CONF_VARS']['SYS']['routing']['aspects']['PersonsFilterSlugMapper'] = PersonsFilterSlugMapper::class;
 
     $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['t3lib/class.t3lib_tcemain.php']['processDatamapClass']['academicPersons']
         = DataHandlerHooks::class;

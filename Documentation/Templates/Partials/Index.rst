@@ -303,9 +303,22 @@ offer has no key, and a manual selection gets no options at all. The active
 values are `demand.functionTypeFilter` and `demand.organisationalUnitFilter`,
 `0` for none.
 
-The shipped templates render no filter form yet. A project links a filtered
-list with the action link view helper, which adds the cHash the cached list
-needs, and keeps the other choices of the visitor:
+The shipped list template renders them in :file:`Profile/List/Filter.html`,
+above the letter navigation: one select per filter with options, "all" first,
+the active filter selected, and a submit button. The form posts to the
+:php:`filter` action, which redirects to the URL of the filtered list, see
+:ref:`configuration-route-enhancers-filters`. It keeps the view mode and the
+letter, and contains no JavaScript. The partial takes `filterOptions`,
+`demand`, `activeListArguments` and `contentElementUid`, which keeps the ids of
+a list and a list-and-detail element on one page apart. Two elements of the same
+plugin on one page share their arguments, as their page links do, so a
+submission is checked against the options of the element that renders first. A
+project copy of :file:`Profile/List.html` that does not render the partial shows
+no form.
+
+A project that prefers links to a form links a filtered list with the action
+link view helper, which adds the cHash the cached list needs, and keeps the
+other choices of the visitor:
 
 ..  code-block:: html
     :caption: A link per function type

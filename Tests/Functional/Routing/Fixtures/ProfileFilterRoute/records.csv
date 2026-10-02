@@ -1,0 +1,48 @@
+"pages",
+,"uid","pid","doktype","is_siteroot","deleted","hidden","sys_language_uid","l10n_parent","l18n_cfg","slug","title"
+,1,0,1,1,0,0,0,0,0,"/","Site Root"
+,2,1,1,0,0,0,0,0,0,"/persons","Persons (List)"
+,3,1,1,0,0,0,0,0,0,"/team","Team (List and detail)"
+,4,1,1,0,0,0,0,0,0,"/profile","Profile (Detail)"
+,12,1,1,0,0,0,1,2,0,"/personen","Personen (Liste)"
+,100,1,254,0,0,0,0,0,0,"/sysfolder-records","Recordcollection"
+,200,0,1,1,0,0,0,0,0,"/","Other Site Root"
+,201,200,254,0,0,0,0,0,0,"/sysfolder-other","Records of the other site"
+"tt_content",
+,"uid","pid","deleted","hidden","sys_language_uid","l18n_parent","CType","header","pi_flexform"
+,1,2,0,0,0,0,"academicpersons_list","Profiles","<?xml version=""1.0"" encoding=""utf-8"" standalone=""yes"" ?><T3FlexForms><data><sheet index=""sDEF""><language index=""lDEF""><field index=""settings.alphabetPaginationEnabled""><value index=""vDEF"">1</value></field><field index=""settings.paginationEnabled""><value index=""vDEF"">1</value></field><field index=""settings.pagination.resultsPerPage""><value index=""vDEF"">1</value></field><field index=""settings.viewMode.enabled""><value index=""vDEF"">1</value></field><field index=""settings.viewMode.default""><value index=""vDEF"">list</value></field><field index=""settings.filter.functionType""><value index=""vDEF"">1</value></field><field index=""settings.filter.organisationalUnit""><value index=""vDEF"">1</value></field><field index=""settings.demand.profileList""><value index=""vDEF""></value></field><field index=""settings.showHiddenRecords""><value index=""vDEF"">0</value></field><field index=""settings.fallbackForNonTranslated""><value index=""vDEF"">0</value></field></language></sheet></data></T3FlexForms>"
+,2,3,0,0,0,0,"academicpersons_listanddetail","Profiles","<?xml version=""1.0"" encoding=""utf-8"" standalone=""yes"" ?><T3FlexForms><data><sheet index=""sDEF""><language index=""lDEF""><field index=""settings.alphabetPaginationEnabled""><value index=""vDEF"">1</value></field><field index=""settings.paginationEnabled""><value index=""vDEF"">1</value></field><field index=""settings.pagination.resultsPerPage""><value index=""vDEF"">1</value></field><field index=""settings.viewMode.enabled""><value index=""vDEF"">1</value></field><field index=""settings.viewMode.default""><value index=""vDEF"">list</value></field><field index=""settings.filter.functionType""><value index=""vDEF"">1</value></field><field index=""settings.filter.organisationalUnit""><value index=""vDEF"">1</value></field><field index=""settings.demand.profileList""><value index=""vDEF""></value></field><field index=""settings.showHiddenRecords""><value index=""vDEF"">0</value></field><field index=""settings.fallbackForNonTranslated""><value index=""vDEF"">0</value></field></language></sheet></data></T3FlexForms>"
+,3,4,0,0,0,0,"academicpersons_detail","Profile","<?xml version=""1.0"" encoding=""utf-8"" standalone=""yes"" ?><T3FlexForms><data><sheet index=""sDEF""><language index=""lDEF""><field index=""settings.fallbackForNonTranslated""><value index=""vDEF"">0</value></field></language></sheet></data></T3FlexForms>"
+"tx_academicpersons_domain_model_function_type",
+,"uid","pid","deleted","hidden","sys_language_uid","l10n_parent","function_name","slug"
+,1,100,0,0,0,0,"Professor","professor"
+,2,100,0,0,0,0,"Lecturer","lecturer"
+,3,100,0,0,0,0,"Assistant",""
+,5,201,0,0,0,0,"Dean","dean"
+,11,100,0,0,1,1,"Professorin","professorin"
+"tx_academicpersons_domain_model_organisational_unit",
+,"uid","pid","deleted","hidden","sys_language_uid","l10n_parent","unit_name","slug"
+,1,100,0,0,0,0,"Physics","physics"
+,2,100,0,0,0,0,"Biology","biology"
+,3,100,0,0,0,0,"Chemistry","chemistry/lab"
+,4,100,0,0,0,0,"Mathematics",""
+"tx_academicpersons_domain_model_profile",
+,"uid","pid","deleted","hidden","sys_language_uid","l10n_parent","first_name","last_name","last_name_alpha","slug","contracts"
+,1,100,0,0,0,0,"Anna","Adams","a","anna-adams",1
+,2,100,0,0,0,0,"Ben","Baker","b","ben-baker",1
+,3,100,0,0,0,0,"Bea","Brown","b","bea-brown",1
+,4,100,0,0,0,0,"Carl","Clark","c","carl-clark",1
+,5,100,0,0,0,0,"Dora","Dunn","d","dora-dunn",1
+,6,100,0,0,0,0,"Emil","Evans","e","emil-evans",1
+,7,100,0,0,0,0,"Fay","Fox","f","fay-fox",1
+,8,100,0,0,0,0,"Gus","Green","g","gus-green",1
+"tx_academicpersons_domain_model_contract",
+,"uid","pid","deleted","hidden","sys_language_uid","l10n_parent","profile","function_type","organisational_unit","position","sorting"
+,1,100,0,0,0,0,1,1,2,"Professor of Biology",1
+,2,100,0,0,0,0,2,1,2,"Professor of Biology",1
+,3,100,0,0,0,0,3,1,1,"Professor of Physics",1
+,4,100,0,0,0,0,4,2,2,"Lecturer in Biology",1
+,5,100,0,0,0,0,5,3,1,"Assistant in Physics",1
+,6,100,0,0,0,0,6,5,1,"Dean of Physics",1
+,7,100,0,0,0,0,7,2,3,"Lecturer in Chemistry",1
+,8,100,0,0,0,0,8,2,4,"Lecturer in Mathematics",1

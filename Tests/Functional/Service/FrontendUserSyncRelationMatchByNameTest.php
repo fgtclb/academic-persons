@@ -86,7 +86,8 @@ final class FrontendUserSyncRelationMatchByNameTest extends AbstractAcademicPers
 
         $functionTypes = $this->functionTypesNamed('Dean');
         $this->assertCount(1, $functionTypes);
-        $this->assertSame(['pid' => 8, 'deleted' => 0, 'hidden' => 0, 'sys_language_uid' => 0], array_diff_key($functionTypes[0], ['uid' => true]));
+        // The slug is the one a save would generate, so the filter routes of the list reach it.
+        $this->assertSame(['pid' => 8, 'deleted' => 0, 'hidden' => 0, 'sys_language_uid' => 0, 'slug' => 'dean'], array_diff_key($functionTypes[0], ['uid' => true]));
         $this->assertSame(
             [
                 'fe_users:90' => ['organisational_unit' => 21, 'function_type' => $functionTypes[0]['uid']],
@@ -105,7 +106,7 @@ final class FrontendUserSyncRelationMatchByNameTest extends AbstractAcademicPers
         $queryBuilder = $this->getConnectionPool()->getQueryBuilderForTable(self::FUNCTION_TYPE_TABLE);
         $queryBuilder->getRestrictions()->removeAll();
         return $queryBuilder
-            ->select('uid', 'pid', 'deleted', 'hidden', 'sys_language_uid')
+            ->select('uid', 'pid', 'deleted', 'hidden', 'sys_language_uid', 'slug')
             ->from(self::FUNCTION_TYPE_TABLE)
             ->where($queryBuilder->expr()->eq('function_name', $queryBuilder->createNamedParameter($functionName)))
             ->orderBy('uid')

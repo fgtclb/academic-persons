@@ -223,9 +223,10 @@ had been given. A manual selection of profiles ignores both filters.
 
 The request carries the uid of the record in the default language, as the
 demand arguments `functionTypeFilter` and `organisationalUnitFilter` of the
-plugin. The shipped templates do not render a filter form yet. The list
-template receives the options as `filterOptions`, see
-:ref:`templates-visitor-filters`. The page and
+plugin. The list renders a form above the profiles with one choice per
+filter, and its submission leads to the URL of the filtered list, see
+:ref:`configuration-route-enhancers-filters`. The list template receives the
+options as `filterOptions`, see :ref:`templates-visitor-filters`. The page and
 letter links keep an active filter.
 
 The filters select profiles, and do not change which contracts of a profile are

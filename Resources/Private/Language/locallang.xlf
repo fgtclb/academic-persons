@@ -66,6 +66,24 @@
       <trans-unit id="list.viewMode.table" resname="list.viewMode.table">
         <source>Table</source>
       </trans-unit>
+      <trans-unit id="list.filter.navigation" resname="list.filter.navigation">
+        <source>Filter the list</source>
+      </trans-unit>
+      <trans-unit id="list.filter.functionType" resname="list.filter.functionType">
+        <source>Function</source>
+      </trans-unit>
+      <trans-unit id="list.filter.functionType.all" resname="list.filter.functionType.all">
+        <source>All functions</source>
+      </trans-unit>
+      <trans-unit id="list.filter.organisationalUnit" resname="list.filter.organisationalUnit">
+        <source>Organisational unit</source>
+      </trans-unit>
+      <trans-unit id="list.filter.organisationalUnit.all" resname="list.filter.organisationalUnit.all">
+        <source>All organisational units</source>
+      </trans-unit>
+      <trans-unit id="list.filter.submit" resname="list.filter.submit">
+        <source>Filter</source>
+      </trans-unit>
       <trans-unit id="list.table.name" resname="list.table.name">
         <source>Name</source>
       </trans-unit>

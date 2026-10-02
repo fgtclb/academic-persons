@@ -1,0 +1,17 @@
+"pages",
+,"uid","pid","doktype","deleted","hidden","sys_language_uid","l10n_parent","slug","title"
+,1,0,1,0,0,0,0,"/","Root"
+,100,1,254,0,0,0,0,"/records","Records"
+,101,1,254,0,0,0,0,"/more-records","More records"
+"tx_academicpersons_domain_model_function_type",
+,"uid","pid","deleted","hidden","sys_language_uid","l10n_parent","t3ver_wsid","t3ver_oid","function_name","slug"
+,1,100,0,0,0,0,0,0,"Professor",""
+,2,101,0,1,0,0,0,0,"Professor",""
+,3,100,0,0,0,0,0,0,"Lecturer","teaching-staff"
+,4,100,1,0,0,0,0,0,"Dean",""
+,5,100,0,0,1,1,0,0,"Professorin",""
+,6,100,0,0,0,0,1,3,"Senior lecturer",""
+"tx_academicpersons_domain_model_organisational_unit",
+,"uid","pid","deleted","hidden","sys_language_uid","l10n_parent","unit_name","slug"
+,1,100,0,0,0,0,"Physics & Astronomy",""
+,2,100,0,0,0,0,"Biology","life-sciences"

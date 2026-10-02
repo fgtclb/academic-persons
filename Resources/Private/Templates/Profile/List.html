@@ -18,6 +18,16 @@
         <f:render partial="Header/All" arguments="{_all}" />
     </f:if>
 
+    <f:render
+        partial="Profile/List/Filter"
+        arguments="{
+            filterOptions: filterOptions,
+            demand: demand,
+            activeListArguments: activeListArguments,
+            contentElementUid: data.uid
+        }"
+    />
+
     <f:comment>
         A manual selection ignores the letter filter, so every letter would show the whole
         selection: no navigation for it, whatever the content element says.

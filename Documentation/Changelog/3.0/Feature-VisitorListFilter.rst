@@ -22,8 +22,8 @@ while its field is off or the element shows a manual selection.
 
 The list template receives the options as `filterOptions`, and the demand
 carries the active values as `functionTypeFilter` and
-`organisationalUnitFilter`. The shipped templates do not render a filter form
-yet.
+`organisationalUnitFilter`. The shipped list template renders them as a form,
+see :ref:`feature-1791043401`.
 
 See :ref:`configuration-visitor-filters` and :ref:`templates-visitor-filters`.
 

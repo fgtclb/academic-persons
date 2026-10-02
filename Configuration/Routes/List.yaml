@@ -26,15 +26,143 @@ routeEnhancers:
         _arguments:
           viewMode: 'demand/viewMode'
           letter: 'demand/alphabetFilter'
+      # The filters, alone or both, each also with the view mode, and each of these
+      # also with a page or a letter. Symfony leaves out trailing defaults only, so every
+      # combination is a route of its own.
+      - routePath: '/{function_key}/{function_type}'
+        _controller: 'Profile::list'
+        _arguments:
+          function_type: 'demand/functionTypeFilter'
+      - routePath: '/{function_key}/{function_type}/{localized_page}-{page}'
+        _controller: 'Profile::list'
+        _arguments:
+          function_type: 'demand/functionTypeFilter'
+          page: 'demand/currentPage'
+      - routePath: '/{function_key}/{function_type}/{letter}'
+        _controller: 'Profile::list'
+        _arguments:
+          function_type: 'demand/functionTypeFilter'
+          letter: 'demand/alphabetFilter'
+      - routePath: '/{function_key}/{function_type}/view-mode/{viewMode}'
+        _controller: 'Profile::list'
+        _arguments:
+          function_type: 'demand/functionTypeFilter'
+          viewMode: 'demand/viewMode'
+      - routePath: '/{function_key}/{function_type}/view-mode/{viewMode}/{localized_page}-{page}'
+        _controller: 'Profile::list'
+        _arguments:
+          function_type: 'demand/functionTypeFilter'
+          viewMode: 'demand/viewMode'
+          page: 'demand/currentPage'
+      - routePath: '/{function_key}/{function_type}/view-mode/{viewMode}/{letter}'
+        _controller: 'Profile::list'
+        _arguments:
+          function_type: 'demand/functionTypeFilter'
+          viewMode: 'demand/viewMode'
+          letter: 'demand/alphabetFilter'
+      - routePath: '/{unit_key}/{organisational_unit}'
+        _controller: 'Profile::list'
+        _arguments:
+          organisational_unit: 'demand/organisationalUnitFilter'
+      - routePath: '/{unit_key}/{organisational_unit}/{localized_page}-{page}'
+        _controller: 'Profile::list'
+        _arguments:
+          organisational_unit: 'demand/organisationalUnitFilter'
+          page: 'demand/currentPage'
+      - routePath: '/{unit_key}/{organisational_unit}/{letter}'
+        _controller: 'Profile::list'
+        _arguments:
+          organisational_unit: 'demand/organisationalUnitFilter'
+          letter: 'demand/alphabetFilter'
+      - routePath: '/{unit_key}/{organisational_unit}/view-mode/{viewMode}'
+        _controller: 'Profile::list'
+        _arguments:
+          organisational_unit: 'demand/organisationalUnitFilter'
+          viewMode: 'demand/viewMode'
+      - routePath: '/{unit_key}/{organisational_unit}/view-mode/{viewMode}/{localized_page}-{page}'
+        _controller: 'Profile::list'
+        _arguments:
+          organisational_unit: 'demand/organisationalUnitFilter'
+          viewMode: 'demand/viewMode'
+          page: 'demand/currentPage'
+      - routePath: '/{unit_key}/{organisational_unit}/view-mode/{viewMode}/{letter}'
+        _controller: 'Profile::list'
+        _arguments:
+          organisational_unit: 'demand/organisationalUnitFilter'
+          viewMode: 'demand/viewMode'
+          letter: 'demand/alphabetFilter'
+      - routePath: '/{function_key}/{function_type}/{unit_key}/{organisational_unit}'
+        _controller: 'Profile::list'
+        _arguments:
+          function_type: 'demand/functionTypeFilter'
+          organisational_unit: 'demand/organisationalUnitFilter'
+      - routePath: '/{function_key}/{function_type}/{unit_key}/{organisational_unit}/{localized_page}-{page}'
+        _controller: 'Profile::list'
+        _arguments:
+          function_type: 'demand/functionTypeFilter'
+          organisational_unit: 'demand/organisationalUnitFilter'
+          page: 'demand/currentPage'
+      - routePath: '/{function_key}/{function_type}/{unit_key}/{organisational_unit}/{letter}'
+        _controller: 'Profile::list'
+        _arguments:
+          function_type: 'demand/functionTypeFilter'
+          organisational_unit: 'demand/organisationalUnitFilter'
+          letter: 'demand/alphabetFilter'
+      - routePath: '/{function_key}/{function_type}/{unit_key}/{organisational_unit}/view-mode/{viewMode}'
+        _controller: 'Profile::list'
+        _arguments:
+          function_type: 'demand/functionTypeFilter'
+          organisational_unit: 'demand/organisationalUnitFilter'
+          viewMode: 'demand/viewMode'
+      - routePath: '/{function_key}/{function_type}/{unit_key}/{organisational_unit}/view-mode/{viewMode}/{localized_page}-{page}'
+        _controller: 'Profile::list'
+        _arguments:
+          function_type: 'demand/functionTypeFilter'
+          organisational_unit: 'demand/organisationalUnitFilter'
+          viewMode: 'demand/viewMode'
+          page: 'demand/currentPage'
+      - routePath: '/{function_key}/{function_type}/{unit_key}/{organisational_unit}/view-mode/{viewMode}/{letter}'
+        _controller: 'Profile::list'
+        _arguments:
+          function_type: 'demand/functionTypeFilter'
+          organisational_unit: 'demand/organisationalUnitFilter'
+          viewMode: 'demand/viewMode'
+          letter: 'demand/alphabetFilter'
     defaultController: 'Profile::list'
     # An aspect makes its variable match anything, slashes included. Pinned, the view
-    # mode routes stay apart from each other and from the routes above.
+    # mode and filter routes stay apart from each other and from the routes above.
     requirements:
       viewMode: '[^/]+'
+      function_key: '[^/]+'
+      function_type: '[^/]+'
+      unit_key: '[^/]+'
+      organisational_unit: '[^/]+'
       localized_page: '[^/]+'
       page: '[0-9]+'
       letter: '[a-z]'
     aspects:
+      # The filter routes, keyed by a segment in the language of the site.
+      function_key:
+        type: LocaleModifier
+        default: 'function'
+        localeMap:
+          - locale: 'de_DE.*'
+            value: 'funktion'
+      unit_key:
+        type: LocaleModifier
+        default: 'unit'
+        localeMap:
+          - locale: 'de_DE.*'
+            value: 'einheit'
+      # A record without a slug cannot be a segment: its filter stays a query argument.
+      function_type:
+        type: PersonsFilterSlugMapper
+        tableName: tx_academicpersons_domain_model_function_type
+        routeFieldName: slug
+      organisational_unit:
+        type: PersonsFilterSlugMapper
+        tableName: tx_academicpersons_domain_model_organisational_unit
+        routeFieldName: slug
       # The view modes a URL segment exists for. A mode missing here is still reachable,
       # with its value as a query argument; a site adds its own modes to this map.
       viewMode:

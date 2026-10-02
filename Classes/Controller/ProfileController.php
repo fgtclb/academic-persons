@@ -13,6 +13,7 @@ namespace FGTCLB\AcademicPersons\Controller;
 
 use FGTCLB\AcademicBase\Controller\DispatchModifyPluginViewEventMethodTrait;
 use FGTCLB\AcademicBase\Controller\GetCurrentContentRecordMethodTrait;
+use FGTCLB\AcademicPersons\DemandValues\AlphabetFilterLetters;
 use FGTCLB\AcademicPersons\Domain\Model\Dto\PluginControllerActionContext;
 use FGTCLB\AcademicPersons\Domain\Model\Dto\ProfileDemand;
 use FGTCLB\AcademicPersons\Domain\Model\FunctionType;
@@ -27,6 +28,7 @@ use FGTCLB\AcademicPersons\Settings\AcademicPersonsSettings;
 use GeorgRinger\NumberedPagination\NumberedPagination;
 use Psr\Http\Message\ResponseInterface;
 use TYPO3\CMS\Core\Cache\CacheTag;
+use TYPO3\CMS\Core\Http\PropagateResponseException;
 use TYPO3\CMS\Core\Pagination\ArrayPaginator;
 use TYPO3\CMS\Core\Pagination\SimplePagination;
 use TYPO3\CMS\Core\Utility\ExtensionManagementUtility;
@@ -94,6 +96,28 @@ final class ProfileController extends ActionController
 
     public function initializeListAction(): void
     {
+        $this->initializeDemandArgument();
+
+        $this->settings['showFields'] = !empty($this->settings['showFields']) ? GeneralUtility::trimExplode(',', $this->settings['showFields']) : null;
+        $this->settings['table']['columns'] = $this->tableColumns();
+    }
+
+    /**
+     * The demand of a filter submission is mapped exactly as the demand of the list it
+     * comes from.
+     */
+    public function initializeFilterAction(): void
+    {
+        $this->initializeDemandArgument();
+    }
+
+    /**
+     * Prepare the `demand` argument of the list and of a filter submission: the request
+     * values, with `settings.demand` of the content element over them, mapped onto the
+     * visitor properties and the properties `settings.demand` names.
+     */
+    private function initializeDemandArgument(): void
+    {
         $demandArray = [];
         if ($this->request->hasArgument('demand')) {
             $demandArray = $this->request->getArgument('demand');
@@ -123,9 +147,6 @@ final class ProfileController extends ActionController
         $propertyMappingConfiguration->skipUnknownProperties();
 
         $this->request = $this->request->withArgument('demand', $demandArray);
-
-        $this->settings['showFields'] = !empty($this->settings['showFields']) ? GeneralUtility::trimExplode(',', $this->settings['showFields']) : null;
-        $this->settings['table']['columns'] = $this->tableColumns();
     }
 
     public function listAction(ProfileDemand $demand): ResponseInterface
@@ -196,6 +217,46 @@ final class ProfileController extends ActionController
         $this->dispatchModifyPluginViewEvent($context, $this->view, $this->eventDispatcher);
 
         return $this->htmlResponse();
+    }
+
+    /**
+     * Answer a submission of the filter form with a redirect to the list it asks for.
+     *
+     * The form posts here because the list action is cacheable and renders the page, and
+     * a form sent with GET would carry no cHash and the hidden fields of an Extbase form
+     * in its URL. The redirect target is a URL the URI builder generates, routed or
+     * signed, so the filtered list is cached like any other.
+     *
+     * The list keeps its demand in the cHash, so the redirect signs every value it
+     * carries, and each of them is limited before: a filter to its options, as the list
+     * does it, the view mode to the allowed modes, and the letter to the letters of the
+     * navigation. A value outside of that is dropped, so a crafted submission gets no
+     * signed URL the list itself would never link. The view mode and the letter of the
+     * list the form was on are kept, the page is not: a new filter starts on the first
+     * page.
+     *
+     * The redirect is thrown rather than returned. A returned one reaches the browser on
+     * TYPO3 v13 only through `header()`, while the page renders all the same. The exception
+     * ends the request at the `ResponsePropagation` middleware on v13 and v14 alike.
+     *
+     * @throws PropagateResponseException
+     */
+    public function filterAction(ProfileDemand $demand): ResponseInterface
+    {
+        $this->adoptSettings($demand);
+        $this->adoptVisitorFilters($demand, $this->filterOptions($demand));
+        if (!in_array($demand->getAlphabetFilter(), AlphabetFilterLetters::LETTERS, true)) {
+            $demand->setAlphabetFilter('');
+        }
+        $arguments = $this->activeListArguments($demand);
+        unset($arguments['currentPage']);
+
+        // With nothing left to carry, the target is the page itself, which shows the list
+        // as it starts. The list action would add the action and a cHash to its query.
+        $response = $arguments === []
+            ? $this->redirectToUri($this->uriBuilder->reset()->setCreateAbsoluteUri(true)->build())
+            : $this->redirect('list', null, null, ['demand' => $arguments]);
+        throw new PropagateResponseException($response, 1791043201);
     }
 
     /**

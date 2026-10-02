@@ -36,24 +36,29 @@ The steps at a glance
     *   -   3. Update the database schema
         -   Applies the column changes of 3.0.0, among them the unsigned
             timeline year columns and the workspace columns.
-        -   The wizards of steps 4 and 5 find columns the installation does
+        -   The wizards of steps 4 to 6 find columns the installation does
             not have, and the editor writes into them too.
     *   -   4. Seed the sort order of the organisational unit contracts
         -   Fills the sort column the organisational unit relation gained, from
             the order the unit forms show today.
         -   Every organisational unit form lists its contracts in whatever order
             the database returns until the unit is saved once.
-    *   -   5. Repair the profile image relations
+    *   -   5. Generate the URL segments of the filter records
+        -   Gives every function type and organisational unit the slug the
+            filter routes of the persons list read.
+        -   A list filtered by such a record keeps its filter as a query
+            argument instead of a speaking URL segment.
+    *   -   6. Repair the profile image relations
         -   Reduces duplicate references, corrects relation counters and marks
             the translations that carry an image of their own.
         -   A translation loses its own image at the next synchronisation, and
             duplicate references keep rendering the wrong file.
-    *   -   6. Migrate the settings override
+    *   -   7. Migrate the settings override
         -   Replaces the pre-3.0 keys of a site package with the section maps.
         -   The installation runs on the legacy overlay, which is removed in
             4.0 - and a renamed ``type`` or ``fieldName`` stays silently
             broken.
-    *   -   7. Adapt templates, icons, TypoScript and repository overrides
+    *   -   8. Adapt templates, icons, TypoScript and repository overrides
         -   Re-applies project overrides to the new template tree, makes the
             JSON page type reachable, moves repository customizations to the
             query events, drops a project hook that announced backend
@@ -199,9 +204,32 @@ what has one.
     ``academicContact4pages_seedContactSecondarySorting``. Run them in the same
     step where those extensions are installed.
 
+..  _upgrade-step-filter-slugs:
+
+5. Generate the URL segments of the filter records
+==================================================
+
+..  code-block:: bash
+
+    vendor/bin/typo3 upgrade:run academicPersons_fillFilterSlugs
+
+Function types and organisational units gained a :sql:`slug` field in 3.0.0,
+which step 3 adds. The filter routes of the persons list read it, so a list
+filtered by a function type reads :file:`/persons/function/professor` - see
+:ref:`configuration-route-enhancers`. The wizard gives every live record without
+a slug the one a backend save would generate from its name, and leaves a slug
+that is set alone.
+
+Without it the filter form still works: a list filtered by a record without a
+slug keeps its filter as a query argument. The wizard is repeatable and is
+offered again whenever a record has no slug, for instance after an import of
+your own wrote one without it, or after a workspace version from before the
+update was published. Records the frontend user synchronisation creates get
+their slug right away.
+
 ..  _upgrade-step-images:
 
-5. Repair the profile image relations
+6. Repair the profile image relations
 =====================================
 
 Only relevant where :guilabel:`academic_persons_edit` is installed, and only
@@ -233,7 +261,7 @@ academicPersonsEdit_repairLocalizedProfileImages` offers it again. See
 
 ..  _upgrade-step-settings:
 
-6. Migrate the settings override
+7. Migrate the settings override
 ================================
 
 Only relevant for an installation whose site package ships
@@ -293,7 +321,7 @@ is deliberately not mapped;
 
 ..  _upgrade-step-templates:
 
-7. Adapt templates, icons, TypoScript and repository overrides
+8. Adapt templates, icons, TypoScript and repository overrides
 ==============================================================
 
 The public detail view

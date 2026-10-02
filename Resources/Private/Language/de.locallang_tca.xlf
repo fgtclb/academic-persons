@@ -32,6 +32,15 @@
         <target>Der Schlüssel dieses Datensatzes in der Quelle, aus der er importiert wurde, als Quelle:Schlüssel, zum Beispiel fe_users:12. Die Synchronisation und Importe finden den Datensatz darüber.</target>
       </trans-unit>
 
+      <trans-unit id="generic.columns.filter_slug.label">
+        <source>URL segment</source>
+        <target>URL-Segment</target>
+      </trans-unit>
+      <trans-unit id="generic.columns.filter_slug.description">
+        <source>The URL segment of a persons list filtered by this record. Generated from the name when the record is created, and unique for each language.</source>
+        <target>Das URL-Segment einer Personenliste, die nach diesem Datensatz gefiltert ist. Wird beim Anlegen aus dem Namen erzeugt und ist je Sprache eindeutig.</target>
+      </trans-unit>
+
       <!-- Addresses -->
 
       <trans-unit id="tx_academicpersons_domain_model_address.columns.additional.label">

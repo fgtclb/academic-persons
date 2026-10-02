@@ -63,6 +63,7 @@ CREATE TABLE tx_academicpersons_domain_model_function_type (
     function_name varchar(255) DEFAULT '' NOT NULL,
     function_name_male varchar(255) DEFAULT '' NOT NULL,
     function_name_female varchar(255) DEFAULT '' NOT NULL,
+    slug varchar(2048) DEFAULT '' NOT NULL,
 
     import_identifier varchar(170) DEFAULT '' NOT NULL,
     key idx_import_identifier(`import_identifier`),
@@ -79,6 +80,7 @@ CREATE TABLE tx_academicpersons_domain_model_organisational_unit (
     parent int(11) unsigned DEFAULT '0' NOT NULL,
     unit_name varchar(255) DEFAULT '' NOT NULL,
     unique_name varchar(255) DEFAULT '' NOT NULL,
+    slug varchar(2048) DEFAULT '' NOT NULL,
     display_text text,
     long_text text,
     contracts int(11) unsigned DEFAULT '0' NOT NULL,

@@ -1,0 +1,89 @@
+<html
+    lang="en"
+    xmlns:f="http://typo3.org/ns/TYPO3/CMS/Fluid/ViewHelpers"
+    data-namespace-typo3-fluid="true"
+>
+
+<f:comment>
+    The visitor filters of a list element: one choice per filter the content element
+    offers, "all" first and then the options by name, the active filter selected. It
+    renders nothing while no filter has an option.
+
+    The form posts to the filter action, which redirects to the URL of the filtered list,
+    so it works without JavaScript, and the list it leads to is cached like any other. It
+    keeps the view mode and the letter of the list it is on, and the filtered list starts
+    on its first page.
+
+    Arguments:
+    - filterOptions:       the options of each filter the element offers, keyed
+                           functionTypes and organisationalUnits
+    - demand:              the demand of the list, for the active filters
+    - activeListArguments: the visitor's choices of the list
+    - contentElementUid:   keeps the ids of a list and a list-and-detail element on one
+                           page apart. Two elements of the same plugin on one page share
+                           their arguments, so a submission is checked against the
+                           options of the element that renders first.
+</f:comment>
+
+<f:if condition="{filterOptions.functionTypes} || {filterOptions.organisationalUnits}">
+    <f:form
+        action="filter"
+        method="post"
+        class="academic-persons-list__filter row g-3 align-items-end mb-4"
+        aria="{label: '{f:translate(key: \'list.filter.navigation\', extensionName: \'AcademicPersons\')}'}"
+    >
+        <f:if condition="{activeListArguments.viewMode}">
+            <f:form.hidden name="demand[viewMode]" value="{activeListArguments.viewMode}" />
+        </f:if>
+        <f:if condition="{activeListArguments.alphabetFilter}">
+            <f:form.hidden name="demand[alphabetFilter]" value="{activeListArguments.alphabetFilter}" />
+        </f:if>
+
+        <f:if condition="{filterOptions.functionTypes}">
+            <div class="col-auto">
+                <label class="form-label" for="academic-persons-filter-{contentElementUid}-function-type">
+                    {f:translate(key: 'list.filter.functionType', extensionName: 'AcademicPersons')}
+                </label>
+                <f:form.select
+                    id="academic-persons-filter-{contentElementUid}-function-type"
+                    name="demand[functionTypeFilter]"
+                    class="form-select"
+                    options="{filterOptions.functionTypes}"
+                    optionValueField="uid"
+                    optionLabelField="functionName"
+                    prependOptionLabel="{f:translate(key: 'list.filter.functionType.all', extensionName: 'AcademicPersons')}"
+                    prependOptionValue="0"
+                    value="{demand.functionTypeFilter}"
+                />
+            </div>
+        </f:if>
+
+        <f:if condition="{filterOptions.organisationalUnits}">
+            <div class="col-auto">
+                <label class="form-label" for="academic-persons-filter-{contentElementUid}-organisational-unit">
+                    {f:translate(key: 'list.filter.organisationalUnit', extensionName: 'AcademicPersons')}
+                </label>
+                <f:form.select
+                    id="academic-persons-filter-{contentElementUid}-organisational-unit"
+                    name="demand[organisationalUnitFilter]"
+                    class="form-select"
+                    options="{filterOptions.organisationalUnits}"
+                    optionValueField="uid"
+                    optionLabelField="unitName"
+                    prependOptionLabel="{f:translate(key: 'list.filter.organisationalUnit.all', extensionName: 'AcademicPersons')}"
+                    prependOptionValue="0"
+                    value="{demand.organisationalUnitFilter}"
+                />
+            </div>
+        </f:if>
+
+        <div class="col-auto">
+            <f:form.submit
+                class="btn btn-primary"
+                value="{f:translate(key: 'list.filter.submit', extensionName: 'AcademicPersons')}"
+            />
+        </div>
+    </f:form>
+</f:if>
+
+</html>
