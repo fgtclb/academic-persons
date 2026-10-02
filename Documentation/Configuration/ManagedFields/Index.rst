@@ -48,6 +48,10 @@ The lock applies to the backend form and the profile editor only. The
 synchronisation, an import or a script keep writing the fields, and a value
 that reaches the database some other way is not refused.
 
+The :ref:`import writer <developers-import-writer>` reads the map the other
+way round: on a record that exists, it writes only the fields the map names
+and leaves every other field to the editors.
+
 Two cases behave differently from what the rules above suggest:
 
 *   A copy of a synchronised record keeps its import identifier, so the copy is

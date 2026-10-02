@@ -6,7 +6,8 @@ For developers
 
 This chapter documents the programmatic surface this extension ships: the two
 events that let a project narrow what the plugins show, the two events of the
-frontend user synchronisation, the translation
+frontend user synchronisation, the import writer for persons of other
+sources and its event, the translation
 synchronisation - the event that triggers it, the service interface behind it,
 and how it behaves in workspaces - the event that lets a project decide
 what is written as the metadata of a profile image, and the plugin action
@@ -593,6 +594,171 @@ finds them:
 On SQLite a search term with ``_`` finds nothing: the core search escapes it
 for :sql:`LIKE` without naming an escape character, and SQLite has no default
 one. A part of the identifier without it, ``users:12``, finds the record.
+
+..  _developers-import-writer:
+
+Writing what an import supplies
+===============================
+
+:php:`\FGTCLB\AcademicPersons\Import\ProfileImportWriter` writes the persons
+of a source other than the frontend users, one person per call. Import code
+reads its source and maps each person to plain data objects:
+:php:`ImportedProfile` holds the profile fields and its contracts,
+:php:`ImportedContract` the contract fields, the import identifiers of its
+organisational unit and function type, and its e-mail addresses, phone numbers
+and physical addresses as :php:`ImportedContact`. Every record carries its
+import identifier, and its fields are database columns.
+
+..  code-block:: php
+    :caption: EXT:my_sitepackage/Classes/Import/HrImport.php
+
+    use FGTCLB\AcademicPersons\Import\ImportedContact;
+    use FGTCLB\AcademicPersons\Import\ImportedContract;
+    use FGTCLB\AcademicPersons\Import\ImportedProfile;
+    use FGTCLB\AcademicPersons\Import\ProfileImportWriter;
+    use FGTCLB\AcademicPersons\Import\RetirePolicy;
+
+    final readonly class HrImport
+    {
+        public function __construct(
+            private HrClient $hrClient,
+            private ProfileImportWriter $profileImportWriter,
+        ) {}
+
+        public function run(int $storagePage): void
+        {
+            $keep = [];
+            foreach ($this->hrClient->fetchEmployees() as $employee) {
+                $person = new ImportedProfile(
+                    identifier: 'hr:' . $employee['id'],
+                    pid: $storagePage,
+                    fields: [
+                        'first_name' => $employee['firstName'],
+                        'last_name' => $employee['lastName'],
+                    ],
+                    contracts: [
+                        new ImportedContract(
+                            identifier: 'hr:contract:' . $employee['contractId'],
+                            fields: ['position' => $employee['position']],
+                            organisationalUnitIdentifier: 'hr:unit:' . $employee['unitId'],
+                            emailAddresses: [
+                                new ImportedContact(
+                                    identifier: 'hr:mail:' . $employee['id'],
+                                    fields: ['email' => $employee['mail'], 'type' => 'business'],
+                                ),
+                            ],
+                        ),
+                    ],
+                );
+                $result = $this->profileImportWriter->write($person);
+                foreach ($result->records as $record) {
+                    $keep[] = $record->identifier;
+                }
+            }
+            $this->profileImportWriter->retire('hr', $keep, RetirePolicy::Hide);
+        }
+    }
+
+Every record the source supplied is kept, a vetoed one included. Leave a
+record out of the list to retire it. Retire only after a run that got through
+the whole source: a run that stopped early would retire every person it did
+not get to.
+
+:php:`write()` returns an :php:`ImportResult`: one :php:`ImportedRecordResult`
+per record, with its table, identifier, uid and an
+:php:`ImportedRecordOutcome` (created, updated, unchanged, skipped, vetoed or
+failed) and a reason where one applies, the messages of the write, such as an
+organisational unit no record carries, and the errors the DataHandler logged.
+An updated record is one whose managed fields were handed to the DataHandler:
+whether it stored them is in the errors.
+
+How a record is written:
+
+*   A record whose identifier no live record carries is created with every
+    supplied field. A new profile is created on the page the person names, its
+    new records on the page of the profile.
+*   An existing record gets only the supplied fields that are managed on it,
+    see :ref:`configuration-managed-fields`. Without such a declaration none
+    of its fields changes. :sql:`hidden` is never written on an existing record.
+*   A profile with :sql:`skip_sync` set is not written, nor is anything of it.
+    The result reports it as skipped.
+*   A record the identifier finds below another profile or contract is skipped
+    and reported. The writer does not move records between persons.
+*   A new contract or contact record is added after the ones its parent has,
+    an editor's included.
+*   The organisational unit and the function type are looked up by their
+    identifiers. One that no record carries is not set and is reported as a
+    message.
+*   Fields that name a column the writer sets itself, the uid, the page, the
+    identifier, the language and workspace columns and the relations, are
+    refused with an :php:`\InvalidArgumentException`, and so is an identifier
+    that is empty or used twice for one table within a person.
+
+The whole person is one DataHandler run as an administrator in the live
+workspace, marked :php:`ProfileWriteCorrelation::Import`. History, the
+reference index and the hooks apply as for a backend save. The profile is
+announced once, synchronously and with the origin
+:php:`ProfileUpdateOrigin::Import`. With :composer:`fgtclb/academic-persons-edit`
+installed, that synchronises its translations and its slug, from a command as
+well. Every profile is synchronised in the request that writes it, and the
+memory a long import needs grows with it, see
+:ref:`important-backend-saves-announce-profile-updates`.
+
+:php:`retire()` hides or deletes, as the :php:`RetirePolicy` says, every
+profile, contract and contact record whose identifier starts with
+:samp:`{source}:` and is not in the list of identifiers to keep. The list is
+one list for every table. Records without an identifier, records of other
+sources and records of a profile excluded from the synchronisation are never
+retired. Hiding leaves a record that is hidden already alone. Deleting a
+profile deletes its contracts and their contact records with it, the ones an
+editor created included. The profiles whose contracts or contact records were
+retired are announced. Hiding and deleting are handed to the DataHandler, its
+errors are in the result.
+
+..  _developers-import-writer-event:
+
+Changing or vetoing a record: BeforeImportedRecordWriteEvent
+------------------------------------------------------------
+
+:php:`\FGTCLB\AcademicPersons\Event\BeforeImportedRecordWriteEvent` is
+dispatched once for every record of a person before it is written: the profile
+first, then each contract followed by its contact records. It carries the
+table, the identifier, the uid of an existing record, the row that is going to
+be written and the fields the import code supplied. On an existing record the
+row holds the managed fields only, so a listener decides on
+:php:`getSuppliedFields()` and changes what is written through the row.
+
+..  code-block:: php
+    :caption: EXT:my_sitepackage/Classes/EventListener/SkipStudentAssistants.php
+
+    use FGTCLB\AcademicPersons\Event\BeforeImportedRecordWriteEvent;
+    use TYPO3\CMS\Core\Attribute\AsEventListener;
+
+    final class SkipStudentAssistants
+    {
+        #[AsEventListener]
+        public function __invoke(BeforeImportedRecordWriteEvent $event): void
+        {
+            if ($event->getTableName() !== 'tx_academicpersons_domain_model_contract') {
+                return;
+            }
+            if (($event->getSuppliedFields()['position'] ?? '') === 'Student assistant') {
+                $event->veto('Student assistants are not listed.');
+                return;
+            }
+            $row = $event->getRow();
+            if (isset($row['room'])) {
+                $event->setRow([...$row, 'room' => trim((string)$row['room'])]);
+            }
+        }
+    }
+
+:php:`setRow()` replaces the row. The writer applies its rules to it again:
+on an existing record a column that is not managed is dropped, :sql:`hidden`
+is never written, and the page, the identifier and the relations stay the
+writer's. :php:`veto()` keeps the record and every record that belongs to it
+from being written and needs a reason, which the result reports. Vetoing stops
+the propagation, so later listeners are not called.
 
 ..  _developers-synchronisation:
 

@@ -32,7 +32,7 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
  *
  * @internal for the DataHandler runs of the academic extensions: the record synchronization,
  *           the profile image and visibility writes, the project fields of the profile
- *           editor and the profile cleanup command. No public API.
+ *           editor, the profile cleanup command and the import writer. No public API.
  */
 #[Autoconfigure(public: true)]
 final class DataHandlerExecutionContext
