@@ -27,7 +27,9 @@ use FGTCLB\AcademicPersons\PageTitle\ProfileTitleProvider;
 use FGTCLB\AcademicPersons\Settings\AcademicPersonsSettings;
 use GeorgRinger\NumberedPagination\NumberedPagination;
 use Psr\Http\Message\ResponseInterface;
+use TYPO3\CMS\Core\Cache\CacheDataCollectorInterface;
 use TYPO3\CMS\Core\Cache\CacheTag;
+use TYPO3\CMS\Core\Context\Context;
 use TYPO3\CMS\Core\Http\PropagateResponseException;
 use TYPO3\CMS\Core\Pagination\ArrayPaginator;
 use TYPO3\CMS\Core\Pagination\SimplePagination;
@@ -163,6 +165,12 @@ final class ProfileController extends ActionController
         }
         $context = $this->pluginControllerActionContext();
         $profiles = $this->profileRepository->findByDemand($demand, $context);
+        // The profiles selected through contracts valid today change on the day such a
+        // contract starts or ends, whether its profile is listed today or not.
+        $validityChange = $this->profileRepository->findNextContractValidityChange($demand);
+        if ($validityChange !== null) {
+            $this->restrictPageCacheLifetime($validityChange);
+        }
 
         // If profiles were selected manually, sort them by order in selection. This has to
         // happen before the pagination below, which splits exactly this list into pages.
@@ -552,6 +560,11 @@ final class ProfileController extends ActionController
 
         $demand->setShowHiddenRecords((bool)($this->settings['showHiddenRecords'] ?? false));
 
+        // A list that shows only the contracts valid today selects its profiles only through
+        // those contracts as well, see ProfileRepository::setFilters().
+        $contracts = $this->settings['contracts'] ?? null;
+        $demand->setOnlyValidContracts(is_array($contracts) && (bool)($contracts['onlyValid'] ?? false));
+
         // The mode the list renders, written back so the navigation links carry it: empty
         // for the default mode, and for a mode the resolution rejected, which never reaches
         // a link that way.
@@ -709,6 +722,21 @@ final class ProfileController extends ActionController
             static fn(string $column): bool => !in_array($column, self::CONTRACT_TABLE_COLUMNS, true)
                 || in_array('contracts.' . $column, $showFields, true),
         ));
+    }
+
+    /**
+     * Keep the page in the cache no longer than until the given moment, as the
+     * `persons:contracts` ViewHelper does for the contracts it renders. At least one
+     * second, against a lifetime of 0, which the cache backends read as "unlimited".
+     */
+    private function restrictPageCacheLifetime(\DateTimeImmutable $until): void
+    {
+        $cacheCollector = $this->request->getAttribute('frontend.cache.collector');
+        if (!$cacheCollector instanceof CacheDataCollectorInterface) {
+            return;
+        }
+        $now = (int)GeneralUtility::makeInstance(Context::class)->getPropertyFromAspect('date', 'timestamp');
+        $cacheCollector->restrictMaximumLifetime(max(1, $until->getTimestamp() - $now));
     }
 
     /**

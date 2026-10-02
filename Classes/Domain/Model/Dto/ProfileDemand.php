@@ -26,6 +26,7 @@ class ProfileDemand implements DemandInterface
     private string $storagePages = '';
     private int $fallbackForNonTranslated = 0;
     private bool $showHiddenRecords = false;
+    private bool $onlyValidContracts = false;
 
     /**
      * @var int[]
@@ -321,6 +322,29 @@ class ProfileDemand implements DemandInterface
     public function setShowHiddenRecords(bool $showHiddenRecords): ProfileDemand
     {
         $this->showHiddenRecords = $showHiddenRecords;
+        return $this;
+    }
+
+    /**
+     * Not usable for hydration or direct extbase request argument mapping,
+     * only to transport the plugin's "only contracts valid today" option within
+     * the DTO to the {@see ProfileRepository}: while it is set, the conditions on
+     * contracts of the list, its letters and the next day its result changes
+     * match only contracts valid today.
+     */
+    public function getOnlyValidContracts(): bool
+    {
+        return $this->onlyValidContracts;
+    }
+
+    /**
+     * Not usable for hydration or direct extbase request argument mapping,
+     * only to transport the plugin's "only contracts valid today" option within
+     * the DTO to the {@see ProfileRepository}.
+     */
+    public function setOnlyValidContracts(bool $onlyValidContracts): ProfileDemand
+    {
+        $this->onlyValidContracts = $onlyValidContracts;
         return $this;
     }
 }

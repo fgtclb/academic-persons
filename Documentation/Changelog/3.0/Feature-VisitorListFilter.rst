@@ -15,10 +15,12 @@ only the profiles with a contract that carries it. The pagination and the
 letter navigation count only those profiles, and their links keep the filter.
 
 With both filters set, the function type and the unit have to be on the same
-contract. The options of a filter are the records the element is restricted to,
-or all of them, ordered by name, so a visitor never widens what the editor
-chose. A value that is not one of the options is ignored, and so is every value
-while its field is off or the element shows a manual selection.
+contract. While the element shows only contracts valid today, that contract has
+to be valid today as well, see :ref:`configuration-contract-display`. The
+options of a filter are the records the element is restricted to, or all of
+them, ordered by name, so a visitor never widens what the editor chose. A value
+that is not one of the options is ignored, and so is every value while its field
+is off or the element shows a manual selection.
 
 The list template receives the options as `filterOptions`, and the demand
 carries the active values as `functionTypeFilter` and

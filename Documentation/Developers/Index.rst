@@ -180,6 +180,12 @@ times. A listener that narrows the list narrows the letters in the same way, as
 long as it answers both calls alike. The demand of the second call carries no
 letter.
 
+While the content element shows only contracts valid today,
+:php:`ModifyProfileDemandEvent` is dispatched once more, for the next day on which
+the list changes because a contract that meets its conditions starts or ends.
+That day caps the page cache lifetime, so a listener that adds a condition on
+contracts should answer this call like the others.
+
 Two things the letters do not see, both shared with the list's own pagination
 count, which is computed in SQL as well:
 

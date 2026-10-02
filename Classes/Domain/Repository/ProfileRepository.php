@@ -24,6 +24,8 @@ use Psr\EventDispatcher\EventDispatcherInterface;
 use TYPO3\CMS\Core\Context\Context;
 use TYPO3\CMS\Core\Context\LanguageAspect;
 use TYPO3\CMS\Core\Context\VisibilityAspect;
+use TYPO3\CMS\Core\Database\Connection;
+use TYPO3\CMS\Core\Database\ConnectionPool;
 use TYPO3\CMS\Core\Database\Query\Restriction\WorkspaceRestriction;
 use TYPO3\CMS\Core\Schema\Capability\TcaSchemaCapability;
 use TYPO3\CMS\Core\Schema\TcaSchemaFactory;
@@ -80,6 +82,9 @@ class ProfileRepository extends Repository
      * @var array<string, string>
      */
     private const FALLBACK_ORDERINGS = ['uid' => QueryInterface::ORDER_ASCENDING];
+
+    private const CONTRACT_TABLE = 'tx_academicpersons_domain_model_contract';
+    private const PROFILE_TABLE = 'tx_academicpersons_domain_model_profile';
 
     /**
      * @return QueryResultInterface<int, Profile>
@@ -432,29 +437,47 @@ class ProfileRepository extends Repository
     private function setFilters(QueryInterface $query, DemandInterface $demand): ?ConstraintInterface
     {
         $filters = [];
+        $contractConditions = $this->contractConditions($demand);
 
-        if (method_exists($demand, 'getFunctionTypes')
-            && $demand->getFunctionTypes() !== []) {
-            $filters[] = $query->in('contracts.functionType', $demand->getFunctionTypes());
+        if ($contractConditions['functionTypes'] !== []) {
+            $filters[] = $query->in('contracts.functionType', $contractConditions['functionTypes']);
         }
 
-        if (method_exists($demand, 'getOrganisationalUnits')
-            && $demand->getOrganisationalUnits() !== []) {
-            $filters[] = $query->in('contracts.organisationalUnit', $demand->getOrganisationalUnits());
+        if ($contractConditions['organisationalUnits'] !== []) {
+            $filters[] = $query->in('contracts.organisationalUnit', $contractConditions['organisationalUnits']);
         }
 
         // The visitor filters narrow the restriction above, they never replace it. Extbase
         // joins a property path once per query and reuses its alias, so every condition on
         // `contracts.*` applies to one and the same contract: a profile is listed as
         // "professor in unit X" only with a contract that is both.
-        if (method_exists($demand, 'getFunctionTypeFilter')
-            && $demand->getFunctionTypeFilter() > 0) {
-            $filters[] = $query->equals('contracts.functionType', $demand->getFunctionTypeFilter());
+        if ($contractConditions['functionTypeFilter'] > 0) {
+            $filters[] = $query->equals('contracts.functionType', $contractConditions['functionTypeFilter']);
         }
 
-        if (method_exists($demand, 'getOrganisationalUnitFilter')
-            && $demand->getOrganisationalUnitFilter() > 0) {
-            $filters[] = $query->equals('contracts.organisationalUnit', $demand->getOrganisationalUnitFilter());
+        if ($contractConditions['organisationalUnitFilter'] > 0) {
+            $filters[] = $query->equals('contracts.organisationalUnit', $contractConditions['organisationalUnitFilter']);
+        }
+
+        // A list that shows only the contracts valid today selects a profile through a
+        // contract only when it can show that contract. On the same joined contract as the
+        // conditions above, and only when there is one: a list without conditions on
+        // contracts keeps a profile without a valid contract, and shows it without one.
+        // A start date before tomorrow is a day not after today, an end date not before
+        // today a day not before today, so this agrees with ContractSelector on every
+        // contract. An empty date is open ended, stored as NULL or as 0, and an empty start
+        // of 0 is before tomorrow anyway.
+        if ($filters !== [] && $this->countsOnlyValidContracts($demand)) {
+            [$today, $tomorrow] = $this->validityDays();
+            $filters[] = $query->logicalOr(
+                $query->equals('contracts.validFrom', null),
+                $query->lessThan('contracts.validFrom', $tomorrow->getTimestamp()),
+            );
+            $filters[] = $query->logicalOr(
+                $query->equals('contracts.validTo', null),
+                $query->equals('contracts.validTo', 0),
+                $query->greaterThanOrEqual('contracts.validTo', $today->getTimestamp()),
+            );
         }
 
         if ($demand->getAlphabetFilter() != '') {
@@ -464,6 +487,148 @@ class ProfileRepository extends Repository
         return ($filters === [])
             ? null
             : $query->logicalAnd(...$filters);
+    }
+
+    /**
+     * The next day on which the profiles a list selects through its contracts can change,
+     * because a contract that meets its conditions on contracts starts or ends: the day a
+     * contract starts after today, or the day after a contract that is valid today ends.
+     * `null` while the demand does not count only valid contracts, selects profiles by hand
+     * or has no condition on contracts, so the list does not depend on the date.
+     *
+     * The demand goes through {@see ModifyProfileDemandEvent} first, on a copy, as
+     * {@see self::findByDemand()} and {@see self::findAlphabetFilterLetters()} do, so a
+     * listener that changes the conditions changes this answer as well.
+     *
+     * The contracts are those of the profiles on the storage pages of the list, all of them
+     * where the list names none, as the list query reads them. The language of the profiles
+     * is not taken into account, so the answer may name a day on which the list does not
+     * change, and a page cache lifetime capped with it errs on the short side. The default
+     * restrictions leave out hidden contracts and profiles, which a list that shows hidden
+     * records still selects: for such a contract the page keeps its regular expiry.
+     */
+    public function findNextContractValidityChange(DemandInterface $demand): ?\DateTimeImmutable
+    {
+        // The option is the editor's, so a list without it never asks the listeners again.
+        if (!$this->countsOnlyValidContracts($demand) || $demand->getProfileList() !== '') {
+            return null;
+        }
+        /** @var ModifyProfileDemandEvent $demandEvent */
+        $demandEvent = $this->eventDispatcher->dispatch(new ModifyProfileDemandEvent(clone $demand));
+        $demand = $demandEvent->getDemand();
+        if (!$this->countsOnlyValidContracts($demand) || $demand->getProfileList() !== '') {
+            return null;
+        }
+        $contractConditions = $this->contractConditions($demand);
+        $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)->getQueryBuilderForTable(self::CONTRACT_TABLE);
+        $constraints = [];
+        if ($contractConditions['functionTypes'] !== []) {
+            $constraints[] = $queryBuilder->expr()->in(
+                'contract.function_type',
+                $queryBuilder->quoteArrayBasedValueListToIntegerList($contractConditions['functionTypes']),
+            );
+        }
+        if ($contractConditions['organisationalUnits'] !== []) {
+            $constraints[] = $queryBuilder->expr()->in(
+                'contract.organisational_unit',
+                $queryBuilder->quoteArrayBasedValueListToIntegerList($contractConditions['organisationalUnits']),
+            );
+        }
+        if ($contractConditions['functionTypeFilter'] > 0) {
+            $constraints[] = $queryBuilder->expr()->eq(
+                'contract.function_type',
+                $queryBuilder->createNamedParameter($contractConditions['functionTypeFilter'], Connection::PARAM_INT),
+            );
+        }
+        if ($contractConditions['organisationalUnitFilter'] > 0) {
+            $constraints[] = $queryBuilder->expr()->eq(
+                'contract.organisational_unit',
+                $queryBuilder->createNamedParameter($contractConditions['organisationalUnitFilter'], Connection::PARAM_INT),
+            );
+        }
+        if ($constraints === []) {
+            return null;
+        }
+        $storagePages = method_exists($demand, 'getStoragePages')
+            ? GeneralUtility::intExplode(',', $demand->getStoragePages(), true)
+            : [];
+        if ($storagePages !== []) {
+            $constraints[] = $queryBuilder->expr()->in(
+                'profile.pid',
+                $queryBuilder->quoteArrayBasedValueListToIntegerList($storagePages),
+            );
+        }
+        [$today, $tomorrow] = $this->validityDays();
+
+        $row = $queryBuilder
+            ->selectLiteral(
+                sprintf(
+                    'MIN(CASE WHEN %1$s >= %2$s THEN %1$s END) AS %3$s',
+                    $queryBuilder->quoteIdentifier('contract.valid_from'),
+                    $queryBuilder->createNamedParameter($tomorrow->getTimestamp(), Connection::PARAM_INT),
+                    $queryBuilder->quoteIdentifier('next_start'),
+                ),
+                sprintf(
+                    'MIN(CASE WHEN %1$s >= %2$s THEN %1$s END) AS %3$s',
+                    $queryBuilder->quoteIdentifier('contract.valid_to'),
+                    $queryBuilder->createNamedParameter($today->getTimestamp(), Connection::PARAM_INT),
+                    $queryBuilder->quoteIdentifier('next_end'),
+                ),
+            )
+            ->from(self::CONTRACT_TABLE, 'contract')
+            ->join(
+                'contract',
+                self::PROFILE_TABLE,
+                'profile',
+                $queryBuilder->expr()->eq('profile.uid', $queryBuilder->quoteIdentifier('contract.profile')),
+            )
+            ->where(...$constraints)
+            ->executeQuery()
+            ->fetchAssociative() ?: [];
+
+        $changes = [];
+        if (($row['next_start'] ?? null) !== null) {
+            $changes[] = $today->setTimestamp((int)$row['next_start'])->setTime(0, 0);
+        }
+        if (($row['next_end'] ?? null) !== null) {
+            $changes[] = $today->setTimestamp((int)$row['next_end'])->setTime(0, 0)->modify('+1 day');
+        }
+        return $changes === [] ? null : min($changes);
+    }
+
+    /**
+     * The conditions of a demand on the contracts of a profile: the restriction of the
+     * content element and the visitor filters.
+     *
+     * @return array{functionTypes: list<int>, organisationalUnits: list<int>, functionTypeFilter: int, organisationalUnitFilter: int}
+     */
+    private function contractConditions(DemandInterface $demand): array
+    {
+        return [
+            'functionTypes' => method_exists($demand, 'getFunctionTypes') ? array_values(array_map('intval', $demand->getFunctionTypes())) : [],
+            'organisationalUnits' => method_exists($demand, 'getOrganisationalUnits') ? array_values(array_map('intval', $demand->getOrganisationalUnits())) : [],
+            'functionTypeFilter' => method_exists($demand, 'getFunctionTypeFilter') ? (int)$demand->getFunctionTypeFilter() : 0,
+            'organisationalUnitFilter' => method_exists($demand, 'getOrganisationalUnitFilter') ? (int)$demand->getOrganisationalUnitFilter() : 0,
+        ];
+    }
+
+    private function countsOnlyValidContracts(DemandInterface $demand): bool
+    {
+        return method_exists($demand, 'getOnlyValidContracts') && $demand->getOnlyValidContracts();
+    }
+
+    /**
+     * Midnight of today and of tomorrow, in the time zone of the date the context renders
+     * for, as ContractSelector reads "today".
+     *
+     * @return array{0: \DateTimeImmutable, 1: \DateTimeImmutable}
+     */
+    private function validityDays(): array
+    {
+        /** @var \DateTimeImmutable $now */
+        $now = GeneralUtility::makeInstance(Context::class)->getPropertyFromAspect('date', 'full');
+        $today = $now->setTime(0, 0);
+        return [$today, $today->modify('+1 day')];
     }
 
     /**

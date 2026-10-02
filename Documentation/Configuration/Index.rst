@@ -232,7 +232,9 @@ letter links keep an active filter.
 The filters select profiles, and do not change which contracts of a profile are
 shown. :guilabel:`Only contracts of the selected organisational units and
 function types` below applies the restriction of the element, not the choice of
-the visitor.
+the visitor. While :guilabel:`Only contracts valid today` is on, a filter finds a
+profile only through a contract valid today, see
+:ref:`configuration-contract-display`.
 
 The card element shares the fields with the list and hides both.
 
@@ -258,7 +260,14 @@ options, on the sheet :guilabel:`Settings` below the :ref:`filters for visitors
     profiles and every contract of a selected profile is shown, as before.
 
 :guilabel:`Only contracts valid today`
-    Leaves out the contracts that have ended or not started yet.
+    Leaves out the contracts that have ended or not started yet. While the
+    element is restricted to organisational units or function types, or a
+    visitor filters it, the option also decides which contracts select a
+    profile: only one valid today does. A profile whose only matching contract
+    has ended is not listed, rather than listed without that contract, and the
+    pagination and the letter navigation count the same profiles. A list
+    without such conditions selects nobody by a contract and still lists a
+    profile whose contracts have all ended, without a contract.
 
 **The card and selected-profiles elements** offer :guilabel:`Contracts per
 profile` and :guilabel:`Only contracts valid today`. They select their profiles
@@ -309,9 +318,14 @@ Extbase loads limits the page to that; on TYPO3 v14 a page without
 :typoscript:`config.cache_period` is cached for a year. So while "only contracts
 valid today" applies, a page is cached no longer than until the next midnight on
 which a contract that passes the unit and function type filter ends - the day
-after its :guilabel:`Valid to` - or starts. The limit is set only on the cache
-entry of the page that rendered those contracts, only when that date comes
-before the regular expiry, and never when no validity option applies.
+after its :guilabel:`Valid to` - or starts. While the option also decides
+which contracts select the profiles of a list, the same holds for every
+contract that meets the restriction and the visitor filters of the list, so a
+profile whose contract starts tomorrow is listed tomorrow, though nothing of it
+was rendered today. Those contracts are read from the storage pages of the
+list. The limit is set only on the cache entry of the page that rendered those
+contracts or the list, only when that date comes before the regular expiry, and
+never when no validity option applies.
 
 ..  _configuration-contract-select-storage-scope:
 

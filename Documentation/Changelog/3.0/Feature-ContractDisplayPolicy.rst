@@ -26,13 +26,21 @@ validity, then "first". "First" is therefore the first of the contracts left, in
 the editor's order of the profile's contracts. A contract without a start or end
 date is not limited on that side.
 
+While a list or list-and-detail element is restricted to organisational units
+or function types, or a visitor filters it, "only contracts valid today" also
+decides which contracts select a profile: a profile is listed through a contract
+only when that contract is valid today. A list without such conditions keeps
+listing a profile whose contracts have all ended, without a contract.
+
 While "only valid today" applies, a page is cached no longer than until the next
 midnight on which a contract that passes the unit and function type filter
 starts or stops being valid, so the change is visible on that day rather than
 with the next regular cache expiry - at most 24 hours away on TYPO3 v13, and a
 year on TYPO3 v14 without :typoscript:`config.cache_period`. The shorter
-lifetime is set on the page cache of the request that rendered the contracts;
-without the option, the page keeps the lifetime it would have without it.
+lifetime is set on the page cache of the request that rendered the contracts.
+For a list that selects its profiles through valid contracts, the contracts of
+profiles it does not list yet count as well. Without the option, the page keeps
+the lifetime it would have without it.
 
 The selected-contracts element and the contacts element of
 :guilabel:`EXT:academic_contacts4pages` render the contract that was chosen,
