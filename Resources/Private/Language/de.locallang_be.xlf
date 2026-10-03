@@ -129,6 +129,26 @@
         <source>Detail Page</source>
         <target>Detail Seite</target>
       </trans-unit>
+      <trans-unit id="flexform.el.detailLink.label">
+        <source>Link the names to the detail view</source>
+        <target>Namen mit der Detailansicht verlinken</target>
+      </trans-unit>
+      <trans-unit id="flexform.el.detailLink.description">
+        <source>Whether the names of the profiles link to their detail view. "Use the site setting" follows the setting of the site, which links unless it is set to "No link".</source>
+        <target>Ob die Namen der Profile mit ihrer Detailansicht verlinkt werden. „Einstellung der Site verwenden“ folgt der Einstellung der Site, die verlinkt, sofern sie nicht auf „Kein Link“ gesetzt ist.</target>
+      </trans-unit>
+      <trans-unit id="flexform.el.detailLink.items.site">
+        <source>Use the site setting</source>
+        <target>Einstellung der Site verwenden</target>
+      </trans-unit>
+      <trans-unit id="flexform.el.detailLink.items.link">
+        <source>Link to the detail view</source>
+        <target>Mit der Detailansicht verlinken</target>
+      </trans-unit>
+      <trans-unit id="flexform.el.detailLink.items.none">
+        <source>No link</source>
+        <target>Kein Link</target>
+      </trans-unit>
       <trans-unit id="flexform.el.listPid.label">
         <source>List Page</source>
         <target>Listen Seite</target>

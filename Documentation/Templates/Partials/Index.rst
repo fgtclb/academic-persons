@@ -165,11 +165,15 @@ Passing the detail page
 
 :file:`Profile/Item/DetailLink.html` builds the address from
 `plugin.tx_academicpersons.detailPid`, or stays on the current page for the
-list-and-detail element, which shows the detail view itself.
+list-and-detail element, which shows the detail view itself. While
+`plugin.tx_academicpersons.detailLink` is `none`, it renders nothing for every
+other element and the name is shown as text, see
+:ref:`configuration-detail-link`. An override of the partial follows that
+setting only when it checks it as well.
 
 A template that renders an item without those plugin settings passes the page
 instead. A passed page wins over both branches, the list-and-detail one
-included:
+included, and links whatever `plugin.tx_academicpersons.detailLink` says:
 
 ..  code-block:: html
 

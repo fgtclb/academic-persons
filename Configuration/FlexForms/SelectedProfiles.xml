@@ -13,6 +13,29 @@
                     <size>1</size>
                 </config>
             </settings.detailPid>
+            <settings.detailLink>
+                <label>LLL:EXT:academic_persons/Resources/Private/Language/locallang_be.xlf:flexform.el.detailLink.label</label>
+                <description>LLL:EXT:academic_persons/Resources/Private/Language/locallang_be.xlf:flexform.el.detailLink.description</description>
+                <config>
+                    <type>select</type>
+                    <renderType>selectSingle</renderType>
+                    <items>
+                        <numIndex index="0" type="array">
+                            <label>LLL:EXT:academic_persons/Resources/Private/Language/locallang_be.xlf:flexform.el.detailLink.items.site</label>
+                            <value></value>
+                        </numIndex>
+                        <numIndex index="1" type="array">
+                            <label>LLL:EXT:academic_persons/Resources/Private/Language/locallang_be.xlf:flexform.el.detailLink.items.link</label>
+                            <value>link</value>
+                        </numIndex>
+                        <numIndex index="2" type="array">
+                            <label>LLL:EXT:academic_persons/Resources/Private/Language/locallang_be.xlf:flexform.el.detailLink.items.none</label>
+                            <value>none</value>
+                        </numIndex>
+                    </items>
+                    <default></default>
+                </config>
+            </settings.detailLink>
             <settings.selectedProfiles>
                 <label>LLL:EXT:academic_persons/Resources/Private/Language/locallang_be.xlf:flexform.el.selectedProfiles.label</label>
                 <config>

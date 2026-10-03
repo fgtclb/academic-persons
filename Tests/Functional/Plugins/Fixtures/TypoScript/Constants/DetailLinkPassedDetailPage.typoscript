@@ -1,0 +1,3 @@
+# A project whose item grid passes the detail page to every item, the way a template
+# outside the plugins of the extension does.
+plugin.tx_academicpersons.view.partialRootPath = EXT:academic_persons/Tests/Functional/Plugins/Fixtures/AcademicPersonsDetailLink/Partials/

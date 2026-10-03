@@ -10,6 +10,7 @@
 plugin.tx_academicpersons {
   settings {
     detailPid = {$plugin.tx_academicpersons.detailPid}
+    detailLink = {$plugin.tx_academicpersons.detailLink}
     demand {
       groupBy = {$plugin.tx_academicpersons.demand.groupBy}
       sortBy = {$plugin.tx_academicpersons.demand.sortBy}

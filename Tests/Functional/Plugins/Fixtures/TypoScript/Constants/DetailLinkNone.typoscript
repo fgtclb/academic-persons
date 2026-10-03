@@ -1,0 +1,2 @@
+# A site without profile detail pages.
+plugin.tx_academicpersons.detailLink = none

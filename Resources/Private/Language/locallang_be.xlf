@@ -99,6 +99,21 @@
       <trans-unit id="flexform.el.detailPid.label">
         <source>Detail Page</source>
       </trans-unit>
+      <trans-unit id="flexform.el.detailLink.label">
+        <source>Link the names to the detail view</source>
+      </trans-unit>
+      <trans-unit id="flexform.el.detailLink.description">
+        <source>Whether the names of the profiles link to their detail view. "Use the site setting" follows the setting of the site, which links unless it is set to "No link".</source>
+      </trans-unit>
+      <trans-unit id="flexform.el.detailLink.items.site">
+        <source>Use the site setting</source>
+      </trans-unit>
+      <trans-unit id="flexform.el.detailLink.items.link">
+        <source>Link to the detail view</source>
+      </trans-unit>
+      <trans-unit id="flexform.el.detailLink.items.none">
+        <source>No link</source>
+      </trans-unit>
       <trans-unit id="flexform.el.listPid.label">
         <source>List Page</source>
       </trans-unit>

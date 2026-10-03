@@ -22,6 +22,15 @@ settings:
     category: academic.persons
     type: int
     default: 0
+  plugin.tx_academicpersons.detailLink:
+    label: 'Link the names to the detail view'
+    description: 'Applies to the names of the profiles in the list, card, selected profiles and selected contracts elements. "No link" is for a site without profile detail pages. An element can choose otherwise in its plugin options, and the list-and-detail element always links.'
+    category: academic.persons
+    type: string
+    default: link
+    enum:
+      link: 'Link to the detail view'
+      none: 'No link'
   plugin.tx_academicpersons.renderContentElementHeader:
     label: 'Render the content element header in the plugins'
     description: 'Only for a site whose content element layout renders no header. The layouts of EXT:fluid_styled_content and of the bootstrap package render it, and switched on there the header appears twice.'

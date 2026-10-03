@@ -7,6 +7,7 @@
 //  https://docs.typo3.org/c/typo3/cms-core/main/en-us/Changelog/12.3/Feature-99976-IntroduceignoreFlexFormSettingsIfEmptyExtbaseConfiguration.html
 // ----------------------------------------------------------------------------------------------------------------------
 plugin.tx_academicpersons.ignoreFlexFormSettingsIfEmpty := addToList(detailPid)
+plugin.tx_academicpersons.ignoreFlexFormSettingsIfEmpty := addToList(detailLink)
 plugin.tx_academicpersons.ignoreFlexFormSettingsIfEmpty := addToList(pageTitleFormat)
 plugin.tx_academicpersons.ignoreFlexFormSettingsIfEmpty := addToList(showFields)
 // ----------------------------------------------------------------------------------------------------------------------

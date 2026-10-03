@@ -72,9 +72,9 @@ final class SiteSetDeliveryTest extends AbstractAcademicPersonsTestCase
     /**
      * A value assigned by the file the setup of the shared block imports. It is built
      * with `addToList`, so every additional parse of the shared block appends the same
-     * three entries again - which is why this is asserted with a "contains".
+     * four entries again - which is why this is asserted with a "contains".
      */
-    private const SHARED_IMPORT = '<div id="import">detailPid,pageTitleFormat,showFields';
+    private const SHARED_IMPORT = '<div id="import">detailPid,detailLink,pageTitleFormat,showFields';
 
     /**
      * A setting the shared setup maps out of a constant the probe record assigns. It proves
@@ -457,6 +457,7 @@ final class SiteSetDeliveryTest extends AbstractAcademicPersonsTestCase
         $this->assertSame(
             [
                 'plugin.tx_academicpersons.detailPid' => 0,
+                'plugin.tx_academicpersons.detailLink' => 'link',
                 'plugin.tx_academicpersons.renderContentElementHeader' => false,
                 'plugin.tx_academicpersons.demand.groupBy' => 'lastNameAlpha',
                 'plugin.tx_academicpersons.demand.sortBy' => 'lastName',

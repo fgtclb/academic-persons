@@ -21,8 +21,13 @@
     - detailPid: the page the detail view sits on. A template that renders an item
                  outside the plugins of this extension passes it; it wins over the
                  plugin setting
-    - settings:  the plugin settings, read for "detailPid"
+    - settings:  the plugin settings, read for "detailPid" and "detailLink"
     - data:      the content element record, read for its type
+
+    With "settings.detailLink" set to "none", the partial renders nothing and the name is
+    shown without a link. A passed "detailPid" and the list-and-detail element link all the
+    same, and so does a caller whose settings do not carry "detailLink". An override of this
+    partial that wants to follow the setting wraps its last case in the same condition.
 </f:comment>
 
 <f:if condition="{detailPid}">
@@ -61,7 +66,7 @@
                     )}"
                 />
             </f:then>
-            <f:else>
+            <f:else if="{settings.detailLink} != 'none'">
                 <f:variable
                     name="profileDetailUri"
                     value="{f:uri.action(

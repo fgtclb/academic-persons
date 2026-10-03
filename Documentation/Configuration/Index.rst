@@ -65,14 +65,54 @@ Every component set depends on `fgtclb/academic-base-ctype-group`, the set of
 :guilabel:`EXT:academic_base` that labels the content element group all academic
 extensions sort their elements into.
 
-The site settings of this extension — the detail page, the default grouping,
-sorting and pagination of a profile list, the selected letter of the letter
-navigation, the crop variants and placeholders of the profile image, the phone
-link prefix and the :ref:`content element header
-<configuration-content-element-header>` switch below — are declared with the
-aggregate set. A site that depends on a single component set still gets the
+The site settings of this extension are declared with the aggregate set: the
+detail page, whether the names link to it, the default grouping, sorting and
+pagination of a profile list, the selected letter of the letter navigation,
+the crop variants and placeholders of the profile image, the phone link prefix
+and the :ref:`content element header <configuration-content-element-header>`
+switch below. A site that depends on a single component set still gets the
 shipped defaults, but can only override them in :guilabel:`Site Settings` when
 it depends on `fgtclb/academic-persons`.
+
+..  _configuration-detail-link:
+
+Names without a detail link
+===========================
+
+The name of every profile in the list, card, selected profiles and selected
+contracts elements links to the profile's detail view: on the detail page the
+element or the site names, or on the page of the element when neither names
+one. A site without profile detail pages, an A to Z directory or contact cards
+only, shows the names as text instead:
+
+..  confval:: plugin.tx_academicpersons.detailLink
+    :name: plugin-tx-academicpersons-detaillink
+    :type: string
+    :Default: link
+
+    `link` links the names to the detail view, `none` shows them as text, in
+    the table view mode as well.
+
+    The list-and-detail element always links its names, because it shows the
+    detail view itself. A detail page a template passes to the item partial
+    links as well, see :ref:`templates-item-partials-detail-page`, and so do the
+    contacts of a page of :guilabel:`EXT:academic_contacts4pages`.
+
+An element can choose otherwise. The plugin options of the four elements carry
+:guilabel:`Link the names to the detail view` with :guilabel:`Use the site
+setting`, the default, :guilabel:`Link to the detail view` and :guilabel:`No
+link`. A chosen value wins over the site setting in both directions: a site
+without detail pages links one list that has them, and a site with detail
+pages shows one selection without links. The list-and-detail element does not
+offer the field.
+
+On a site that uses the site set, the setting is :guilabel:`Link the names to
+the detail view` of `fgtclb/academic-persons`. It is declared for the site set
+and as a constant of the shared static template, with the same default in both.
+
+`link` without a detail page keeps linking the names to the page of their
+element, with the arguments of the detail view, because a site may place the
+detail plugin on the page of its list.
 
 ..  _configuration-phone-link-prefix:
 

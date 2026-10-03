@@ -13,6 +13,8 @@
 plugin.tx_academicpersons {
   # cat=plugin.tx_academicpersons//a; type=string; label=Detail page PID
   detailPid = 0
+  # cat=plugin.tx_academicpersons//a; type=options[Link to the detail view=link,No link=none]; label=Link the names of profile items to the detail view: "No link" for a site without profile detail pages. An element can choose otherwise, the list-and-detail element always links
+  detailLink = link
   # cat=plugin.tx_academicpersons//a; type=boolean; label=Render the content element header in the plugins: only for a site whose content element layout renders no header
   renderContentElementHeader = 0
   demand {

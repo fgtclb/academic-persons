@@ -1,0 +1,27 @@
+<html
+    lang="en"
+    xmlns:f="http://typo3.org/ns/TYPO3/CMS/Fluid/ViewHelpers"
+    data-namespace-typo3-fluid="true"
+>
+
+<f:comment>
+    The grid of a project that passes the detail page, page 3, to every item.
+</f:comment>
+
+<div class="academic-persons-grid row">
+    <f:for each="{profiles}" as="profile">
+        <div class="academic-persons-grid__item col-12">
+            <f:render
+                partial="Profile/Item"
+                arguments="{
+                    profile: profile,
+                    detailPid: 3,
+                    settings: settings,
+                    data: data
+                }"
+            />
+        </div>
+    </f:for>
+</div>
+
+</html>
