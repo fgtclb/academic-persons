@@ -372,17 +372,20 @@ Icons
 
 The icon set of the editor was replaced. Five identifiers of the form flow are
 gone - ``academic-persons-edit-add-image``, ``-add-item``, ``-cancel``,
-``-sort`` and ``-to-top`` - and the sixteen action icons of the new set are
-registered in :file:`Configuration/FrontendIcons.php` of
-:guilabel:`academic_persons_edit`, for the frontend icon registry of
-:guilabel:`academic_base`, under the identifiers listed in the `icon table
-<https://docs.typo3.org/p/fgtclb/academic-persons-edit/main/en-us/ProfileEditing/Index.html#profile-editing-icons>`__.
+``-sort`` and ``-to-top`` - and the remaining ones are renamed: the editor
+renders the shared ``tx-academicbase-action-*`` and ``tx-academicbase-state-*``
+frontend icons of :guilabel:`academic_base`, listed in the `icon table
+<https://docs.typo3.org/p/fgtclb/academic-persons-edit/main/en-us/ProfileEditing/Index.html#profile-editing-icons>`__,
+and the content element icon is
+``tx-academicpersonsedit-plugin-profile-editing``. The old to new table is the
+`breaking change entry
+<https://docs.typo3.org/p/fgtclb/academic-persons-edit/main/en-us/Changelog/3.0/Breaking-ProfileEditingIconsMovedToTheFrontendIconRegistry.html>`__.
 The templates render them with the ``ab:icon`` ViewHelper of
 :guilabel:`academic_base`. A template or PHP file addressing a removed
 identifier, or addressing a new one through ``core:icon`` or the icon API of
 the backend, renders TYPO3's ``default-not-found`` placeholder. A replacement
 belongs in the :file:`Configuration/FrontendIcons.php` of a site package that
-depends on :guilabel:`academic_persons_edit`. The new icons are inlined as
+depends on :guilabel:`academic_base`. The new icons are inlined as
 ``<svg>`` rather than emitted as ``<img>``, so they follow the text colour -
 and a site stylesheet that selects ``.t3js-icon img`` no longer matches them.
 

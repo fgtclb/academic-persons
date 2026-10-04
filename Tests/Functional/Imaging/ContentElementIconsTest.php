@@ -15,7 +15,7 @@ use TYPO3\CMS\Backend\Utility\BackendUtility;
  * it: the TCA CType item, which `TcaManipulator::addContentElementPlugin()` also writes into
  * `tt_content.ctrl.typeicon_classes` for the page module, and the new content element wizard
  * entry in the page TSconfig of the component. Nothing ties the two together at runtime, so
- * they drifted before: three elements showed `actions-user` in the wizard and, with an empty
+ * they drifted before: three elements showed a core icon in the wizard and, with an empty
  * TCA icon, the `tt_content` default in the page module (ACE-859). The selected contracts
  * element shows the icon of the selected profiles element.
  *
