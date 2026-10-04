@@ -42,14 +42,17 @@ headings start at ``<h2>`` for the headline and step down from there.
 
 The view ships its own stylesheet and a small ES module for the fold-out
 entries, the sticky navigation and the Bootstrap ScrollSpy, both loaded by the
-template through the asset collector. The six control icons of the view are
-registered in :file:`Configuration/Icons.php` as
+template through the asset collector. The seven control icons of the view are
+frontend icons, registered in :file:`Configuration/FrontendIcons.php` as
 ``academic-persons-envelope``, ``academic-persons-phone``,
 ``academic-persons-address``, ``academic-persons-room``,
-``academic-persons-detail-plus`` and ``academic-persons-detail-minus``, drawn in
-``currentColor`` and inlined, so they take the text colour of the page. They
-are `Bootstrap Icons <https://icons.getbootstrap.com/>`__ and carry their MIT
-licence in :file:`Resources/Public/Icons/LICENSE-bootstrap-icons.txt`.
+``academic-persons-clock``, ``academic-persons-detail-plus`` and
+``academic-persons-detail-minus`` and rendered by the ``ab:icon`` ViewHelper of
+:guilabel:`academic_base`. They are drawn in ``currentColor`` and inlined, so
+they take the text colour of the page. A site package replaces one in its own
+:file:`Configuration/FrontendIcons.php`. They are `Bootstrap Icons
+<https://icons.getbootstrap.com/>`__ and carry their MIT licence in
+:file:`Resources/Public/Icons/LICENSE-bootstrap-icons.txt`.
 
 The colours of the view are custom properties declared on
 ``.academic-persons-detail`` and are the theming hook: redeclare them on that

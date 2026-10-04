@@ -276,10 +276,15 @@ and the fold-out entries are the identifiers ``academic-persons-envelope``,
 ``academic-persons-phone``, ``academic-persons-address``,
 ``academic-persons-room``, ``academic-persons-clock``,
 ``academic-persons-detail-plus`` and
-``academic-persons-detail-minus`` of :file:`Configuration/Icons.php`; a site
-package re-registers an identifier to replace the glyph. They are `Bootstrap
-Icons <https://icons.getbootstrap.com/>`__, and their MIT licence ships beside
-them in :file:`Resources/Public/Icons/LICENSE-bootstrap-icons.txt`.
+``academic-persons-detail-minus``. They are frontend icons, registered in
+:file:`Configuration/FrontendIcons.php` for the frontend icon registry of
+:guilabel:`academic_base` and rendered by its ``ab:icon`` ViewHelper. A site
+package that depends on :guilabel:`academic_persons` replaces the glyph by
+registering the identifier in its own :file:`Configuration/FrontendIcons.php`,
+an entry in its :file:`Configuration/Icons.php` does not reach the detail view.
+They are `Bootstrap Icons <https://icons.getbootstrap.com/>`__, and their MIT
+licence ships beside them in
+:file:`Resources/Public/Icons/LICENSE-bootstrap-icons.txt`.
 
 The colours of the view are custom properties declared on the
 ``.academic-persons-detail`` root element - ``--academic-persons-detail-text``,

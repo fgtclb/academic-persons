@@ -32,8 +32,10 @@ than an :html:`<img>`, which matters to any CSS or test that addressed the
 image.
 
 The plugin icon :php:`persons_icon` is a brand mark and keeps the core
-provider. The six control icons of the public profile were already registered
-with the `currentColor` provider and are unchanged.
+provider. The seven control icons of the public profile were already registered
+with the `currentColor` provider. They are frontend icons now, registered in
+:file:`Configuration/FrontendIcons.php`, see
+:ref:`breaking-persons-public-profile-icons-moved-to-the-frontend-icon-registry`.
 
 Affected Installations
 ======================

@@ -59,35 +59,4 @@ return [
         'provider' => SvgIconProvider::class,
         'source' => 'EXT:academic_persons/Resources/Public/Icons/persons_icon.svg',
     ],
-    // The controls of the public profile detail view, unlike the record icons above: drawn in
-    // `currentColor` (Bootstrap Icons, MIT) and inlined by the provider so they take the text
-    // colour of the page. Rendered by the partials below `Resources/Private/Partials/Profile/PublicProfile/`.
-    'academic-persons-envelope' => [
-        'provider' => CurrentColorSvgIconProvider::class,
-        'source' => 'EXT:academic_persons/Resources/Public/Icons/envelope.svg',
-    ],
-    'academic-persons-phone' => [
-        'provider' => CurrentColorSvgIconProvider::class,
-        'source' => 'EXT:academic_persons/Resources/Public/Icons/phone.svg',
-    ],
-    'academic-persons-address' => [
-        'provider' => CurrentColorSvgIconProvider::class,
-        'source' => 'EXT:academic_persons/Resources/Public/Icons/address.svg',
-    ],
-    'academic-persons-room' => [
-        'provider' => CurrentColorSvgIconProvider::class,
-        'source' => 'EXT:academic_persons/Resources/Public/Icons/room.svg',
-    ],
-    'academic-persons-clock' => [
-        'provider' => CurrentColorSvgIconProvider::class,
-        'source' => 'EXT:academic_persons/Resources/Public/Icons/clock.svg',
-    ],
-    'academic-persons-detail-plus' => [
-        'provider' => CurrentColorSvgIconProvider::class,
-        'source' => 'EXT:academic_persons/Resources/Public/Icons/detail-plus.svg',
-    ],
-    'academic-persons-detail-minus' => [
-        'provider' => CurrentColorSvgIconProvider::class,
-        'source' => 'EXT:academic_persons/Resources/Public/Icons/detail-minus.svg',
-    ],
 ];

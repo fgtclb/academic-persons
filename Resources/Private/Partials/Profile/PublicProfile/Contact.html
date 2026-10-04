@@ -1,15 +1,16 @@
 <html
     data-namespace-typo3-fluid="true"
     xmlns:f="http://typo3.org/ns/TYPO3/CMS/Fluid/ViewHelpers"
+    xmlns:ab="http://typo3.org/ns/FGTCLB/AcademicBase/ViewHelpers"
     xmlns:persons="http://typo3.org/ns/FGTCLB/AcademicPersons/ViewHelpers"
 >
 
 <f:comment>
     The contact block of every contract: email addresses, phone numbers, postal addresses, the
-    location with its room, and the office hours. The icons are registered in
-    `Configuration/Icons.php` with the currentColor provider of EXT:academic_base and inlined
-    here, so they follow the text colour of the page. `core` is a global Fluid namespace, so
-    `core:icon` needs no declaration.
+    location with its room, and the office hours. The icons are frontend icons, registered in
+    `Configuration/FrontendIcons.php` with the currentColor provider of EXT:academic_base and
+    rendered by its `ab:icon` ViewHelper. They are inlined here, so they follow the text colour
+    of the page. `core:icon` would not find them: it reads the icon registry of the backend.
 
     Which contracts: "profile.details.contact" in Settings.yaml, "contracts" (all|first) and
     "onlyValid".
@@ -28,7 +29,7 @@
                         <f:if condition="{contract.emailAddresses}">
                             <div class="academic-persons-detail__contact-row">
                                 <span class="academic-persons-detail__contact-icon">
-                                    <core:icon identifier="academic-persons-envelope" alternativeMarkupIdentifier="inline" />
+                                    <ab:icon identifier="academic-persons-envelope" alternativeMarkupIdentifier="inline" />
                                 </span>
                                 <div class="academic-persons-detail__contact-content">
                                     <f:for each="{contract.emailAddresses}" as="emailAddress">
@@ -45,7 +46,7 @@
                         <f:if condition="{contract.phoneNumbers}">
                             <div class="academic-persons-detail__contact-row">
                                 <span class="academic-persons-detail__contact-icon">
-                                    <core:icon identifier="academic-persons-phone" alternativeMarkupIdentifier="inline" />
+                                    <ab:icon identifier="academic-persons-phone" alternativeMarkupIdentifier="inline" />
                                 </span>
                                 <div class="academic-persons-detail__contact-content">
                                     <f:for each="{contract.phoneNumbers}" as="phoneNumber">
@@ -70,7 +71,7 @@
                         <f:for each="{contract.physicalAddresses}" as="physicalAddress">
                             <div class="academic-persons-detail__contact-row">
                                 <span class="academic-persons-detail__contact-icon">
-                                    <core:icon identifier="academic-persons-address" alternativeMarkupIdentifier="inline" />
+                                    <ab:icon identifier="academic-persons-address" alternativeMarkupIdentifier="inline" />
                                 </span>
                                 <address class="academic-persons-detail__contact-content">
                                     <f:if condition="{physicalAddress.type}">
@@ -102,7 +103,7 @@
                         <f:if condition="{contract.location} || {contract.room}">
                             <div class="academic-persons-detail__contact-row">
                                 <span class="academic-persons-detail__contact-icon">
-                                    <core:icon identifier="academic-persons-room" alternativeMarkupIdentifier="inline" />
+                                    <ab:icon identifier="academic-persons-room" alternativeMarkupIdentifier="inline" />
                                 </span>
                                 <div class="academic-persons-detail__contact-content">
                                     <f:if condition="{contract.location}">
@@ -119,7 +120,7 @@
                         <f:if condition="{contract.officeHours}">
                             <div class="academic-persons-detail__contact-row academic-persons-detail__contact-row--office-hours">
                                 <span class="academic-persons-detail__contact-icon">
-                                    <core:icon identifier="academic-persons-clock" alternativeMarkupIdentifier="inline" />
+                                    <ab:icon identifier="academic-persons-clock" alternativeMarkupIdentifier="inline" />
                                 </span>
                                 <div class="academic-persons-detail__contact-content">
                                     <strong class="academic-persons-detail__contact-line"><f:translate key="detail.officeHours" extensionName="AcademicPersons" /></strong>

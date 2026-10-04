@@ -41,7 +41,7 @@ final class AcademicPersonsPublicProfilePluginTest extends AbstractAcademicPerso
 
     /**
      * The identifiers the partials below `Profile/PublicProfile/` render, all registered in
-     * `Configuration/Icons.php`.
+     * `Configuration/FrontendIcons.php`.
      */
     private const ICON_IDENTIFIERS = [
         'academic-persons-envelope',
@@ -355,10 +355,14 @@ final class AcademicPersonsPublicProfilePluginTest extends AbstractAcademicPerso
     }
 
     /**
-     * `<core:icon>` never fails on an unknown identifier: `IconFactory` answers with the
-     * `default-not-found` placeholder and the identifier asked for is gone from the markup. Both
-     * mistakes are caught here - an identifier that no longer resolves, and a registration a
-     * partial did not follow.
+     * `<ab:icon>` never fails on an unknown identifier: the frontend icon registry answers with
+     * the `default-not-found` placeholder and the identifier asked for is gone from the markup.
+     * So does a tag left on `<core:icon>`, which asks the icon registry of the backend. All of
+     * these mistakes are caught here - an identifier that no longer resolves, a registration a
+     * partial did not follow, and a partial that asks the wrong registry.
+     *
+     * The wrapper of one icon is written out in full: site stylesheets select its classes and
+     * the inner `icon-markup`, and the move to the frontend registry kept it as it was.
      */
     #[Test]
     public function profileRendersOnlyResolvableIcons(): void
@@ -372,6 +376,13 @@ final class AcademicPersonsPublicProfilePluginTest extends AbstractAcademicPerso
         // Inlined, not an `<img>`: the markup is the SVG itself, so it follows the text colour.
         $this->assertStringNotContainsString('Resources/Public/Icons/envelope.svg', $content);
         $this->assertStringContainsString('<svg', $content);
+        $this->assertStringContainsString(
+            '<span class="t3js-icon icon icon-size-small icon-state-default icon-academic-persons-envelope"'
+            . ' data-identifier="academic-persons-envelope" aria-hidden="true">' . "\n"
+            . "\t" . '<span class="icon-markup">' . "\n"
+            . '<svg ',
+            $content,
+        );
     }
 
     /**
