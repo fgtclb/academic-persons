@@ -386,8 +386,14 @@ depends on :guilabel:`academic_persons_edit`. The new icons are inlined as
 ``<svg>`` rather than emitted as ``<img>``, so they follow the text colour -
 and a site stylesheet that selects ``.t3js-icon img`` no longer matches them.
 
-The icons of the public profile of this extension are frontend icons as well,
-see :ref:`breaking-persons-public-profile-icons-moved-to-the-frontend-icon-registry`.
+The icons of this extension are renamed: the record and content element icons
+to ``tx-academicpersons-record-*`` and ``tx-academicpersons-plugin-*`` in
+:file:`Configuration/Icons.php`, and the icons of the public profile to the
+shared frontend icons ``tx-academicbase-*`` of :guilabel:`academic_base`. A
+site package that names an old identifier in a template, in TSconfig or in its
+:file:`Configuration/Icons.php` shows the placeholder or replaces nothing any
+more. The complete table and the migration are in
+:ref:`breaking-persons-public-profile-icons-moved-to-the-frontend-icon-registry`.
 
 TypoScript and the JSON page type
 ---------------------------------

@@ -1,0 +1,9 @@
+"pages",
+,"uid","pid","doktype","deleted","hidden","sys_language_uid","l10n_parent","l18n_cfg","slug","title","tsconfig_includes"
+,1,0,1,0,0,0,0,0,"/","Site Root",""
+,2,1,1,0,0,0,0,0,"/list","Profile list","EXT:academic_persons/Configuration/TSconfig/List/page.tsconfig"
+,3,1,1,0,0,0,0,0,"/list-and-detail","Profile list and detail","EXT:academic_persons/Configuration/TSconfig/ListAndDetail/page.tsconfig"
+,4,1,1,0,0,0,0,0,"/detail","Profile detail","EXT:academic_persons/Configuration/TSconfig/Detail/page.tsconfig"
+,5,1,1,0,0,0,0,0,"/card","Profile card","EXT:academic_persons/Configuration/TSconfig/Card/page.tsconfig"
+,6,1,1,0,0,0,0,0,"/selected-profiles","Selected profiles","EXT:academic_persons/Configuration/TSconfig/SelectedProfiles/page.tsconfig"
+,7,1,1,0,0,0,0,0,"/selected-contracts","Selected contracts","EXT:academic_persons/Configuration/TSconfig/SelectedContracts/page.tsconfig"

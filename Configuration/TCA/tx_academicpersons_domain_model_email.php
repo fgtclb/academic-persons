@@ -29,7 +29,7 @@ $tcaConfiguration = [
             'disabled' => 'hidden',
         ],
         'typeicon_classes' => [
-            'default' => 'tx_academicpersons_domain_model_email',
+            'default' => 'tx-academicpersons-record-email',
         ],
         'sortby' => 'sorting',
     ],

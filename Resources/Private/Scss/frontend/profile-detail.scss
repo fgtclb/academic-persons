@@ -4,9 +4,9 @@
 // Written with native nesting, which SCSS understands unchanged. The layout
 // rests on the Bootstrap grid classes the templates carry; everything below is
 // the typography and spacing of the elements themselves, keyed by the BEM
-// classes `academic-persons-detail__*`. The icons are inlined SVGs drawn in
-// `currentColor` (see `Configuration/Icons.php`), so they take the colour of
-// the text and are sized here, not in the file.
+// classes `academic-persons-detail__*`. The icons are the shared frontend
+// icons of EXT:academic_base, inlined SVGs drawn in `currentColor`, so they
+// take the colour of the text and are sized here, not in the file.
 //
 // `--academic-persons-detail-scroll-offset` is written by `frontend/profile.ts`
 // from the height of the sticky page header, so an anchor jump lands below it.

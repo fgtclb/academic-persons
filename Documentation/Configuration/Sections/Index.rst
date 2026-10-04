@@ -272,19 +272,20 @@ The template loads the stylesheet
 The module toggles the fold-out entries, keeps the sticky navigation below a
 page header with the id ``page-header`` and, when the site loads Bootstrap,
 marks the section in view through its ScrollSpy. The icons of the contact rows
-and the fold-out entries are the identifiers ``academic-persons-envelope``,
-``academic-persons-phone``, ``academic-persons-address``,
-``academic-persons-room``, ``academic-persons-clock``,
-``academic-persons-detail-plus`` and
-``academic-persons-detail-minus``. They are frontend icons, registered in
-:file:`Configuration/FrontendIcons.php` for the frontend icon registry of
-:guilabel:`academic_base` and rendered by its ``ab:icon`` ViewHelper. A site
-package that depends on :guilabel:`academic_persons` replaces the glyph by
-registering the identifier in its own :file:`Configuration/FrontendIcons.php`,
-an entry in its :file:`Configuration/Icons.php` does not reach the detail view.
-They are `Bootstrap Icons <https://icons.getbootstrap.com/>`__, and their MIT
-licence ships beside them in
-:file:`Resources/Public/Icons/LICENSE-bootstrap-icons.txt`.
+and the fold-out entries are the shared identifiers
+``tx-academicbase-info-email``, ``tx-academicbase-info-phone``,
+``tx-academicbase-info-location``, ``tx-academicbase-info-room``,
+``tx-academicbase-info-time``, ``tx-academicbase-action-expand`` and
+``tx-academicbase-action-collapse``. They are frontend icons, registered in
+the :file:`Configuration/FrontendIcons.php` of :guilabel:`academic_base` and
+rendered by its ``ab:icon`` ViewHelper. A site package that depends on
+:guilabel:`academic_base` replaces a glyph by registering the identifier in its
+own :file:`Configuration/FrontendIcons.php`, an entry in its
+:file:`Configuration/Icons.php` does not reach the detail view. The
+replacement applies wherever an academic extension renders the identifier. To
+replace an icon on the profile only, override the partial and render an
+identifier of the site package. The icons are `Font Awesome Free
+<https://fontawesome.com>`__ icons, see :ref:`third-party-icons`.
 
 The colours of the view are custom properties declared on the
 ``.academic-persons-detail`` root element - ``--academic-persons-detail-text``,

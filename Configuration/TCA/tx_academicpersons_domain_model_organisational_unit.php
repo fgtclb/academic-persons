@@ -26,7 +26,7 @@ $tcaConfiguration = [
             'disabled' => 'hidden',
         ],
         'typeicon_classes' => [
-            'default' => 'tx_academicpersons_domain_model_organisational_unit',
+            'default' => 'tx-academicpersons-record-organisational-unit',
         ],
     ],
     'columns' => [

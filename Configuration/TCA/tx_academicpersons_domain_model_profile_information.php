@@ -30,7 +30,7 @@ $tcaConfiguration = [
             'disabled' => 'hidden',
         ],
         'typeicon_classes' => [
-            'default' => 'tx_academicpersons_domain_model_profile_information',
+            'default' => 'tx-academicpersons-record-profile-information',
         ],
         'sortby' => 'sorting',
     ],

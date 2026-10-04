@@ -40,17 +40,17 @@ final class AcademicPersonsPublicProfilePluginTest extends AbstractAcademicPerso
     ];
 
     /**
-     * The identifiers the partials below `Profile/PublicProfile/` render, all registered in
-     * `Configuration/FrontendIcons.php`.
+     * The identifiers the partials below `Profile/PublicProfile/` render: shared frontend
+     * icons, registered in `Configuration/FrontendIcons.php` of EXT:academic_base.
      */
     private const ICON_IDENTIFIERS = [
-        'academic-persons-envelope',
-        'academic-persons-phone',
-        'academic-persons-address',
-        'academic-persons-room',
-        'academic-persons-clock',
-        'academic-persons-detail-plus',
-        'academic-persons-detail-minus',
+        'tx-academicbase-info-email',
+        'tx-academicbase-info-phone',
+        'tx-academicbase-info-location',
+        'tx-academicbase-info-room',
+        'tx-academicbase-info-time',
+        'tx-academicbase-action-expand',
+        'tx-academicbase-action-collapse',
     ];
 
     protected function setUp(): void
@@ -267,7 +267,7 @@ final class AcademicPersonsPublicProfilePluginTest extends AbstractAcademicPerso
         $content = $this->renderShippedProfile();
         $normalized = (string)preg_replace('/\s+/', ' ', $content);
 
-        $this->assertStringContainsString('data-identifier="academic-persons-clock"', $content);
+        $this->assertStringContainsString('data-identifier="tx-academicbase-info-time"', $content);
         $this->assertStringContainsString('academic-persons-detail__contact-line">Office hours</strong>', $normalized);
         $this->assertMatchesRegularExpression(
             '#academic-persons-detail__contact-office-hours">Tuesday 10:00 to 12:00<br ?/?>\s*Thursday by appointment</div>#',
@@ -314,7 +314,7 @@ final class AcademicPersonsPublicProfilePluginTest extends AbstractAcademicPerso
 
         $this->assertSame(3, substr_count($content, 'academic-persons-detail__contact-contract"'));
         $this->assertSame(2, substr_count($content, 'academic-persons-detail__contact-office-hours"'));
-        $this->assertSame(2, substr_count($content, 'data-identifier="academic-persons-clock"'));
+        $this->assertSame(2, substr_count($content, 'data-identifier="tx-academicbase-info-time"'));
     }
 
     /**
@@ -362,7 +362,8 @@ final class AcademicPersonsPublicProfilePluginTest extends AbstractAcademicPerso
      * partial did not follow, and a partial that asks the wrong registry.
      *
      * The wrapper of one icon is written out in full: site stylesheets select its classes and
-     * the inner `icon-markup`, and the move to the frontend registry kept it as it was.
+     * the inner `icon-markup`. The move to the frontend registry kept it as it was, the move
+     * to the shared icon set changed only the identifier in it.
      */
     #[Test]
     public function profileRendersOnlyResolvableIcons(): void
@@ -374,11 +375,11 @@ final class AcademicPersonsPublicProfilePluginTest extends AbstractAcademicPerso
             $this->assertStringContainsString('data-identifier="' . $identifier . '"', $content);
         }
         // Inlined, not an `<img>`: the markup is the SVG itself, so it follows the text colour.
-        $this->assertStringNotContainsString('Resources/Public/Icons/envelope.svg', $content);
+        $this->assertStringNotContainsString('Resources/Public/Icons/info/email.svg', $content);
         $this->assertStringContainsString('<svg', $content);
         $this->assertStringContainsString(
-            '<span class="t3js-icon icon icon-size-small icon-state-default icon-academic-persons-envelope"'
-            . ' data-identifier="academic-persons-envelope" aria-hidden="true">' . "\n"
+            '<span class="t3js-icon icon icon-size-small icon-state-default icon-tx-academicbase-info-email"'
+            . ' data-identifier="tx-academicbase-info-email" aria-hidden="true">' . "\n"
             . "\t" . '<span class="icon-markup">' . "\n"
             . '<svg ',
             $content,

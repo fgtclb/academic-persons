@@ -49,7 +49,7 @@ use TYPO3\CMS\Core\Utility\ExtensionManagementUtility;
         [
             'label' => 'LLL:EXT:academic_persons/Resources/Private/Language/locallang_be.xlf:plugin.list.label',
             'value' => 'academicpersons_list',
-            'icon' => 'persons_icon',
+            'icon' => 'tx-academicpersons-plugin-persons',
             'group' => 'academic',
         ],
         'academic_persons'
@@ -76,7 +76,7 @@ use TYPO3\CMS\Core\Utility\ExtensionManagementUtility;
         [
             'label' => 'LLL:EXT:academic_persons/Resources/Private/Language/locallang_be.xlf:plugin.listAndDetail.label',
             'value' => 'academicpersons_listanddetail',
-            'icon' => 'persons_icon',
+            'icon' => 'tx-academicpersons-plugin-persons',
             'group' => 'academic',
         ],
         'academic_persons'
@@ -103,7 +103,7 @@ use TYPO3\CMS\Core\Utility\ExtensionManagementUtility;
         [
             'label' => 'LLL:EXT:academic_persons/Resources/Private/Language/locallang_be.xlf:plugin.detail.label',
             'value' => 'academicpersons_detail',
-            'icon' => 'persons_icon',
+            'icon' => 'tx-academicpersons-plugin-persons',
             'group' => 'academic',
         ],
         'academic_persons'
@@ -129,7 +129,7 @@ use TYPO3\CMS\Core\Utility\ExtensionManagementUtility;
         [
             'label' => 'LLL:EXT:academic_persons/Resources/Private/Language/locallang_be.xlf:newContentElement.wizardItems.academic.card.title',
             'value' => 'academicpersons_card',
-            'icon' => 'persons_icon',
+            'icon' => 'tx-academicpersons-plugin-card',
             'group' => 'academic',
         ],
         'academic_persons'
@@ -155,7 +155,7 @@ use TYPO3\CMS\Core\Utility\ExtensionManagementUtility;
         [
             'label' => 'LLL:EXT:academic_persons/Resources/Private/Language/locallang_be.xlf:plugin.selectedprofiles.label',
             'value' => 'academicpersons_selectedprofiles',
-            'icon' => 'persons_icon',
+            'icon' => 'tx-academicpersons-plugin-selected-profiles',
             'group' => 'academic',
         ],
         'academic_persons'
@@ -181,7 +181,7 @@ use TYPO3\CMS\Core\Utility\ExtensionManagementUtility;
         [
             'label' => 'LLL:EXT:academic_persons/Resources/Private/Language/locallang_be.xlf:plugin.selectedcontracts.label',
             'value' => 'academicpersons_selectedcontracts',
-            'icon' => 'persons_icon',
+            'icon' => 'tx-academicpersons-plugin-selected-profiles',
             'group' => 'academic',
         ],
         'academic_persons'

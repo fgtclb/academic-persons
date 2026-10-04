@@ -31,7 +31,7 @@ $tcaConfiguration = [
             'fe_group' => 'fe_group',
         ],
         'typeicon_classes' => [
-            'default' => 'tx_academicpersons_domain_model_profile',
+            'default' => 'tx-academicpersons-record-profile',
         ],
     ],
     'columns' => [

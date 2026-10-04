@@ -30,10 +30,11 @@ use TYPO3\CMS\Core\Package\PackageManager;
  * the detail view, which shows the shipped drawing.
  *
  * The fixture `tests/profile-icon-replacement` is that site package: it replaces
- * `academic-persons-envelope` in the file of the frontend and `academic-persons-phone`
- * in the file of the backend, both with a rectangle. A TYPO3 v14 test instance orders
- * the packages by their keys, so the first test asserts that the fixture loads after
- * academic_persons.
+ * `tx-academicbase-info-email` in the file of the frontend and `tx-academicbase-info-phone`
+ * in the file of the backend, both with a rectangle. Both are shared icons of
+ * academic_base, so the replacement is read after academic_base registers them. A TYPO3
+ * v14 test instance orders the packages by their keys, so the first test asserts that the
+ * fixture loads after academic_base and academic_persons.
  */
 final class AcademicPersonsPublicProfileIconReplacementTest extends AbstractAcademicPersonsTestCase
 {
@@ -76,17 +77,16 @@ final class AcademicPersonsPublicProfileIconReplacementTest extends AbstractAcad
     public function theSitePackageLoadsAfterTheExtension(): void
     {
         $packageKeys = array_keys($this->get(PackageManager::class)->getActivePackages());
+        $fixturePosition = array_search('test_profile_icon_replacement', $packageKeys, true);
 
-        $this->assertGreaterThan(
-            array_search('academic_persons', $packageKeys, true),
-            array_search('test_profile_icon_replacement', $packageKeys, true),
-        );
+        $this->assertGreaterThan(array_search('academic_base', $packageKeys, true), $fixturePosition);
+        $this->assertGreaterThan(array_search('academic_persons', $packageKeys, true), $fixturePosition);
     }
 
     #[Test]
     public function aFrontendIconOfTheSitePackageReplacesTheShippedOne(): void
     {
-        $envelopes = $this->renderedIconMarkups($this->renderShippedProfile(), 'academic-persons-envelope');
+        $envelopes = $this->renderedIconMarkups($this->renderShippedProfile(), 'tx-academicbase-info-email');
 
         $this->assertNotSame([], $envelopes);
         foreach ($envelopes as $markup) {
@@ -97,12 +97,12 @@ final class AcademicPersonsPublicProfileIconReplacementTest extends AbstractAcad
     #[Test]
     public function aReplacementInTheBackendFileDoesNotReachTheDetailView(): void
     {
-        $phones = $this->renderedIconMarkups($this->renderShippedProfile(), 'academic-persons-phone');
+        $phones = $this->renderedIconMarkups($this->renderShippedProfile(), 'tx-academicbase-info-phone');
 
         $this->assertNotSame([], $phones);
         foreach ($phones as $markup) {
             $this->assertStringNotContainsString(self::REPLACED_DRAWING, $markup);
-            $this->assertStringContainsString('d="M3.654 1.328', $markup);
+            $this->assertStringContainsString('d="M224.2 89C216.3', $markup);
         }
     }
 

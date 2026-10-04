@@ -16,7 +16,8 @@ use PHPUnit\Framework\Attributes\Test;
  * ink of its file on the dark cards of a dark backend colour scheme (ACE-523).
  *
  * The identifiers are spelled out here rather than read back out of the registration, so a
- * rename has to be made twice instead of silently agreeing with itself.
+ * rename has to be made twice instead of silently agreeing with itself. Five of the nine are
+ * drawn by a shared file of EXT:academic_base, the identifier is still this extension's own.
  */
 final class RecordIconsTest extends AbstractAcademicPersonsTestCase
 {
@@ -28,15 +29,15 @@ final class RecordIconsTest extends AbstractAcademicPersonsTestCase
     public static function recordIconIdentifiers(): \Generator
     {
         $identifiers = [
-            'tx_academicpersons_domain_model_address',
-            'tx_academicpersons_domain_model_contract',
-            'tx_academicpersons_domain_model_email',
-            'tx_academicpersons_domain_model_function_type',
-            'tx_academicpersons_domain_model_location',
-            'tx_academicpersons_domain_model_organisational_unit',
-            'tx_academicpersons_domain_model_phone_number',
-            'tx_academicpersons_domain_model_profile',
-            'tx_academicpersons_domain_model_profile_information',
+            'tx-academicpersons-record-address',
+            'tx-academicpersons-record-contract',
+            'tx-academicpersons-record-email',
+            'tx-academicpersons-record-function-type',
+            'tx-academicpersons-record-location',
+            'tx-academicpersons-record-organisational-unit',
+            'tx-academicpersons-record-phone-number',
+            'tx-academicpersons-record-profile',
+            'tx-academicpersons-record-profile-information',
         ];
         foreach ($identifiers as $identifier) {
             yield $identifier => [$identifier];
@@ -69,6 +70,34 @@ final class RecordIconsTest extends AbstractAcademicPersonsTestCase
     public function renderedRecordIconCarriesItsIdentifier(string $identifier): void
     {
         $this->assertRenderedIconCarriesItsIdentifier($identifier);
+    }
+
+    /**
+     * @return \Generator<string, array{0: string, 1: string}>
+     */
+    public static function tableIconIdentifiers(): \Generator
+    {
+        foreach (self::recordIconIdentifiers() as [$identifier]) {
+            $table = 'tx_academicpersons_domain_model_' . str_replace(
+                '-',
+                '_',
+                substr($identifier, strlen('tx-academicpersons-record-')),
+            );
+            yield $table => [$table, $identifier];
+        }
+    }
+
+    /**
+     * The identifiers are no longer the table names, so the one place that binds a table to
+     * its icon is `ctrl.typeicon_classes`. A misspelt identifier there is no error: the
+     * backend renders `default-not-found`, and the TCA walk below skips an identifier that is
+     * not registered, as it skips one whose file lives in EXT:academic_base.
+     */
+    #[Test]
+    #[DataProvider('tableIconIdentifiers')]
+    public function recordTypeNamesItsIconIdentifier(string $table, string $identifier): void
+    {
+        $this->assertSame($identifier, $GLOBALS['TCA'][$table]['ctrl']['typeicon_classes']['default'] ?? null);
     }
 
     /**

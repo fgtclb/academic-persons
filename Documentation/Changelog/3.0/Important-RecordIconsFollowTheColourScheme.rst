@@ -20,8 +20,10 @@ which inlines the file in both markups, and the files themselves are drawn in
 `currentColor` with no colour of their own.
 
 That covers the record icons of all nine tables this extension ships, from
-:php:`tx_academicpersons_domain_model_address` to
-:php:`tx_academicpersons_domain_model_profile_information`.
+:sql:`tx_academicpersons_domain_model_address` to
+:sql:`tx_academicpersons_domain_model_profile_information`. Their identifiers
+are renamed in the same release, see
+:ref:`breaking-persons-public-profile-icons-moved-to-the-frontend-icon-registry`.
 
 Impact
 ======
@@ -31,10 +33,9 @@ in a dark colour scheme. Their markup is now the inlined :html:`<svg>` rather
 than an :html:`<img>`, which matters to any CSS or test that addressed the
 image.
 
-The plugin icon :php:`persons_icon` is a brand mark and keeps the core
-provider. The seven control icons of the public profile were already registered
-with the `currentColor` provider. They are frontend icons now, registered in
-:file:`Configuration/FrontendIcons.php`, see
+The content element icons are drawn and registered the same way. The seven
+control icons of the public profile are frontend icons, the shared icons of
+:guilabel:`academic_base` in its frontend icon registry, see
 :ref:`breaking-persons-public-profile-icons-moved-to-the-frontend-icon-registry`.
 
 Affected Installations

@@ -16,11 +16,12 @@ use TYPO3\CMS\Core\Imaging\IconRegistry;
 use TYPO3\CMS\Core\Imaging\IconSize;
 
 /**
- * The icons of the public profile detail view are frontend icons: registered in
- * `Configuration/FrontendIcons.php` and rendered by `ab:icon` of academic_base. The
- * backend never shows them, so the icon registry of the backend must not know them,
- * or a site that replaces one in `Configuration/Icons.php` sees no effect and no error.
- * The record icons and the plugin icon are the opposite case, backend icons only.
+ * The icons of the public profile detail view are frontend icons: the shared
+ * `tx-academicbase-*` identifiers, registered in `Configuration/FrontendIcons.php` of
+ * academic_base and rendered by its `ab:icon`. The backend never shows them, so the icon
+ * registry of the backend must not know them, or a site that replaces one in
+ * `Configuration/Icons.php` sees no effect and no error. The record icons and the content
+ * element icons are the opposite case, backend icons only.
  *
  * The identifiers are spelled out here rather than read back out of the registration, so a
  * rename has to be made twice instead of silently agreeing with itself.
@@ -35,13 +36,13 @@ final class PublicProfileIconsTest extends AbstractAcademicPersonsTestCase
     public static function publicProfileIconIdentifiers(): \Generator
     {
         $identifiers = [
-            'academic-persons-envelope',
-            'academic-persons-phone',
-            'academic-persons-address',
-            'academic-persons-room',
-            'academic-persons-clock',
-            'academic-persons-detail-plus',
-            'academic-persons-detail-minus',
+            'tx-academicbase-info-email',
+            'tx-academicbase-info-phone',
+            'tx-academicbase-info-location',
+            'tx-academicbase-info-room',
+            'tx-academicbase-info-time',
+            'tx-academicbase-action-expand',
+            'tx-academicbase-action-collapse',
         ];
         foreach ($identifiers as $identifier) {
             yield $identifier => [$identifier];
@@ -100,12 +101,12 @@ final class PublicProfileIconsTest extends AbstractAcademicPersonsTestCase
     public static function backendIconIdentifiers(): \Generator
     {
         yield from RecordIconsTest::recordIconIdentifiers();
-        yield 'persons_icon' => ['persons_icon'];
+        yield from ContentElementIconsTest::pluginIconIdentifiers();
     }
 
     /**
-     * The record icons and the plugin icon are shown by the backend only, and stay out of
-     * the frontend registry.
+     * The record icons and the content element icons are shown by the backend only, and
+     * stay out of the frontend registry.
      */
     #[Test]
     #[DataProvider('backendIconIdentifiers')]

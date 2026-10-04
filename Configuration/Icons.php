@@ -1,7 +1,8 @@
 <?php
 
+declare(strict_types=1);
+
 use FGTCLB\AcademicBase\Imaging\IconProvider\CurrentColorSvgIconProvider;
-use TYPO3\CMS\Core\Imaging\IconProvider\SvgIconProvider;
 
 /*
  * This file is part of the "academic_persons" Extension for TYPO3 CMS.
@@ -11,52 +12,65 @@ use TYPO3\CMS\Core\Imaging\IconProvider\SvgIconProvider;
  */
 
 /*
- * The record icons of the nine tables this extension ships are registered with the
- * provider of EXT:academic_base, which inlines the file in both markups instead of
- * rendering an <img>. An <img> is opaque to CSS and keeps the colours of its file, so
- * a record icon drawn in a dark ink stays dark on the dark cards of the backend colour
- * scheme. Inlined and drawn in `currentColor` it follows the text colour. The plugin
- * icon `persons_icon` is a brand mark and keeps the core provider.
+ * The icons the backend shows for this extension: Font Awesome Free solid, drawn in
+ * `currentColor` and inlined by the provider of EXT:academic_base, so they take the text
+ * colour of the backend in both colour schemes. Licence and origin of the files of this
+ * extension: Resources/Public/Icons/LICENSE-font-awesome.txt.
+ *
+ * Identifiers follow `tx-academicpersons-<group>-<name>`, files `Icons/<group>/<name>.svg`:
+ * `record` for the icon of a TCA table, `plugin` for a content element, named by its TCA
+ * CType item and by its new content element wizard entry alike. Where the meaning is one
+ * of the shared glyphs of EXT:academic_base, the file is taken from there. The icons of
+ * the public profile are frontend icons, the shared `tx-academicbase-*` identifiers of the
+ * frontend icon registry of EXT:academic_base, and are not registered here.
  */
 return [
-    'tx_academicpersons_domain_model_address' => [
+    'tx-academicpersons-record-address' => [
         'provider' => CurrentColorSvgIconProvider::class,
-        'source' => 'EXT:academic_persons/Resources/Public/Icons/tx_academicpersons_domain_model_address.svg',
+        'source' => 'EXT:academic_persons/Resources/Public/Icons/record/address.svg',
     ],
-    'tx_academicpersons_domain_model_contract' => [
+    'tx-academicpersons-record-contract' => [
         'provider' => CurrentColorSvgIconProvider::class,
-        'source' => 'EXT:academic_persons/Resources/Public/Icons/tx_academicpersons_domain_model_contract.svg',
+        'source' => 'EXT:academic_base/Resources/Public/Icons/info/contract.svg',
     ],
-    'tx_academicpersons_domain_model_email' => [
+    'tx-academicpersons-record-email' => [
         'provider' => CurrentColorSvgIconProvider::class,
-        'source' => 'EXT:academic_persons/Resources/Public/Icons/tx_academicpersons_domain_model_email.svg',
+        'source' => 'EXT:academic_base/Resources/Public/Icons/info/email.svg',
     ],
-    'tx_academicpersons_domain_model_function_type' => [
+    'tx-academicpersons-record-function-type' => [
         'provider' => CurrentColorSvgIconProvider::class,
-        'source' => 'EXT:academic_persons/Resources/Public/Icons/tx_academicpersons_domain_model_function_type.svg',
+        'source' => 'EXT:academic_persons/Resources/Public/Icons/record/function-type.svg',
     ],
-    'tx_academicpersons_domain_model_organisational_unit' => [
+    'tx-academicpersons-record-location' => [
         'provider' => CurrentColorSvgIconProvider::class,
-        'source' => 'EXT:academic_persons/Resources/Public/Icons/tx_academicpersons_domain_model_organisational_unit.svg',
+        'source' => 'EXT:academic_base/Resources/Public/Icons/info/location.svg',
     ],
-    'tx_academicpersons_domain_model_phone_number' => [
+    'tx-academicpersons-record-organisational-unit' => [
         'provider' => CurrentColorSvgIconProvider::class,
-        'source' => 'EXT:academic_persons/Resources/Public/Icons/tx_academicpersons_domain_model_phone_number.svg',
+        'source' => 'EXT:academic_persons/Resources/Public/Icons/record/organisational-unit.svg',
     ],
-    'tx_academicpersons_domain_model_profile' => [
+    'tx-academicpersons-record-phone-number' => [
         'provider' => CurrentColorSvgIconProvider::class,
-        'source' => 'EXT:academic_persons/Resources/Public/Icons/tx_academicpersons_domain_model_profile.svg',
+        'source' => 'EXT:academic_base/Resources/Public/Icons/info/phone.svg',
     ],
-    'tx_academicpersons_domain_model_location' => [
+    'tx-academicpersons-record-profile' => [
         'provider' => CurrentColorSvgIconProvider::class,
-        'source' => 'EXT:academic_persons/Resources/Public/Icons/tx_academicpersons_domain_model_location.svg',
+        'source' => 'EXT:academic_persons/Resources/Public/Icons/record/profile.svg',
     ],
-    'tx_academicpersons_domain_model_profile_information' => [
+    'tx-academicpersons-record-profile-information' => [
         'provider' => CurrentColorSvgIconProvider::class,
-        'source' => 'EXT:academic_persons/Resources/Public/Icons/tx_academicpersons_domain_model_profile_information.svg',
+        'source' => 'EXT:academic_base/Resources/Public/Icons/info/information.svg',
     ],
-    'persons_icon' => [
-        'provider' => SvgIconProvider::class,
-        'source' => 'EXT:academic_persons/Resources/Public/Icons/persons_icon.svg',
+    'tx-academicpersons-plugin-persons' => [
+        'provider' => CurrentColorSvgIconProvider::class,
+        'source' => 'EXT:academic_persons/Resources/Public/Icons/plugin/persons.svg',
+    ],
+    'tx-academicpersons-plugin-card' => [
+        'provider' => CurrentColorSvgIconProvider::class,
+        'source' => 'EXT:academic_persons/Resources/Public/Icons/plugin/card.svg',
+    ],
+    'tx-academicpersons-plugin-selected-profiles' => [
+        'provider' => CurrentColorSvgIconProvider::class,
+        'source' => 'EXT:academic_persons/Resources/Public/Icons/plugin/selected-profiles.svg',
     ],
 ];

@@ -29,7 +29,7 @@ $tcaConfiguration = [
             'disabled' => 'hidden',
         ],
         'typeicon_classes' => [
-            'default' => 'tx_academicpersons_domain_model_phone_number',
+            'default' => 'tx-academicpersons-record-phone-number',
         ],
         'sortby' => 'sorting',
     ],

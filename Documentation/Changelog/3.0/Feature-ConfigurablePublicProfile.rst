@@ -43,16 +43,15 @@ headings start at ``<h2>`` for the headline and step down from there.
 The view ships its own stylesheet and a small ES module for the fold-out
 entries, the sticky navigation and the Bootstrap ScrollSpy, both loaded by the
 template through the asset collector. The seven control icons of the view are
-frontend icons, registered in :file:`Configuration/FrontendIcons.php` as
-``academic-persons-envelope``, ``academic-persons-phone``,
-``academic-persons-address``, ``academic-persons-room``,
-``academic-persons-clock``, ``academic-persons-detail-plus`` and
-``academic-persons-detail-minus`` and rendered by the ``ab:icon`` ViewHelper of
-:guilabel:`academic_base`. They are drawn in ``currentColor`` and inlined, so
-they take the text colour of the page. A site package replaces one in its own
-:file:`Configuration/FrontendIcons.php`. They are `Bootstrap Icons
-<https://icons.getbootstrap.com/>`__ and carry their MIT licence in
-:file:`Resources/Public/Icons/LICENSE-bootstrap-icons.txt`.
+the shared frontend icons ``tx-academicbase-info-email``,
+``tx-academicbase-info-phone``, ``tx-academicbase-info-location``,
+``tx-academicbase-info-room``, ``tx-academicbase-info-time``,
+``tx-academicbase-action-expand`` and ``tx-academicbase-action-collapse`` of
+:guilabel:`academic_base`, rendered by its ``ab:icon`` ViewHelper. They are
+drawn in ``currentColor`` and inlined, so they take the text colour of the
+page. A site package replaces one in its own
+:file:`Configuration/FrontendIcons.php`, see
+:ref:`breaking-persons-public-profile-icons-moved-to-the-frontend-icon-registry`.
 
 The colours of the view are custom properties declared on
 ``.academic-persons-detail`` and are the theming hook: redeclare them on that
