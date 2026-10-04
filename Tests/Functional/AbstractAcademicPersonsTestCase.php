@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace FGTCLB\AcademicPersons\Tests\Functional;
 
-use SBUERK\TYPO3\Testing\TestCase\FunctionalTestCase;
+use FGTCLB\TestingHelper\TestCase\FunctionalTestCase;
 use TYPO3\CMS\Core\Configuration\ExtensionConfiguration;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
