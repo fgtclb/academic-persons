@@ -235,7 +235,7 @@ final class ProfileFilterRouteTest extends AbstractAcademicPersonsTestCase
     {
         $response = $this->submitFrontendForm(
             $listUri . '/view-mode/table/b',
-            'academic-persons-list__filter',
+            '//form[contains(concat(" ", normalize-space(@class), " "), " academic-persons-list__filter ")]',
             [$pluginNamespace => ['demand' => ['functionTypeFilter' => (string)self::PROFESSOR]]],
         );
 

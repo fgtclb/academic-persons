@@ -37,7 +37,7 @@ final class AcademicPersonsVisitorFilterFormTest extends AbstractAcademicPersons
     private const LIST_AND_DETAIL_ELEMENT = 2;
     private const SELECTION_ELEMENT = 3;
 
-    private const FORM_CLASS = 'academic-persons-list__filter';
+    private const FORM = '//form[contains(concat(" ", normalize-space(@class), " "), " academic-persons-list__filter ")]';
 
     protected function setUp(): void
     {
@@ -159,7 +159,7 @@ final class AcademicPersonsVisitorFilterFormTest extends AbstractAcademicPersons
      */
     private function forms(\DOMXPath $xpath): \DOMNodeList
     {
-        return $this->nodes($xpath, sprintf("//form[contains(concat(' ', normalize-space(@class), ' '), ' %s ')]", self::FORM_CLASS));
+        return $this->nodes($xpath, self::FORM);
     }
 
     private function form(\DOMXPath $xpath): \DOMElement
@@ -352,7 +352,7 @@ final class AcademicPersonsVisitorFilterFormTest extends AbstractAcademicPersons
         $this->enableFilters($contentElement);
         [$url, , $pluginNamespace] = $this->element($contentElement);
 
-        $response = $this->submitFrontendForm($url, self::FORM_CLASS, [$pluginNamespace => ['demand' => ['functionTypeFilter' => '1']]]);
+        $response = $this->submitFrontendForm($url, self::FORM, [$pluginNamespace => ['demand' => ['functionTypeFilter' => '1']]]);
 
         $location = $this->assertSeeOtherWithCacheHash($response);
         $this->assertStringStartsWith($url . '?', $location);
@@ -371,7 +371,7 @@ final class AcademicPersonsVisitorFilterFormTest extends AbstractAcademicPersons
         $this->enableFilters($contentElement);
         [$url, , $pluginNamespace] = $this->element($contentElement);
 
-        $response = $this->submitFrontendForm($url, self::FORM_CLASS, [$pluginNamespace => ['demand' => ['functionTypeFilter' => '4']]]);
+        $response = $this->submitFrontendForm($url, self::FORM, [$pluginNamespace => ['demand' => ['functionTypeFilter' => '4']]]);
 
         $this->assertSame(303, $response->getStatusCode());
         $this->assertSame($url, $response->getHeaderLine('Location'));
@@ -388,7 +388,7 @@ final class AcademicPersonsVisitorFilterFormTest extends AbstractAcademicPersons
         $this->addFlexFormFields(self::LIST_ELEMENT, ['settings.viewMode.enabled' => '1']);
         $pageUrl = $this->listUrl(self::LIST_ELEMENT, ['viewMode' => 'table', 'alphabetFilter' => 'e', 'currentPage' => 2]);
 
-        $response = $this->submitFrontendForm($pageUrl, self::FORM_CLASS, ['tx_academicpersons_list' => ['demand' => ['functionTypeFilter' => '1']]]);
+        $response = $this->submitFrontendForm($pageUrl, self::FORM, ['tx_academicpersons_list' => ['demand' => ['functionTypeFilter' => '1']]]);
 
         $location = $this->assertSeeOtherWithCacheHash($response);
         $this->assertSame(
