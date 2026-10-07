@@ -167,7 +167,7 @@ final class AcademicPersonsProfileImageRenderingTest extends AbstractAcademicPer
         $image = $this->nodes($xpath, './/picture/img', $card)->item(0);
         $this->assertInstanceOf(\DOMElement::class, $image);
         $this->assertStringEndsWith('.jpg', $image->getAttribute('src'));
-        $this->assertSame('academic-persons-item__image card-img-top img-fluid', $image->getAttribute('class'));
+        $this->assertSame('ace-image academic-persons-item__image card-img-top img-fluid', $image->getAttribute('class'));
         $this->assertSame('Portrait of Max Müllermann', $image->getAttribute('alt'));
     }
 
@@ -193,7 +193,7 @@ final class AcademicPersonsProfileImageRenderingTest extends AbstractAcademicPer
         $image = $images->item(0);
         $this->assertInstanceOf(\DOMElement::class, $image);
         $this->assertStringEndsWith('Images/ProfilePlaceholder.svg', $image->getAttribute('src'));
-        $this->assertSame('academic-persons-item__image card-img-top img-fluid', $image->getAttribute('class'));
+        $this->assertSame('ace-image academic-persons-item__image card-img-top img-fluid', $image->getAttribute('class'));
     }
 
     #[Test]
@@ -264,7 +264,7 @@ final class AcademicPersonsProfileImageRenderingTest extends AbstractAcademicPer
         }
         $image = $this->nodes($xpath, '//figure/picture/img')->item(0);
         $this->assertInstanceOf(\DOMElement::class, $image);
-        $this->assertSame('academic-persons-detail__image img-fluid rounded-0', $image->getAttribute('class'));
+        $this->assertSame('ace-image academic-persons-detail__image img-fluid rounded-0', $image->getAttribute('class'));
         $this->assertSame('lazy', $image->getAttribute('loading'));
         // Title, first and last name, the empty middle name leaves no gap (ACE-877).
         $this->assertSame('Prof. Dr. Max Müllermann', $image->getAttribute('alt'));

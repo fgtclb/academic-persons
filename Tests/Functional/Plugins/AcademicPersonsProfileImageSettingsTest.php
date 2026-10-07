@@ -147,7 +147,7 @@ final class AcademicPersonsProfileImageSettingsTest extends AbstractAcademicPers
     private function assertItemShowsThePlaceholder(\DOMXPath $xpath, \DOMElement $item, string $fileName): void
     {
         $this->assertSame(0, $this->countNodesMatching($xpath, './/picture', $item));
-        $image = $this->elementMatching($xpath, sprintf('.//img[@class="%s"]', self::ITEM_IMAGE_CLASS), $item);
+        $image = $this->elementMatching($xpath, sprintf('.//img[@class="%s"]', $this->imageClassAttribute(self::ITEM_IMAGE_CLASS)), $item);
         $this->assertStringEndsWith('Images/' . $fileName, $image->getAttribute('src'));
         // Decorative: it shows nobody, and the name is the heading of the same item.
         $this->assertTrue($image->hasAttribute('alt'));
