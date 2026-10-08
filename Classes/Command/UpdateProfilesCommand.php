@@ -18,6 +18,7 @@ use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
+use TYPO3\CMS\Core\Utility\MathUtility;
 
 /**
  * @internal This command is for internal use and may change without notice.
@@ -52,35 +53,36 @@ final class UpdateProfilesCommand extends Command
 
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
-        $this->profileUpdateCommandService->execute(new ProfileUpdateCommandDto(
-            includePids: $this->getCommaSeparatedIntegerValueListOptionAsArrayOfIntegerValues($input, 'include-pids'),
-            excludePids: $this->getCommaSeparatedIntegerValueListOptionAsArrayOfIntegerValues($input, 'exclude-pids'),
+        $includePids = $this->getPidListOption($input, 'include-pids');
+        $excludePids = $this->getPidListOption($input, 'exclude-pids');
+        if ($includePids === null || $excludePids === null) {
+            $output->writeln('<error>--include-pids and --exclude-pids take a comma-separated list of page uids.</error>');
+            return Command::INVALID;
+        }
+        $updated = $this->profileUpdateCommandService->execute(new ProfileUpdateCommandDto(
+            includePids: $includePids,
+            excludePids: $excludePids,
         ));
+        $output->writeln(sprintf('Profiles of %d frontend user(s) updated.', $updated));
         return Command::SUCCESS;
     }
 
     /**
-     * @param InputInterface $input
-     * @param string $option
-     * @return int[]
+     * The same reading as `academic:cleanupprofiles`: a mistyped page list must not
+     * silently widen or narrow the run, so any part that is no page uid makes the
+     * list invalid.
+     *
+     * @return int[]|null null for a list with a part that is no page uid
      */
-    private function getCommaSeparatedIntegerValueListOptionAsArrayOfIntegerValues(InputInterface $input, string $option): array
+    private function getPidListOption(InputInterface $input, string $option): ?array
     {
-        if ($option === '') {
-            return [];
+        $pids = [];
+        foreach (GeneralUtility::trimExplode(',', (string)$input->getOption($option), true) as $part) {
+            if (!MathUtility::canBeInterpretedAsInteger($part) || (int)$part < 0) {
+                return null;
+            }
+            $pids[] = (int)$part;
         }
-        $valuesStringList = $this->getOptionWithEmptyStringFallback($input, $option);
-        $values = GeneralUtility::intExplode(',', $valuesStringList, true);
-        $values = array_unique($values);
-        $values = array_values($values);
-        return $values;
-    }
-
-    private function getOptionWithEmptyStringFallback(InputInterface $input, string $option): mixed
-    {
-        if ($option === '' || !$input->hasOption($option)) {
-            return '';
-        }
-        return (string)($input->getOption($option)) ?: '';
+        return array_values(array_unique($pids));
     }
 }
