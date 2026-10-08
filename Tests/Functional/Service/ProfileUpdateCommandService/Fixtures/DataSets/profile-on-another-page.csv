@@ -1,0 +1,15 @@
+"fe_users"
+,"uid","pid","username","deleted","usergroup","disable","tx_extbase_type","first_name","middle_name","last_name","www","address","zip","city","country","email","telephone","fax"
+,50,100,"profile-folder-new-contract",0,"10",0,"Tx_Academicpersonsedit_Domain_Model_FrontendUser","Folder","","New","","Street 50","73250","Wernau","Germany","new@example.org","+49 711 500000","+49 711 500001"
+,51,100,"profile-folder-existing-contract",0,"10",0,"Tx_Academicpersonsedit_Domain_Model_FrontendUser","Folder","","Existing","","Street 51","73250","Wernau","Germany","existing@example.org","+49 711 510000","+49 711 510001"
+"tx_academicpersons_feuser_mm"
+,"uid_local","uid_foreign","sorting","sorting_foreign"
+,50,50,1,0
+,51,51,1,0
+"tx_academicpersons_domain_model_profile"
+,"uid","pid","first_name","last_name","import_identifier"
+,50,110,"Folder","New","fe_users:50"
+,51,110,"Folder","Existing","fe_users:51"
+"tx_academicpersons_domain_model_contract"
+,"uid","pid","profile","import_identifier"
+,51,1110,51,"fe_users:51"

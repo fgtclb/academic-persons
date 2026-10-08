@@ -989,6 +989,92 @@ final class UsingDefaultProfileFactoryOnlyTest extends AbstractAcademicPersonsTe
     }
 
     /**
+     * The profiles are stored on another page than their frontend users, as they are
+     * whenever an editor moved them or created them in a folder of their own. A contract
+     * and the address, email address and phone numbers the synchronisation creates
+     * belong on the page of their profile, not on the one of the frontend user, which
+     * an editor of the profile folder may not even be allowed to see (ACE-843).
+     * Profile 50 gets a new contract on its page. Profile 51 gets new records in its
+     * existing contract, which lies on page 1110, and they follow that contract.
+     */
+    #[Test]
+    public function executeStoresNewRecordsOnThePageOfTheirProfile(): void
+    {
+        $this->importCSVDataSet(__DIR__ . '/Fixtures/DataSets/profile-on-another-page.csv');
+
+        $profileUpdateCommandService = GeneralUtility::makeInstance(ProfileUpdateCommandService::class);
+        $profileUpdateCommandService->execute(new ProfileUpdateCommandDto(includePids: [100], excludePids: []));
+
+        $contracts = $this->fetchPidsOfRecords('tx_academicpersons_domain_model_contract', 'profile', [50, 51]);
+        $this->assertCount(2, $contracts);
+        $pages = ['tx_academicpersons_domain_model_contract' => $this->pagesByRecord($contracts)];
+        $contractUids = array_column($contracts, 'uid');
+        foreach ([
+            'tx_academicpersons_domain_model_address' => 2,
+            'tx_academicpersons_domain_model_email' => 2,
+            'tx_academicpersons_domain_model_phone_number' => 4,
+        ] as $tableName => $expectedCount) {
+            $rows = $this->fetchPidsOfRecords($tableName, 'contract', $contractUids);
+            $this->assertCount($expectedCount, $rows, $tableName);
+            $pages[$tableName] = $this->pagesByRecord($rows);
+        }
+
+        $expected = [];
+        foreach ($pages as $tableName => $pagesOfTable) {
+            foreach (array_keys($pagesOfTable) as $record) {
+                // Contract 51 itself, as "51 of 51", and every record of it.
+                $expected[$tableName][$record] = str_ends_with($record, ' of 51') ? 1110 : 110;
+            }
+        }
+        $this->assertSame($expected, $pages);
+    }
+
+    /**
+     * @param list<array{uid: int, pid: int, parent: int}> $rows
+     * @return array<string, int> page by "<uid> of <parent>"
+     */
+    private function pagesByRecord(array $rows): array
+    {
+        $pages = [];
+        foreach ($rows as $row) {
+            $pages[sprintf('%d of %d', $row['uid'], $row['parent'])] = $row['pid'];
+        }
+        return $pages;
+    }
+
+    /**
+     * @param int[] $parentUids
+     * @return list<array{uid: int, pid: int, parent: int}>
+     */
+    private function fetchPidsOfRecords(string $tableName, string $parentField, array $parentUids): array
+    {
+        $queryBuilder = $this->getConnectionPool()->getQueryBuilderForTable($tableName);
+        $queryBuilder->getRestrictions()->removeAll();
+        $rows = $queryBuilder
+            ->select('uid', 'pid', $parentField)
+            ->from($tableName)
+            ->where(
+                $queryBuilder->expr()->in(
+                    $parentField,
+                    $queryBuilder->quoteArrayBasedValueListToIntegerList($parentUids),
+                ),
+                $queryBuilder->expr()->eq('deleted', 0),
+            )
+            ->orderBy('uid')
+            ->executeQuery()
+            ->fetchAllAssociative();
+
+        return array_map(
+            static fn(array $row): array => [
+                'uid' => (int)$row['uid'],
+                'pid' => (int)$row['pid'],
+                'parent' => (int)$row[$parentField],
+            ],
+            $rows,
+        );
+    }
+
+    /**
      * The identifier carries the source field and never the configured type, so changing
      * the configuration updates a record instead of writing a second one. This is the
      * trap ACE-365 reproduced before the change: with the type inside the identifier, a

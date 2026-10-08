@@ -84,8 +84,10 @@ final class ProfileFactory extends AbstractProfileFactory
      */
     protected function updateProfileFromFrontendUser(array $frontendUserData, Profile $profile): void
     {
+        // Records created here belong on the page of their profile, which need not be
+        // the page of the frontend user. Those of an existing contract follow the contract.
         /** @var int<0, max> $pid */
-        $pid = (int)$frontendUserData['pid'];
+        $pid = $profile->getPid() ?? (int)$frontendUserData['pid'];
         $this->applyProfileData($frontendUserData, $profile);
         $importIdentifier = sprintf('%s:%s', 'fe_users', $frontendUserData['uid']);
         $contracts = $profile->getContracts();
@@ -130,7 +132,9 @@ final class ProfileFactory extends AbstractProfileFactory
             $contract->setPid($pid);
             $profile->getContracts()->attach($contract);
         }
-        $this->applyContractData($frontendUserData, $contract, $pid);
+        /** @var int<0, max> $contractPid */
+        $contractPid = $contract->getPid() ?? $pid;
+        $this->applyContractData($frontendUserData, $contract, $contractPid);
     }
 
     /**
