@@ -13,6 +13,7 @@ namespace FGTCLB\AcademicPersons\Domain\Repository;
 
 use Doctrine\DBAL\Platforms\PostgreSQLPlatform;
 use FGTCLB\AcademicBase\Domain\Model\Dto\PluginControllerActionContextInterface;
+use FGTCLB\AcademicBase\Persistence\HiddenRecordsFetcher;
 use FGTCLB\AcademicPersons\DemandValues\AlphabetFilterLetters;
 use FGTCLB\AcademicPersons\DemandValues\GroupByValues;
 use FGTCLB\AcademicPersons\DemandValues\SortByValues;
@@ -23,7 +24,6 @@ use FGTCLB\AcademicPersons\Event\ModifyProfileQueryEvent;
 use Psr\EventDispatcher\EventDispatcherInterface;
 use TYPO3\CMS\Core\Context\Context;
 use TYPO3\CMS\Core\Context\LanguageAspect;
-use TYPO3\CMS\Core\Context\VisibilityAspect;
 use TYPO3\CMS\Core\Database\Connection;
 use TYPO3\CMS\Core\Database\ConnectionPool;
 use TYPO3\CMS\Core\Database\Query\Restriction\WorkspaceRestriction;
@@ -45,6 +45,8 @@ class ProfileRepository extends Repository
 
     protected TcaSchemaFactory $tcaSchemaFactory;
 
+    private HiddenRecordsFetcher $hiddenRecordsFetcher;
+
     public function injectEventDispatcher(EventDispatcherInterface $eventDispatcher): void
     {
         $this->eventDispatcher = $eventDispatcher;
@@ -53,6 +55,11 @@ class ProfileRepository extends Repository
     public function injectTcaSchemaFactory(TcaSchemaFactory $tcaSchemaFactory): void
     {
         $this->tcaSchemaFactory = $tcaSchemaFactory;
+    }
+
+    public function injectHiddenRecordsFetcher(HiddenRecordsFetcher $hiddenRecordsFetcher): void
+    {
+        $this->hiddenRecordsFetcher = $hiddenRecordsFetcher;
     }
 
     /**
@@ -114,7 +121,7 @@ class ProfileRepository extends Repository
         $this->applyDemandSettings($query, $demand);
         [$constraint, $orderings] = $this->resolveDemandForQuery($query, $demand);
         $this->applyQuery($query, $constraint, $orderings, $demand, $context);
-        return $query->execute();
+        return $this->hiddenRecordsFetcher->execute($query);
     }
 
     /**
@@ -688,7 +695,7 @@ class ProfileRepository extends Repository
         // deliberately not reproduced here: `in()` does not preserve it, and honouring
         // it would be a behaviour change beyond making the list reproducible.
         $this->applyQuery($query, $query->in('uid', $uids), self::FALLBACK_ORDERINGS, null, $context);
-        return $query->execute();
+        return $this->hiddenRecordsFetcher->execute($query);
     }
 
     /**
@@ -743,21 +750,9 @@ class ProfileRepository extends Repository
      * like {@see self::findByUidIncludingHidden()}. The profile editor lists and opens the
      * owner's profiles through it, so that an owner who hid a profile can show it again.
      *
-     * The query is executed right here, with the visibility aspect of the context lifted
-     * to hidden content for its duration and restored afterwards. Extbase overlays the
-     * translation through `PageRepository`, which reads that aspect and not the query
-     * settings: without it a hidden profile would be returned in its default language in
-     * a translated site language, and every edit made there would write the default
-     * record.
-     *
-     * The relations of `Profile` that load eagerly, the image reference and the frontend
-     * users, are read within the same window, so a hidden image reference or a disabled
-     * frontend user is included for the owner. Everything else is lazy and loads later
-     * with the visibility of the request.
-     *
-     * @todo TYPO3 v14.3.7 mirrors the ignored enable fields into the context Extbase
-     *       overlays with, which makes the lift redundant there. Drop it once v13 and
-     *       v14.3.6 are no longer supported.
+     * The result is fetched through {@see HiddenRecordsFetcher}, so that a hidden profile is
+     * returned in a translated site language with its translation on TYPO3 v13 as well: every
+     * edit made there writes the translation, not the default record.
      *
      * @return list<Profile>
      */
@@ -768,21 +763,9 @@ class ProfileRepository extends Repository
         $this->includeHiddenRecords($query);
         $query->setOrderings(self::FALLBACK_ORDERINGS);
         $query->matching($query->contains('frontendUsers', $frontendUserUid));
-
-        $context = GeneralUtility::makeInstance(Context::class);
-        $visibilityAspect = $context->getAspect('visibility');
-        $context->setAspect('visibility', new VisibilityAspect(
-            includeHiddenPages: (bool)$visibilityAspect->get('includeHiddenPages'),
-            includeHiddenContent: true,
-            includeDeletedRecords: (bool)$visibilityAspect->get('includeDeletedRecords'),
-            includeScheduledRecords: (bool)$visibilityAspect->get('includeScheduledRecords'),
-        ));
-        try {
-            /** @var list<Profile> $profiles */
-            $profiles = array_values($query->execute()->toArray());
-        } finally {
-            $context->setAspect('visibility', $visibilityAspect);
-        }
+        $result = $this->hiddenRecordsFetcher->execute($query);
+        /** @var list<Profile> $profiles */
+        $profiles = array_values($result->toArray());
         return $profiles;
     }
 

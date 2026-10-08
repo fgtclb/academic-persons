@@ -13,6 +13,7 @@ namespace FGTCLB\AcademicPersons\Controller;
 
 use FGTCLB\AcademicBase\Controller\DispatchModifyPluginViewEventMethodTrait;
 use FGTCLB\AcademicBase\Controller\GetCurrentContentRecordMethodTrait;
+use FGTCLB\AcademicBase\Persistence\HiddenRecordsFetcher;
 use FGTCLB\AcademicPersons\DemandValues\AlphabetFilterLetters;
 use FGTCLB\AcademicPersons\Domain\Model\Dto\PluginControllerActionContext;
 use FGTCLB\AcademicPersons\Domain\Model\Dto\ProfileDemand;
@@ -40,6 +41,7 @@ use TYPO3\CMS\Extbase\Annotation\IgnoreValidation;
 use TYPO3\CMS\Extbase\DomainObject\AbstractEntity;
 use TYPO3\CMS\Extbase\Mvc\Controller\ActionController;
 use TYPO3\CMS\Extbase\Pagination\QueryResultPaginator;
+use TYPO3\CMS\Extbase\Persistence\QueryResultInterface;
 use TYPO3\CMS\Extbase\Reflection\ObjectAccess;
 use TYPO3\CMS\Frontend\ContentObject\ContentObjectRenderer;
 use TYPO3\CMS\Frontend\Controller\ErrorController;
@@ -94,6 +96,7 @@ final class ProfileController extends ActionController
         private readonly ProfileRepository $profileRepository,
         private readonly ProfileTitleProvider $profileTitleProvider,
         private readonly AcademicPersonsSettings $academicPersonsSettings,
+        private readonly HiddenRecordsFetcher $hiddenRecordsFetcher,
     ) {}
 
     public function initializeListAction(): void
@@ -191,6 +194,12 @@ final class ProfileController extends ActionController
             $paginator = $manualSelection
                 ? new ArrayPaginator($profiles, $demand->getCurrentPage(), $resultsPerPage)
                 : new QueryResultPaginator($profiles, $demand->getCurrentPage(), $resultsPerPage);
+            // The query result paginator executes the query of the page on its own, and the
+            // template renders that result, so it is fetched like the one of the repository.
+            $paginatedItems = $paginator->getPaginatedItems();
+            if ($paginatedItems instanceof QueryResultInterface) {
+                $this->hiddenRecordsFetcher->fetch($paginatedItems);
+            }
             if (ExtensionManagementUtility::isLoaded('numbered_pagination')
                 && class_exists(NumberedPagination::class)
             ) {

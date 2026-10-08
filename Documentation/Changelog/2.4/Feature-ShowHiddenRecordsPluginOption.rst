@@ -25,9 +25,14 @@ core-version-aware :file:`List.xml` flexform; `Selected profiles`,
 provided for both the TYPO3 v12 and v13 flexform data structures.
 
 When the option is enabled, the affected frontend listing includes hidden
-(disabled) records, independent of the Context API visibility settings.
+(disabled) records, also for visitors without a preview of hidden records.
 Only the `hidden` enable column (`disabled`) is ignored; the `deleted`,
 `starttime`/`endtime` and `fe_group` restrictions stay in effect.
+
+On a translated page the listing shows the translation of a hidden record,
+and follows the fallback type of the site language like for any other
+record. The start and end time of the default record keep deciding for its
+translation.
 
 The single-profile **Detail** plugin resolves its profile through Extbase
 argument mapping, which normally respects enable fields. When the option
