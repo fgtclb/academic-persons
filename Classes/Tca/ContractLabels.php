@@ -14,7 +14,7 @@ class ContractLabels
      */
     public function getTitle(array &$parameters): void
     {
-        if (!isset($parameters['row']) && !isset($parameters['row']['uid'])) {
+        if (!isset($parameters['row']['uid'])) {
             return;
         }
 
