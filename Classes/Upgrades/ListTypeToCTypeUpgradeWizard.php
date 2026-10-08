@@ -56,7 +56,9 @@ final class ListTypeToCTypeUpgradeWizard implements UpgradeWizardInterface
 
     public function getDescription(): string
     {
-        return '';
+        return 'Turns every "Insert plugin" content element of the academic_persons plugins into a content element'
+            . ' of the type of the same name, and replaces the plugin permissions "tt_content:list_type:<plugin>"'
+            . ' of backend user groups with the permission for that content element type.';
     }
 
     public function getPrerequisites(): array
