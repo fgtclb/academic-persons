@@ -8,7 +8,6 @@ use FGTCLB\AcademicBase\Event\ModifyTcaSelectFieldItemsEvent;
 use FGTCLB\AcademicPersons\Domain\Repository\ContractRepository;
 use Psr\EventDispatcher\EventDispatcherInterface;
 use TYPO3\CMS\Core\Site\Entity\Site;
-use TYPO3\CMS\Core\Utility\ArrayUtility;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
@@ -48,10 +47,12 @@ final class ContractItems
      */
     public function itemsProcFunc(array &$parameters): void
     {
-        ArrayUtility::mergeRecursiveWithOverrule(
-            $parameters['items'],
-            $this->getDefaultContractItems($parameters)
-        );
+        // Appended, never merged: both lists are indexed from 0, so a merge replaced the
+        // items the field declares itself, the empty item of a single select among them.
+        $parameters['items'] = [
+            ...array_values($parameters['items']),
+            ...$this->getDefaultContractItems($parameters),
+        ];
         /** @var ModifyTcaSelectFieldItemsEvent $event */
         $event = GeneralUtility::makeInstance(EventDispatcherInterface::class)->dispatch(new ModifyTcaSelectFieldItemsEvent(parameters: $parameters));
         $parameters = $event->getParameters();

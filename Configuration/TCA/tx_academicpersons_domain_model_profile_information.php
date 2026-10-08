@@ -54,6 +54,9 @@ $tcaConfiguration = [
             'label' => 'LLL:EXT:core/Resources/Private/Language/locallang_general.xlf:LGL.language',
             'config' => [
                 'type' => 'language',
+                // A new record has no language otherwise, and the profile select reads it
+                // through ###REC_FIELD_sys_language_uid###, which then renders ''.
+                'default' => 0,
             ],
         ],
         'l10n_parent' => [
@@ -84,7 +87,8 @@ $tcaConfiguration = [
                 'type' => 'select',
                 'renderType' => 'selectSingle',
                 'foreign_table' => 'tx_academicpersons_domain_model_profile',
-                'foreign_table_where' => 'AND {#tx_academicpersons_domain_model_profile}.{#sys_language_uid} IN (-1,0)',
+                // The language of the record itself: a translation belongs to the translated profile.
+                'foreign_table_where' => 'AND {#tx_academicpersons_domain_model_profile}.{#sys_language_uid} IN (-1,0,###REC_FIELD_sys_language_uid###)',
             ],
         ],
         'type' => [
