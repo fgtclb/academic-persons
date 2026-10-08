@@ -83,7 +83,7 @@ $tcaConfiguration = [
             ],
         ],
         'sorting' => [
-            'label' => 'LLL:EXT:academic_persons/Resources/Private/Language/locallang_tca.xlf:tx_academicpersons_domain_model_profile.sorting.label',
+            'label' => 'LLL:EXT:academic_persons/Resources/Private/Language/locallang_tca.xlf:generic.columns.sorting.label',
             'config' => [
                 'type' => 'passthrough',
             ],
@@ -138,7 +138,7 @@ $tcaConfiguration = [
         ],
         'language' => [
             'showitem' => implode(',', [
-                'sys_language_uid;LLL:EXT:frontend/Resources/Private/Language/locallang_ttc.xlf:sys_language_uid_formlabel',
+                'sys_language_uid',
                 'l10n_parent',
             ]),
         ],

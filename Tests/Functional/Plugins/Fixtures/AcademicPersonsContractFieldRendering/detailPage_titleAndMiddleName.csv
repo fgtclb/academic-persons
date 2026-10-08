@@ -9,7 +9,7 @@
 ,2,100,0,0,0,0,"Faculty of Engineering",""
 "tx_academicpersons_domain_model_profile",
 ,"uid","pid","deleted","hidden","sys_language_uid","l10n_parent","title","first_name","middle_name","last_name","slug","contracts","image"
-,1,100,0,0,0,0,"","Max","","Müllermann","max-muellermann",1,1
+,1,100,0,0,0,0,"Prof. Dr.","Max","Maria","Müllermann","max-muellermann",1,1
 ,2,100,0,0,0,0,"","Horst","","Huber","horst-huber",1,0
 ,3,100,0,0,0,0,"","Erika","","Beispiel","erika-beispiel",1,0
 "tx_academicpersons_domain_model_contract",

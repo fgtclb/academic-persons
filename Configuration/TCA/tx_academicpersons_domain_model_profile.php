@@ -372,7 +372,7 @@ $tcaConfiguration = [
             ],
         ],
         'frontend_users' => [
-            'label' => 'LLL:EXT:academic_persons_edit/Resources/Private/Language/locallang_be.xlf:tx_academicpersons_domain_model_profile.columns.frontend_users.label',
+            'label' => 'LLL:EXT:academic_persons/Resources/Private/Language/locallang_tca.xlf:tx_academicpersons_domain_model_profile.columns.frontend_users.label',
             'exclude' => true,
             'l10n_display' => 'defaultAsReadonly',
             'l10n_mode' => 'exclude',
@@ -455,7 +455,7 @@ $tcaConfiguration = [
         ],
         'language' => [
             'showitem' => implode(',', [
-                'sys_language_uid;LLL:EXT:frontend/Resources/Private/Language/locallang_ttc.xlf:sys_language_uid_formlabel',
+                'sys_language_uid',
                 'l10n_parent',
             ]),
         ],
@@ -494,7 +494,7 @@ $tcaConfiguration = [
                 'publications',
                 'lectures',
                 'press_media',
-                '--div--;LLL:EXT:academic_persons_edit/Resources/Private/Language/locallang_be.xlf:tx_academicpersons_domain_model_profile.tabs.frontend_users.label',
+                '--div--;LLL:EXT:academic_persons/Resources/Private/Language/locallang_tca.xlf:tx_academicpersons_domain_model_profile.div.frontend_users.label',
                 'frontend_users',
                 '--div--;LLL:EXT:core/Resources/Private/Language/Form/locallang_tabs.xlf:language',
                 '--palette--;;language',

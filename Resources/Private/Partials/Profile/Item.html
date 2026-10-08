@@ -43,7 +43,7 @@
                     <f:render
                         partial="Profile/SectionHeader"
                         arguments="{
-                            header: '{profile.firstName} {profile.middleName} {profile.lastName}',
+                            header: '{profile.firstName}{f:if(condition: profile.middleName, then: \' {profile.middleName}\')} {profile.lastName}',
                             layout: '{data.header_layout}',
                             subheader: '{data.subheader}',
                             link: '{detailUri}',
@@ -55,7 +55,7 @@
                     <f:render
                         partial="Profile/Header"
                         arguments="{
-                            header: '{profile.firstName} {profile.middleName} {profile.lastName}',
+                            header: '{profile.firstName}{f:if(condition: profile.middleName, then: \' {profile.middleName}\')} {profile.lastName}',
                             layout: '{data.header_layout}',
                             subheader: '{data.subheader}',
                             link: '{detailUri}',

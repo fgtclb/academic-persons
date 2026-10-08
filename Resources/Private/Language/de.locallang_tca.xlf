@@ -10,6 +10,32 @@
 	>
 		<header/>
 		<body>
+			<!-- Generic -->
+
+			<trans-unit id="generic.columns.import_identifier.label">
+				<source>Import identifier</source>
+				<target>Import-Kennung</target>
+			</trans-unit>
+			<trans-unit id="generic.columns.sorting.label">
+				<source>Sorting</source>
+				<target>Sortierung</target>
+			</trans-unit>
+
+			<!-- Frontend users -->
+
+			<trans-unit id="fe_users.columns.tx_academicpersons_profiles.label">
+				<source>Assigned Profiles</source>
+				<target>Zugewiesene Profile</target>
+			</trans-unit>
+			<trans-unit id="fe_users.columns.tx_extbase_type.items.Tx_AcademicPersonsEdit_Domain_Model_FrontendUser">
+				<source>Academic Persons: User</source>
+				<target>Akademische Personen: Benutzer</target>
+			</trans-unit>
+			<trans-unit id="fe_users.tabs.tx_academicpersons_profiles.label">
+				<source>Profiles</source>
+				<target>Profile</target>
+			</trans-unit>
+
 			<!-- Addresses -->
 
 			<trans-unit id="tx_academicpersons_domain_model_address.columns.additional.label">
@@ -95,6 +121,10 @@
 				<source>Position</source>
 				<target>Position</target>
 			</trans-unit>
+			<trans-unit id="tx_academicpersons_domain_model_contract.columns.profile.label">
+				<source>Profile</source>
+				<target>Profil</target>
+			</trans-unit>
 			<trans-unit id="tx_academicpersons_domain_model_contract.columns.publish.label">
 				<source>Show this contract online?</source>
 				<target>Diesen Vertrag online anzeigen?</target>
@@ -102,6 +132,10 @@
 			<trans-unit id="tx_academicpersons_domain_model_contract.columns.room.label">
 				<source>Room</source>
 				<target>Zimmer</target>
+			</trans-unit>
+			<trans-unit id="tx_academicpersons_domain_model_contract.columns.sorting.label">
+				<source>Sorting</source>
+				<target>Sortierung</target>
 			</trans-unit>
 			<trans-unit id="tx_academicpersons_domain_model_contract.columns.valid_from.label">
 				<source>Valid From</source>
@@ -268,6 +302,10 @@
 				<source>First Letter of First Name</source>
 				<target>Erster Buchstabe Vorname</target>
 			</trans-unit>
+			<trans-unit id="tx_academicpersons_domain_model_profile.columns.frontend_users.label">
+				<source>Assigned Users</source>
+				<target>Zugewiesene Benutzer</target>
+			</trans-unit>
 			<trans-unit id="tx_academicpersons_domain_model_profile.columns.gender.items.diverse">
 				<source>Diverse</source>
 				<target>Divers</target>
@@ -376,6 +414,10 @@
 				<source>Contracts</source>
 				<target>Beschäftigungsverhältnis</target>
 			</trans-unit>
+			<trans-unit id="tx_academicpersons_domain_model_profile.div.frontend_users.label">
+				<source>Frontend Users</source>
+				<target>Frontend-Benutzer</target>
+			</trans-unit>
 			<trans-unit id="tx_academicpersons_domain_model_profile.div.general.label">
 				<source>General</source>
 				<target>Stammdaten</target>
@@ -454,6 +496,10 @@
 			<trans-unit id="tx_academicpersons_domain_model_profile_information.ctrl.label">
 				<source>Profile information</source>
 				<target>Profil Informationen</target>
+			</trans-unit>
+			<trans-unit id="tx_academicpersons_domain_model_profile_information.palette.date">
+				<source>Date</source>
+				<target>Datum</target>
 			</trans-unit>
 		</body>
 	</file>

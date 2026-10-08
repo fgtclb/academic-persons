@@ -121,13 +121,15 @@ final class AcademicPersonsProfileQueryConstraintTest extends AbstractAcademicPe
     }
 
     /**
-     * The card template composes the heading from first, middle and last name, so an empty
-     * middle name leaves two spaces in the markup.
+     * The card template composes the heading from first, middle and last name. None of the
+     * fixture profiles has a middle name, so exactly one space separates the first from the
+     * last name. The name has to be the whole content of an element, which the list line of
+     * the fixture template (`#0(2): Anna Achterberg`) is not, so only the card heading matches.
      */
     private function assertRendersProfileName(string $content, string $first, string $last): void
     {
         $this->assertMatchesRegularExpression(
-            sprintf('#%s\s+%s#u', preg_quote($first, '#'), preg_quote($last, '#')),
+            sprintf('#>\s*%s %s\s*<#u', preg_quote($first, '#'), preg_quote($last, '#')),
             $content,
         );
     }

@@ -8,10 +8,10 @@
 ,1,100,0,0,0,0,"IAP","Institute of Applied Physics"
 ,2,100,0,0,0,0,"Faculty of Engineering",""
 "tx_academicpersons_domain_model_profile",
-,"uid","pid","deleted","hidden","sys_language_uid","l10n_parent","first_name","last_name","slug","contracts"
-,1,100,0,0,0,0,"Max","Müllermann","max-muellermann",1
-,2,100,0,0,0,0,"Horst","Huber","horst-huber",1
-,3,100,0,0,0,0,"Erika","Beispiel","erika-beispiel",1
+,"uid","pid","deleted","hidden","sys_language_uid","l10n_parent","first_name","middle_name","last_name","slug","contracts"
+,1,100,0,0,0,0,"Max","","Müllermann","max-muellermann",1
+,2,100,0,0,0,0,"Horst","Werner","Huber","horst-huber",1
+,3,100,0,0,0,0,"Erika","","Beispiel","erika-beispiel",1
 "tx_academicpersons_domain_model_contract",
 ,"uid","pid","deleted","hidden","sys_language_uid","l10n_parent","profile","organisational_unit","sorting","phone_numbers","email_addresses"
 ,1,100,0,0,0,0,1,1,1,1,1

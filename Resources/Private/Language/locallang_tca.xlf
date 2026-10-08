@@ -9,6 +9,27 @@
 	>
 		<header/>
 		<body>
+			<!-- Generic -->
+
+			<trans-unit id="generic.columns.import_identifier.label">
+				<source>Import identifier</source>
+			</trans-unit>
+			<trans-unit id="generic.columns.sorting.label">
+				<source>Sorting</source>
+			</trans-unit>
+
+			<!-- Frontend users -->
+
+			<trans-unit id="fe_users.columns.tx_academicpersons_profiles.label">
+				<source>Assigned Profiles</source>
+			</trans-unit>
+			<trans-unit id="fe_users.columns.tx_extbase_type.items.Tx_AcademicPersonsEdit_Domain_Model_FrontendUser">
+				<source>Academic Persons: User</source>
+			</trans-unit>
+			<trans-unit id="fe_users.tabs.tx_academicpersons_profiles.label">
+				<source>Profiles</source>
+			</trans-unit>
+
 			<!-- Addresses -->
 
 			<trans-unit id="tx_academicpersons_domain_model_address.columns.additional.label">
@@ -82,6 +103,9 @@
 			</trans-unit>
 			<trans-unit id="tx_academicpersons_domain_model_contract.columns.position.label">
 				<source>Position</source>
+			</trans-unit>
+			<trans-unit id="tx_academicpersons_domain_model_contract.columns.profile.label">
+				<source>Profile</source>
 			</trans-unit>
 			<trans-unit id="tx_academicpersons_domain_model_contract.columns.publish.label">
 				<source>Show this contract online?</source>
@@ -223,6 +247,9 @@
 			<trans-unit id="tx_academicpersons_domain_model_profile.columns.first_name_alpha.label">
 				<source>First Letter of First Name</source>
 			</trans-unit>
+			<trans-unit id="tx_academicpersons_domain_model_profile.columns.frontend_users.label">
+				<source>Assigned Users</source>
+			</trans-unit>
 			<trans-unit id="tx_academicpersons_domain_model_profile.columns.gender.items.diverse">
 				<source>Diverse</source>
 			</trans-unit>
@@ -304,6 +331,9 @@
 			<trans-unit id="tx_academicpersons_domain_model_profile.div.contracts.label">
 				<source>Contracts</source>
 			</trans-unit>
+			<trans-unit id="tx_academicpersons_domain_model_profile.div.frontend_users.label">
+				<source>Frontend Users</source>
+			</trans-unit>
 			<trans-unit id="tx_academicpersons_domain_model_profile.div.general.label">
 				<source>General</source>
 			</trans-unit>
@@ -363,6 +393,9 @@
 			</trans-unit>
 			<trans-unit id="tx_academicpersons_domain_model_profile_information.ctrl.label">
 				<source>Profile information</source>
+			</trans-unit>
+			<trans-unit id="tx_academicpersons_domain_model_profile_information.palette.date">
+				<source>Date</source>
 			</trans-unit>
 		</body>
 	</file>

@@ -108,7 +108,7 @@ return [
     'palettes' => [
         'language' => [
             'showitem' => implode(',', [
-                'sys_language_uid;LLL:EXT:frontend/Resources/Private/Language/locallang_ttc.xlf:sys_language_uid_formlabel',
+                'sys_language_uid',
                 'l10n_parent',
             ]),
         ],

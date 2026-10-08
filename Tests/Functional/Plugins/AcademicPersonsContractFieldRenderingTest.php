@@ -108,9 +108,15 @@ final class AcademicPersonsContractFieldRenderingTest extends AbstractAcademicPe
         return $this->renderPage('https://www.acme.com/home');
     }
 
-    private function renderProfileDetail(): string
+    private function renderProfileDetail(string $dataSet = 'detailPage'): string
     {
-        $this->setUpTestCase('detailPage');
+        $this->setUpTestCase($dataSet);
+        $this->importCSVDataSet(__DIR__ . '/Fixtures/AcademicPersonsContractFieldRendering/profileImage.csv');
+        GeneralUtility::mkdir_deep($this->instancePath . '/fileadmin');
+        copy(
+            __DIR__ . '/Fixtures/AcademicPersonsContractFieldRendering/Files/profile.svg',
+            $this->instancePath . '/fileadmin/profile.svg',
+        );
 
         return $this->renderPage('https://www.acme.com/home?' . http_build_query([
             'tx_academicpersons_detail' => [
@@ -198,5 +204,41 @@ final class AcademicPersonsContractFieldRenderingTest extends AbstractAcademicPe
 
         $this->assertStringContainsString('href="tel:+496241509123"', $content);
         $this->assertStringContainsString('+49 6241 509 123', $content);
+    }
+
+    /**
+     * The card composes the heading of a profile from its first, middle and last name. An
+     * empty middle name must not leave a second space behind, and a given one is rendered.
+     */
+    #[Test]
+    public function selectedContractsPluginRendersTheNameOfAProfileWithSingleSpaces(): void
+    {
+        $content = $this->renderSelectedContracts();
+
+        $this->assertMatchesRegularExpression('#>\s*Max Müllermann\s*<#u', $content);
+        $this->assertMatchesRegularExpression('#>\s*Horst Werner Huber\s*<#u', $content);
+        $this->assertStringNotContainsString('  Müllermann', $content);
+    }
+
+    /**
+     * The detail header and the alternative text of the profile image leave out the title
+     * and the middle name a profile does not have, without a stray space.
+     */
+    #[Test]
+    public function profileDetailRendersTheNameWithoutTitleAndMiddleNameWithSingleSpaces(): void
+    {
+        $content = $this->renderProfileDetail();
+
+        $this->assertMatchesRegularExpression('#<h\d[^>]*>\s*Max Müllermann\s*</h\d>#u', $content);
+        $this->assertStringContainsString('alt="Max Müllermann"', $content);
+    }
+
+    #[Test]
+    public function profileDetailRendersTheTitleAndTheMiddleNameOfAProfile(): void
+    {
+        $content = $this->renderProfileDetail('detailPage_titleAndMiddleName');
+
+        $this->assertMatchesRegularExpression('#<h\d[^>]*>\s*Prof\. Dr\. Max Maria Müllermann\s*</h\d>#u', $content);
+        $this->assertStringContainsString('alt="Prof. Dr. Max Maria Müllermann"', $content);
     }
 }
