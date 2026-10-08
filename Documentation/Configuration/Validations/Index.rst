@@ -86,8 +86,13 @@ Flag names are matched case insensitively. Anything not listed here is ignored.
         -   The value must be a valid email address, and the field is rendered
             as an email input.
     *   -   :yaml:`number`
-        -   The field is rendered as a number input. No additional server side
-            validation is performed.
+        -   The field is rendered as a number input, and the backend record
+            editor turns it into a TCA :php:`number` field, which stores an
+            integer. Use it for integer columns only, such as the
+            :yaml:`year` of a profile information. A postcode or a street
+            number is not one: ``01067`` would be saved as ``1067`` and
+            ``12a`` as ``12``. No additional server side validation is
+            performed.
 
 ..  note::
     :yaml:`disabled` and :yaml:`readonly` both **cancel** :yaml:`required`. A

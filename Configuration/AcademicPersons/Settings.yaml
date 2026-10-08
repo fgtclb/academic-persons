@@ -57,7 +57,7 @@ validations:
   #   <propertyName>:
   #      - required   # must not be empty; adds the "required" flag to the TCA column
   #      - email      # must be an email address; renders an email input
-  #      - number     # renders a number input; adds no further validation
+  #      - number     # renders a number input and a TCA number field, which stores an integer: integer columns only
   #      - disabled   # must not be edited; implies "readonly" and cancels "required"
   #      - readonly   # shown but not writable; cancels "required"
   #      - frontendreadonly   # like "readonly" in the frontend only, the backend keeps the field editable
@@ -84,10 +84,8 @@ validations:
       - required
     streetNumber:
       - required
-      - number
     zip:
       - required
-      - number
     city:
       - required
     country:
