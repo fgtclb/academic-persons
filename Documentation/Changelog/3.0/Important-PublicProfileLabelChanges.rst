@@ -23,14 +23,16 @@ overrides single units through
     <trans-unit id="contracts.emailAdresses">
 
 with one ``d``, while the German file always declared
-:xml:`contracts.emailAddresses`. The German target was therefore unreachable
-and the English source was never rendered either: the label is looked up as
+:xml:`contracts.emailAddresses`. The label is looked up as
 :php:`contracts.emailAddresses` by
 :file:`Resources/Private/Partials/Profile/Contract/Field.html`, which
 translates :html:`contracts.{fieldName}` for the fields a list or card plugin
-was configured to show. The id is now spelled
-:xml:`contracts.emailAddresses` in both files. **An override keyed on the old
-id stops taking effect** and has to be re-keyed.
+was configured to show. The German target was therefore found, while the
+English source was never rendered: in English, the e-mail row showed an empty
+label in front of the addresses. The id is now spelled
+:xml:`contracts.emailAddresses` in both files, and the row reads
+:guilabel:`E-Mail` in English as well. An override keyed on the old id never
+took effect, as no shipped template read it.
 
 **Three units are added for the detail view:** :xml:`detail.subline`,
 :xml:`detail.contact` and
@@ -47,10 +49,12 @@ installations that reference them from their own templates.
 Impact
 ======
 
-Re-key an XLF override of :xml:`contracts.emailAdresses` to
-:xml:`contracts.emailAddresses`. Nothing else has to be changed: the added
-units ship with an English source and a German target, and the two unused ones
-are still there.
+A translation of :file:`locallang.xlf` into a further language that copied the
+misspelled id has to rename its unit to :xml:`contracts.emailAddresses`,
+otherwise the English label is shown in its place. An override keyed on the
+misspelled id had no effect before and has none now, it can be re-keyed to
+take effect. Nothing else has to be changed: the added units ship with an
+English source and a German target, and the two unused ones are still there.
 
 Affected Installations
 ======================
