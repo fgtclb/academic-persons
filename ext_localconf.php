@@ -12,6 +12,7 @@ use FGTCLB\AcademicPersons\Backend\FormEngine\ManagedFieldsReadOnly;
 use FGTCLB\AcademicPersons\Controller\ProfileController;
 use FGTCLB\AcademicPersons\Hook\ContractSortingHook;
 use FGTCLB\AcademicPersons\Hook\DataHandlerHooks;
+use FGTCLB\AcademicPersons\Hook\OrganisationalUnitLocalizationHook;
 use FGTCLB\AcademicPersons\Routing\Aspect\PersonsFilterSlugMapper;
 use TYPO3\CMS\Backend\Form\FormDataProvider\TcaColumnsProcessFieldDescriptions;
 use TYPO3\CMS\Backend\Form\FormDataProvider\TcaFlexPrepare;
@@ -111,6 +112,8 @@ if (!defined('ACADEMIC_PERSONS_CASCADE_REMOVE')) {
         = ContractSortingHook::class;
     $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['t3lib/class.t3lib_tcemain.php']['processCmdmapClass']['academicPersonsContractSorting']
         = ContractSortingHook::class;
+    $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['t3lib/class.t3lib_tcemain.php']['processCmdmapClass']['academicPersonsOrganisationalUnitLocalization']
+        = OrganisationalUnitLocalizationHook::class;
 
     // Managed fields of a synchronised person record are read-only in the backend form. The
     // position is the same on TYPO3 v13 and v14: after the descriptions are translated, and
