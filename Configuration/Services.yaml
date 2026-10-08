@@ -41,6 +41,10 @@ services:
   FGTCLB\AcademicPersons\Hook\ContractSortingHook:
     public: true
 
+  # Instantiated by the DataHandler through GeneralUtility::makeInstance() as well.
+  FGTCLB\AcademicPersons\Hook\OrganisationalUnitLocalizationHook:
+    public: true
+
   # The DataHandler hook of the same rule covers the backend only; an Extbase write
   # never reaches it. Both persistence events are needed: one for a contract that is
   # created, one for a contract that is updated.
