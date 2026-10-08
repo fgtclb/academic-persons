@@ -29,6 +29,10 @@ final class DataHandlerHooks
     }
 
     /**
+     * Flushes the list and the detail view of a profile that is created or saved. A
+     * created profile, a localized one included, arrives with its `NEW…` id, which the
+     * DataHandler has substituted by now.
+     *
      * @param array<string, mixed> $fieldArray
      */
     public function processDatamap_afterDatabaseOperations(
@@ -38,23 +42,17 @@ final class DataHandlerHooks
         array $fieldArray,
         DataHandler $dataHandler
     ): void {
-        if ($table !== 'tx_academicpersons_domain_model_profile' || $status !== 'update') {
+        if ($table !== 'tx_academicpersons_domain_model_profile' || !in_array($status, ['new', 'update'], true)) {
             return;
         }
-
-        $cacheManager = GeneralUtility::makeInstance(CacheManager::class);
-        $cacheManager->flushCachesByTags([
-            'profile_list_view',
-            sprintf('profile_detail_view_%d', $id),
-        ]);
+        $this->flushProfileViews((int)($dataHandler->substNEWwithIDs[$id] ?? $id));
     }
 
     /**
      * Flushes the list and the detail view of a profile that is deleted or restored.
-     * {@see processDatamap_afterDatabaseOperations()} covers saves only, and the core
+     * {@see processDatamap_afterDatabaseOperations()} covers creations and saves only, and the core
      * flushes the page of the record and the tags of its table and uid, which the
-     * plugins do not carry. The detail view is tagged with the uid of the
-     * default-language record, so a translation flushes the tag of its parent too.
+     * plugins do not carry.
      *
      * @param int|string $id
      */
@@ -63,8 +61,18 @@ final class DataHandlerHooks
         if ($table !== 'tx_academicpersons_domain_model_profile' || !in_array($command, ['delete', 'undelete'], true)) {
             return;
         }
-        $profileUid = (int)$id;
+        $this->flushProfileViews((int)$id);
+    }
+
+    /**
+     * The detail view is tagged with the uid of the default-language record, so a
+     * translation flushes the tag of its parent too.
+     */
+    private function flushProfileViews(int $profileUid): void
+    {
         if ($profileUid <= 0) {
+            // A `NEW…` id that was never substituted: there is no record whose views
+            // could be cached.
             return;
         }
         $tags = ['profile_list_view', sprintf('profile_detail_view_%d', $profileUid)];
