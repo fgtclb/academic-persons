@@ -83,6 +83,35 @@ final class AcademicPersonsDetailPluginTest extends AbstractAcademicPersonsTestC
         );
     }
 
+    /**
+     * A detail page requested without a profile ends the request with the "page not found"
+     * handling of the site, on TYPO3 v12 and v13 alike. Returned from the action instead of
+     * thrown, the error document was rendered into the content element, and the status
+     * `404` reached the browser only through `header()`, which a functional request does not
+     * observe.
+     */
+    #[Test]
+    public function aDetailPageWithoutAProfileAnswersNotFound(): void
+    {
+        $this->importCSVDataSet(__DIR__ . '/Fixtures/AcademicPersonsDetailPlugin/defaultLanguageOnly.csv');
+        $this->setUpFrontendRootPageForTestCase();
+        $this->writeSiteConfiguration(
+            identifier: 'acme',
+            site: $this->buildSiteConfiguration(
+                rootPageId: 1,
+                base: 'https://www.acme.com/',
+            ),
+            languages: [
+                $this->buildDefaultLanguageConfiguration('EN', '/'),
+            ],
+        );
+
+        $response = $this->executeFrontendSubRequest(new InternalRequest('https://www.acme.com/home'), new InternalRequestContext());
+
+        $this->assertSame(404, $response->getStatusCode());
+        $this->assertStringNotContainsString('id="c1"', (string)$response->getBody());
+    }
+
     #[Test]
     public function defaultLanguageDisplayProfile(): void
     {

@@ -280,18 +280,8 @@ final class ProfileRouteEnhancerTest extends AbstractAcademicPersonsTestCase
      * {@see \FGTCLB\AcademicPersons\Controller\ProfileController::detailAction()} answers
      * `404` for a `null` argument.
      *
-     * What the plugin renders instead is the error document of that response, nested into
-     * the content element - which is what this asserts, because the rendered body is the
-     * half of the outcome a functional test can see on this branch.
-     *
-     * The status code is the other half, and it is real: a browser is answered `404` here,
-     * on TYPO3 v12 as well as on v13. A functional request cannot observe it on either of
-     * them, because {@see \TYPO3\CMS\Extbase\Core\Bootstrap::handleFrontendRequest()} hands
-     * a plugin response with a status of 300 or more back to the frontend with a bare
-     * `header()` call, guarded by `headers_sent()`. That writes into the PHP output layer
-     * of the test process rather than into the response object the test gets back, so the
-     * response still says `200`. Asserting the status code is therefore not possible on
-     * either supported core version, and this test asserts the body instead.
+     * The action throws that response, so the request ends with the "page not found"
+     * handling of the site instead of the page, see the test below for the status code.
      *
      * Should the profile ever start rendering here, the limitation is gone and this test
      * is the thing to delete - not the thing to adjust.
@@ -305,6 +295,22 @@ final class ProfileRouteEnhancerTest extends AbstractAcademicPersonsTestCase
 
         $this->assertStringNotContainsString('<h2>Profiledetailpage</h2>', $body);
         $this->assertStringNotContainsString('#1: [EN] Max Müllermann', $body);
+    }
+
+    /**
+     * The status code of the same request. The detail action throws the response of the
+     * "page not found" handling rather than returning it, so it reaches the response a
+     * functional request reads, on TYPO3 v12 and v13 alike. A returned one reached the
+     * browser only through a bare `header()` call.
+     */
+    #[Test]
+    public function detailPluginPageAnswersNotFoundWithoutLimitToPages(): void
+    {
+        $this->setUpTestCase(limitEnhancersToTheirOwnPage: false);
+
+        $response = $this->requestFrontendPage('https://www.acme.com/profile/max-muellermann');
+
+        $this->assertSame(404, $response->getStatusCode());
     }
 
     #[Test]

@@ -25,6 +25,7 @@ use GeorgRinger\NumberedPagination\NumberedPagination;
 use Psr\Http\Message\ResponseInterface;
 use TYPO3\CMS\Core\Cache\CacheDataCollector;
 use TYPO3\CMS\Core\Cache\CacheTag;
+use TYPO3\CMS\Core\Http\PropagateResponseException;
 use TYPO3\CMS\Core\Pagination\ArrayPaginator;
 use TYPO3\CMS\Core\Pagination\SimplePagination;
 use TYPO3\CMS\Core\Utility\ExtensionManagementUtility;
@@ -247,14 +248,23 @@ final class ProfileController extends ActionController
 
     /**
      * @IgnoreValidation("profile")
+     * @throws PropagateResponseException
      */
     public function detailAction(?Profile $profile = null): ResponseInterface
     {
         if ($profile === null) {
-            return GeneralUtility::makeInstance(ErrorController::class)->pageNotFoundAction(
-                $this->request,
-                'The requested profile does not exist.',
-                ['code' => PageAccessFailureReasons::PAGE_NOT_FOUND]
+            // Thrown rather than returned: a returned response reaches the browser only
+            // through `header()`, and its error document would be rendered into the
+            // content element. The exception ends the request at the
+            // `ResponsePropagation` middleware with the "page not found" handling of the
+            // site, on TYPO3 v12 and v13 alike.
+            throw new PropagateResponseException(
+                GeneralUtility::makeInstance(ErrorController::class)->pageNotFoundAction(
+                    $this->request,
+                    'The requested profile does not exist.',
+                    ['code' => PageAccessFailureReasons::PAGE_NOT_FOUND]
+                ),
+                1791476342
             );
         }
 
