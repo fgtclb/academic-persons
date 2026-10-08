@@ -14,6 +14,7 @@
 # fields of the shared FlexForm are of no use in it and are hidden. That block
 # travels with the component instead of applying installation wide, so an
 # installation that does not use the card is not configured for it either.
+# The detail page stays: the card links every profile to its detail view.
 #
 # The "show" entry below is what TYPO3 v12 reads to decide whether the wizard
 # element defined here is offered at all
@@ -40,7 +41,6 @@ TCEFORM.tt_content {
   pi_flexform {
     academicpersons_card {
       sDEF {
-        settings\.detailPid.disabled = 1
         settings\.demand\.groupBy.disabled = 1
         settings\.demand\.sortBy.disabled = 1
         settings\.demand\.sortByDirection.disabled = 1
