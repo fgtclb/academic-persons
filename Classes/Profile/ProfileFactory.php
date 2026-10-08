@@ -67,8 +67,10 @@ final class ProfileFactory extends AbstractProfileFactory
      */
     protected function updateProfileFromFrontendUser(array $frontendUserData, Profile $profile): void
     {
+        // Records created here belong on the page of their profile, which need not be
+        // the page of the frontend user. Those of an existing contract follow the contract.
         /** @var int<0, max> $pid */
-        $pid = (int)$frontendUserData['pid'];
+        $pid = $profile->getPid() ?? (int)$frontendUserData['pid'];
         $this->applyProfileData($frontendUserData, $profile);
         if (!$this->frontendUserProfileMapper->mapsContract()) {
             // The map names no source of the contract: it is not synchronised, and an
@@ -103,7 +105,9 @@ final class ProfileFactory extends AbstractProfileFactory
             $contract->setPid($pid);
             $profile->getContracts()->attach($contract);
         }
-        $this->frontendUserProfileMapper->applyContract($frontendUserData, $contract, $pid);
+        /** @var int<0, max> $contractPid */
+        $contractPid = $contract->getPid() ?? $pid;
+        $this->frontendUserProfileMapper->applyContract($frontendUserData, $contract, $contractPid);
     }
 
     /**
