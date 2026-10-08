@@ -173,6 +173,21 @@ final class AcademicPersonsContractFieldRenderingTest extends AbstractAcademicPe
     }
 
     /**
+     * The partial translates `contracts.<field>` for every selected field, so the unit id
+     * has to be the property name - the English file declared it as `contracts.emailAdresses`,
+     * and the e-mail row rendered an empty label.
+     */
+    #[Test]
+    public function selectedContractsPluginRendersTheLabelOfTheEmailAddresses(): void
+    {
+        $content = $this->renderSelectedContracts();
+
+        $this->assertStringContainsString('max.muellermann@example.org</a>', $content);
+        $this->assertStringContainsString('<b>E-Mail:</b>', $content);
+        $this->assertStringNotContainsString('<b>:</b>', $content);
+    }
+
+    /**
      * The profile detail template builds a `tel:` target of its own, and it is the second
      * place that has to build it the same way.
      */
