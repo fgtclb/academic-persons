@@ -6,7 +6,6 @@ namespace FGTCLB\AcademicPersons\Tests\Functional\Routing;
 
 use FGTCLB\AcademicPersons\Tests\Functional\AbstractAcademicPersonsTestCase;
 use FGTCLB\TestingHelper\FunctionalTestCase\FrontendPluginRenderingTrait;
-use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\Attributes\Test;
 use SBUERK\TYPO3\Testing\SiteHandling\SiteBasedTestTrait;
 use Symfony\Component\Yaml\Yaml;
@@ -277,12 +276,8 @@ final class ProfileRouteEnhancerTest extends AbstractAcademicPersonsTestCase
      * profile is therefore handed over in the `tx_academicpersons_listanddetail` namespace.
      * The `Detail` plugin reads `tx_academicpersons_detail`, receives nothing, and
      * {@see \FGTCLB\AcademicPersons\Controller\ProfileController::detailAction()} answers
-     * `404` for a `null` argument.
-     *
-     * What the plugin renders instead is the error document of that response, nested into
-     * the content element - which is what this asserts, because it is the one half of the
-     * outcome both supported core versions agree on. The status code is the other half,
-     * and it is not: see the test below.
+     * `404` for a `null` argument, with the "page not found" handling of the site instead
+     * of the page. See the test below for the status code.
      *
      * Should the profile ever start rendering here, the limitation is gone and this test
      * is the thing to delete - not the thing to adjust.
@@ -299,21 +294,13 @@ final class ProfileRouteEnhancerTest extends AbstractAcademicPersonsTestCase
     }
 
     /**
-     * The status code of the same request, which only TYPO3 v14 lets a functional test see.
-     *
-     * Extbase hands a plugin response with a status of 300 or more back to the frontend
-     * differently on the two supported versions. On v13
-     * {@see \TYPO3\CMS\Extbase\Core\Bootstrap::handleFrontendRequest()} emits it with a
-     * bare `header()` call, guarded by `headers_sent()`, which a functional request never
-     * observes - the response object it gets back still says `200`. On v14 the same method
-     * writes it into the `frontend.response.data` attribute, and it arrives.
-     *
-     * The browser behaviour is the same on both: the development instances answered `404`
-     * on v13 and on v14 alike before this was fixed. Only the test can see it on one of
-     * them, so this half is grouped out rather than asserted loosely.
+     * The status code of the same request. The detail action throws the response of the
+     * "page not found" handling rather than returning it, so it ends the request on TYPO3
+     * v13 and v14 alike. A returned one reached the browser on v13 only through a bare
+     * `header()` call, which a functional request never observes, and on both versions its
+     * error document was rendered into the content element.
      */
     #[Test]
-    #[Group('not-core-13')]
     public function detailPluginPageAnswersNotFoundWithoutLimitToPages(): void
     {
         $this->setUpTestCase(limitEnhancersToTheirOwnPage: false);

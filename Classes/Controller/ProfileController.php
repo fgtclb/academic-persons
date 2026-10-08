@@ -395,14 +395,22 @@ final class ProfileController extends ActionController
 
     /**
      * @IgnoreValidation("profile")
+     * @throws PropagateResponseException
      */
     public function detailAction(?Profile $profile = null): ResponseInterface
     {
         if ($profile === null) {
-            return GeneralUtility::makeInstance(ErrorController::class)->pageNotFoundAction(
-                $this->request,
-                'The requested profile does not exist.',
-                ['code' => PageAccessFailureReasons::PAGE_NOT_FOUND]
+            // Thrown rather than returned: a returned response reaches the browser on TYPO3
+            // v13 only through `header()`, and on v13 and v14 its error document would be
+            // rendered into the content element. The exception ends the request at the
+            // `ResponsePropagation` middleware with the "page not found" handling of the site.
+            throw new PropagateResponseException(
+                GeneralUtility::makeInstance(ErrorController::class)->pageNotFoundAction(
+                    $this->request,
+                    'The requested profile does not exist.',
+                    ['code' => PageAccessFailureReasons::PAGE_NOT_FOUND]
+                ),
+                1791476342
             );
         }
 
