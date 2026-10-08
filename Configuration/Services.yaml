@@ -54,3 +54,21 @@ services:
         identifier: academicPersonsAssignContractOrganisationalUnitSortingOnUpdate
         method: afterEntityUpdated
         event: TYPO3\CMS\Extbase\Event\Persistence\EntityUpdatedInPersistenceEvent
+
+  # The DataHandler hooks flush the cached list and detail views after a backend
+  # save, an Extbase write never reaches them. All three persistence events are
+  # needed: a record is created, updated or removed through the frontend editor.
+  FGTCLB\AcademicPersons\EventListener\FlushProfileViewCaches:
+    tags:
+      - name: event.listener
+        identifier: academicPersonsFlushProfileViewCachesOnAdd
+        method: afterEntityAdded
+        event: TYPO3\CMS\Extbase\Event\Persistence\EntityAddedToPersistenceEvent
+      - name: event.listener
+        identifier: academicPersonsFlushProfileViewCachesOnUpdate
+        method: afterEntityUpdated
+        event: TYPO3\CMS\Extbase\Event\Persistence\EntityUpdatedInPersistenceEvent
+      - name: event.listener
+        identifier: academicPersonsFlushProfileViewCachesOnRemove
+        method: afterEntityRemoved
+        event: TYPO3\CMS\Extbase\Event\Persistence\EntityRemovedFromPersistenceEvent
