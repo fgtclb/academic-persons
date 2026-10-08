@@ -26,12 +26,27 @@
       <trans-unit id="generic.columns.import_identifier.description">
         <source>The key of this record in the source it was imported from, as source:key, for instance fe_users:12. The synchronisation and imports find the record by it.</source>
       </trans-unit>
+      <trans-unit id="generic.columns.sorting.label">
+        <source>Sorting</source>
+      </trans-unit>
 
       <trans-unit id="generic.columns.filter_slug.label">
         <source>URL segment</source>
       </trans-unit>
       <trans-unit id="generic.columns.filter_slug.description">
         <source>The URL segment of a persons list filtered by this record. Generated from the name when the record is created, and unique for each language.</source>
+      </trans-unit>
+
+      <!-- Frontend users -->
+
+      <trans-unit id="fe_users.columns.tx_academicpersons_profiles.label">
+        <source>Assigned Profiles</source>
+      </trans-unit>
+      <trans-unit id="fe_users.columns.tx_extbase_type.items.Tx_AcademicPersonsEdit_Domain_Model_FrontendUser">
+        <source>Academic Persons: User</source>
+      </trans-unit>
+      <trans-unit id="fe_users.tabs.tx_academicpersons_profiles.label">
+        <source>Profiles</source>
       </trans-unit>
 
       <!-- Addresses -->
@@ -107,6 +122,9 @@
       </trans-unit>
       <trans-unit id="tx_academicpersons_domain_model_contract.columns.position.label">
         <source>Position</source>
+      </trans-unit>
+      <trans-unit id="tx_academicpersons_domain_model_contract.columns.profile.label">
+        <source>Profile</source>
       </trans-unit>
       <trans-unit id="tx_academicpersons_domain_model_contract.columns.room.label">
         <source>Room</source>
@@ -245,6 +263,9 @@
       <trans-unit id="tx_academicpersons_domain_model_profile.columns.first_name_alpha.label">
         <source>First Letter of First Name</source>
       </trans-unit>
+      <trans-unit id="tx_academicpersons_domain_model_profile.columns.frontend_users.label">
+        <source>Assigned Users</source>
+      </trans-unit>
       <trans-unit id="tx_academicpersons_domain_model_profile.columns.gender.items.diverse">
         <source>Diverse</source>
       </trans-unit>
@@ -335,6 +356,9 @@
       <trans-unit id="tx_academicpersons_domain_model_profile.div.contracts.label">
         <source>Contracts</source>
       </trans-unit>
+      <trans-unit id="tx_academicpersons_domain_model_profile.div.frontend_users.label">
+        <source>Frontend Users</source>
+      </trans-unit>
       <trans-unit id="tx_academicpersons_domain_model_profile.div.general.label">
         <source>General</source>
       </trans-unit>
@@ -394,6 +418,9 @@
       </trans-unit>
       <trans-unit id="tx_academicpersons_domain_model_profile_information.ctrl.label">
         <source>Profile information</source>
+      </trans-unit>
+      <trans-unit id="tx_academicpersons_domain_model_profile_information.palette.date">
+        <source>Date</source>
       </trans-unit>
     </body>
   </file>

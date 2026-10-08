@@ -61,23 +61,23 @@
       </trans-unit>
       <trans-unit id="plugin.listAndDetail.label">
         <source>Persons List and Detail</source>
-        <target>Personen Liste and Detail</target>
+        <target>Personen Liste und Detail</target>
       </trans-unit>
       <trans-unit id="plugin.selectedprofiles.label">
         <source>Profiles: Selected Profiles</source>
-        <target>Profiles: Selected Profiles</target>
+        <target>Profile: Ausgewählte Profile</target>
       </trans-unit>
       <trans-unit id="plugin.selectedprofiles.description">
         <source>Plugin to list only selected profiles</source>
-        <target>Plugin to list only selected profiles</target>
+        <target>Plugin zur Auflistung ausgewählter Profile</target>
       </trans-unit>
       <trans-unit id="plugin.selectedcontracts.label">
         <source>Profiles: Selected Contracts</source>
-        <target>Profiles: Selected Contracts</target>
+        <target>Profile: Ausgewählte Verträge</target>
       </trans-unit>
       <trans-unit id="plugin.selectedcontracts.description">
         <source>Plugin to list only selected contracts</source>
-        <target>Plugin to list only selected contracts</target>
+        <target>Plugin zur Auflistung ausgewählter Verträge</target>
       </trans-unit>
 
       <trans-unit id="newContentElement.wizardItems.academic">
@@ -296,6 +296,10 @@
       <trans-unit id="flexform.el.fallbackForNonTranslated.label">
         <source>Fallback to default language for non translated profiles</source>
         <target>Fallback auf die Standardsprache für nicht übersetzte Profile</target>
+      </trans-unit>
+      <trans-unit id="flexform.el.fallbackForNonTranslated.items.0.label">
+        <source>Show the default language version</source>
+        <target>Version der Standardsprache anzeigen</target>
       </trans-unit>
       <trans-unit id="flexform.el.viewMode.enabled.label">
         <source>View Mode Toggle</source>

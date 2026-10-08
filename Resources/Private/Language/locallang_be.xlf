@@ -222,6 +222,9 @@
       <trans-unit id="flexform.el.fallbackForNonTranslated.label">
         <source>Fallback to default language for non translated profiles</source>
       </trans-unit>
+      <trans-unit id="flexform.el.fallbackForNonTranslated.items.0.label">
+        <source>Show the default language version</source>
+      </trans-unit>
       <trans-unit id="flexform.el.viewMode.enabled.label">
         <source>View Mode Toggle</source>
       </trans-unit>

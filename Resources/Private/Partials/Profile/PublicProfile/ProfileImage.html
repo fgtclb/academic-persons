@@ -6,7 +6,7 @@
 <f:for each="{publicProfile.details.profileImage}" as="fieldName">
     <f:if condition="{profile.{fieldName}}">
         <f:variable name="image" value="{profile.{fieldName}}" />
-        <f:variable name="alt" value="{profile.title} {profile.firstName} {profile.middleName} {profile.lastName}" />
+        <f:variable name="alt" value="{f:if(condition: profile.title, then: '{profile.title} ')}{profile.firstName}{f:if(condition: profile.middleName, then: ' {profile.middleName}')} {profile.lastName}" />
         <figure class="academic-persons-detail__figure">
             <f:render
                 partial="Academic/Image"

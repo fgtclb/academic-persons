@@ -52,7 +52,7 @@ $tcaConfiguration = [
             ],
         ],
         'starttime' => [
-            'label' => 'LLL:EXT:core/Resources/Private/Language/locallang_general.xlf:LGL.starttime',
+            'label' => 'LLL:EXT:academic_base/Resources/Private/Language/locallang_tca.xlf:starttime',
             'exclude' => true,
             'l10n_mode' => 'exclude',
             'l10n_display' => 'defaultAsReadonly',
@@ -63,7 +63,7 @@ $tcaConfiguration = [
             ],
         ],
         'endtime' => [
-            'label' => 'LLL:EXT:core/Resources/Private/Language/locallang_general.xlf:LGL.endtime',
+            'label' => 'LLL:EXT:academic_base/Resources/Private/Language/locallang_tca.xlf:endtime',
             'exclude' => true,
             'l10n_mode' => 'exclude',
             'l10n_display' => 'defaultAsReadonly',
@@ -77,7 +77,7 @@ $tcaConfiguration = [
             ],
         ],
         'fe_group' => [
-            'label' => 'LLL:EXT:core/Resources/Private/Language/locallang_general.xlf:LGL.fe_group',
+            'label' => 'LLL:EXT:academic_base/Resources/Private/Language/locallang_tca.xlf:fe_group',
             'exclude' => true,
             'l10n_mode' => 'exclude',
             'l10n_display' => 'defaultAsReadonly',
@@ -437,7 +437,7 @@ $tcaConfiguration = [
             ],
         ],
         'frontend_users' => [
-            'label' => 'LLL:EXT:academic_persons_edit/Resources/Private/Language/locallang_be.xlf:tx_academicpersons_domain_model_profile.columns.frontend_users.label',
+            'label' => 'LLL:EXT:academic_persons/Resources/Private/Language/locallang_tca.xlf:tx_academicpersons_domain_model_profile.columns.frontend_users.label',
             'exclude' => true,
             'l10n_display' => 'defaultAsReadonly',
             'l10n_mode' => 'exclude',
@@ -533,7 +533,7 @@ $tcaConfiguration = [
         ],
         'language' => [
             'showitem' => implode(',', [
-                'sys_language_uid;LLL:EXT:frontend/Resources/Private/Language/locallang_ttc.xlf:sys_language_uid_formlabel',
+                'sys_language_uid',
                 'l10n_parent',
             ]),
         ],
@@ -572,7 +572,7 @@ $tcaConfiguration = [
                 'publications',
                 'lectures',
                 'press_media',
-                '--div--;LLL:EXT:academic_persons_edit/Resources/Private/Language/locallang_be.xlf:tx_academicpersons_domain_model_profile.tabs.frontend_users.label',
+                '--div--;LLL:EXT:academic_persons/Resources/Private/Language/locallang_tca.xlf:tx_academicpersons_domain_model_profile.div.frontend_users.label',
                 'frontend_users',
                 '--div--;LLL:EXT:core/Resources/Private/Language/Form/locallang_tabs.xlf:language',
                 '--palette--;;language',

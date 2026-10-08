@@ -6,6 +6,7 @@ namespace FGTCLB\AcademicPersons\Tests\Functional\Plugins;
 
 use FGTCLB\AcademicPersons\Tests\Functional\AbstractAcademicPersonsTestCase;
 use FGTCLB\TestingHelper\FunctionalTestCase\FrontendPluginRenderingTrait;
+use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\Attributes\Test;
 use SBUERK\TYPO3\Testing\SiteHandling\SiteBasedTestTrait;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
@@ -265,8 +266,39 @@ final class AcademicPersonsProfileImageRenderingTest extends AbstractAcademicPer
         $this->assertInstanceOf(\DOMElement::class, $image);
         $this->assertSame('academic-persons-detail__image img-fluid rounded-0', $image->getAttribute('class'));
         $this->assertSame('lazy', $image->getAttribute('loading'));
-        // Title, first, middle and last name, as before; the empty middle name leaves a gap.
-        $this->assertMatchesRegularExpression('/^Prof\. Dr\. Max\s+Müllermann$/u', $image->getAttribute('alt'));
+        // Title, first and last name, the empty middle name leaves no gap (ACE-877).
+        $this->assertSame('Prof. Dr. Max Müllermann', $image->getAttribute('alt'));
+    }
+
+    /**
+     * @return \Generator<string, array{0: array<string, string>, 1: string}>
+     */
+    public static function namePartsDataProvider(): \Generator
+    {
+        yield 'no title, no middle name' => [['title' => '', 'middle_name' => ''], 'Max Müllermann'];
+        yield 'no title, a middle name' => [['title' => '', 'middle_name' => 'Peter'], 'Max Peter Müllermann'];
+        yield 'title and middle name' => [['middle_name' => 'Peter'], 'Prof. Dr. Max Peter Müllermann'];
+    }
+
+    /**
+     * The alternative text leaves out a missing title or middle name instead of a space for
+     * it, so it neither starts with a space nor carries two in a row (ACE-877).
+     *
+     * @param array<string, string> $profile
+     */
+    #[Test]
+    #[DataProvider('namePartsDataProvider')]
+    public function detailImageAlternativeTextLeavesOutMissingNameParts(array $profile, string $expected): void
+    {
+        $this->setUpPage('detailPage');
+        $this->getConnectionPool()
+            ->getConnectionForTable('tx_academicpersons_domain_model_profile')
+            ->update('tx_academicpersons_domain_model_profile', $profile, ['uid' => 1]);
+
+        $xpath = $this->parse($this->renderDetailOfProfileOne());
+        $image = $this->nodes($xpath, '//figure/picture/img')->item(0);
+        $this->assertInstanceOf(\DOMElement::class, $image);
+        $this->assertSame($expected, $image->getAttribute('alt'));
     }
 
     #[Test]

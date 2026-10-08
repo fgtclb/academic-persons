@@ -81,13 +81,13 @@ $tcaConfiguration = [
             ],
         ],
         'sorting' => [
-            'label' => 'LLL:EXT:academic_persons/Resources/Private/Language/locallang_tca.xlf:tx_academicpersons_domain_model_profile.sorting.label',
+            'label' => 'LLL:EXT:academic_persons/Resources/Private/Language/locallang_tca.xlf:tx_academicpersons_domain_model_contract.columns.sorting.label',
             'config' => [
                 'type' => 'passthrough',
             ],
         ],
         'profile' => [
-            'label' => 'LLL:EXT:academic_persons/Resources/Private/Language/locallang_tca.xlf:tx_academicpersons_domain_model_profile.profile.label',
+            'label' => 'LLL:EXT:academic_persons/Resources/Private/Language/locallang_tca.xlf:tx_academicpersons_domain_model_contract.columns.profile.label',
             'config' => [
                 'type' => 'select',
                 'renderType' => 'selectSingle',
