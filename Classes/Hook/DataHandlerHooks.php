@@ -160,19 +160,14 @@ final class DataHandlerHooks
                 $request instanceof ServerRequestInterface ? $request : null,
             );
         }
-        $cacheManager = GeneralUtility::makeInstance(CacheManager::class);
-        $cacheManager->flushCachesByTags([
-            'profile_list_view',
-            sprintf('profile_detail_view_%d', $profileUid),
-        ]);
+        $this->flushProfileViews($profileUid);
     }
 
     /**
      * Flushes the list and the detail view of a profile that is deleted or restored.
-     * {@see processDatamap_afterDatabaseOperations()} covers saves only, and the core
-     * flushes the page of the record and the tags of its table and uid, which the
-     * plugins do not carry. The detail view is tagged with the uid of the
-     * default-language record, so a translation flushes the tag of its parent too.
+     * {@see processDatamap_afterDatabaseOperations()} covers creations and saves only,
+     * and the core flushes the page of the record and the tags of its table and uid,
+     * which the plugins do not carry.
      *
      * @param int|string $id
      */
@@ -185,6 +180,15 @@ final class DataHandlerHooks
         if ($profileUid <= 0) {
             return;
         }
+        $this->flushProfileViews($profileUid);
+    }
+
+    /**
+     * The detail view is tagged with the uid of the default-language record, so a
+     * created or saved translation flushes the tag of its parent too (ACE-858).
+     */
+    private function flushProfileViews(int $profileUid): void
+    {
         $tags = ['profile_list_view', sprintf('profile_detail_view_%d', $profileUid)];
         $queryBuilder = $this->connectionPool->getQueryBuilderForTable(self::PROFILE_TABLE);
         $queryBuilder->getRestrictions()->removeAll();

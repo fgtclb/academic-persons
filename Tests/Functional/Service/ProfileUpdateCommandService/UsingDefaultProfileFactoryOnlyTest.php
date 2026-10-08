@@ -18,6 +18,7 @@ use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\Attributes\Test;
 use SBUERK\TYPO3\Testing\SiteHandling\SiteBasedTestTrait;
 use Symfony\Component\DependencyInjection\Container;
+use TYPO3\CMS\Core\Cache\CacheManager;
 use TYPO3\CMS\Core\Configuration\ExtensionConfiguration;
 use TYPO3\CMS\Core\Database\Connection;
 use TYPO3\CMS\Core\EventDispatcher\ListenerProvider;
@@ -829,6 +830,28 @@ final class UsingDefaultProfileFactoryOnlyTest extends AbstractAcademicPersonsTe
             $this->assertSame(ProfileUpdateOrigin::Synchronization, $event->getOrigin());
             $this->assertNull($event->getSite());
         }
+    }
+
+    /**
+     * The synchronisation writes through Extbase on the command line, where the
+     * automatic cache clearing of Extbase never runs and no DataHandler hook is
+     * reached. The cached list and the detail view of a synchronised profile are left
+     * all the same (ACE-858), the detail view of a profile outside the run stays.
+     */
+    #[Test]
+    public function executeFlushesTheCachedViewsOfASynchronisedProfile(): void
+    {
+        $cache = $this->get(CacheManager::class)->getCache('pages');
+        $cache->set('list', 'list', ['profile_list_view']);
+        $cache->set('detail-1', 'detail', ['profile_detail_view_1']);
+        $cache->set('detail-other', 'detail', ['profile_detail_view_999']);
+
+        $profileUpdateCommandService = GeneralUtility::makeInstance(ProfileUpdateCommandService::class);
+        $profileUpdateCommandService->execute(new ProfileUpdateCommandDto(includePids: [100], excludePids: []));
+
+        $this->assertFalse($cache->has('list'), 'The cached list was not flushed.');
+        $this->assertFalse($cache->has('detail-1'), 'The cached detail view of profile 1 was not flushed.');
+        $this->assertTrue($cache->has('detail-other'), 'The cached detail view of another profile was flushed.');
     }
 
     /**
