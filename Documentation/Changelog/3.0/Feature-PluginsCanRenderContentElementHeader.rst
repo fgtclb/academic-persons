@@ -9,7 +9,7 @@ Description
 
 The header and the subheader an editor enters on a :guilabel:`Persons List`,
 :guilabel:`Persons Detail`, :guilabel:`Persons List and Detail`,
-:guilabel:`Contacts`, :guilabel:`Profiles: Selected Profiles` or
+:guilabel:`Profile Card`, :guilabel:`Profiles: Selected Profiles` or
 :guilabel:`Profiles: Selected Contracts` content element are rendered by the
 content element layout of the site, like those of any other content element. The
 layouts of :guilabel:`EXT:fluid_styled_content` and of the bootstrap package do

@@ -40,7 +40,7 @@ backend offers, not how much TypoScript is loaded.
     *   -   `fgtclb/academic-persons-detail`
         -   The :guilabel:`Persons Detail` content element.
     *   -   `fgtclb/academic-persons-card`
-        -   The :guilabel:`Contacts` content element, and the FlexForm
+        -   The :guilabel:`Profile Card` content element, and the FlexForm
             restriction that hides the list, sorting and pagination fields for
             it.
     *   -   `fgtclb/academic-persons-selected-profiles`
@@ -544,7 +544,7 @@ The header of the content elements
 
 The header and the subheader an editor enters on a :guilabel:`Persons List`,
 :guilabel:`Persons Detail`, :guilabel:`Persons List and Detail`,
-:guilabel:`Contacts`, :guilabel:`Profiles: Selected Profiles` or
+:guilabel:`Profile Card`, :guilabel:`Profiles: Selected Profiles` or
 :guilabel:`Profiles: Selected Contracts` content element are rendered by the
 content element layout of the site, as for any other content element. The
 layouts of :guilabel:`EXT:fluid_styled_content` and of the bootstrap package do
@@ -696,7 +696,7 @@ tree should offer:
     *   -   :guilabel:`Academic Persons: Profile detail (academic_persons)`
         -   The same for :guilabel:`Persons Detail`.
     *   -   :guilabel:`Academic Persons: Profile card (academic_persons)`
-        -   The same for :guilabel:`Contacts`, plus the FlexForm restriction of
+        -   The same for :guilabel:`Profile Card`, plus the FlexForm restriction of
             that element.
     *   -   :guilabel:`Academic Persons: Selected profiles (academic_persons)`
         -   The same for :guilabel:`Profiles: Selected Profiles`.

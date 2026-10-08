@@ -129,7 +129,7 @@ use TYPO3\CMS\Core\Utility\ExtensionManagementUtility;
         [
             'label' => 'LLL:EXT:academic_persons/Resources/Private/Language/locallang_be.xlf:newContentElement.wizardItems.academic.card.title',
             'value' => 'academicpersons_card',
-            'icon' => '',
+            'icon' => 'persons_icon',
             'group' => 'academic',
         ],
         'academic_persons'
@@ -155,7 +155,7 @@ use TYPO3\CMS\Core\Utility\ExtensionManagementUtility;
         [
             'label' => 'LLL:EXT:academic_persons/Resources/Private/Language/locallang_be.xlf:plugin.selectedprofiles.label',
             'value' => 'academicpersons_selectedprofiles',
-            'icon' => '',
+            'icon' => 'persons_icon',
             'group' => 'academic',
         ],
         'academic_persons'
@@ -181,7 +181,7 @@ use TYPO3\CMS\Core\Utility\ExtensionManagementUtility;
         [
             'label' => 'LLL:EXT:academic_persons/Resources/Private/Language/locallang_be.xlf:plugin.selectedcontracts.label',
             'value' => 'academicpersons_selectedcontracts',
-            'icon' => '',
+            'icon' => 'persons_icon',
             'group' => 'academic',
         ],
         'academic_persons'
