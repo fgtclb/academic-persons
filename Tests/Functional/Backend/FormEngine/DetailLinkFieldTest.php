@@ -79,11 +79,14 @@ final class DetailLinkFieldTest extends AbstractAcademicPersonsTestCase
     }
 
     /**
-     * The card hides the detail page through the page TSconfig of its set, but keeps the
-     * choice: it renders the names of its profiles like the list does.
+     * The card keeps the choice and the detail page under the page TSconfig of its set: it
+     * renders the names of its profiles like the list does, and links them to the detail
+     * page of the element. Before ACE-861 that TSconfig hid the detail page, which left
+     * the site setting as the only way to set it. That the TSconfig is applied at all is
+     * shown by the list fields it keeps hiding.
      */
     #[Test]
-    public function theCardKeepsTheChoiceUnderThePageTsConfigOfItsSet(): void
+    public function theCardKeepsTheChoiceAndTheDetailPageUnderThePageTsConfigOfItsSet(): void
     {
         $this->getConnectionPool()->getConnectionForTable('pages')->update(
             'pages',
@@ -93,8 +96,10 @@ final class DetailLinkFieldTest extends AbstractAcademicPersonsTestCase
 
         $fields = $this->flexFormFields(5, 'default');
 
-        $this->assertArrayNotHasKey('settings.detailPid', $fields);
+        $this->assertArrayHasKey('settings.detailPid', $fields);
         $this->assertArrayHasKey('settings.detailLink', $fields);
+        $this->assertArrayNotHasKey('settings.demand.sortBy', $fields);
+        $this->assertArrayNotHasKey('settings.paginationEnabled', $fields);
     }
 
     /**
