@@ -43,23 +43,28 @@ final class ProfileCreateCommandService
     ) {}
 
     /**
+     * @return int the number of profiles created
      * @throws \Doctrine\DBAL\Exception
      */
-    public function execute(ProfileCreateCommandDto $profileCreateCommandDto): void
+    public function execute(ProfileCreateCommandDto $profileCreateCommandDto): int
     {
         $this->stateManager->backup();
         $this->stateManager->reset();
+        $count = 0;
         try {
             $frontendUsersResult = $this->getUsersWithoutProfileResult(
                 $profileCreateCommandDto->includePids,
                 $profileCreateCommandDto->excludePids,
             );
             while ($frontendUserRecord = $frontendUsersResult->fetchAssociative()) {
-                $this->processFrontendUserRecord($frontendUserRecord);
+                if ($this->processFrontendUserRecord($frontendUserRecord)) {
+                    $count++;
+                }
             }
         } finally {
             $this->stateManager->restore();
         }
+        return $count;
     }
 
     /**
@@ -73,8 +78,9 @@ final class ProfileCreateCommandService
 
     /**
      * @param array<string, mixed> $frontendUserRecord
+     * @return bool whether the profile was created
      */
-    private function processFrontendUserRecord(array $frontendUserRecord): void
+    private function processFrontendUserRecord(array $frontendUserRecord): bool
     {
         $this->stateManager->backup();
         $this->stateManager->reset();
@@ -86,13 +92,13 @@ final class ProfileCreateCommandService
             );
             $profileFactory = $this->getSuitableProfileFactory($frontendUserAuthentication);
             if (!$profileFactory->shouldCreateProfileForUser($frontendUserAuthentication)) {
-                return;
+                return false;
             }
             // Reapply build environment state to be sure that project implementation do not messup with the environment.
             if ($environmentState !== null) {
                 $this->stateManager->apply($environmentState);
             }
-            $profileFactory->createProfileForUser($frontendUserAuthentication);
+            return $profileFactory->createProfileForUser($frontendUserAuthentication) !== null;
         } finally {
             $this->stateManager->restore();
         }

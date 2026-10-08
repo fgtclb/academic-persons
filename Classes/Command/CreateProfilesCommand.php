@@ -17,12 +17,16 @@ use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
-use TYPO3\CMS\Core\Utility\GeneralUtility;
+use TYPO3\CMS\Core\Configuration\Exception\ExtensionConfigurationExtensionNotConfiguredException;
+use TYPO3\CMS\Core\Configuration\Exception\ExtensionConfigurationPathDoesNotExistException;
+use TYPO3\CMS\Core\Configuration\ExtensionConfiguration;
 
 final class CreateProfilesCommand extends Command
 {
     public function __construct(
-        private readonly ProfileCreateCommandService $profileCreateCommandService
+        private readonly ProfileCreateCommandService $profileCreateCommandService,
+        private readonly PageListParser $pageListParser,
+        private readonly ExtensionConfiguration $extensionConfiguration,
     ) {
         parent::__construct();
     }
@@ -49,37 +53,35 @@ final class CreateProfilesCommand extends Command
 
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
-        $this->profileCreateCommandService->execute(
+        $includePids = $this->pageListParser->parse($input->getOption('include-pids'));
+        $excludePids = $this->pageListParser->parse($input->getOption('exclude-pids'));
+        if ($includePids === null || $excludePids === null) {
+            $output->writeln('<error>' . PageListParser::ERROR_MESSAGE . '</error>');
+            return Command::INVALID;
+        }
+        $created = $this->profileCreateCommandService->execute(
             new ProfileCreateCommandDto(
-                includePids: $this->getCommaSeparatedIntegerValueListOptionAsArrayOfIntegerValues($input, 'include-pids'),
-                excludePids: $this->getCommaSeparatedIntegerValueListOptionAsArrayOfIntegerValues($input, 'exclude-pids'),
+                includePids: $includePids,
+                excludePids: $excludePids,
             ),
         );
+        $output->writeln(sprintf('%d profile(s) created.', $created));
+        if ($created === 0 && !$this->isAutoCreateProfilesEnabled()) {
+            $output->writeln(
+                'The automatic profile creation is disabled, so the default profile factory creates no profile.'
+                . ' Enable profile.autoCreateProfiles in the extension configuration of academic_persons.'
+                . ' A profile factory chosen through the ChooseProfileFactoryEvent may ignore the option.'
+            );
+        }
         return Command::SUCCESS;
     }
 
-    /**
-     * @param InputInterface $input
-     * @param string $option
-     * @return int[]
-     */
-    private function getCommaSeparatedIntegerValueListOptionAsArrayOfIntegerValues(InputInterface $input, string $option): array
+    private function isAutoCreateProfilesEnabled(): bool
     {
-        if ($option === '') {
-            return [];
+        try {
+            return (int)$this->extensionConfiguration->get('academic_persons', 'profile/autoCreateProfiles') !== 0;
+        } catch (ExtensionConfigurationExtensionNotConfiguredException | ExtensionConfigurationPathDoesNotExistException) {
+            return false;
         }
-        $valuesStringList = $this->getOptionWithEmptyStringFallback($input, $option);
-        $values = GeneralUtility::intExplode(',', $valuesStringList, true);
-        $values = array_unique($values);
-        $values = array_values($values);
-        return $values;
-    }
-
-    private function getOptionWithEmptyStringFallback(InputInterface $input, string $option): mixed
-    {
-        if ($option === '' || !$input->hasOption($option)) {
-            return '';
-        }
-        return (string)($input->getOption($option)) ?: '';
     }
 }

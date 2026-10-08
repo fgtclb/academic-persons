@@ -17,7 +17,6 @@ use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
-use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
  * @internal This command is for internal use and may change without notice.
@@ -25,7 +24,8 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
 final class UpdateProfilesCommand extends Command
 {
     public function __construct(
-        private readonly ProfileUpdateCommandService $profileUpdateCommandService
+        private readonly ProfileUpdateCommandService $profileUpdateCommandService,
+        private readonly PageListParser $pageListParser,
     ) {
         parent::__construct();
     }
@@ -52,35 +52,17 @@ final class UpdateProfilesCommand extends Command
 
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
-        $this->profileUpdateCommandService->execute(new ProfileUpdateCommandDto(
-            includePids: $this->getCommaSeparatedIntegerValueListOptionAsArrayOfIntegerValues($input, 'include-pids'),
-            excludePids: $this->getCommaSeparatedIntegerValueListOptionAsArrayOfIntegerValues($input, 'exclude-pids'),
+        $includePids = $this->pageListParser->parse($input->getOption('include-pids'));
+        $excludePids = $this->pageListParser->parse($input->getOption('exclude-pids'));
+        if ($includePids === null || $excludePids === null) {
+            $output->writeln('<error>' . PageListParser::ERROR_MESSAGE . '</error>');
+            return Command::INVALID;
+        }
+        $updated = $this->profileUpdateCommandService->execute(new ProfileUpdateCommandDto(
+            includePids: $includePids,
+            excludePids: $excludePids,
         ));
+        $output->writeln(sprintf('Profiles of %d frontend user(s) updated.', $updated));
         return Command::SUCCESS;
-    }
-
-    /**
-     * @param InputInterface $input
-     * @param string $option
-     * @return int[]
-     */
-    private function getCommaSeparatedIntegerValueListOptionAsArrayOfIntegerValues(InputInterface $input, string $option): array
-    {
-        if ($option === '') {
-            return [];
-        }
-        $valuesStringList = $this->getOptionWithEmptyStringFallback($input, $option);
-        $values = GeneralUtility::intExplode(',', $valuesStringList, true);
-        $values = array_unique($values);
-        $values = array_values($values);
-        return $values;
-    }
-
-    private function getOptionWithEmptyStringFallback(InputInterface $input, string $option): mixed
-    {
-        if ($option === '' || !$input->hasOption($option)) {
-            return '';
-        }
-        return (string)($input->getOption($option)) ?: '';
     }
 }

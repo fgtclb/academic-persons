@@ -50,20 +50,25 @@ final class ProfileUpdateCommandService
     ) {}
 
     /**
+     * @return int the number of frontend users whose profiles were updated
      * @throws \Doctrine\DBAL\Exception
      */
-    public function execute(ProfileUpdateCommandDto $dto): void
+    public function execute(ProfileUpdateCommandDto $dto): int
     {
         $this->stateManager->backup();
         $this->stateManager->reset();
+        $count = 0;
         try {
             $frontendUsersResult = $this->getUsersWithProfileResult($dto->includePids, $dto->excludePids);
             while ($frontendUserRecord = $frontendUsersResult->fetchAssociative()) {
-                $this->processFrontendUserRecord($frontendUserRecord);
+                if ($this->processFrontendUserRecord($frontendUserRecord)) {
+                    $count++;
+                }
             }
         } finally {
             $this->stateManager->restore();
         }
+        return $count;
     }
 
     /**
@@ -77,8 +82,9 @@ final class ProfileUpdateCommandService
 
     /**
      * @param array<string, mixed> $frontendUserRecord
+     * @return bool whether the profiles of the frontend user were updated
      */
-    private function processFrontendUserRecord(array $frontendUserRecord): void
+    private function processFrontendUserRecord(array $frontendUserRecord): bool
     {
         $this->stateManager->backup();
         $this->stateManager->reset();
@@ -90,13 +96,14 @@ final class ProfileUpdateCommandService
             );
             $profileFactory = $this->getSuitableProfileFactory($frontendUserAuthentication);
             if (!$profileFactory->shouldUpdateProfileForUser($frontendUserAuthentication)) {
-                return;
+                return false;
             }
             // Reapply build environment state to be sure that project implementation do not messup with the environment.
             if ($environmentState !== null) {
                 $this->stateManager->apply($environmentState);
             }
             $profileFactory->updateProfileForUser($frontendUserAuthentication);
+            return true;
         } finally {
             $this->stateManager->restore();
         }
