@@ -45,9 +45,9 @@ Impact
 :php:`Event\AfterProfileUpdateEvent` listener of EXT:academic_persons_edit
 skips a profile that reports itself as a translation, because synchronization
 runs from the default language record only. A profile created by
-:bash:`academic:createprofiles`, or on frontend user login, was caught by that
-gate and never translated, no matter how ``profile.allowedLanguages`` was
-configured.
+:bash:`academic:createprofiles`, the only place that creates profiles from
+frontend users, was caught by that gate and never translated, no matter how
+``profile.allowedLanguages`` was configured.
 
 Profiles created before this change stay untranslated until something announces
 them again. A run of :bash:`academic:updateprofiles` does that, and it was
