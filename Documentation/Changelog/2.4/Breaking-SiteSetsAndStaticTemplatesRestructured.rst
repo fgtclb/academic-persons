@@ -199,7 +199,7 @@ aggregate:
     *   -   `fgtclb/academic-persons-detail`
         -   The :guilabel:`Persons Detail` content element only.
     *   -   `fgtclb/academic-persons-card`
-        -   The :guilabel:`Contacts` content element only.
+        -   The :guilabel:`Profile Card` content element only.
     *   -   `fgtclb/academic-persons-selected-profiles`
         -   The :guilabel:`Profiles: Selected Profiles` content element only.
     *   -   `fgtclb/academic-persons-selected-contracts`

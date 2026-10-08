@@ -48,7 +48,7 @@ backend offers, not how much TypoScript is loaded.
     *   -   `fgtclb/academic-persons-detail`
         -   The :guilabel:`Persons Detail` content element.
     *   -   `fgtclb/academic-persons-card`
-        -   The :guilabel:`Contacts` content element, and the FlexForm
+        -   The :guilabel:`Profile Card` content element, and the FlexForm
             restriction that hides the list, sorting and pagination fields for
             it.
     *   -   `fgtclb/academic-persons-selected-profiles`
@@ -264,7 +264,7 @@ tree should offer:
     *   -   :guilabel:`Academic Persons: Profile detail (academic_persons)`
         -   The same for :guilabel:`Persons Detail`.
     *   -   :guilabel:`Academic Persons: Profile card (academic_persons)`
-        -   The same for :guilabel:`Contacts`, plus the FlexForm restriction of
+        -   The same for :guilabel:`Profile Card`, plus the FlexForm restriction of
             that element.
     *   -   :guilabel:`Academic Persons: Selected profiles (academic_persons)`
         -   The same for :guilabel:`Profiles: Selected Profiles`.

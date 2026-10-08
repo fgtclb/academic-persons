@@ -84,10 +84,10 @@
 				<source>Plugin for listing and viewing academic persons</source>
 			</trans-unit>
 			<trans-unit id="newContentElement.wizardItems.academic.card.title">
-				<source>Contacts</source>
+				<source>Profile Card</source>
 			</trans-unit>
 			<trans-unit id="newContentElement.wizardItems.academic.card.description">
-				<source>Adds one or more contacts</source>
+				<source>Shows one or more selected profiles as cards</source>
 			</trans-unit>
 
 			<trans-unit id="element.tab.configuration">
@@ -106,7 +106,7 @@
 				<source>Function Types</source>
 			</trans-unit>
 			<trans-unit id="flexform.el.groupBy.label">
-				<source>Group By (is given priority in sorting if activ)</source>
+				<source>Group By (is given priority in sorting if active)</source>
 			</trans-unit>
 			<trans-unit id="flexform.el.groupBy.items.none">
 				<source>No grouping</source>

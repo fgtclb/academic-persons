@@ -26,7 +26,7 @@ TCEFORM.tt_content.CType.removeItems := removeFromList(academicpersons_card)
 mod.wizards.newContentElement.wizardItems.academic {
   elements {
     academicpersons_card {
-      iconIdentifier = actions-user
+      iconIdentifier = persons_icon
       title = LLL:EXT:academic_persons/Resources/Private/Language/locallang_be.xlf:newContentElement.wizardItems.academic.card.title
       description = LLL:EXT:academic_persons/Resources/Private/Language/locallang_be.xlf:newContentElement.wizardItems.academic.card.description
       tt_content_defValues {

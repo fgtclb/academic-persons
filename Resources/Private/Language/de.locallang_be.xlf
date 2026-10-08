@@ -109,12 +109,12 @@
 				<target>Plugin zur Auflistung und Ansicht akademischer Personen</target>
 			</trans-unit>
 			<trans-unit id="newContentElement.wizardItems.academic.card.title">
-				<source>Contacts</source>
-				<target>Kontakte</target>
+				<source>Profile Card</source>
+				<target>Profilkarte</target>
 			</trans-unit>
 			<trans-unit id="newContentElement.wizardItems.academic.card.description">
-				<source>Adds one or more contacts</source>
-				<target>Fügt ein oder mehrere Kontakte hinzu</target>
+				<source>Shows one or more selected profiles as cards</source>
+				<target>Zeigt ein oder mehrere ausgewählte Profile als Karten an</target>
 			</trans-unit>
 
 			<trans-unit id="element.tab.configuration">
@@ -138,7 +138,7 @@
 				<target>Funktionstypen</target>
 			</trans-unit>
 			<trans-unit id="flexform.el.groupBy.label">
-				<source>Group By (is given priority in sorting if activ)</source>
+				<source>Group By (is given priority in sorting if active)</source>
 				<target>Gruppieren nach (wird vorrangig bei der Sortierung berücksichtigt)</target>
 			</trans-unit>
 			<trans-unit id="flexform.el.groupBy.items.none">
