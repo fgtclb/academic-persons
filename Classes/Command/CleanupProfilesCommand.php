@@ -22,7 +22,6 @@ use Symfony\Component\Console\Output\OutputInterface;
 use TYPO3\CMS\Core\Authentication\BackendUserAuthentication;
 use TYPO3\CMS\Core\DataHandling\DataHandler;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
-use TYPO3\CMS\Core\Utility\MathUtility;
 
 /**
  * Hides or deletes the profiles whose linked frontend users are all disabled, past
@@ -50,6 +49,7 @@ final class CleanupProfilesCommand extends Command
     public function __construct(
         private readonly InactiveFrontendUserProfileProvider $profileProvider,
         private readonly DataHandlerExecutionContext $executionContext,
+        private readonly PageListParser $pageListParser,
     ) {
         parent::__construct();
     }
@@ -112,10 +112,10 @@ final class CleanupProfilesCommand extends Command
             $output->writeln(sprintf('<error>--deleted must be one of: %s.</error>', implode(', ', self::DELETED_ACTIONS)));
             return Command::INVALID;
         }
-        $includePids = $this->getPidListOption($input, 'include-pids');
-        $excludePids = $this->getPidListOption($input, 'exclude-pids');
+        $includePids = $this->pageListParser->parse($input->getOption('include-pids'));
+        $excludePids = $this->pageListParser->parse($input->getOption('exclude-pids'));
         if ($includePids === null || $excludePids === null) {
-            $output->writeln('<error>--include-pids and --exclude-pids take a comma-separated list of page uids.</error>');
+            $output->writeln('<error>' . PageListParser::ERROR_MESSAGE . '</error>');
             return Command::INVALID;
         }
         $dryRun = (bool)$input->getOption('dry-run');
@@ -205,23 +205,5 @@ final class CleanupProfilesCommand extends Command
         return $candidate->label === ''
             ? sprintf('Profile %d', $candidate->uid)
             : sprintf('Profile %d "%s"', $candidate->uid, OutputFormatter::escape($candidate->label));
-    }
-
-    /**
-     * A mistyped page list must not narrow a destructive run unnoticed, so any part
-     * that is no integer makes the list invalid.
-     *
-     * @return int[]|null null for a list with a part that is no page uid
-     */
-    private function getPidListOption(InputInterface $input, string $option): ?array
-    {
-        $pids = [];
-        foreach (GeneralUtility::trimExplode(',', (string)$input->getOption($option), true) as $part) {
-            if (!MathUtility::canBeInterpretedAsInteger($part) || (int)$part < 0) {
-                return null;
-            }
-            $pids[] = (int)$part;
-        }
-        return array_values(array_unique($pids));
     }
 }

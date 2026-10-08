@@ -20,13 +20,12 @@ use Symfony\Component\Console\Output\OutputInterface;
 use TYPO3\CMS\Core\Configuration\Exception\ExtensionConfigurationExtensionNotConfiguredException;
 use TYPO3\CMS\Core\Configuration\Exception\ExtensionConfigurationPathDoesNotExistException;
 use TYPO3\CMS\Core\Configuration\ExtensionConfiguration;
-use TYPO3\CMS\Core\Utility\GeneralUtility;
-use TYPO3\CMS\Core\Utility\MathUtility;
 
 final class CreateProfilesCommand extends Command
 {
     public function __construct(
         private readonly ProfileCreateCommandService $profileCreateCommandService,
+        private readonly PageListParser $pageListParser,
         private readonly ExtensionConfiguration $extensionConfiguration,
     ) {
         parent::__construct();
@@ -54,10 +53,10 @@ final class CreateProfilesCommand extends Command
 
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
-        $includePids = $this->getPidListOption($input, 'include-pids');
-        $excludePids = $this->getPidListOption($input, 'exclude-pids');
+        $includePids = $this->pageListParser->parse($input->getOption('include-pids'));
+        $excludePids = $this->pageListParser->parse($input->getOption('exclude-pids'));
         if ($includePids === null || $excludePids === null) {
-            $output->writeln('<error>--include-pids and --exclude-pids take a comma-separated list of page uids.</error>');
+            $output->writeln('<error>' . PageListParser::ERROR_MESSAGE . '</error>');
             return Command::INVALID;
         }
         $created = $this->profileCreateCommandService->execute(
@@ -84,24 +83,5 @@ final class CreateProfilesCommand extends Command
         } catch (ExtensionConfigurationExtensionNotConfiguredException | ExtensionConfigurationPathDoesNotExistException) {
             return false;
         }
-    }
-
-    /**
-     * The same reading as `academic:cleanupprofiles`: a mistyped page list must not
-     * silently widen or narrow the run, so any part that is no page uid makes the
-     * list invalid.
-     *
-     * @return int[]|null null for a list with a part that is no page uid
-     */
-    private function getPidListOption(InputInterface $input, string $option): ?array
-    {
-        $pids = [];
-        foreach (GeneralUtility::trimExplode(',', (string)$input->getOption($option), true) as $part) {
-            if (!MathUtility::canBeInterpretedAsInteger($part) || (int)$part < 0) {
-                return null;
-            }
-            $pids[] = (int)$part;
-        }
-        return array_values(array_unique($pids));
     }
 }
