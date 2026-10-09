@@ -68,6 +68,11 @@ created, edited and displayed in the front end and in different display modes.
 
         Override and customise the frontend templates.
 
+    ..  card:: :ref:`Styling <styling>`
+
+        The classes of the profile list, card and detail, and how a site package
+        styles them.
+
     ..  card:: :ref:`For developers <developers>`
 
         The translation synchronisation surface: the trigger event, the
@@ -92,6 +97,7 @@ created, edited and displayed in the front end and in different display modes.
     Upgrade/Index
     Configuration/Index
     Templates/Index
+    Styling/Index
     Developers/Index
     KnownProblems/Index
     Changelog/Changelog-3
