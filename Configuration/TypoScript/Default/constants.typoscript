@@ -71,6 +71,10 @@ plugin.tx_academicpersons {
     # cat=plugin.tx_academicpersons//a; type=string; label=Prefix of a phone link target: prepended to the "tel:" target of every phone number, never to its visible text
     telPrefix =
   }
+  assets {
+    # cat=plugin.tx_academicpersons/enable; type=boolean; label=Profile detail: load the script, off for an installation that brings its own
+    js = 1
+  }
   view {
     # cat=plugin.tx_academicpersons/file; type=string; label=Path to template root (FE)
     templateRootPath = EXT:academic_persons/Resources/Private/Templates/

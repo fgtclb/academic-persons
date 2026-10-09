@@ -11,7 +11,9 @@
     below the large breakpoint the `left` elements are rendered again directly before `subline`.
 </f:comment>
 
-<f:asset.module identifier="@fgtclb/academic-persons/frontend/profile.js" />
+<f:if condition="{settings.assets.js}">
+    <f:asset.module identifier="@fgtclb/academic-persons/frontend/profile.js" />
+</f:if>
 
 <div class="academic-persons-detail" data-academic-persons-detail>
     <f:if condition="{settings.renderContentElementHeader}">

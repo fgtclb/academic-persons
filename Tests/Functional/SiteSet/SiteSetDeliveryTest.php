@@ -475,6 +475,7 @@ final class SiteSetDeliveryTest extends AbstractAcademicPersonsTestCase
                 'plugin.tx_academicpersons.image.placeholder.ms' => '',
                 'plugin.tx_academicpersons.image.placeholder.diverse' => '',
                 'plugin.tx_academicpersons.phoneNumbers.telPrefix' => '',
+                'plugin.tx_academicpersons.assets.js' => true,
             ],
             $definitions,
         );

@@ -130,3 +130,9 @@ settings:
     category: academic.persons
     type: string
     default: ''
+  plugin.tx_academicpersons.assets.js:
+    label: 'Profile detail | Load the script'
+    description: 'Off for an installation that brings its own script. Without one the entries of the profile stay folded: the template renders their panels hidden, and only a script opens them.'
+    category: academic.persons
+    type: bool
+    default: true

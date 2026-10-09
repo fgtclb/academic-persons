@@ -705,6 +705,68 @@ tree should offer:
 
 The setting is inherited by every page below the one it is set on.
 
+..  _configuration-javascript:
+
+Load the script or bring your own
+=================================
+
+The :guilabel:`Profile detail` and the :guilabel:`Profile list and detail`
+content elements load the module
+:js:`@fgtclb/academic-persons/frontend/profile.js` on the page that shows a
+profile. It opens and closes the entries of the profile, keeps the section
+navigation below a sticky page header and marks the section in view when the
+site loads Bootstrap. No list of this extension loads a script.
+
+It is switched off per site, for an installation that brings its own:
+
+..  list-table::
+    :header-rows: 1
+
+    *   -   Site setting and constant
+        -   Default
+        -   Off means
+    *   -   :yaml:`plugin.tx_academicpersons.assets.js`
+        -   :yaml:`true`
+        -   The page does not load the module.
+
+With the site set, it is a site setting of `fgtclb/academic-persons`, like every
+other setting of this extension:
+
+..  code-block:: yaml
+    :caption: config/sites/my-site/settings.yaml
+
+    plugin.tx_academicpersons.assets.js: false
+
+With the static template, it is the TypoScript constant of the same name:
+
+..  code-block:: typoscript
+    :caption: Constants of the root sys_template record
+
+    plugin.tx_academicpersons.assets.js = 0
+
+**The profile does not work without a script.** The markup stays exactly as it
+is, and the entries of the profile are rendered folded: each panel carries the
+attribute :html:`hidden`, and only a script removes it. A script of your own
+addresses the same markup, starting from the element
+:html:`[data-academic-persons-detail]`:
+
+*   a button :html:`[data-academic-persons-accordion-trigger]` per entry, whose
+    :html:`aria-controls` names the panel it opens, and which has to set
+    :html:`aria-expanded` and remove :html:`hidden` from that panel,
+*   :html:`[data-academic-persons-sticky-navigation]` and
+    :html:`[data-academic-persons-scrollspy-navigation]`, the section
+    navigation, which works as plain anchor links without a script.
+
+A project that overrides :file:`Templates/Profile/Detail.html` keeps whatever
+its copy loads, until it wraps its own :html:`<f:asset.module>` in
+:html:`<f:if condition="{settings.assets.js}">`.
+
+The switch is about the script of the profile only. A site that includes the
+set `fgtclb/academic-persons-standalone` keeps loading the Bootstrap script
+and stylesheet that its page object takes from a content delivery network,
+whatever the switch says: that page object belongs to the page, not to the
+plugin.
+
 ..  _one-mechanism-per-site:
 
 Do not combine both

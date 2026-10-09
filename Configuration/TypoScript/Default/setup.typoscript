@@ -52,6 +52,12 @@ plugin.tx_academicpersons {
     # which plugin settings do not carry the way the settings of `lib.contentElement` do.
     renderContentElementHeader = {$plugin.tx_academicpersons.renderContentElementHeader}
     defaultHeaderType = {$styles.content.defaultHeaderType}
+
+    # Whether the profile detail loads its script, see "constants.typoscript". The
+    # template checks it where it registers the module, and nowhere else.
+    assets {
+      js = {$plugin.tx_academicpersons.assets.js}
+    }
   }
   view {
     templateRootPaths {
