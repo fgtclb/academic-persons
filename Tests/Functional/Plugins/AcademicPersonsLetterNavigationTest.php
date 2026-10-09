@@ -31,7 +31,7 @@ final class AcademicPersonsLetterNavigationTest extends AbstractAcademicPersonsT
         'DE' => ['id' => 1, 'title' => 'Deutsch', 'locale' => 'de_DE.UTF8', 'iso' => 'de', 'hrefLang' => 'de-DE', 'direction' => ''],
     ];
 
-    private const NAVIGATION_CLASS = 'academic-persons-list__alphabet-pagination';
+    private const NAVIGATION_CLASS = 'ace-alphabet-navigation';
 
     /**
      * What a disabled letter says to assistive technology, in the language of the page.
@@ -214,7 +214,7 @@ final class AcademicPersonsLetterNavigationTest extends AbstractAcademicPersonsT
     private function listedNames(\DOMXPath $xpath): array
     {
         $names = [];
-        foreach ($this->nodes($xpath, sprintf('//*[%s]', $this->hasClass('card-title'))) as $heading) {
+        foreach ($this->nodes($xpath, sprintf('//*[%s]', $this->hasClass('ace-name'))) as $heading) {
             $names[] = trim((string)preg_replace('#\s+#u', ' ', $heading->textContent));
         }
 

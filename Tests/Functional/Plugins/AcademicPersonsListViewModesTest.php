@@ -42,7 +42,7 @@ final class AcademicPersonsListViewModesTest extends AbstractAcademicPersonsTest
     private const CARD_ELEMENT = 4;
     private const LIST_AND_DETAIL_ELEMENT = 5;
 
-    private const SWITCH_CLASS = 'academic-persons-view-mode-switch';
+    private const SWITCH_CLASS = 'ace-view-mode-switch';
 
     private const TABLE_HEADERS = ['Name', 'Position', 'E-mail', 'Phone', 'Room'];
 
@@ -200,7 +200,7 @@ final class AcademicPersonsListViewModesTest extends AbstractAcademicPersonsTest
      */
     private function tableHeaders(\DOMXPath $xpath): array
     {
-        return $this->texts($xpath, sprintf('(//div[%s]//table)[1]/thead/tr/th', $this->hasClass('academic-persons-table')));
+        return $this->texts($xpath, sprintf('(//div[%s]//table)[1]/thead/tr/th', $this->hasClass('ace-table-wrap')));
     }
 
     /**
@@ -211,7 +211,7 @@ final class AcademicPersonsListViewModesTest extends AbstractAcademicPersonsTest
     private function tableRows(\DOMXPath $xpath): array
     {
         $rows = [];
-        foreach ($this->nodes($xpath, sprintf('//div[%s]//table/tbody/tr', $this->hasClass('academic-persons-table'))) as $row) {
+        foreach ($this->nodes($xpath, sprintf('//div[%s]//table/tbody/tr', $this->hasClass('ace-table-wrap'))) as $row) {
             $rows[] = $this->texts($xpath, './th|./td', $row);
         }
 
@@ -220,7 +220,7 @@ final class AcademicPersonsListViewModesTest extends AbstractAcademicPersonsTest
 
     private function gridItemCount(\DOMXPath $xpath): int
     {
-        return $this->nodes($xpath, sprintf('//*[%s]', $this->hasClass('academic-persons-grid__item')))->length;
+        return $this->nodes($xpath, sprintf('//div[%s]/div/div/article[%s]', $this->hasClass('ace-itemlist'), $this->hasClass('ace-item')))->length;
     }
 
     /**
@@ -489,7 +489,7 @@ final class AcademicPersonsListViewModesTest extends AbstractAcademicPersonsTest
 
         $table = $this->render($this->switchLink($this->render('/home'), 'Table')->getAttribute('href'));
 
-        $pageLinks = $this->nodes($table, sprintf('//nav[%s]//a[normalize-space(./span[1])="2"]', $this->hasClass('academic-persons-list__pagination')));
+        $pageLinks = $this->nodes($table, sprintf('//nav[%s]//a[normalize-space(./span[1])="2"]', $this->hasClass('ace-pagination')));
         $this->assertSame(1, $pageLinks->length);
         $pageLink = $pageLinks->item(0);
         $this->assertInstanceOf(\DOMElement::class, $pageLink);
@@ -500,7 +500,7 @@ final class AcademicPersonsListViewModesTest extends AbstractAcademicPersonsTest
         $secondPage = $this->render($pageLink->getAttribute('href'));
         $this->assertSame([['<Dr.> Sean O\'Neill', 'Assistant', '', '', '']], $this->tableRows($secondPage));
 
-        $letterLinks = $this->nodes($table, sprintf('//nav[%s]//a[normalize-space(./span[1])="B"]', $this->hasClass('academic-persons-list__alphabet-pagination')));
+        $letterLinks = $this->nodes($table, sprintf('//nav[%s]//a[normalize-space(./span[1])="B"]', $this->hasClass('ace-alphabet-navigation')));
         $this->assertSame(1, $letterLinks->length);
         $letterLink = $letterLinks->item(0);
         $this->assertInstanceOf(\DOMElement::class, $letterLink);
@@ -511,7 +511,7 @@ final class AcademicPersonsListViewModesTest extends AbstractAcademicPersonsTest
         $letterPage = $this->render($letterLink->getAttribute('href'));
         $this->assertSame([['Ben Baker', 'Lecturer', 'ben.baker@example.test', '', 'C 0.11']], $this->tableRows($letterPage));
 
-        $allLinks = $this->nodes($letterPage, sprintf('//nav[%s]//a[normalize-space(./span[1])="A-Z"]', $this->hasClass('academic-persons-list__alphabet-pagination')));
+        $allLinks = $this->nodes($letterPage, sprintf('//nav[%s]//a[normalize-space(./span[1])="A-Z"]', $this->hasClass('ace-alphabet-navigation')));
         $this->assertSame(1, $allLinks->length);
         $allLink = $allLinks->item(0);
         $this->assertInstanceOf(\DOMElement::class, $allLink);

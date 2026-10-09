@@ -163,7 +163,7 @@ final class ProfileViewModeRouteTest extends AbstractAcademicPersonsTestCase
      */
     private function tileNames(\DOMXPath $xpath): array
     {
-        return $this->texts($xpath, "//*[contains(concat(' ', normalize-space(@class), ' '), ' card-title ')]");
+        return $this->texts($xpath, "//*[contains(concat(' ', normalize-space(@class), ' '), ' ace-name ')]");
     }
 
     /**
@@ -177,7 +177,7 @@ final class ProfileViewModeRouteTest extends AbstractAcademicPersonsTestCase
     private function switchHref(\DOMXPath $xpath, string $label): string
     {
         $links = $xpath->query(sprintf(
-            "//nav[contains(concat(' ', normalize-space(@class), ' '), ' academic-persons-view-mode-switch ')]//a[normalize-space(.)='%s']",
+            "//nav[contains(concat(' ', normalize-space(@class), ' '), ' ace-view-mode-switch ')]//a[normalize-space(.)='%s']",
             $label,
         ));
         $this->assertInstanceOf(\DOMNodeList::class, $links);
@@ -240,7 +240,7 @@ final class ProfileViewModeRouteTest extends AbstractAcademicPersonsTestCase
         $table = $this->render($listUri . '/view-mode/table');
         $this->assertSame(['Anna Adams'], $this->tableNames($table));
         $this->assertSame($listUri, $this->switchHref($table, 'Tiles'));
-        $pageLinks = $table->query("//nav[contains(concat(' ', normalize-space(@class), ' '), ' academic-persons-list__pagination ')]//a[normalize-space(./span[1])='2']/@href");
+        $pageLinks = $table->query("//nav[contains(concat(' ', normalize-space(@class), ' '), ' ace-pagination ')]//a[normalize-space(./span[1])='2']/@href");
         $this->assertInstanceOf(\DOMNodeList::class, $pageLinks);
         $this->assertSame($listUri . '/view-mode/table/page-2', $this->absolute((string)$pageLinks->item(0)?->nodeValue));
 

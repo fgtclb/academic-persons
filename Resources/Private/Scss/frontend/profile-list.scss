@@ -1,0 +1,155 @@
+.academic-persons-list,
+.academic-persons-card,
+.academic-persons-profiles,
+.academic-persons-contracts {
+    --ace-border-color: var(--bs-border-color, #dee2e6);
+    --ace-secondary-bg: var(--bs-tertiary-bg, #f6f8fd);
+    --ace-secondary-color: var(--bs-secondary-color, #6c757d);
+
+    .ace-form,
+    .ace-navigation,
+    .ace-itemlist,
+    .ace-table-wrap {
+        margin-bottom: 1.5rem;
+    }
+
+    .ace-filter {
+        display: grid;
+        gap: 0.5rem;
+    }
+
+    :is(select, input, textarea).ace-control {
+        background-color: var(--bs-body-bg, #fff);
+        border: 1px solid var(--ace-border-color);
+        border-radius: var(--bs-border-radius, 0.375rem);
+        color: var(--bs-body-color, #212529);
+        display: block;
+        line-height: 1.5;
+        padding: 0.375rem 2.25rem 0.375rem 0.75rem;
+        width: 100%;
+    }
+
+    .ace-list {
+        list-style: none;
+        margin: 0;
+        padding: 0;
+    }
+
+    .ace-alphabet-navigation > .ace-list,
+    .ace-view-mode-switch > .ace-list,
+    .f3-widget-paginator {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.25rem;
+    }
+
+    .ace-alphabet-navigation > .ace-list {
+        justify-content: center;
+    }
+
+    .ace-alphabet-navigation .ace-link,
+    .ace-pagination .ace-link,
+    .ace-view-mode-switch .ace-link {
+        border: 1px solid var(--ace-border-color);
+        color: inherit;
+        display: block;
+        padding: 0.375rem 0.75rem;
+        text-decoration: none;
+    }
+
+    .ace-alphabet-navigation .active .ace-link,
+    .ace-pagination .active .ace-link,
+    .ace-view-mode-switch .ace-link.active {
+        background: var(--bs-primary, #0d6efd);
+        border-color: var(--bs-primary, #0d6efd);
+        color: var(--bs-white, #fff);
+    }
+
+    .ace-alphabet-navigation .disabled .ace-link,
+    .ace-pagination .disabled .ace-link {
+        color: var(--ace-secondary-color);
+        pointer-events: none;
+    }
+
+    .ace-itemlist .ace-item {
+        border: 1px solid var(--ace-border-color);
+        display: flex;
+        flex-direction: column-reverse;
+        height: 100%;
+    }
+
+    .ace-item-content {
+        padding: 1rem;
+    }
+
+    .ace-item-content .ace-title {
+        font-size: 1.25rem;
+        margin: 0 0 1rem;
+    }
+
+    .ace-item-content .ace-link {
+        color: inherit;
+    }
+
+    .ace-item-content .ace-attributes {
+        display: grid;
+        gap: 0.5rem;
+    }
+
+    .ace-item-content .ace-attribute {
+        display: grid;
+        gap: 0.15rem;
+    }
+
+    .ace-item-content .ace-value {
+        min-width: 0;
+        overflow-wrap: anywhere;
+    }
+
+    .ace-itemlist .ace-item > :is(figure, picture, img),
+    .ace-itemlist .ace-item > :is(figure, picture) img {
+        display: block;
+        height: auto;
+        margin: 0;
+        width: 100%;
+    }
+
+    .ace-group-header {
+        margin-top: 2rem;
+    }
+
+    .ace-table-wrap {
+        overflow-x: auto;
+    }
+
+    .ace-table {
+        border-collapse: collapse;
+        vertical-align: top;
+        width: 100%;
+    }
+
+    .ace-table :is(th, td) {
+        border-bottom: 1px solid var(--ace-border-color);
+        padding: 0.75rem;
+        text-align: left;
+    }
+
+    .ace-table .ace-list-item {
+        display: block;
+    }
+
+    .ace-table-body .ace-item:nth-child(odd) {
+        background: var(--ace-secondary-bg);
+    }
+
+    .ace-pagination .f3-widget-paginator {
+        justify-content: center;
+        list-style: none;
+        margin: 1.5rem 0 0;
+        padding: 0;
+    }
+
+    .ace-empty {
+        color: var(--ace-secondary-color);
+    }
+}

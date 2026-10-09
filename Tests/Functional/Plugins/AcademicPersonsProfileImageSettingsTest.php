@@ -41,8 +41,9 @@ final class AcademicPersonsProfileImageSettingsTest extends AbstractAcademicPers
     private const FIXTURES = __DIR__ . '/Fixtures/AcademicPersonsProfileImageSettings/';
     private const IMAGE_FIXTURE = __DIR__ . '/Fixtures/AcademicPersonsProfileImage/portrait.jpg';
     private const CONSTANTS = 'EXT:academic_persons/Tests/Functional/Plugins/Fixtures/TypoScript/Constants/';
-    private const ITEM_IMAGE_CLASS = 'academic-persons-item__image card-img-top img-fluid';
-    private const DETAIL_IMAGE_CLASS = 'academic-persons-detail__image img-fluid rounded-0';
+    // The item and the detail pass no class of their own to the image partial.
+    private const ITEM_IMAGE_CLASS = '';
+    private const DETAIL_IMAGE_CLASS = '';
 
     protected function setUp(): void
     {
@@ -119,7 +120,7 @@ final class AcademicPersonsProfileImageSettingsTest extends AbstractAcademicPers
     {
         $xpath = $this->parseRenderedPage($this->renderFrontendPage('https://www.acme.com/home'));
         $items = [];
-        foreach ($this->nodesMatching($xpath, "//*[contains(concat(' ', normalize-space(@class), ' '), ' academic-persons-item ')]") as $item) {
+        foreach ($this->nodesMatching($xpath, "//article[contains(concat(' ', normalize-space(@class), ' '), ' ace-item ')]") as $item) {
             $this->assertInstanceOf(\DOMElement::class, $item);
             $items[] = $item;
         }
@@ -175,7 +176,7 @@ final class AcademicPersonsProfileImageSettingsTest extends AbstractAcademicPers
     {
         $this->setUpPage('detail');
         $xpath = $this->parseRenderedPage($this->renderDetailOfProfileOne());
-        $figure = $this->elementMatching($xpath, "//figure[@class='academic-persons-detail__figure']");
+        $figure = $this->elementMatching($xpath, "//div[@class='ace-profile-image']");
         $this->assertRendersResponsivePicture($xpath, $figure, 3, 600, self::DETAIL_IMAGE_CLASS);
         $this->assertFallbackImageSize($xpath, $figure, 600, 720);
     }
@@ -217,7 +218,7 @@ final class AcademicPersonsProfileImageSettingsTest extends AbstractAcademicPers
     {
         $this->setUpPage('detail', ['DetailCropVariantPortrait']);
         $xpath = $this->parseRenderedPage($this->renderDetailOfProfileOne());
-        $figure = $this->elementMatching($xpath, "//figure[@class='academic-persons-detail__figure']");
+        $figure = $this->elementMatching($xpath, "//div[@class='ace-profile-image']");
         $this->assertRendersResponsivePicture($xpath, $figure, 3, 300, self::DETAIL_IMAGE_CLASS);
         $this->assertFallbackImageSize($xpath, $figure, 300, 400);
     }
@@ -240,7 +241,7 @@ final class AcademicPersonsProfileImageSettingsTest extends AbstractAcademicPers
     {
         $this->setUpPage('detail', ['UndefinedCropVariant']);
         $xpath = $this->parseRenderedPage($this->renderDetailOfProfileOne());
-        $figure = $this->elementMatching($xpath, "//figure[@class='academic-persons-detail__figure']");
+        $figure = $this->elementMatching($xpath, "//div[@class='ace-profile-image']");
         $this->assertFallbackImageSize($xpath, $figure, 600, 800);
     }
 

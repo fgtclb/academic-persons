@@ -156,14 +156,14 @@ final class AcademicPersonsPublicProfilePluginTest extends AbstractAcademicPerso
 
         $positions = $this->positionsOf(
             $content,
-            'academic-persons-detail__navigation"',
-            'academic-persons-detail__headline"',
-            'academic-persons-detail__positions"',
-            'academic-persons-detail__contact"',
-            'academic-persons-detail__subline"',
-            'academic-persons-detail__profile-entries',
-            'academic-persons-detail__links"',
-            'academic-persons-detail__menu-section-data"',
+            'data-academic-persons-scrollspy-navigation',
+            'ace-title ace-profile-name"',
+            'ace-attributes ace-positions"',
+            'class="ace-contact"',
+            'ace-subtitle"',
+            'class="ace-accordion"',
+            'ace-list ace-links"',
+            'ace-content ace-timeline-sections"',
         );
         $sorted = $positions;
         sort($sorted);
@@ -180,16 +180,16 @@ final class AcademicPersonsPublicProfilePluginTest extends AbstractAcademicPerso
     {
         $content = $this->renderShippedProfile();
 
-        $this->assertStringContainsString('academic-persons-detail__headline-part">Prof. Dr.</span>', $content);
+        $this->assertStringContainsString('class="ace-name">Prof. Dr.</span>', $content);
         // The plugin is a content element: no page landmark, no page heading.
         $this->assertStringNotContainsString('<main', $content);
         $this->assertStringNotContainsString('<aside', $content);
         $this->assertStringNotContainsString('<h1', $content);
-        $this->assertStringContainsString('<h2 class="academic-persons-detail__headline"', $content);
-        $this->assertStringContainsString('academic-persons-detail__headline-part">[EN] Max</span>', $content);
-        $this->assertStringContainsString('academic-persons-detail__headline-part">Müllermann</span>', $content);
-        $this->assertSame(3, substr_count($content, 'academic-persons-detail__headline-part"'));
-        $this->assertStringContainsString('academic-persons-detail__position-part--position">Professor of Applied Physics</span>', $content);
+        $this->assertStringContainsString('<h2 class="ace-title ace-profile-name"', $content);
+        $this->assertStringContainsString('class="ace-name">[EN] Max</span>', $content);
+        $this->assertStringContainsString('class="ace-name">Müllermann</span>', $content);
+        $this->assertSame(3, substr_count($content, 'class="ace-name"'));
+        $this->assertStringContainsString('class="ace-value ace-position">Professor of Applied Physics</span>', $content);
         // The shipped position line lists the position only. The contract's function type is
         // shown nowhere else in the shipped layout either.
         $this->assertStringNotContainsString('Dean of Studies', $content);
@@ -233,8 +233,8 @@ final class AcademicPersonsPublicProfilePluginTest extends AbstractAcademicPerso
         $content = $this->renderShippedProfile();
         $normalized = (string)preg_replace('/\s+/', ' ', $content);
 
-        $this->assertStringContainsString('academic-persons-detail__contact-type"> Business ', $normalized);
-        $this->assertStringContainsString('academic-persons-detail__contact-type">(work)</span>', $normalized);
+        $this->assertStringContainsString('<address class="ace-value"> <span class="ace-label"> Business ', $normalized);
+        $this->assertStringContainsString('class="ace-label">(work)</span>', $normalized);
         $this->assertStringContainsString('href="tel:+4930123456"', $normalized);
     }
 
@@ -268,9 +268,9 @@ final class AcademicPersonsPublicProfilePluginTest extends AbstractAcademicPerso
         $normalized = (string)preg_replace('/\s+/', ' ', $content);
 
         $this->assertStringContainsString('data-identifier="tx-academicbase-info-time"', $content);
-        $this->assertStringContainsString('academic-persons-detail__contact-line">Office hours</strong>', $normalized);
+        $this->assertStringContainsString('<strong class="ace-label">Office hours</strong>', $normalized);
         $this->assertMatchesRegularExpression(
-            '#academic-persons-detail__contact-office-hours">Tuesday 10:00 to 12:00<br ?/?>\s*Thursday by appointment</div>#',
+            '#<strong class="ace-label">Office hours</strong>\s*<div class="ce-bodytext">Tuesday 10:00 to 12:00<br ?/?>\s*Thursday by appointment</div>#',
             $content,
         );
     }
@@ -312,8 +312,8 @@ final class AcademicPersonsPublicProfilePluginTest extends AbstractAcademicPerso
     {
         $content = $this->renderShippedProfile('shippedLayout_officeHoursMarkup');
 
-        $this->assertSame(3, substr_count($content, 'academic-persons-detail__contact-contract"'));
-        $this->assertSame(2, substr_count($content, 'academic-persons-detail__contact-office-hours"'));
+        $this->assertSame(3, substr_count($content, 'class="ace-item ace-contract"'));
+        $this->assertSame(2, substr_count($content, 'class="ace-attribute ace-office-hours"'));
         $this->assertSame(2, substr_count($content, 'data-identifier="tx-academicbase-info-time"'));
     }
 
@@ -348,7 +348,7 @@ final class AcademicPersonsPublicProfilePluginTest extends AbstractAcademicPerso
         $normalized = (string)preg_replace('/\s+/', ' ', $content);
 
         $this->assertStringContainsString('2015 – 2018', $normalized);
-        $this->assertStringContainsString('__timeline-date"> 2024 </p>', $normalized);
+        $this->assertStringContainsString('class="ace-label ace-date"> 2024 </p>', $normalized);
         $this->assertStringContainsString('Since 2020', $normalized);
         // The entry that carries an end year only takes the other branch.
         $this->assertStringContainsString('Till 2019', $normalized);

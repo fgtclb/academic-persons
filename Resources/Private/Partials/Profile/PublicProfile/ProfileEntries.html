@@ -12,37 +12,39 @@
     once per entry - they carry no `id`.
 </f:comment>
 
-<div class="academic-persons-detail__profile-entries rounded-0">
+<div class="ace-accordion">
     <f:for each="{publicProfile.details.profileEntries}" as="fieldName">
         <f:if condition="{profile.{fieldName}}">
-            <section class="academic-persons-detail__accordion-item rounded-0">
-                <h4 class="academic-persons-detail__accordion-heading">
+            <section class="ace-accordion-item">
+                <h4 class="ace-header">
                     <button
-                        class="academic-persons-detail__accordion-button rounded-0"
+                        class="ace-toggle"
                         type="button"
                         aria-expanded="false"
                         aria-controls="academic-persons-profile-entry-{data.uid}-{profile.uid}-{fieldName}"
                         data-academic-persons-accordion-trigger="true"
                     >
-                        <span class="academic-persons-detail__accordion-label">
+                        <span class="ace-label">
                             <f:translate key="detail.{fieldName}" extensionName="AcademicPersons" />
                         </span>
-                        <span class="academic-persons-detail__accordion-icon" aria-hidden="true">
-                            <span class="academic-persons-detail__accordion-icon-plus">
+                        <span class="ace-icon" aria-hidden="true">
+                            <span class="ace-open">
                                 <ab:icon identifier="tx-academicbase-action-expand" alternativeMarkupIdentifier="inline" />
                             </span>
-                            <span class="academic-persons-detail__accordion-icon-minus">
+                            <span class="ace-close">
                                 <ab:icon identifier="tx-academicbase-action-collapse" alternativeMarkupIdentifier="inline" />
                             </span>
                         </span>
                     </button>
                 </h4>
                 <div
-                    class="academic-persons-detail__accordion-panel rounded-0"
+                    class="ace-content"
                     id="academic-persons-profile-entry-{data.uid}-{profile.uid}-{fieldName}"
                     hidden="hidden"
                 >
-                    {profile.{fieldName} -> f:format.html()}
+                    <div class="ce-bodytext">
+                        {profile.{fieldName} -> f:format.html()}
+                    </div>
                 </div>
             </section>
         </f:if>

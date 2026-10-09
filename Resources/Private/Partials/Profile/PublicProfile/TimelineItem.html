@@ -10,9 +10,9 @@
     view helper is involved.
 </f:comment>
 
-<article class="academic-persons-detail__timeline-item">
+<article class="ace-item ace-timeline-item">
     <f:if condition="{item.year} || {item.yearStart} || {item.yearEnd}">
-        <p class="academic-persons-detail__timeline-date">
+        <p class="ace-label ace-date">
             <f:if condition="{item.year}">
                 <f:then>{item.year}</f:then>
                 <f:else>
@@ -36,17 +36,17 @@
         </p>
     </f:if>
     <f:if condition="{item.title}">
-        <h4 class="academic-persons-detail__timeline-title">
+        <h4 class="ace-title">
             <f:if condition="{item.link}">
                 <f:then>
-                    <f:link.typolink parameter="{item.link}" class="academic-persons-detail__timeline-link">{item.title}</f:link.typolink>
+                    <f:link.typolink parameter="{item.link}" class="ace-link">{item.title}</f:link.typolink>
                 </f:then>
                 <f:else>{item.title}</f:else>
             </f:if>
         </h4>
     </f:if>
     <f:if condition="{item.bodytext}">
-        <div class="academic-persons-detail__timeline-copy">
+        <div class="ce-bodytext">
             {item.bodytext -> f:format.html()}
         </div>
     </f:if>

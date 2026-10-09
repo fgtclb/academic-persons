@@ -107,7 +107,7 @@ final class AcademicPersonsCardPluginTest extends AbstractAcademicPersonsTestCas
 
         $content = $this->renderHomePage();
         $this->assertStringContainsString('academic-persons-card', $content);
-        $this->assertStringContainsString('academic-persons-item', $content);
+        $this->assertStringContainsString('<article class="ace-item">', $content);
         $this->assertRendersProfileName($content, 'Max', 'Müllermann');
         $this->assertRendersProfileName($content, 'Horst', 'Huber');
         // Not part of the configured selection.
@@ -138,7 +138,7 @@ final class AcademicPersonsCardPluginTest extends AbstractAcademicPersonsTestCas
         // The card template passes no `groupedProfiles`, so the item renders through
         // `Profile/Header` rather than `Profile/SectionHeader` — one level higher.
         $this->assertMatchesRegularExpression(
-            '#<h2 class="academic-persons-item__name card-title">\s*<a href="[^"]*">Max\s+Müllermann</a>\s*</h2>#',
+            '#<h2 class="ace-title ace-name">\s*<a href="[^"]*">Max\s+Müllermann</a>\s*</h2>#',
             $this->renderHomePage(),
         );
     }
@@ -231,10 +231,10 @@ final class AcademicPersonsCardPluginTest extends AbstractAcademicPersonsTestCas
         $this->setUpTestCase('cardPage_showFieldsFunctionType');
 
         $content = (string)preg_replace('/\s+/', ' ', $this->renderHomePage());
-        $this->assertSame(3, substr_count($content, '<b>Function Type:</b>'));
-        $this->assertStringContainsString('<b>Function Type:</b> Head of Department (f) </li>', $content);
-        $this->assertStringContainsString('<b>Function Type:</b> Head of Department (m) </li>', $content);
-        $this->assertStringContainsString('<b>Function Type:</b> Head of Department </li>', $content);
+        $this->assertSame(3, substr_count($content, '<b class="ace-label">Function Type:</b>'));
+        $this->assertStringContainsString('<b class="ace-label">Function Type:</b> <div class="ace-value"> Head of Department (f) </div> </li>', $content);
+        $this->assertStringContainsString('<b class="ace-label">Function Type:</b> <div class="ace-value"> Head of Department (m) </div> </li>', $content);
+        $this->assertStringContainsString('<b class="ace-label">Function Type:</b> <div class="ace-value"> Head of Department </div> </li>', $content);
         // Only the selected field renders.
         $this->assertStringNotContainsString('Professor', $content);
     }
@@ -375,6 +375,6 @@ final class AcademicPersonsCardPluginTest extends AbstractAcademicPersonsTestCas
         $content = $this->renderHomePage();
         $this->assertStringContainsString('academic-persons-card', $content);
         $this->assertStringContainsString('No profiles found', $content);
-        $this->assertStringNotContainsString('academic-persons-item', $content);
+        $this->assertStringNotContainsString('<article class="ace-item">', $content);
     }
 }

@@ -158,7 +158,7 @@ final class ProfileFilterRouteTest extends AbstractAcademicPersonsTestCase
             return ['table', $table];
         }
 
-        return ['list', $this->texts($xpath, "//*[contains(concat(' ', normalize-space(@class), ' '), ' card-title ')]")];
+        return ['list', $this->texts($xpath, "//*[contains(concat(' ', normalize-space(@class), ' '), ' ace-name ')]")];
     }
 
     /**
@@ -235,7 +235,7 @@ final class ProfileFilterRouteTest extends AbstractAcademicPersonsTestCase
     {
         $response = $this->submitFrontendForm(
             $listUri . '/view-mode/table/b',
-            '//form[contains(concat(" ", normalize-space(@class), " "), " academic-persons-list__filter ")]',
+            '//form[contains(concat(" ", normalize-space(@class), " "), " ace-form ")]',
             [$pluginNamespace => ['demand' => ['functionTypeFilter' => (string)self::PROFESSOR]]],
         );
 

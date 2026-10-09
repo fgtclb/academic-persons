@@ -145,7 +145,7 @@ final class AcademicPersonsProfileImageRenderingTest extends AbstractAcademicPer
     private function cards(\DOMXPath $xpath): array
     {
         $cards = [];
-        foreach ($this->nodes($xpath, "//*[contains(concat(' ', normalize-space(@class), ' '), ' academic-persons-item ')]") as $card) {
+        foreach ($this->nodes($xpath, "//article[contains(concat(' ', normalize-space(@class), ' '), ' ace-item ')]") as $card) {
             $this->assertInstanceOf(\DOMElement::class, $card);
             $cards[] = $card;
         }
@@ -167,7 +167,7 @@ final class AcademicPersonsProfileImageRenderingTest extends AbstractAcademicPer
         $image = $this->nodes($xpath, './/picture/img', $card)->item(0);
         $this->assertInstanceOf(\DOMElement::class, $image);
         $this->assertStringEndsWith('.jpg', $image->getAttribute('src'));
-        $this->assertSame('ace-image academic-persons-item__image card-img-top img-fluid', $image->getAttribute('class'));
+        $this->assertSame('ace-image ', $image->getAttribute('class'));
         $this->assertSame('Portrait of Max Müllermann', $image->getAttribute('alt'));
     }
 
@@ -193,7 +193,7 @@ final class AcademicPersonsProfileImageRenderingTest extends AbstractAcademicPer
         $image = $images->item(0);
         $this->assertInstanceOf(\DOMElement::class, $image);
         $this->assertStringEndsWith('Images/ProfilePlaceholder.svg', $image->getAttribute('src'));
-        $this->assertSame('ace-image academic-persons-item__image card-img-top img-fluid', $image->getAttribute('class'));
+        $this->assertSame('ace-image ', $image->getAttribute('class'));
     }
 
     #[Test]
@@ -255,16 +255,16 @@ final class AcademicPersonsProfileImageRenderingTest extends AbstractAcademicPer
         $this->setUpPage('detailPage');
 
         $xpath = $this->parse($this->renderDetailOfProfileOne());
-        $this->assertSame(1, $this->countNodes($xpath, "//figure[@class='academic-persons-detail__figure']/picture"));
-        $sources = $this->nodes($xpath, '//figure/picture/source');
+        $this->assertSame(1, $this->countNodes($xpath, "//div[@class='ace-profile-image']/picture"));
+        $sources = $this->nodes($xpath, '//div[@class="ace-profile-image"]/picture/source');
         $this->assertGreaterThan(0, $sources->length);
         foreach ($sources as $source) {
             $this->assertInstanceOf(\DOMElement::class, $source);
             $this->assertSame('image/webp', $source->getAttribute('type'));
         }
-        $image = $this->nodes($xpath, '//figure/picture/img')->item(0);
+        $image = $this->nodes($xpath, '//div[@class="ace-profile-image"]/picture/img')->item(0);
         $this->assertInstanceOf(\DOMElement::class, $image);
-        $this->assertSame('ace-image academic-persons-detail__image img-fluid rounded-0', $image->getAttribute('class'));
+        $this->assertSame('ace-image ', $image->getAttribute('class'));
         $this->assertSame('lazy', $image->getAttribute('loading'));
         // Title, first and last name, the empty middle name leaves no gap (ACE-877).
         $this->assertSame('Prof. Dr. Max Müllermann', $image->getAttribute('alt'));
@@ -296,7 +296,7 @@ final class AcademicPersonsProfileImageRenderingTest extends AbstractAcademicPer
             ->update('tx_academicpersons_domain_model_profile', $profile, ['uid' => 1]);
 
         $xpath = $this->parse($this->renderDetailOfProfileOne());
-        $image = $this->nodes($xpath, '//figure/picture/img')->item(0);
+        $image = $this->nodes($xpath, '//div[@class="ace-profile-image"]/picture/img')->item(0);
         $this->assertInstanceOf(\DOMElement::class, $image);
         $this->assertSame($expected, $image->getAttribute('alt'));
     }
@@ -314,7 +314,7 @@ final class AcademicPersonsProfileImageRenderingTest extends AbstractAcademicPer
 
         $html = $this->renderDetailOfProfileOne();
         $this->assertStringContainsString('Müllermann', $html);
-        $this->assertStringNotContainsString('academic-persons-detail__figure', $html);
+        $this->assertStringNotContainsString('ace-profile-image', $html);
         $this->assertStringNotContainsString('ProfilePlaceholder.svg', $html);
     }
 }

@@ -21,23 +21,23 @@
     <f:case value="datasFromContracts">
         <f:variable name="contracts" value="{persons:contracts(profile: profile, detailBlock: publicProfile.details.contact)}" />
         <f:if condition="{contracts}">
-            <section class="academic-persons-detail__contact">
-                <h3 class="academic-persons-detail__contact-heading">
+            <section class="ace-contact">
+                <h3 class="ace-title">
                     <f:translate key="detail.contact" extensionName="AcademicPersons" />
                 </h3>
                 <f:for each="{contracts}" as="contract">
-                    <div class="academic-persons-detail__contact-contract">
+                    <div class="ace-item ace-contract">
                         <f:if condition="{contract.emailAddresses}">
-                            <div class="academic-persons-detail__contact-row">
-                                <span class="academic-persons-detail__contact-icon">
+                            <div class="ace-attribute">
+                                <span class="ace-icon">
                                     <ab:icon identifier="tx-academicbase-info-email" alternativeMarkupIdentifier="inline" />
                                 </span>
-                                <div class="academic-persons-detail__contact-content">
+                                <div class="ace-value">
                                     <f:for each="{contract.emailAddresses}" as="emailAddress">
-                                        <span class="academic-persons-detail__contact-line">
-                                            <f:link.email email="{emailAddress.email}" class="academic-persons-detail__contact-link">{emailAddress.email}</f:link.email>
+                                        <span class="ace-list-item">
+                                            <f:link.email email="{emailAddress.email}" class="ace-link">{emailAddress.email}</f:link.email>
                                             <f:if condition="{emailAddress.type}">
-                                                <span class="academic-persons-detail__contact-type">({emailAddress.type})</span>
+                                                <span class="ace-label">({emailAddress.type})</span>
                                             </f:if>
                                         </span>
                                     </f:for>
@@ -45,24 +45,24 @@
                             </div>
                         </f:if>
                         <f:if condition="{contract.phoneNumbers}">
-                            <div class="academic-persons-detail__contact-row">
-                                <span class="academic-persons-detail__contact-icon">
+                            <div class="ace-attribute">
+                                <span class="ace-icon">
                                     <ab:icon identifier="tx-academicbase-info-phone" alternativeMarkupIdentifier="inline" />
                                 </span>
-                                <div class="academic-persons-detail__contact-content">
+                                <div class="ace-value">
                                     <f:for each="{contract.phoneNumbers}" as="phoneNumber">
-                                        <span class="academic-persons-detail__contact-line">
+                                        <span class="ace-list-item">
                                             <f:comment>
                                                 A `tel:` URI carries no spaces, while the stored number is written
                                                 for a reader - so the link target drops them and the label keeps them.
                                                 The configured prefix is part of the target only.
                                             </f:comment>
                                             <a
-                                                class="academic-persons-detail__contact-link"
+                                                class="ace-link"
                                                 href="tel:{f:replace(value: '{settings.phoneNumbers.telPrefix}{phoneNumber.phoneNumber}', search: ' ', replace: '')}"
                                             >{phoneNumber.phoneNumber}</a>
                                             <f:if condition="{phoneNumber.type}">
-                                                <span class="academic-persons-detail__contact-type">({phoneNumber.type})</span>
+                                                <span class="ace-label">({phoneNumber.type})</span>
                                             </f:if>
                                         </span>
                                     </f:for>
@@ -70,13 +70,13 @@
                             </div>
                         </f:if>
                         <f:for each="{contract.physicalAddresses}" as="physicalAddress">
-                            <div class="academic-persons-detail__contact-row">
-                                <span class="academic-persons-detail__contact-icon">
+                            <div class="ace-attribute">
+                                <span class="ace-icon">
                                     <ab:icon identifier="tx-academicbase-info-location" alternativeMarkupIdentifier="inline" />
                                 </span>
-                                <address class="academic-persons-detail__contact-content">
+                                <address class="ace-value">
                                     <f:if condition="{physicalAddress.type}">
-                                        <span class="academic-persons-detail__contact-type">
+                                        <span class="ace-label">
                                             <f:translate
                                                 key="detail.physicalAddress.{physicalAddress.type}"
                                                 extensionName="AcademicPersons"
@@ -84,34 +84,34 @@
                                         </span>
                                     </f:if>
                                     <f:if condition="{physicalAddress.street} || {physicalAddress.streetNumber}">
-                                        <span class="academic-persons-detail__contact-line">{physicalAddress.street} {physicalAddress.streetNumber}</span>
+                                        <span class="ace-list-item">{physicalAddress.street} {physicalAddress.streetNumber}</span>
                                     </f:if>
                                     <f:if condition="{physicalAddress.additional}">
-                                        <span class="academic-persons-detail__contact-line">{physicalAddress.additional}</span>
+                                        <span class="ace-list-item">{physicalAddress.additional}</span>
                                     </f:if>
                                     <f:if condition="{physicalAddress.zip} || {physicalAddress.city}">
-                                        <span class="academic-persons-detail__contact-line">{physicalAddress.zip} {physicalAddress.city}</span>
+                                        <span class="ace-list-item">{physicalAddress.zip} {physicalAddress.city}</span>
                                     </f:if>
                                     <f:if condition="{physicalAddress.state}">
-                                        <span class="academic-persons-detail__contact-line">{physicalAddress.state}</span>
+                                        <span class="ace-list-item">{physicalAddress.state}</span>
                                     </f:if>
                                     <f:if condition="{physicalAddress.country}">
-                                        <span class="academic-persons-detail__contact-line">{physicalAddress.country}</span>
+                                        <span class="ace-list-item">{physicalAddress.country}</span>
                                     </f:if>
                                 </address>
                             </div>
                         </f:for>
                         <f:if condition="{contract.location} || {contract.room}">
-                            <div class="academic-persons-detail__contact-row">
-                                <span class="academic-persons-detail__contact-icon">
+                            <div class="ace-attribute">
+                                <span class="ace-icon">
                                     <ab:icon identifier="tx-academicbase-info-room" alternativeMarkupIdentifier="inline" />
                                 </span>
-                                <div class="academic-persons-detail__contact-content">
+                                <div class="ace-value">
                                     <f:if condition="{contract.location}">
-                                        <strong class="academic-persons-detail__contact-line">{contract.location.title}</strong>
+                                        <strong class="ace-label">{contract.location.title}</strong>
                                     </f:if>
                                     <f:if condition="{contract.room}">
-                                        <span class="academic-persons-detail__contact-line">
+                                        <span class="ace-list-item">
                                             <f:translate key="detail.room" extensionName="AcademicPersons" />: {contract.room}
                                         </span>
                                     </f:if>
@@ -119,12 +119,12 @@
                             </div>
                         </f:if>
                         <f:if condition="{contract.officeHours}">
-                            <div class="academic-persons-detail__contact-row academic-persons-detail__contact-row--office-hours">
-                                <span class="academic-persons-detail__contact-icon">
+                            <div class="ace-attribute ace-office-hours">
+                                <span class="ace-icon">
                                     <ab:icon identifier="tx-academicbase-info-time" alternativeMarkupIdentifier="inline" />
                                 </span>
-                                <div class="academic-persons-detail__contact-content">
-                                    <strong class="academic-persons-detail__contact-line"><f:translate key="detail.officeHours" extensionName="AcademicPersons" /></strong>
+                                <div class="ace-value">
+                                    <strong class="ace-label"><f:translate key="detail.officeHours" extensionName="AcademicPersons" /></strong>
                                     <f:comment>
                                         The frontend editor stores HTML, the backend form and an import plain
                                         text. Line breaks become `<br>`, which leaves editor HTML without
@@ -132,7 +132,7 @@
                                         and emphasis. It removes event handler attributes and prints an element
                                         it does not allow, a script among them, as escaped text.
                                     </f:comment>
-                                    <div class="academic-persons-detail__contact-office-hours">{f:format.nl2br(value: contract.officeHours) -> f:sanitize.html()}</div>
+                                    <div class="ce-bodytext">{f:format.nl2br(value: contract.officeHours) -> f:sanitize.html()}</div>
                                 </div>
                             </div>
                         </f:if>

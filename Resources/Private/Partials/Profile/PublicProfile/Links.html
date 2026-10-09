@@ -11,18 +11,18 @@
 </f:comment>
 
 <f:if condition="{publicProfile.details.links}">
-    <div class="academic-persons-detail__links">
+    <div class="ace-list ace-links">
         <f:for each="{publicProfile.details.links}" as="fieldName">
             <f:if condition="{profile.{fieldName}}">
-                <p class="academic-persons-detail__link-row">
-                    <span class="academic-persons-detail__link-label">
+                <p class="ace-list-item ace-attribute">
+                    <span class="ace-label">
                         <f:translate key="detail.{fieldName}" extensionName="AcademicPersons" />
                     </span>
                     <f:variable name="linkTitle" value="{profile.{fieldName}Title}" />
                     <f:link.typolink
                         parameter="{profile.{fieldName}}"
                         target="_blank"
-                        class="academic-persons-detail__link"
+                        class="ace-link"
                     >{f:if(condition: linkTitle, then: linkTitle, else: '{profile.{fieldName}}')}</f:link.typolink>
                 </p>
             </f:if>

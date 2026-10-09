@@ -72,6 +72,10 @@
         <source>show all profiles</source>
         <target>alle Profile anzeigen</target>
       </trans-unit>
+      <trans-unit id="list.pagination.label" resname="list.pagination.label">
+        <source>Pages of the profile list</source>
+        <target>Seiten der Profilliste</target>
+      </trans-unit>
       <trans-unit id="list.viewMode.navigation" resname="list.viewMode.navigation">
         <source>View mode</source>
         <target>Ansicht</target>

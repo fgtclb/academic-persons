@@ -3,6 +3,11 @@
     xmlns:f="http://typo3.org/ns/TYPO3/CMS/Fluid/ViewHelpers"
 >
 
+<f:asset.css
+    identifier="academic-persons-profile-list"
+    href="EXT:academic_persons/Resources/Public/Css/frontend/profile-list.css"
+/>
+
 <f:comment>
     One profile, as the list, the card, the selected profiles, the selected contracts and
     the contacts element of EXT:academic_contacts4pages render it.
@@ -26,36 +31,34 @@
 <f:variable name="detailLink"><f:render partial="Profile/Item/DetailLink" arguments="{_all}" /></f:variable>
 <f:variable name="profileName"><f:render partial="Profile/Item/Name" arguments="{_all}" /></f:variable>
 
-<div class="academic-persons-item card flex-column-reverse">
-    <div>
-        <div class="card-body">
-            <f:if condition="{groupedProfiles}">
-                <f:then>
-                    <f:render
-                        partial="Profile/SectionHeader"
-                        arguments="{
-                            header: '{profileName -> f:format.trim()}',
-                            layout: '{data.header_layout}',
-                            subheader: '{data.subheader}',
-                            link: '{detailLink -> f:format.trim()}',
-                            class: 'academic-persons-item__name card-title'
-                        }"
-                    />
-                </f:then>
-                <f:else>
-                    <f:render
-                        partial="Profile/Header"
-                        arguments="{
-                            header: '{profileName -> f:format.trim()}',
-                            layout: '{data.header_layout}',
-                            subheader: '{data.subheader}',
-                            link: '{detailLink -> f:format.trim()}',
-                            class: 'academic-persons-item__name card-title'
-                        }"
-                    />
-                </f:else>
-            </f:if>
-        </div>
+<article class="ace-item">
+    <div class="ace-item-content">
+        <f:if condition="{groupedProfiles}">
+            <f:then>
+                <f:render
+                    partial="Profile/SectionHeader"
+                    arguments="{
+                        header: '{profileName -> f:format.trim()}',
+                        layout: '{data.header_layout}',
+                        subheader: '{data.subheader}',
+                        link: '{detailLink -> f:format.trim()}',
+                        class: 'ace-name'
+                    }"
+                />
+            </f:then>
+            <f:else>
+                <f:render
+                    partial="Profile/Header"
+                    arguments="{
+                        header: '{profileName -> f:format.trim()}',
+                        layout: '{data.header_layout}',
+                        subheader: '{data.subheader}',
+                        link: '{detailLink -> f:format.trim()}',
+                        class: 'ace-name'
+                    }"
+                />
+            </f:else>
+        </f:if>
 
         <f:render
             partial="Profile/Item/Contracts"
@@ -67,6 +70,6 @@
         partial="Profile/Item/Image"
         arguments="{_all}"
     />
-</div>
+</article>
 
 </html>

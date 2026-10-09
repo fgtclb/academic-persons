@@ -104,10 +104,10 @@ final class AcademicPersonsDetailPositionFieldsTest extends AbstractAcademicPers
         $content = $this->renderProfile(5);
 
         $this->assertStringContainsString(
-            '<p class="academic-persons-detail__position"><span class="academic-persons-detail__position-part academic-persons-detail__position-part--functionType">Student Advisor</span></p>',
+            '<p class="ace-attribute ace-position-line"><span class="ace-value ace-function-type">Student Advisor</span></p>',
             $content,
         );
-        $this->assertStringNotContainsString('academic-persons-detail__position-part--position', $content);
+        $this->assertStringNotContainsString('ace-value ace-position"', $content);
     }
 
     /**
@@ -133,7 +133,7 @@ final class AcademicPersonsDetailPositionFieldsTest extends AbstractAcademicPers
         $content = $this->renderProfile($profileUid);
 
         $this->assertStringContainsString(
-            'academic-persons-detail__position-part--functionType">' . $expectedName . '</span>',
+            'ace-value ace-function-type">' . $expectedName . '</span>',
             $content,
         );
     }
@@ -149,10 +149,10 @@ final class AcademicPersonsDetailPositionFieldsTest extends AbstractAcademicPers
         $content = $this->renderProfile(6);
 
         $this->assertStringContainsString(
-            '<p class="academic-persons-detail__position">'
-            . '<span class="academic-persons-detail__position-part academic-persons-detail__position-part--position">Professor of Physics &amp; Optics &lt;Lab&gt;</span>'
-            . '<span class="academic-persons-detail__position-part academic-persons-detail__position-part--functionType">Head of Department (m)</span>'
-            . '<span class="academic-persons-detail__position-part academic-persons-detail__position-part--organisationalUnit">Institute of Applied Physics</span>'
+            '<p class="ace-attribute ace-position-line">'
+            . '<span class="ace-value ace-position">Professor of Physics &amp; Optics &lt;Lab&gt;</span>'
+            . '<span class="ace-value ace-function-type">Head of Department (m)</span>'
+            . '<span class="ace-value ace-organisational-unit">Institute of Applied Physics</span>'
             . '</p>',
             $content,
         );
@@ -167,7 +167,7 @@ final class AcademicPersonsDetailPositionFieldsTest extends AbstractAcademicPers
     {
         $content = $this->renderProfile(7);
 
-        $this->assertStringContainsString('academic-persons-detail__positions"', $content);
-        $this->assertStringNotContainsString('class="academic-persons-detail__position"', $content);
+        $this->assertStringContainsString('ace-attributes ace-positions"', $content);
+        $this->assertStringNotContainsString('class="ace-attribute ace-position-line"', $content);
     }
 }

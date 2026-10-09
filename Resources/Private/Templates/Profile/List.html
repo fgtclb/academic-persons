@@ -4,6 +4,11 @@
     data-namespace-typo3-fluid="true"
 >
 
+<f:asset.css
+    identifier="academic-persons-profile-list"
+    href="EXT:academic_persons/Resources/Public/Css/frontend/profile-list.css"
+/>
+
 <f:if condition="{settings.paginationEnabled} && {paginator.paginatedItems}">
     <f:then>
         <f:variable name="profilesToList" value="{paginator.paginatedItems}" />

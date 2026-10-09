@@ -30,10 +30,10 @@
 
 <f:if condition="{viewModes}">
     <nav
-        class="academic-persons-view-mode-switch mb-4"
+        class="ace-navigation ace-view-mode-switch"
         aria-label="{f:translate(key: 'list.viewMode.navigation', extensionName: 'AcademicPersons')}"
     >
-        <ul class="nav nav-pills">
+        <ul class="ace-list">
             <f:for each="{viewModes}" as="mode">
                 <f:if condition="{mode} == {defaultViewMode}">
                     <f:then>
@@ -64,13 +64,13 @@
                     </f:else>
                 </f:if>
                 <f:variable name="label" value="{f:translate(key: 'list.viewMode.{mode}', extensionName: 'AcademicPersons', default: mode)}" />
-                <li class="nav-item">
+                <li class="ace-list-item">
                     <f:if condition="{mode} == {viewMode}">
                         <f:then>
-                            <a href="{href}" class="nav-link active" rel="nofollow" aria-current="true">{label}</a>
+                            <a href="{href}" class="ace-link active" rel="nofollow" aria-current="true">{label}</a>
                         </f:then>
                         <f:else>
-                            <a href="{href}" class="nav-link" rel="nofollow">{label}</a>
+                            <a href="{href}" class="ace-link" rel="nofollow">{label}</a>
                         </f:else>
                     </f:if>
                 </li>

@@ -194,7 +194,7 @@ final class AcademicPersonsVisitorListFilterTest extends AbstractAcademicPersons
     private function listedNames(\DOMXPath $xpath): array
     {
         $names = [];
-        foreach ($this->nodes($xpath, sprintf('//*[%s]', $this->hasClass('academic-persons-item__name'))) as $heading) {
+        foreach ($this->nodes($xpath, sprintf('//*[%s]', $this->hasClass('ace-name'))) as $heading) {
             $names[] = $this->text($heading);
         }
 
@@ -447,7 +447,7 @@ final class AcademicPersonsVisitorListFilterTest extends AbstractAcademicPersons
 
         $this->assertSame(['Anna Adams', 'Cora Clark'], $this->listedNames($xpath));
         $pages = [];
-        foreach ($this->linkDemands($xpath, 'academic-persons-list__pagination', 'tx_academicpersons_list') as $demand) {
+        foreach ($this->linkDemands($xpath, 'ace-pagination', 'tx_academicpersons_list') as $demand) {
             $this->assertSame((string)self::PROFESSOR, $demand['functionTypeFilter'] ?? null);
             $pages[] = $demand['currentPage'] ?? '';
         }
@@ -471,7 +471,7 @@ final class AcademicPersonsVisitorListFilterTest extends AbstractAcademicPersons
 
         $demands = $this->linkDemands(
             $this->renderList(self::LIST_ELEMENT, ['functionTypeFilter' => self::PROFESSOR]),
-            'academic-persons-list__alphabet-pagination',
+            'ace-alphabet-navigation',
             'tx_academicpersons_list',
         );
 

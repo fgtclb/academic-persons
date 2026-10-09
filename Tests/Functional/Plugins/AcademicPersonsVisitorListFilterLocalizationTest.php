@@ -179,7 +179,7 @@ final class AcademicPersonsVisitorListFilterLocalizationTest extends AbstractAca
     private function listedNames(\DOMXPath $xpath): array
     {
         $names = [];
-        foreach ($this->nodes($xpath, "//*[contains(concat(' ', normalize-space(@class), ' '), ' academic-persons-item__name ')]") as $heading) {
+        foreach ($this->nodes($xpath, "//*[contains(concat(' ', normalize-space(@class), ' '), ' ace-name ')]") as $heading) {
             $names[] = trim((string)preg_replace('#\s+#u', ' ', $heading->textContent));
         }
 

@@ -3,18 +3,18 @@
     xmlns:f="http://typo3.org/ns/TYPO3/CMS/Fluid/ViewHelpers"
 >
 
-<div class="academic-persons-detail__menu-section-data">
+<div class="ace-content ace-timeline-sections">
     <f:for each="{publicProfile.details.menuSections}" as="menuSection">
         <f:variable name="fieldName" value="{publicProfile.details.menuSectionsDatas.{menuSection}}" />
         <f:if condition="{profile.{fieldName}}">
             <section
-                class="academic-persons-detail__timeline-section"
+                class="ace-section"
                 id="academic-persons-detail-section-{data.uid}-{menuSection}"
             >
-                <h3 class="academic-persons-detail__timeline-heading">
+                <h3 class="ace-title">
                     <f:translate key="detail.{fieldName}" extensionName="AcademicPersons" />
                 </h3>
-                <div class="academic-persons-detail__timeline">
+                <div class="ace-list ace-timeline">
                     <f:for each="{profile.{fieldName}}" as="item">
                         <f:render partial="Profile/PublicProfile/TimelineItem" arguments="{item: item}" />
                     </f:for>

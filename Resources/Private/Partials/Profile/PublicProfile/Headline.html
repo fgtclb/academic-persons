@@ -8,11 +8,11 @@
     page template and every heading of this view is one level below it.
 </f:comment>
 
-<header class="academic-persons-detail__header">
-    <h2 class="academic-persons-detail__headline" id="academic-persons-detail-headline-{data.uid}-{profile.uid}">
+<header class="ace-header">
+    <h2 class="ace-title ace-profile-name" id="academic-persons-detail-headline-{data.uid}-{profile.uid}">
         <f:for each="{publicProfile.details.headline}" as="fieldName">
             <f:if condition="{profile.{fieldName}}">
-                <span class="academic-persons-detail__headline-part">{profile.{fieldName}}</span>
+                <span class="ace-name">{profile.{fieldName}}</span>
             </f:if>
         </f:for>
     </h2>

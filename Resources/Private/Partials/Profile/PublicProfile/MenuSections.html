@@ -10,21 +10,21 @@
 </f:comment>
 
 <nav
-    class="academic-persons-detail__navigation"
+    class="ace-navigation"
     data-academic-persons-scrollspy-navigation
     aria-label="{f:translate(key: 'detail.navigation', extensionName: 'AcademicPersons')}"
 >
-    <ol class="nav flex-column academic-persons-detail__navigation-list list-unstyled">
+    <ol class="ace-list">
         <f:for each="{publicProfile.details.menuSections}" as="menuSection">
             <f:variable name="fieldName" value="{publicProfile.details.menuSectionsDatas.{menuSection}}" />
             <f:if condition="{profile.{fieldName}}">
-                <li class="nav-item academic-persons-detail__navigation-item">
+                <li class="ace-list-item">
                     <a
-                        class="nav-link px-0 py-0 academic-persons-detail__navigation-link"
+                        class="ace-link"
                         href="#academic-persons-detail-section-{data.uid}-{menuSection}"
                     >
-                        <span class="academic-persons-detail__navigation-number" aria-hidden="true"></span>
-                        <span class="academic-persons-detail__navigation-label">
+                        <span class="ace-count" aria-hidden="true"></span>
+                        <span class="ace-label">
                             <f:translate key="detail.{fieldName}" extensionName="AcademicPersons" />
                         </span>
                     </a>

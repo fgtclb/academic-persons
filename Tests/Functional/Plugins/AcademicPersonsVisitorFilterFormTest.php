@@ -37,7 +37,7 @@ final class AcademicPersonsVisitorFilterFormTest extends AbstractAcademicPersons
     private const LIST_AND_DETAIL_ELEMENT = 2;
     private const SELECTION_ELEMENT = 3;
 
-    private const FORM = '//form[contains(concat(" ", normalize-space(@class), " "), " academic-persons-list__filter ")]';
+    private const FORM = '//form[contains(concat(" ", normalize-space(@class), " "), " ace-form ")]';
 
     protected function setUp(): void
     {
@@ -216,7 +216,7 @@ final class AcademicPersonsVisitorFilterFormTest extends AbstractAcademicPersons
     private function listedNames(\DOMXPath $xpath): array
     {
         $names = [];
-        foreach ($this->nodes($xpath, "//*[contains(concat(' ', normalize-space(@class), ' '), ' academic-persons-item__name ')]") as $heading) {
+        foreach ($this->nodes($xpath, "//*[contains(concat(' ', normalize-space(@class), ' '), ' ace-name ')]") as $heading) {
             $names[] = trim((string)preg_replace('#\s+#u', ' ', $heading->textContent));
         }
 

@@ -32,13 +32,13 @@
         />
     </f:case>
     <f:case value="position">
-        <td><f:for each="{contracts}" as="contract"><f:if condition="{contract.position}"><span class="d-block">{contract.position}</span></f:if></f:for></td>
+        <td class="ace-value"><f:for each="{contracts}" as="contract"><f:if condition="{contract.position}"><span class="ace-list-item">{contract.position}</span></f:if></f:for></td>
     </f:case>
     <f:case value="organisationalUnit">
-        <td>
+        <td class="ace-value">
             <f:for each="{contracts}" as="contract">
                 <f:if condition="{contract.organisationalUnit}">
-                    <span class="d-block">
+                    <span class="ace-list-item">
                         <f:if condition="{contract.organisationalUnit.displayText}">
                             <f:then>{contract.organisationalUnit.displayText}</f:then>
                             <f:else>{contract.organisationalUnit.unitName}</f:else>
@@ -49,20 +49,20 @@
         </td>
     </f:case>
     <f:case value="emailAddresses">
-        <td><f:for each="{contracts}" as="contract"><f:for each="{contract.emailAddresses}" as="emailAddress"><span class="d-block"><f:link.email email="{emailAddress.email}" /></span></f:for></f:for></td>
+        <td class="ace-value"><f:for each="{contracts}" as="contract"><f:for each="{contract.emailAddresses}" as="emailAddress"><span class="ace-list-item"><f:link.email class="ace-link" email="{emailAddress.email}" /></span></f:for></f:for></td>
     </f:case>
     <f:case value="phoneNumbers">
         <f:comment>
             The link target drops the spaces of the stored number and carries the site's
             prefix, the visible text is the stored number - as in "Profile/Contract/Field".
         </f:comment>
-        <td><f:for each="{contracts}" as="contract"><f:for each="{contract.phoneNumbers}" as="phoneNumber"><span class="d-block"><a href="tel:{f:replace(value: '{settings.phoneNumbers.telPrefix}{phoneNumber.phoneNumber}', search: ' ', replace: '')}">{phoneNumber.phoneNumber}</a></span></f:for></f:for></td>
+        <td class="ace-value"><f:for each="{contracts}" as="contract"><f:for each="{contract.phoneNumbers}" as="phoneNumber"><span class="ace-list-item"><a class="ace-link" href="tel:{f:replace(value: '{settings.phoneNumbers.telPrefix}{phoneNumber.phoneNumber}', search: ' ', replace: '')}">{phoneNumber.phoneNumber}</a></span></f:for></f:for></td>
     </f:case>
     <f:case value="room">
-        <td><f:for each="{contracts}" as="contract"><f:if condition="{contract.room}"><span class="d-block">{contract.room}</span></f:if></f:for></td>
+        <td class="ace-value"><f:for each="{contracts}" as="contract"><f:if condition="{contract.room}"><span class="ace-list-item">{contract.room}</span></f:if></f:for></td>
     </f:case>
     <f:defaultCase>
-        <td></td>
+        <td class="ace-value"></td>
     </f:defaultCase>
 </f:switch>
 
@@ -71,7 +71,7 @@
     unescaped; handed in as values, they are escaped once here, as the item headings do.
 </f:comment>
 <f:section name="Name">
-    <th scope="row"><f:link.typolink parameter="{link}">{name}</f:link.typolink></th>
+    <th class="ace-label" scope="row"><f:link.typolink class="ace-link" parameter="{link}">{name}</f:link.typolink></th>
 </f:section>
 
 </html>

@@ -144,7 +144,7 @@ final class AcademicPersonsProfileTemplatePartialsTest extends AbstractAcademicP
      */
     private function groupHeaderQuery(): string
     {
-        return sprintf('.//h2[not(%s)]', $this->hasClass('card-title'));
+        return sprintf('.//h2[not(%s)]', $this->hasClass('ace-name'));
     }
 
     private function countIn(\DOMXPath $xpath, \DOMNode $context, string $query): int
@@ -164,22 +164,21 @@ final class AcademicPersonsProfileTemplatePartialsTest extends AbstractAcademicP
     }
 
     /**
-     * The markup every profile item renders, whichever plugin renders it: the card
-     * wrapper, the heading, the contract list and the image.
+     * The markup every profile item renders, whichever plugin renders it: the item
+     * wrapper, its content, the heading, the contract list and the image.
      */
     private function assertItemMarkup(\DOMXPath $xpath, \DOMElement $wrapper, int $expectedItems, string $plugin): void
     {
-        $items = $this->nodes($xpath, sprintf('.//div[%s]', $this->hasClass('academic-persons-item')), $wrapper);
+        $items = $this->nodes($xpath, sprintf('.//article[%s]', $this->hasClass('ace-item')), $wrapper);
         $this->assertSame($expectedItems, $items->length, sprintf('The %s plugin renders %d items.', $plugin, $expectedItems));
 
         foreach ($items as $item) {
             $this->assertInstanceOf(\DOMElement::class, $item);
-            $this->assertStringContainsString('card', (string)$item->getAttribute('class'));
-            $this->assertStringContainsString('flex-column-reverse', (string)$item->getAttribute('class'));
-            $this->assertSame(1, $this->countIn($xpath, $item, sprintf('.//div[%s]', $this->hasClass('card-body'))), $plugin);
-            $this->assertSame(1, $this->countIn($xpath, $item, sprintf('.//*[%s]', $this->hasClass('card-title'))), $plugin);
-            $this->assertSame(1, $this->countIn($xpath, $item, sprintf('.//ul[%s]', $this->hasClass('list-group'))), $plugin);
-            $this->assertSame(1, $this->countIn($xpath, $item, sprintf('.//*[%s]', $this->hasClass('card-img-top'))), $plugin);
+            $this->assertSame('ace-item', (string)$item->getAttribute('class'));
+            $this->assertSame(1, $this->countIn($xpath, $item, sprintf('.//div[%s]', $this->hasClass('ace-item-content'))), $plugin);
+            $this->assertSame(1, $this->countIn($xpath, $item, sprintf('.//*[%s]', $this->hasClass('ace-name'))), $plugin);
+            $this->assertSame(1, $this->countIn($xpath, $item, sprintf('.//ul[%s]', $this->hasClass('ace-attributes'))), $plugin);
+            $this->assertSame(1, $this->countIn($xpath, $item, sprintf('.//*[%s]', $this->hasClass('ace-image'))), $plugin);
         }
     }
 
@@ -217,11 +216,11 @@ final class AcademicPersonsProfileTemplatePartialsTest extends AbstractAcademicP
         // another element fails the test rather than keeping the count. Grouped by
         // default, so one group header and one grid per first letter of the last name.
         $expected = [
-            'academic-persons-list__group-header' => ['//h2[%s]', 3],
-            'academic-persons-grid' => ['//div[%s][' . $this->hasClass('row') . ']', 6],
-            'academic-persons-grid__item' => ['//div[%s][' . $this->hasClass('col-12') . ']', 12],
-            'academic-persons-item__name' => ['//*[%s][' . $this->hasClass('card-title') . ']', 12],
-            'academic-persons-item__image' => ['//*[%s][' . $this->hasClass('card-img-top') . ']', 12],
+            'ace-group-header' => ['//h2[%s][' . $this->hasClass('ace-title') . ']', 3],
+            'ace-itemlist' => ['//div[%s][div[' . $this->hasClass('row') . ']]', 6],
+            'ace-item' => ['//div[' . $this->hasClass('col-12') . ']/article[%s]', 12],
+            'ace-name' => ['//*[%s][' . $this->hasClass('ace-title') . ']', 12],
+            'ace-image' => ['//article[' . $this->hasClass('ace-item') . ']//*[%s]', 12],
         ];
         foreach ($expected as $class => [$query, $count]) {
             $this->assertSame(
@@ -230,11 +229,11 @@ final class AcademicPersonsProfileTemplatePartialsTest extends AbstractAcademicP
                 sprintf('The class "%s" sits on %d elements of its own kind.', $class, $count),
             );
         }
-        // The list keeps the class it had next to the new one.
+        // Three of the six grids are the ones of the list.
         $this->assertSame(
             3,
-            $this->nodes($xpath, sprintf('//div[%s][%s]', $this->hasClass('academic-persons-grid'), $this->hasClass('academic-persons-itemlist')))->length,
-            'Only the three grids of the list carry the class the list had before.',
+            $this->nodes($xpath, sprintf('//div[%s]//div[%s]', $this->hasClass('academic-persons-list'), $this->hasClass('ace-itemlist')))->length,
+            'Only three of the grids are rendered by the list.',
         );
     }
 
@@ -249,12 +248,12 @@ final class AcademicPersonsProfileTemplatePartialsTest extends AbstractAcademicP
         $list = $this->wrapper($xpath, 'academic-persons-list');
         $this->assertSame(
             1,
-            $this->countIn($xpath, $list, sprintf('.//nav[%s]', $this->hasClass('academic-persons-list__pagination'))),
+            $this->countIn($xpath, $list, sprintf('.//nav[%s]', $this->hasClass('ace-pagination'))),
         );
         $this->assertSame(
             1,
-            $this->countIn($xpath, $list, sprintf('.//nav[%s][%s]', $this->hasClass('academic-persons-list__alphabet-pagination'), $this->hasClass('alphabetical-pagination'))),
-            'The letter navigation keeps the class it had next to the new one.',
+            $this->countIn($xpath, $list, sprintf('.//nav[%s][%s]', $this->hasClass('ace-alphabet-navigation'), $this->hasClass('ace-navigation'))),
+            'The letter navigation carries the navigation class next to its own.',
         );
     }
 
@@ -266,7 +265,7 @@ final class AcademicPersonsProfileTemplatePartialsTest extends AbstractAcademicP
         $xpath = $this->xpath($this->renderHomePage());
         $this->assertSame(
             4,
-            $this->nodes($xpath, sprintf('//p[%s]', $this->hasClass('academic-persons-empty-state')))->length,
+            $this->nodes($xpath, sprintf('//span[%s]', $this->hasClass('ace-empty')))->length,
             'All four elements render the empty state partial.',
         );
     }
@@ -286,13 +285,13 @@ final class AcademicPersonsProfileTemplatePartialsTest extends AbstractAcademicP
         );
         $this->assertSame(
             3,
-            $this->countIn($xpath, $list, sprintf('.//div[%s]', $this->hasClass('academic-persons-itemlist'))),
+            $this->countIn($xpath, $list, sprintf('.//div[%s]', $this->hasClass('ace-itemlist'))),
             'One item grid per group.',
         );
         $this->assertSame(
             3,
-            $this->countIn($xpath, $list, sprintf('.//div[%s][%s]', $this->hasClass('academic-persons-itemlist'), $this->hasClass('row'))),
-            'Every item grid keeps its Bootstrap row class.',
+            $this->countIn($xpath, $list, sprintf('.//div[%s]/div[%s]', $this->hasClass('ace-itemlist'), $this->hasClass('row'))),
+            'Every item grid keeps its Bootstrap row.',
         );
         $this->assertGridColumns($xpath, $list, 3, 'list');
         $this->assertItemMarkup($xpath, $list, 3, 'list');
@@ -311,7 +310,7 @@ final class AcademicPersonsProfileTemplatePartialsTest extends AbstractAcademicP
         $this->assertSame('', $this->textIn($xpath, $list, $this->groupHeaderQuery()), 'An ungrouped list has no group header.');
         $this->assertSame(
             1,
-            $this->countIn($xpath, $list, sprintf('.//div[%s]', $this->hasClass('academic-persons-itemlist'))),
+            $this->countIn($xpath, $list, sprintf('.//div[%s]', $this->hasClass('ace-itemlist'))),
             'One item grid for the whole list.',
         );
         $this->assertGridColumns($xpath, $list, 3, 'list');
@@ -345,11 +344,11 @@ final class AcademicPersonsProfileTemplatePartialsTest extends AbstractAcademicP
         $xpath = $this->xpath($content);
         foreach (self::PLUGIN_WRAPPERS as $plugin => $class) {
             $wrapper = $this->wrapper($xpath, $class);
-            $names = $this->textIn($xpath, $wrapper, sprintf('.//*[%s]', $this->hasClass('card-title')));
+            $names = $this->textIn($xpath, $wrapper, sprintf('.//*[%s]', $this->hasClass('ace-name')));
             foreach (['Achterberg', 'Müllermann', 'O\'Neill'] as $lastName) {
                 $this->assertStringContainsString($lastName, $names, sprintf('The %s plugin renders "%s".', $plugin, $lastName));
             }
-            $positions = $this->textIn($xpath, $wrapper, sprintf('.//ul[%s]', $this->hasClass('list-group')));
+            $positions = $this->textIn($xpath, $wrapper, sprintf('.//ul[%s]', $this->hasClass('ace-attributes')));
             foreach (['Professor', 'Lecturer', 'Assistant'] as $position) {
                 $this->assertStringContainsString($position, $positions, sprintf('The %s plugin renders "%s".', $plugin, $position));
             }
@@ -400,15 +399,15 @@ final class AcademicPersonsProfileTemplatePartialsTest extends AbstractAcademicP
             $wrapper = $this->wrapper($xpath, $class);
             $this->assertSame(
                 'No profiles found.',
-                $this->textIn($xpath, $wrapper, './/p'),
+                $this->textIn($xpath, $wrapper, sprintf('.//span[%s]', $this->hasClass('ace-empty'))),
                 sprintf('The %s plugin shows the empty state.', $plugin),
             );
-            $this->assertSame(0, $this->countIn($xpath, $wrapper, sprintf('.//div[%s]', $this->hasClass('academic-persons-item'))), $plugin);
+            $this->assertSame(0, $this->countIn($xpath, $wrapper, sprintf('.//article[%s]', $this->hasClass('ace-item'))), $plugin);
         }
         $contracts = $this->wrapper($xpath, 'academic-persons-contracts');
         $this->assertSame(
             'No contracts found.',
-            $this->textIn($xpath, $contracts, './/p'),
+            $this->textIn($xpath, $contracts, sprintf('.//span[%s]', $this->hasClass('ace-empty'))),
             'The selected contracts plugin has an empty state of its own.',
         );
     }
@@ -421,7 +420,7 @@ final class AcademicPersonsProfileTemplatePartialsTest extends AbstractAcademicP
         $xpath = $this->xpath($this->renderHomePage());
         foreach (self::PLUGIN_WRAPPERS as $plugin => $class) {
             $wrapper = $this->wrapper($xpath, $class);
-            $names = $this->textIn($xpath, $wrapper, sprintf('.//*[%s]', $this->hasClass('card-title')));
+            $names = $this->textIn($xpath, $wrapper, sprintf('.//*[%s]', $this->hasClass('ace-name')));
             $this->assertStringContainsString(
                 'Prof. Dr. Anna Bettina Achterberg',
                 $names,
@@ -460,7 +459,7 @@ final class AcademicPersonsProfileTemplatePartialsTest extends AbstractAcademicP
         $xpath = $this->xpath($this->renderHomePage());
         foreach (self::PLUGIN_WRAPPERS as $plugin => $class) {
             $wrapper = $this->wrapper($xpath, $class);
-            $names = $this->textIn($xpath, $wrapper, sprintf('.//*[%s]', $this->hasClass('card-title')));
+            $names = $this->textIn($xpath, $wrapper, sprintf('.//*[%s]', $this->hasClass('ace-name')));
             foreach (['Achterberg', 'Müllermann', 'O\'Neill'] as $lastName) {
                 $this->assertStringContainsString(
                     sprintf('NAME-OVERRIDE[%s]', $lastName),
@@ -472,7 +471,7 @@ final class AcademicPersonsProfileTemplatePartialsTest extends AbstractAcademicP
             $this->assertItemMarkup($xpath, $wrapper, 3, $plugin);
             $this->assertStringContainsString(
                 'Professor',
-                $this->textIn($xpath, $wrapper, sprintf('.//ul[%s]', $this->hasClass('list-group'))),
+                $this->textIn($xpath, $wrapper, sprintf('.//ul[%s]', $this->hasClass('ace-attributes'))),
                 sprintf('The %s plugin still renders the contracts.', $plugin),
             );
         }
@@ -567,7 +566,7 @@ final class AcademicPersonsProfileTemplatePartialsTest extends AbstractAcademicP
             );
             $this->assertSame(
                 0,
-                $this->countIn($xpath, $wrapper, sprintf('.//div[%s]', $this->hasClass('academic-persons-item'))),
+                $this->countIn($xpath, $wrapper, sprintf('.//article[%s]', $this->hasClass('ace-item'))),
                 sprintf('The %s plugin renders nothing of the shipped grid.', $plugin),
             );
         }

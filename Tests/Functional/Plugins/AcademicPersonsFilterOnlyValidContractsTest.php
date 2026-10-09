@@ -174,7 +174,7 @@ final class AcademicPersonsFilterOnlyValidContractsTest extends AbstractAcademic
      */
     private function listedNames(\DOMXPath $xpath): array
     {
-        return $this->texts($xpath, sprintf('//*[%s]', $this->hasClass('academic-persons-item__name')));
+        return $this->texts($xpath, sprintf('//*[%s]', $this->hasClass('ace-name')));
     }
 
     /**
@@ -186,7 +186,7 @@ final class AcademicPersonsFilterOnlyValidContractsTest extends AbstractAcademic
     {
         $letters = $this->texts($xpath, sprintf(
             '//nav[%s]//li[not(%s)]/*[1]',
-            $this->hasClass('academic-persons-list__alphabet-pagination'),
+            $this->hasClass('ace-alphabet-navigation'),
             $this->hasClass('disabled'),
         ));
         return array_values(array_filter(array_map('strtolower', $letters), static fn(string $letter): bool => strlen($letter) === 1));
@@ -199,7 +199,7 @@ final class AcademicPersonsFilterOnlyValidContractsTest extends AbstractAcademic
      */
     private function pageNumbers(\DOMXPath $xpath): array
     {
-        $numbers = $this->texts($xpath, sprintf('//nav[%s]//li/*[1]', $this->hasClass('academic-persons-list__pagination')));
+        $numbers = $this->texts($xpath, sprintf('//nav[%s]//li/*[1]', $this->hasClass('ace-pagination')));
         return array_values(array_filter($numbers, static fn(string $number): bool => ctype_digit($number)));
     }
 

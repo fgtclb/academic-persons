@@ -107,7 +107,7 @@ final class ContractsInDetailPartialsTest extends AbstractAcademicPersonsTestCas
     #[Test]
     public function thePositionBlockShowsOnlyTheContractsValidToday(): void
     {
-        $this->assertSame(['Professor', 'Dean'], $this->texts($this->renderBlocks(), 'academic-persons-detail__position'));
+        $this->assertSame(['Professor', 'Dean'], $this->texts($this->renderBlocks(), 'ace-position-line'));
     }
 
     /**
@@ -117,7 +117,7 @@ final class ContractsInDetailPartialsTest extends AbstractAcademicPersonsTestCas
     #[Test]
     public function theContactBlockShowsOnlyTheFirstContract(): void
     {
-        $contacts = $this->texts($this->renderBlocks(), 'academic-persons-detail__contact-contract');
+        $contacts = $this->texts($this->renderBlocks(), 'ace-contract');
 
         $this->assertCount(1, $contacts);
         $this->assertStringContainsString('emeritus@example.com', $contacts[0]);

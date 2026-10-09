@@ -24,16 +24,16 @@
 </f:if>
 
 <nav
-    class="academic-persons-list__alphabet-pagination alphabetical-pagination mb-4"
+    class="ace-navigation ace-alphabet-navigation"
     aria-label="{f:translate(key: 'list.alphabetFilter.navigation', extensionName: 'AcademicPersons')}"
 >
-    <ul class="pagination justify-content-center">
+    <ul class="ace-list">
         <f:if condition="{demand.alphabetFilter}">
             <f:then>
-                <li class="page-item">
+                <li class="ace-list-item">
                     <f:link.action
                         arguments="{demand: '{persons:listArguments(arguments: activeListArguments, overrides: {alphabetFilter: \'\'}, remove: \'currentPage\')}'}"
-                        class="page-link"
+                        class="ace-link"
                         rel="nofollow"
                     >
                         <span>A-Z</span>
@@ -41,10 +41,10 @@
                 </li>
             </f:then>
             <f:else>
-                <li class="page-item active">
+                <li class="ace-list-item active">
                     <f:link.action
                         arguments="{demand: '{persons:listArguments(arguments: activeListArguments, overrides: {alphabetFilter: \'\'}, remove: \'currentPage\')}'}"
-                        class="page-link"
+                        class="ace-link"
                         rel="nofollow"
                         aria="{current: 'page'}"
                     >
@@ -56,12 +56,12 @@
         <f:for each="{letters}" as="available" key="letter">
             <f:if condition="{demand.alphabetFilter} == {letter}">
                 <f:then>
-                    <li class="page-item active">
+                    <li class="ace-list-item active">
                         <f:if condition="{settings.alphabet.activeLetterResets}">
                             <f:then>
                                 <f:link.action
                                     arguments="{demand: '{persons:listArguments(arguments: activeListArguments, overrides: {alphabetFilter: \'\'}, remove: \'currentPage\')}'}"
-                                    class="page-link"
+                                    class="ace-link"
                                     rel="nofollow"
                                     aria="{current: 'page'}"
                                 >
@@ -69,7 +69,7 @@
                                 </f:link.action>
                             </f:then>
                             <f:else>
-                                <span class="page-link" aria-current="page">
+                                <span class="ace-link" aria-current="page">
                                     {letter -> f:format.case()}
                                 </span>
                             </f:else>
@@ -77,10 +77,10 @@
                     </li>
                 </f:then>
                 <f:else if="{available}">
-                    <li class="page-item">
+                    <li class="ace-list-item">
                         <f:link.action
                             arguments="{demand: '{persons:listArguments(arguments: activeListArguments, overrides: {alphabetFilter: letter}, remove: \'currentPage\')}'}"
-                            class="page-link"
+                            class="ace-link"
                             rel="nofollow"
                         >
                             <span>{letter -> f:format.case()}</span>
@@ -88,8 +88,8 @@
                     </li>
                 </f:else>
                 <f:else>
-                    <li class="page-item disabled">
-                        <span class="page-link">
+                    <li class="ace-list-item disabled">
+                        <span class="ace-link">
                             {letter -> f:format.case()}<span class="visually-hidden"> - {f:translate(key: 'list.alphabetFilter.noProfiles', extensionName: 'AcademicPersons')}</span>
                         </span>
                     </li>

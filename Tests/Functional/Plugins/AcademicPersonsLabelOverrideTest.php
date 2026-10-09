@@ -176,23 +176,23 @@ final class AcademicPersonsLabelOverrideTest extends AbstractAcademicPersonsTest
     {
         yield 'list, inline in an attribute' => [
             'list', 'list', 'list.alphabetFilter.navigation', 'Filter by initial of the last name',
-            'alphabetical-pagination mb-4" aria-label="%s" >',
+            'ace-alphabet-navigation" aria-label="%s" >',
         ];
         yield 'list, inline with a default' => [
             'list', 'list', 'list.viewMode.table', 'Table',
-            'class="nav-link" rel="nofollow">%s</a>',
+            'class="ace-link" rel="nofollow">%s</a>',
         ];
         yield 'list, inline, key from a variable' => [
             'empty list', 'list', 'list.noProfilesFound', 'No profiles found.',
-            '<p class="academic-persons-empty-state">%s</p>',
+            '<span class="ace-empty">%s</span>',
         ];
         yield 'detail, tag' => [
             'detail', 'detail', 'detail.contact', 'Contact',
-            '<h3 class="academic-persons-detail__contact-heading"> %s </h3>',
+            '<section class="ace-contact"> <h3 class="ace-title"> %s </h3>',
         ];
         yield 'detail, tag over several lines, key from a variable' => [
             'detail', 'detail', 'detail.physicalAddress.business', 'Business',
-            '<span class="academic-persons-detail__contact-type"> %s </span>',
+            '<address class="ace-value"> <span class="ace-label"> %s </span>',
         ];
     }
 

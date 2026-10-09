@@ -15,7 +15,7 @@
     <f:case value="datasFromContracts">
         <f:variable name="contracts" value="{persons:contracts(profile: profile, detailBlock: publicProfile.details.position)}" />
         <f:if condition="{contracts}">
-            <div class="academic-persons-detail__positions">
+            <div class="ace-attributes ace-positions">
                 <f:for each="{contracts}" as="contract">
                     <f:variable name="parts"><f:spaceless>
                         <f:for each="{publicProfile.details.position.fields}" as="field">
@@ -23,7 +23,7 @@
                         </f:for>
                     </f:spaceless></f:variable>
                     <f:if condition="{parts}">
-                        <p class="academic-persons-detail__position">{parts -> f:format.raw()}</p>
+                        <p class="ace-attribute ace-position-line">{parts -> f:format.raw()}</p>
                     </f:if>
                 </f:for>
             </div>
@@ -35,12 +35,12 @@
     <f:switch expression="{field}">
         <f:case value="position">
             <f:if condition="{contract.position}">
-                <span class="academic-persons-detail__position-part academic-persons-detail__position-part--position">{contract.position}</span>
+                <span class="ace-value ace-position">{contract.position}</span>
             </f:if>
         </f:case>
         <f:case value="functionType">
             <f:if condition="{contract.functionType}">
-                <span class="academic-persons-detail__position-part academic-persons-detail__position-part--functionType"><f:spaceless><f:render partial="Profile/Contract/FunctionTypeName" arguments="{functionType: contract.functionType, gender: profile.gender}" /></f:spaceless></span>
+                <span class="ace-value ace-function-type"><f:spaceless><f:render partial="Profile/Contract/FunctionTypeName" arguments="{functionType: contract.functionType, gender: profile.gender}" /></f:spaceless></span>
             </f:if>
         </f:case>
         <f:case value="organisationalUnit">
@@ -50,7 +50,7 @@
                 <f:variable name="unitName" value="{contract.organisationalUnit.unitName}" />
             </f:if>
             <f:if condition="{unitName}">
-                <span class="academic-persons-detail__position-part academic-persons-detail__position-part--organisationalUnit">{unitName}</span>
+                <span class="ace-value ace-organisational-unit">{unitName}</span>
             </f:if>
         </f:case>
     </f:switch>

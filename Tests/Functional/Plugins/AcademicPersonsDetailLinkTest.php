@@ -161,7 +161,7 @@ final class AcademicPersonsDetailLinkTest extends AbstractAcademicPersonsTestCas
     private function namesOf(\DOMXPath $xpath, int $contentElement): array
     {
         $headings = $xpath->query(sprintf(
-            '//*[@id = "c%d"]//*[contains(concat(" ", normalize-space(@class), " "), " academic-persons-item__name ")]'
+            '//*[@id = "c%d"]//*[contains(concat(" ", normalize-space(@class), " "), " ace-name ")]'
             . ' | //*[@id = "c%1$d"]//table/tbody/tr/th',
             $contentElement,
         ));

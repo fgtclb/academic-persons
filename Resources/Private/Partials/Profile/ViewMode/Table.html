@@ -23,16 +23,16 @@
     Nor does it read "groupedProfiles": a grouped list renders one table per group.
 </f:comment>
 
-<div class="academic-persons-table table-responsive">
-    <table class="table">
-        <thead>
+<div class="ace-table-wrap">
+    <table class="ace-table">
+        <thead class="ace-table-header">
             <tr>
                 <f:for each="{settings.table.columns}" as="column">
-                    <th scope="col">{f:translate(key: 'list.table.{column}', extensionName: 'AcademicPersons', default: column)}</th>
+                    <th class="ace-label" scope="col">{f:translate(key: 'list.table.{column}', extensionName: 'AcademicPersons', default: column)}</th>
                 </f:for>
             </tr>
         </thead>
-        <tbody>
+        <tbody class="ace-table-body">
             <f:if condition="{contracts}">
                 <f:then>
                     <f:for each="{contracts}" as="contract">
@@ -66,7 +66,7 @@
 </div>
 
 <f:section name="Row">
-    <tr>
+    <tr class="ace-item">
         <f:for each="{settings.table.columns}" as="column">
             <f:render
                 partial="Profile/ViewMode/Table/Cell"

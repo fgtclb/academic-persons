@@ -98,21 +98,21 @@ final class AcademicPersonsPublicProfileSettingsOverrideTest extends AbstractAca
             ])
         );
 
-        $profileEntriesPosition = strpos($content, 'academic-persons-detail__profile-entries');
-        $lastNamePosition = strpos($content, 'academic-persons-detail__headline-part">Müllermann</span>');
-        $firstNamePosition = strpos($content, 'academic-persons-detail__headline-part">[EN] Max</span>');
+        $profileEntriesPosition = strpos($content, 'class="ace-accordion"');
+        $lastNamePosition = strpos($content, 'class="ace-name">Müllermann</span>');
+        $firstNamePosition = strpos($content, 'class="ace-name">[EN] Max</span>');
         $this->assertNotFalse($profileEntriesPosition);
         $this->assertNotFalse($lastNamePosition);
         $this->assertNotFalse($firstNamePosition);
         $this->assertLessThan($lastNamePosition, $profileEntriesPosition);
         $this->assertLessThan($firstNamePosition, $lastNamePosition);
         // The title is not part of the overridden headline.
-        $this->assertStringNotContainsString('academic-persons-detail__headline-part">Prof. Dr.</span>', $content);
+        $this->assertStringNotContainsString('class="ace-name">Prof. Dr.</span>', $content);
         // Only `miscellaneous` is listed under `profileEntries`; `teachingArea` has content and is not rendered.
         $this->assertStringContainsString('id="academic-persons-profile-entry-1-1-miscellaneous"', $content);
         $this->assertStringNotContainsString('academic-persons-profile-entry-1-1-teachingArea', $content);
-        $this->assertStringNotContainsString('academic-persons-detail__navigation', $content);
-        $this->assertStringNotContainsString('academic-persons-detail__subline', $content);
-        $this->assertStringNotContainsString('academic-persons-detail__contact"', $content);
+        $this->assertStringNotContainsString('data-academic-persons-scrollspy-navigation', $content);
+        $this->assertStringNotContainsString('ace-subtitle', $content);
+        $this->assertStringNotContainsString('class="ace-contact"', $content);
     }
 }

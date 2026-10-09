@@ -37,9 +37,9 @@ final class AcademicPersonsListNavigationStateTest extends AbstractAcademicPerso
         'EN' => ['id' => 0, 'title' => 'English', 'locale' => 'en_US.UTF8', 'iso' => 'en', 'hrefLang' => 'en-US', 'direction' => ''],
     ];
 
-    private const PAGINATION_CLASS = 'academic-persons-list__pagination';
+    private const PAGINATION_CLASS = 'ace-pagination';
 
-    private const LETTER_NAVIGATION_CLASS = 'academic-persons-list__alphabet-pagination';
+    private const LETTER_NAVIGATION_CLASS = 'ace-alphabet-navigation';
 
     private const FIXTURE_TEMPLATE = 'EXT:academic_persons/Tests/Functional/Plugins/Fixtures/AcademicPersonsListNavigationState/TypoScript/ActiveListArgumentsTemplate.typoscript';
 
@@ -203,7 +203,7 @@ final class AcademicPersonsListNavigationStateTest extends AbstractAcademicPerso
     private function listedNames(\DOMXPath $xpath): array
     {
         $names = [];
-        foreach ($this->nodes($xpath, sprintf('//*[%s]', $this->hasClass('card-title'))) as $heading) {
+        foreach ($this->nodes($xpath, sprintf('//*[%s]', $this->hasClass('ace-name'))) as $heading) {
             $names[] = trim((string)preg_replace('#\s+#u', ' ', $heading->textContent));
         }
 

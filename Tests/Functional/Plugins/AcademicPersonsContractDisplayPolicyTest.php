@@ -147,14 +147,14 @@ final class AcademicPersonsContractDisplayPolicyTest extends AbstractAcademicPer
         $text = static fn(\DOMNode $node): string => trim((string)preg_replace('#\s+#u', ' ', $node->textContent));
 
         $profiles = [];
-        foreach ($xpath->query(sprintf('//div[%s]', $hasClass('academic-persons-item'))) ?: [] as $item) {
-            $names = $xpath->query(sprintf('.//*[%s]', $hasClass('card-title')), $item);
+        foreach ($xpath->query(sprintf('//article[%s]', $hasClass('ace-item'))) ?: [] as $item) {
+            $names = $xpath->query(sprintf('.//*[%s]', $hasClass('ace-name')), $item);
             $name = $names === false ? null : $names->item(0);
             $this->assertInstanceOf(\DOMNode::class, $name, 'A profile item without a name was rendered.');
             $positions = [];
             // One list per contract; its first row is the position, the rows after it the
             // other fields of the contract.
-            foreach ($xpath->query(sprintf('.//ul[%s]/li[1]', $hasClass('list-group')), $item) ?: [] as $position) {
+            foreach ($xpath->query(sprintf('.//ul[%s]/li[1]', $hasClass('ace-attributes')), $item) ?: [] as $position) {
                 $positions[] = (string)preg_replace('#^Position: #', '', $text($position));
             }
             $profiles[$text($name)] = $positions;
@@ -311,9 +311,9 @@ final class AcademicPersonsContractDisplayPolicyTest extends AbstractAcademicPer
             ])
         );
 
-        $this->assertStringContainsString('academic-persons-detail__position-part--position">Emeritus</span>', $content);
-        $this->assertStringContainsString('academic-persons-detail__position-part--position">Professor</span>', $content);
-        $this->assertStringContainsString('academic-persons-detail__position-part--position">Dean</span>', $content);
+        $this->assertStringContainsString('ace-value ace-position">Emeritus</span>', $content);
+        $this->assertStringContainsString('ace-value ace-position">Professor</span>', $content);
+        $this->assertStringContainsString('ace-value ace-position">Dean</span>', $content);
         $this->assertStringContainsString('mailto:emeritus@example.com', $content);
         $this->assertStringContainsString('mailto:professor@example.com', $content);
         $this->assertStringContainsString('mailto:dean@example.com', $content);

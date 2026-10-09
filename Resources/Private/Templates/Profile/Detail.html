@@ -17,33 +17,39 @@
 />
 <f:asset.module identifier="@fgtclb/academic-persons/frontend/profile.js" />
 
-<div class="container-fluid academic-persons-detail px-0" data-academic-persons-detail>
+<div class="academic-persons-detail" data-academic-persons-detail>
     <f:if condition="{settings.renderContentElementHeader}">
         <f:render partial="Header/All" arguments="{_all}" />
     </f:if>
 
-    <div class="row gx-lg-5 gy-5 align-items-stretch academic-persons-detail__layout">
-        <div class="col-12 col-lg-4 d-none d-lg-block academic-persons-detail__aside">
-            <div class="sticky-top academic-persons-detail__sticky-navigation" data-academic-persons-sticky-navigation>
-                <f:for each="{publicProfile.structure.left}" as="element">
-                    <f:render partial="Profile/PublicProfile/Element" arguments="{_all}" />
-                </f:for>
-            </div>
-        </div>
-        <div class="col-12 col-lg-6 academic-persons-detail__main">
-            <f:for each="{publicProfile.structure.right}" as="element">
-                <f:if condition="{element} == 'subline'">
-                    <div class="d-lg-none academic-persons-detail__mobile-navigation">
-                        <f:for each="{publicProfile.structure.left}" as="mobileElement">
-                            <f:render
-                                partial="Profile/PublicProfile/Element"
-                                arguments="{profile: profile, settings: settings, data: data, publicProfile: publicProfile, element: mobileElement}"
-                            />
+    <div class="ace-content ace-profile-layout">
+        <div class="row">
+            <div class="col-12 col-lg-4">
+                <div class="ace-navigation ace-sidebar">
+                    <div class="ace-sticky-navigation" data-academic-persons-sticky-navigation>
+                        <f:for each="{publicProfile.structure.left}" as="element">
+                            <f:render partial="Profile/PublicProfile/Element" arguments="{_all}" />
                         </f:for>
                     </div>
-                </f:if>
-                <f:render partial="Profile/PublicProfile/Element" arguments="{_all}" />
-            </f:for>
+                </div>
+            </div>
+            <div class="col-12 col-lg-6">
+                <div class="ace-main">
+                    <f:for each="{publicProfile.structure.right}" as="element">
+                        <f:if condition="{element} == 'subline'">
+                            <div class="ace-navigation ace-mobile-navigation">
+                                <f:for each="{publicProfile.structure.left}" as="mobileElement">
+                                    <f:render
+                                        partial="Profile/PublicProfile/Element"
+                                        arguments="{profile: profile, settings: settings, data: data, publicProfile: publicProfile, element: mobileElement}"
+                                    />
+                                </f:for>
+                            </div>
+                        </f:if>
+                        <f:render partial="Profile/PublicProfile/Element" arguments="{_all}" />
+                    </f:for>
+                </div>
+            </div>
         </div>
     </div>
 </div>
