@@ -34,19 +34,19 @@ backend offers, not how much TypoScript is loaded.
     *   -   Set
         -   Delivers
     *   -   `fgtclb/academic-persons-list`
-        -   The :guilabel:`Persons List` content element.
+        -   The :guilabel:`Person List` content element.
     *   -   `fgtclb/academic-persons-list-and-detail`
-        -   The :guilabel:`Persons List and Detail` content element.
+        -   The :guilabel:`Person List and Details` content element.
     *   -   `fgtclb/academic-persons-detail`
-        -   The :guilabel:`Persons Detail` content element.
+        -   The :guilabel:`Person Details` content element.
     *   -   `fgtclb/academic-persons-card`
-        -   The :guilabel:`Profile Card` content element, and the FlexForm
+        -   The :guilabel:`Person Contact Card` content element, and the FlexForm
             restriction that hides the list, sorting and pagination fields for
             it.
     *   -   `fgtclb/academic-persons-selected-profiles`
-        -   The :guilabel:`Profiles: Selected Profiles` content element.
+        -   The :guilabel:`Selected Person’s Profiles` content element.
     *   -   `fgtclb/academic-persons-selected-contracts`
-        -   The :guilabel:`Profiles: Selected Contracts` content element.
+        -   The :guilabel:`Selected Person’s Contracts` content element.
     *   -   `fgtclb/academic-persons`
         -   Everything above. This is the set to use unless you deliberately
             want a subset.
@@ -374,7 +374,7 @@ Restrict the backend contract selects
 
 Two backend fields let an editor pick a contract: the :guilabel:`Contract` of a
 page contact record of :guilabel:`EXT:academic_contacts4pages`, and
-:guilabel:`Selected contracts` of the :guilabel:`Profiles: Selected Contracts`
+:guilabel:`Selected contracts` of the :guilabel:`Selected Person’s Contracts`
 content element. Both offer every contract of the installation — in an
 installation with more than one site, that is every site's contracts, each
 labelled with a person's name.
@@ -542,10 +542,10 @@ ratio preselected on an image without a crop.
 The header of the content elements
 ==================================
 
-The header and the subheader an editor enters on a :guilabel:`Persons List`,
-:guilabel:`Persons Detail`, :guilabel:`Persons List and Detail`,
-:guilabel:`Profile Card`, :guilabel:`Profiles: Selected Profiles` or
-:guilabel:`Profiles: Selected Contracts` content element are rendered by the
+The header and the subheader an editor enters on a :guilabel:`Person List`,
+:guilabel:`Person Details`, :guilabel:`Person List and Details`,
+:guilabel:`Person Contact Card`, :guilabel:`Selected Person’s Profiles` or
+:guilabel:`Selected Person’s Contracts` content element are rendered by the
 content element layout of the site, as for any other content element. The
 layouts of :guilabel:`EXT:fluid_styled_content` and of the bootstrap package do
 that, and the plugins render no header of their own.
@@ -689,19 +689,19 @@ tree should offer:
     *   -   :guilabel:`Academic Persons: All components (academic_persons)`
         -   Every component this extension ships, in one entry.
     *   -   :guilabel:`Academic Persons: Profile list (academic_persons)`
-        -   Makes the :guilabel:`Persons List` content element selectable, and
+        -   Makes the :guilabel:`Person List` content element selectable, and
             configures its entry in the new content element wizard.
     *   -   :guilabel:`Academic Persons: Profile list and detail (academic_persons)`
-        -   The same for :guilabel:`Persons List and Detail`.
+        -   The same for :guilabel:`Person List and Details`.
     *   -   :guilabel:`Academic Persons: Profile detail (academic_persons)`
-        -   The same for :guilabel:`Persons Detail`.
+        -   The same for :guilabel:`Person Details`.
     *   -   :guilabel:`Academic Persons: Profile card (academic_persons)`
-        -   The same for :guilabel:`Profile Card`, plus the FlexForm restriction of
+        -   The same for :guilabel:`Person Contact Card`, plus the FlexForm restriction of
             that element.
     *   -   :guilabel:`Academic Persons: Selected profiles (academic_persons)`
-        -   The same for :guilabel:`Profiles: Selected Profiles`.
+        -   The same for :guilabel:`Selected Person’s Profiles`.
     *   -   :guilabel:`Academic Persons: Selected contracts (academic_persons)`
-        -   The same for :guilabel:`Profiles: Selected Contracts`.
+        -   The same for :guilabel:`Selected Person’s Contracts`.
 
 The setting is inherited by every page below the one it is set on.
 

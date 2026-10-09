@@ -52,32 +52,32 @@
       </trans-unit>
 
       <trans-unit id="plugin.list.label">
-        <source>Persons List</source>
+        <source>Person List</source>
         <target>Personen Liste</target>
       </trans-unit>
       <trans-unit id="plugin.detail.label">
-        <source>Persons Detail</source>
-        <target>Personen Detail</target>
+        <source>Person Details</source>
+        <target>Personen Details</target>
       </trans-unit>
       <trans-unit id="plugin.listAndDetail.label">
-        <source>Persons List and Detail</source>
-        <target>Personen Liste und Detail</target>
+        <source>Person List and Details</source>
+        <target>Personen Liste und Details</target>
       </trans-unit>
       <trans-unit id="plugin.selectedprofiles.label">
-        <source>Profiles: Selected Profiles</source>
-        <target>Profile: Ausgewählte Profile</target>
+        <source>Selected Person’s Profiles</source>
+        <target>Personen Profile selektiert</target>
       </trans-unit>
       <trans-unit id="plugin.selectedprofiles.description">
-        <source>Plugin to list only selected profiles</source>
-        <target>Plugin zur Auflistung ausgewählter Profile</target>
+        <source>Lists profiles of selected persons.</source>
+        <target>Listet Profile von ausgewählten Personen auf.</target>
       </trans-unit>
       <trans-unit id="plugin.selectedcontracts.label">
-        <source>Profiles: Selected Contracts</source>
-        <target>Profile: Ausgewählte Verträge</target>
+        <source>Selected Person’s Contracts</source>
+        <target>Personen Verträge selektiert</target>
       </trans-unit>
       <trans-unit id="plugin.selectedcontracts.description">
-        <source>Plugin to list only selected contracts</source>
-        <target>Plugin zur Auflistung ausgewählter Verträge</target>
+        <source>Lists contracts for selected persons.</source>
+        <target>Listet Verträge von ausgewählten Personen auf.</target>
       </trans-unit>
 
       <trans-unit id="newContentElement.wizardItems.academic">
@@ -85,36 +85,36 @@
         <target>Akademisch</target>
       </trans-unit>
       <trans-unit id="newContentElement.wizardItems.academic.list.title">
-        <source>Persons List</source>
+        <source>Person List</source>
         <target>Personen Liste</target>
       </trans-unit>
       <trans-unit id="newContentElement.wizardItems.academic.list.description">
-        <source>Plugin for listing academic persons</source>
-        <target>Plugin zur Auflistung akademischer Personen</target>
+        <source>Lists persons in a directory.</source>
+        <target>Listet Personen in einem Personenregister auf.</target>
       </trans-unit>
       <trans-unit id="newContentElement.wizardItems.academic.detail.title">
-        <source>Persons Detail</source>
-        <target>Personen Detail</target>
+        <source>Person Details</source>
+        <target>Personen Details</target>
       </trans-unit>
       <trans-unit id="newContentElement.wizardItems.academic.detail.description">
-        <source>Plugin for viewing single academic persons</source>
-        <target>Plugin zur Ansicht einzelner akademischer Personen</target>
+        <source>Detailed view of persons.</source>
+        <target>Detailansicht von Personen.</target>
       </trans-unit>
       <trans-unit id="newContentElement.wizardItems.academic.listAndDetail.title">
-        <source>Persons List and Detail</source>
-        <target>Personen Liste und Detail</target>
+        <source>Person List and Details</source>
+        <target>Personen Liste und Details</target>
       </trans-unit>
       <trans-unit id="newContentElement.wizardItems.academic.listAndDetail.description">
-        <source>Plugin for listing and viewing academic persons</source>
-        <target>Plugin zur Auflistung und Ansicht akademischer Personen</target>
+        <source>Lists persons and their details on a single page.</source>
+        <target>Listet Personen und Details auf einer Seite auf.</target>
       </trans-unit>
       <trans-unit id="newContentElement.wizardItems.academic.card.title">
-        <source>Profile Card</source>
-        <target>Profilkarte</target>
+        <source>Person Contact Card</source>
+        <target>Personen Kontaktkarte</target>
       </trans-unit>
       <trans-unit id="newContentElement.wizardItems.academic.card.description">
-        <source>Shows one or more selected profiles as cards</source>
-        <target>Zeigt ein oder mehrere ausgewählte Profile als Karten an</target>
+        <source>Displays selected data for selected persons as a contact card.</source>
+        <target>Zeigt ausgewählte Daten von ausgewählten Personen als Kontaktkarte an.</target>
       </trans-unit>
 
       <trans-unit id="element.tab.configuration">
