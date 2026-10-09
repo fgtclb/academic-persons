@@ -335,6 +335,26 @@ final class AcademicPersonsProfileTemplatePartialsTest extends AbstractAcademicP
         }
     }
 
+    /**
+     * The list, the card, the selected profiles and the selected contracts bring no
+     * stylesheet: the extension ships none since 3.0, a site styles them through their
+     * classes. The test site links no stylesheet of its own, so any
+     * `<link rel="stylesheet">` would be one a plugin registered.
+     */
+    #[Test]
+    public function noListPluginBringsAStylesheet(): void
+    {
+        $this->setUpTestCase('allPlugins');
+
+        $content = $this->renderHomePage();
+        $xpath = $this->xpath($content);
+        foreach (self::PLUGIN_WRAPPERS as $class) {
+            $this->wrapper($xpath, $class);
+        }
+        $this->assertStringNotContainsString('profile-list.css', $content);
+        $this->assertDoesNotMatchRegularExpression('#<link[^>]+rel="stylesheet"#', $content);
+    }
+
     #[Test]
     public function everyPluginRendersTheProfileNamesAndTheirContracts(): void
     {

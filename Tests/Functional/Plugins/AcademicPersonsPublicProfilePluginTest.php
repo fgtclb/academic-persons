@@ -145,6 +145,21 @@ final class AcademicPersonsPublicProfilePluginTest extends AbstractAcademicPerso
     }
 
     /**
+     * The detail view brings its module and no stylesheet: the extension ships none since
+     * 3.0, a site styles the view through its classes. The test site links no stylesheet
+     * of its own, so any `<link rel="stylesheet">` would be one the view registered.
+     */
+    #[Test]
+    public function detailViewBringsItsModuleAndNoStylesheet(): void
+    {
+        $content = $this->renderShippedProfile();
+
+        $this->assertStringContainsString('@fgtclb/academic-persons/frontend/profile.js', $content);
+        $this->assertStringNotContainsString('profile-detail.css', $content);
+        $this->assertDoesNotMatchRegularExpression('#<link[^>]+rel="stylesheet"#', $content);
+    }
+
+    /**
      * The `right` column of the shipped `profile.structure`, in its order: headline, position,
      * image, contact, subline, profile entries, timeline sections - and the navigation from the
      * `left` column in the aside before all of them.

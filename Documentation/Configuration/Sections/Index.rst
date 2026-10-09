@@ -197,8 +197,9 @@ type next to the position states only the list:
 
 Each value is rendered in an element of its own, with the classes
 ``academic-persons-detail__position-part`` and
-``academic-persons-detail__position-part--<value>``. The shipped stylesheet
-separates them with a comma, and a site package changes that in CSS.
+``academic-persons-detail__position-part--<value>``. The stylesheet of the site
+separates them, the example of :ref:`configuration-sections-profile-rendering`
+with a comma.
 
 ..  _configuration-sections-profile-rendering:
 
@@ -266,9 +267,8 @@ The view is a content element and renders no ``<main>``, no ``<aside>`` and no
 template. Its headings start at ``<h2>`` for the headline, with the block
 headings one level below it.
 
-The template loads the stylesheet
-:file:`Resources/Public/Css/frontend/profile-detail.css` and the module
-``@fgtclb/academic-persons/frontend/profile.js`` through the asset collector.
+The template loads the module ``@fgtclb/academic-persons/frontend/profile.js``
+through the asset collector.
 The module toggles the fold-out entries, keeps the sticky navigation below a
 page header with the id ``page-header`` and, when the site loads Bootstrap,
 marks the section in view through its ScrollSpy. The icons of the contact rows
@@ -287,17 +287,30 @@ replace an icon on the profile only, override the partial and render an
 identifier of the site package. The icons are `Font Awesome Free
 <https://fontawesome.com>`__ icons, see :ref:`third-party-icons`.
 
-The colours of the view are custom properties declared on the
-``.academic-persons-detail`` root element - ``--academic-persons-detail-text``,
-``--academic-persons-detail-border`` and the two accents. Redeclaring them on
-that class in the site's own stylesheet is how the view is themed; the shipped
-stylesheet touches nothing outside that element.
+The extension ships no stylesheet, the site package styles the view through
+its speaking ``ace-*`` classes. Two parts of the view depend on rules of that
+stylesheet: a fold-out entry renders its expand and its collapse glyph and the
+stylesheet shows the one that matches its :html:`aria-expanded` state, and the
+navigation of the :yaml:`left` column is only sticky when a rule makes it so.
+The shipped icons carry a size of their own, `1em`. A replacement drawing
+without a width and a height of its own needs a rule that sizes the icon, as
+the example below sizes it to its container. The module keeps a sticky navigation below
+the page header and writes the offset to
+``--academic-persons-detail-scroll-offset`` on the root element.
+
+The mono repository the extension is developed in carries an example to start
+from, the stylesheet of its development instances:
+`_academic-persons.scss of EXT:academics_dev_site
+<https://github.com/fgtclb/academic-extensions/blob/main/packages-dev/dev-site/Resources/Private/Scss/frontend/_academic-persons.scss>`__.
+It themes the view through custom properties declared on the
+``.academic-persons-detail`` root element, and touches nothing outside that
+element. The development versions of 3.0 shipped it with the extension, see
+:ref:`breaking-public-profile-ships-no-stylesheet`.
 
 ..  note::
-    The navigation of the :yaml:`left` column is sticky. A theme that wraps its
-    content sections in ``overflow: hidden`` clips it, and the extension
-    deliberately does not override that from its own stylesheet. Lift it in the
-    site's stylesheet on the wrapper that has it, for example:
+    A theme that wraps its content sections in ``overflow: hidden`` clips a
+    sticky navigation. Lift it in the site's stylesheet on the wrapper that has
+    it, for example:
 
     ..  code-block:: css
 

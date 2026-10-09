@@ -40,10 +40,11 @@ The view renders no ``<main>``, no ``<aside>`` and no ``<h1>``: it is a content
 element, a page may carry two of them, and the page template owns those. Its
 headings start at ``<h2>`` for the headline and step down from there.
 
-The view ships its own stylesheet and a small ES module for the fold-out
-entries, the sticky navigation and the Bootstrap ScrollSpy, both loaded by the
-template through the asset collector. The seven control icons of the view are
-the shared frontend icons ``tx-academicbase-info-email``,
+The view ships a small ES module for the fold-out entries, the sticky
+navigation and the Bootstrap ScrollSpy, loaded by the template through the
+asset collector. It ships no stylesheet, the site styles the view, see
+:ref:`breaking-public-profile-ships-no-stylesheet`. The seven control icons of
+the view are the shared frontend icons ``tx-academicbase-info-email``,
 ``tx-academicbase-info-phone``, ``tx-academicbase-info-location``,
 ``tx-academicbase-info-room``, ``tx-academicbase-info-time``,
 ``tx-academicbase-action-expand`` and ``tx-academicbase-action-collapse`` of
@@ -53,10 +54,7 @@ page. A site package replaces one in its own
 :file:`Configuration/FrontendIcons.php`, see
 :ref:`breaking-persons-public-profile-icons-moved-to-the-frontend-icon-registry`.
 
-The colours of the view are custom properties declared on
-``.academic-persons-detail`` and are the theming hook: redeclare them on that
-class to change them. The stylesheet stays inside its own container, so a
-theme that clips its content sections with ``overflow: hidden`` cuts off the
+A theme that clips its content sections with ``overflow: hidden`` cuts off a
 sticky navigation of the left column - see
 :ref:`configuration-sections-profile-rendering` for the one rule that lifts
 it.
