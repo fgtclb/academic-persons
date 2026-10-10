@@ -18,7 +18,8 @@ use TYPO3\CMS\Core\TypoScript\FrontendTypoScript;
 
 /**
  * The "including hidden" lookups of `ProfileRepository` that render a profile, in a
- * translated language (ACE-857): the selected profiles and the profiles of their owner.
+ * translated language (ACE-857, ACE-884): the selected profiles, the profiles of their
+ * owner and the profile of the detail plugin.
  * A hidden profile is returned with its hidden translation, like a visible one with its
  * visible translation.
  *
@@ -77,6 +78,16 @@ final class ProfileRepositoryHiddenTranslationTest extends AbstractAcademicPerso
             ['Sichtbar', 'Verborgen'],
             $this->lastNames($this->subject()->findByFrontendUserIncludingHidden(self::FRONTEND_USER)),
         );
+    }
+
+    /**
+     * The detail plugin passes the uid of the default record, as every link carries it
+     * (ACE-884).
+     */
+    #[Test]
+    public function uidLookupIncludingHiddenReturnsTheTranslationOfAVisibleProfile(): void
+    {
+        $this->assertSame('Sichtbar', $this->subject()->findByUidIncludingHidden(1)?->getLastName());
     }
 
     /**

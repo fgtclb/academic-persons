@@ -411,6 +411,30 @@ class ProfileRepository extends Repository
     }
 
     /**
+     * Prepare a query that resolves one profile by the uid a link carries, the uid of the
+     * default record, in whatever language the request is, as the argument mapping of
+     * Extbase does in `Backend::getObjectByIdentifier()`: the language restriction comes off,
+     * so the default record is selected, and the overlay replaces it with its translation.
+     *
+     * Unlike {@see self::matchSelectedUidsAcrossLanguages()}, `fallbackType: free` is lifted
+     * to `OVERLAYS_MIXED`, so an untranslated profile is shown in the default language
+     * rather than dropped, as TYPO3 v14 maps a visible one.
+     *
+     * @param QueryInterface<Profile> $query
+     */
+    private function matchIdentifierAcrossLanguages(QueryInterface $query): void
+    {
+        $currentLanguageAspect = $query->getQuerySettings()->getLanguageAspect();
+        $query->getQuerySettings()->setLanguageAspect(new LanguageAspect(
+            $currentLanguageAspect->getId(),
+            $currentLanguageAspect->getContentId(),
+            $currentLanguageAspect->getOverlayType() === LanguageAspect::OVERLAYS_OFF ? LanguageAspect::OVERLAYS_MIXED : $currentLanguageAspect->getOverlayType(),
+            $currentLanguageAspect->getFallbackChain(),
+        ));
+        $query->getQuerySettings()->setRespectSysLanguage(false);
+    }
+
+    /**
      * What the demand asks of the query: the query settings it implies are applied to $query
      * directly, its constraint and its orderings are returned so that {@see self::applyQuery()}
      * can apply them after the listeners had their say.
@@ -705,11 +729,16 @@ class ProfileRepository extends Repository
      * to allow the detail view to display a hidden profile when the plugin
      * option "show hidden records" is enabled, since the default Extbase
      * argument mapping respects enable fields.
+     *
+     * The uid is the one a link carries, the uid of the default record. In a translated
+     * language it is resolved as the argument mapping resolves it, see
+     * {@see self::matchIdentifierAcrossLanguages()}.
      */
     public function findByUidIncludingHidden(int $uid): ?Profile
     {
         $query = $this->createQuery();
         $query->getQuerySettings()->setRespectStoragePage(false);
+        $this->matchIdentifierAcrossLanguages($query);
         $this->includeHiddenRecords($query);
         $query->matching($query->equals('uid', $uid));
         /** @var Profile|null $profile */
