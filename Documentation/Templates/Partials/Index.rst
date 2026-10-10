@@ -43,13 +43,14 @@ element of `EXT:academic_contacts4pages`. It renders:
         -   none, it renders no element
     *   -   :file:`Profile/Item/Name.html`
         -   The academic title and the names, as text
-        -   `academic-persons-item__name`, on the heading
+        -   `ace-name`, next to `ace-title` on the heading
     *   -   :file:`Profile/Item/Contracts.html`
         -   The contract block, through :file:`Profile/Contract/Item.html`
         -   none, the list element belongs to that partial
     *   -   :file:`Profile/Item/Image.html`
         -   The image, through the shared partial of `EXT:academic_base`
-        -   `academic-persons-item__image`
+        -   `ace-image`, and `ace-picture` on its :html:`<picture>`, both from
+            the shared partial
 
 ..  _templates-contract-selection:
 
@@ -205,17 +206,17 @@ The list
         -   none, it renders no element
     *   -   :file:`Profile/List/GroupHeader.html`
         -   The heading above one group of a grouped list
-        -   `academic-persons-list__group-header`, on the heading
+        -   `ace-group-header`, next to `ace-title` on the heading
     *   -   :file:`Profile/ViewMode/<Mode>.html`
         -   The profiles, in the :ref:`view mode <templates-view-modes>` of the
             element - once per group of a grouped list
         -   depends on the mode
     *   -   :file:`Profile/List/Pagination.html`
         -   The page navigation
-        -   `academic-persons-list__pagination`
+        -   `ace-pagination`, on the :html:`<nav>`
     *   -   :file:`Profile/List/EmptyState.html`
         -   The text shown when nothing was found
-        -   `academic-persons-empty-state`
+        -   `ace-empty`
 
 ..  _templates-letter-navigation:
 
@@ -223,24 +224,25 @@ The list
 :file:`ItemList.html` does not render: the list template
 :file:`Templates/Profile/List.html` renders it above the list body, when
 `settings.alphabetPaginationEnabled` is switched on and no profiles are
-selected by hand - a manual selection ignores the letter filter. It carries
-`academic-persons-list__alphabet-pagination` next to the
-`alphabetical-pagination` it had.
+selected by hand - a manual selection ignores the letter filter. Its
+:html:`<nav>` carries `ace-navigation ace-alphabet-navigation`.
 
 The list template passes it `alphabetFilterLetters` next to `demand`: every
 letter from `a` to `z`, mapped to whether the list holds a profile under it
-(see :ref:`developers-letter-availability`). The partial renders
+(see :ref:`developers-letter-availability`). The partial renders:
 
-*   a letter with profiles as a link, in a plain `li.page-item`;
-*   a letter without profiles as `li.page-item.disabled` holding a
-    `span.page-link` - no link - with a `visually-hidden` "no profiles" for
-    assistive technology;
-*   the selected letter as `li.page-item.active` with
-    :html:`aria-current="page"`, and as a link back to the list without a letter
-    - with a `visually-hidden` "show all profiles" - only when
-    :ref:`the reset setting <configuration-letter-navigation>` is on;
-*   :guilabel:`A-Z` as `li.page-item.active` with :html:`aria-current="page"`
-    while no letter is selected.
+*   A letter with profiles as a link `a.ace-link` in a plain
+    `li.ace-list-item`.
+*   A letter without profiles as `li.ace-list-item.disabled` holding a
+    `span.ace-link`, no link, with a `visually-hidden` "no profiles" for
+    assistive technology.
+*   The selected letter as `li.ace-list-item.active`, its `ace-link` with
+    :html:`aria-current="page"`. It is a link back to the list without a
+    letter, with a `visually-hidden` "show all profiles", only when
+    :ref:`the reset setting <configuration-letter-navigation>` is on, and a
+    `span.ace-link` otherwise.
+*   :guilabel:`A-Z` as `li.ace-list-item.active` with
+    :html:`aria-current="page"` on its link while no letter is selected.
 
 The :html:`<nav>` is named by the label `list.alphabetFilter.navigation`. A
 list template of a project that renders this partial without
@@ -362,11 +364,10 @@ selected contracts element passes the label about contracts to it through its
     card of its own for the contacts only overrides :file:`Contacts/Item.html`
     of that extension instead.
 
-Both classes are blocks of their own rather than parts of
-`academic-persons-list`: the grid and the empty state sit inside four different
-blocks, so naming them after one of them would be wrong in the other three. The
-list adds its own `academic-persons-itemlist` to the grid, which is the class it
-carried before.
+The grid is an `ace-itemlist` and the empty state an `ace-empty` in all four
+elements. What tells the elements apart is their outermost element,
+`academic-persons-list`, `academic-persons-card`, `academic-persons-profiles` or
+`academic-persons-contracts`.
 
 ..  _templates-list-partials-result-count:
 
@@ -386,7 +387,7 @@ the same one unless the list paginates - those profiles as `profiles`, and the
         data-namespace-typo3-fluid="true"
         xmlns:f="http://typo3.org/ns/TYPO3/CMS/Fluid/ViewHelpers"
     >
-    <p class="academic-persons-result-count">{count} of {total}</p>
+    <p class="ace-count">{count} of {total}</p>
     </html>
 
 `total` is counted in :file:`ItemList.html` rather than read from the paginator
@@ -422,20 +423,19 @@ their templates.
         -   The mode ``table``: a header row, then one row per profile - per
             contract in the selected contracts element - with one cell per
             entry of `settings.table.columns`
-        -   `academic-persons-table`, next to Bootstrap's `table-responsive`
+        -   `ace-table`, inside an `ace-table-wrap`
     *   -   :file:`Profile/ViewMode/Table/Cell.html`
         -   One cell of the table, by its column
         -   none
     *   -   :file:`Profile/ViewMode/Switch.html`
         -   The switch between the allowed modes, only when the content element
             offers it
-        -   `academic-persons-view-mode-switch`
+        -   `ace-navigation ace-view-mode-switch`, on the :html:`<nav>`
 
 Every mode partial receives the same arguments: `profiles`, or `contracts` in
-the selected contracts element, `settings`, `data`, `class` from the list and
-`groupedProfiles` from a grouped list. `class` is the grid's own
-`academic-persons-itemlist`; the table does not take it, so a stylesheet of the
-grid does not reach the table.
+the selected contracts element, `settings`, `data` and `groupedProfiles` from a
+grouped list. The grid is an `ace-itemlist` and the table an `ace-table`, so a
+stylesheet tells the two apart by their own classes.
 
 The switch renders one link per allowed mode - nothing while fewer than two
 modes are allowed - with :html:`rel="nofollow"`, and marks the active one with

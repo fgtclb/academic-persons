@@ -71,10 +71,12 @@ with its separator.
 New classes
 -----------
 
-Every partial that renders an element of its own got a stable class **next to**
-the classes that were there before. No class was removed, so a stylesheet that
-builds on `card`, `card-title`, `card-img-top` or `academic-persons-itemlist`
-keeps working.
+Every partial that renders an element of its own carries a speaking class, the
+same in the list, the card, the selected profiles and the selected contracts.
+The classes `academic-persons-item` and `academic-persons-itemlist` and the
+classes of the Bootstrap card, `card`, `card-body`, `card-title` and
+`card-img-top`, are gone. The classes are listed in the
+chapter :guilabel:`Styling` of this manual.
 
 ..  list-table::
     :header-rows: 1
@@ -82,23 +84,23 @@ keeps working.
     *   -   Element
         -   Class
     *   -   The item heading
-        -   `academic-persons-item__name`
+        -   `ace-name`, next to `ace-title`
     *   -   The item image
-        -   `academic-persons-item__image`
+        -   `ace-image`, in an `ace-picture`
     *   -   The group heading of a grouped list
-        -   `academic-persons-list__group-header`
+        -   `ace-group-header`, next to `ace-title`
     *   -   The page navigation
-        -   `academic-persons-list__pagination`
+        -   `ace-pagination`
     *   -   The letter navigation
-        -   `academic-persons-list__alphabet-pagination`
+        -   `ace-navigation ace-alphabet-navigation`
     *   -   The item grid, and each of its columns
-        -   `academic-persons-grid`, `academic-persons-grid__item`
+        -   `ace-itemlist` around a `row` of `col-*` columns
     *   -   The empty state
-        -   `academic-persons-empty-state`
+        -   `ace-empty`
 
-The last two are blocks of their own rather than parts of
-`academic-persons-list`, because the grid and the empty state sit inside the
-list, the card, the selected profiles and the selected contracts alike.
+What tells the four elements apart is their outermost element,
+`academic-persons-list`, `academic-persons-card`, `academic-persons-profiles`
+and `academic-persons-contracts`.
 
 :file:`Profile/Item/DetailLink.html`, :file:`Profile/Item/Name.html`,
 :file:`Profile/Item/Contracts.html` and :file:`Profile/List/ResultCount.html`
@@ -110,8 +112,10 @@ Impact
 
 An installation that overrides no template renders three differences: the
 academic title in the item heading where a profile has one, one space fewer in
-the name of a profile without a middle name, and the new classes listed above
-next to the existing ones.
+the name of a profile without a middle name, and the classes listed above in
+place of the Bootstrap card classes. A site stylesheet that styled the items
+through `academic-persons-item`, `academic-persons-itemlist`, `card`,
+`card-title` or `card-img-top` moves its selectors to the classes above.
 
 An installation that copied :file:`Profile/Item.html` or
 :file:`Profile/List/ItemList.html` renders exactly what it rendered before. Its

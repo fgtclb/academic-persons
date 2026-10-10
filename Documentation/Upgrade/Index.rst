@@ -343,6 +343,21 @@ still renders it fails at render time. See
 :ref:`configuration-sections-detail-override` and
 :ref:`breaking-public-profile-detail-partials`.
 
+Classes and styling
+-------------------
+
+The lists, the card, the selected profiles and contracts and the detail view
+carry the speaking ``ace-*`` classes of the academic extensions, in place of
+``academic-persons-item``, ``academic-persons-itemlist``, the classes of the
+Bootstrap card and its pagination, and the block classes of the development
+versions of 3.0, and the extension ships no stylesheet. A site stylesheet that
+styled the profile views moves its selectors to the classes the chapter
+:ref:`Styling <styling>` lists. The classes before and after are listed in
+:ref:`breaking-persons-speaking-frontend-classes`, those of the profile editing
+view of :guilabel:`academic_persons_edit` in its `breaking change entry
+<https://docs.typo3.org/p/fgtclb/academic-persons-edit/main/en-us/Changelog/3.0/Breaking-SpeakingFrontendClasses.html>`__.
+See also :ref:`breaking-public-profile-ships-no-stylesheet`.
+
 The profile image
 -----------------
 

@@ -18,9 +18,9 @@ image through the responsive image partial of `EXT:academic_base`,
 :file:`Academic/Image.html`.
 
 The image is no longer a single :html:`<img>`. It is a :html:`<picture>` with
-WebP sources per breakpoint and a lazily loading fallback :html:`<img>`, which
-keeps the classes of the previous image: `card-img-top img-fluid` in the card,
-`academic-persons-detail__image img-fluid rounded-0` in the detail, where the
+WebP sources per breakpoint and a lazily loading fallback :html:`<img>`. The
+image carries `ace-image`, the :html:`<picture>` `ace-picture`, in the card and
+in the detail, where the image sits in an `ace-profile-image` and the
 alternative text stays the title and the names of the profile.
 
 A card of a profile without an image shows a neutral placeholder,
@@ -39,8 +39,8 @@ Impact
 ======
 
 *   CSS that selects the image as a direct child of the card, for example
-    :css:`.academic-persons-item > img`, no longer matches: the image is a
-    child of the :html:`<picture>` now.
+    :css:`.ace-item > img`, does not match: the image is a child of the
+    :html:`<picture>`.
 *   Cards of profiles without an image show the placeholder where they showed
     nothing.
 *   A project that replaces the partial root paths of the plugin completely,

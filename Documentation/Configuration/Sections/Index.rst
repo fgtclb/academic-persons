@@ -195,11 +195,12 @@ type next to the position states only the list:
             - position
             - functionType
 
-Each value is rendered in an element of its own, with the classes
-``academic-persons-detail__position-part`` and
-``academic-persons-detail__position-part--<value>``. The stylesheet of the site
-separates them, the example of :ref:`configuration-sections-profile-rendering`
-with a comma.
+Each value is rendered in an element of its own, an ``ace-value`` with the
+class of its field: ``ace-position``, ``ace-function-type`` or
+``ace-organisational-unit``. The values of one contract share one line,
+``ace-attribute ace-position-line``. The stylesheet of the site separates
+them, the example of :ref:`configuration-sections-profile-rendering` with a
+comma.
 
 ..  _configuration-sections-profile-rendering:
 
@@ -229,7 +230,7 @@ the two keys as ``publicProfile`` and dispatches every identifier of
             :yaml:`contracts` and :yaml:`onlyValid` select
     *   -   :yaml:`profileImage`
         -   Ordered image properties
-        -   Every non-empty one, as a figure
+        -   Every non-empty one, in an ``ace-profile-image``
     *   -   :yaml:`contact`
         -   :yaml:`special: datasFromContracts`
         -   Email addresses, phone numbers, postal addresses, location with
@@ -287,15 +288,15 @@ replace an icon on the profile only, override the partial and render an
 identifier of the site package. The icons are `Font Awesome Free
 <https://fontawesome.com>`__ icons, see :ref:`third-party-icons`.
 
-The extension ships no stylesheet, the site package styles the view through
-its speaking ``ace-*`` classes. Two parts of the view depend on rules of that
-stylesheet: a fold-out entry renders its expand and its collapse glyph and the
-stylesheet shows the one that matches its :html:`aria-expanded` state, and the
-navigation of the :yaml:`left` column is only sticky when a rule makes it so.
-The shipped icons carry a size of their own, `1em`. A replacement drawing
-without a width and a height of its own needs a rule that sizes the icon, as
-the example below sizes it to its container. The module keeps a sticky navigation below
-the page header and writes the offset to
+The extension ships no stylesheet, the site package styles the view through its
+speaking ``ace-*`` classes, see :ref:`styling-detail`. Two parts of the view
+depend on rules of that stylesheet: a fold-out entry renders its expand and its
+collapse glyph and the stylesheet shows the one that matches its
+:html:`aria-expanded` state, and the navigation of the :yaml:`left` column is
+only sticky when a rule makes it so. The shipped icons carry a size of their
+own, `1em`. A replacement drawing without a width and a height of its own needs
+a rule that sizes the icon, as the example below sizes it to its container. The
+module keeps a sticky navigation below the page header and writes the offset to
 ``--academic-persons-detail-scroll-offset`` on the root element.
 
 The mono repository the extension is developed in carries an example to start
@@ -325,9 +326,9 @@ Office hours in the contact block
 
 A contract with office hours gets a row of its own in the contact block, after
 the location and room, with the label "Office hours" (``detail.officeHours``).
-A contract without them gets no row. The row carries the class
-``academic-persons-detail__contact-row--office-hours``, so a site that does not
-want it hides it in its stylesheet.
+A contract without them gets no row. The row carries the classes
+``ace-attribute ace-office-hours``, so a site that does not want it hides it in
+its stylesheet.
 
 The editor of `EXT:academic_persons_edit` stores office hours as HTML, the
 backend form and an import as plain text. The row turns line breaks into

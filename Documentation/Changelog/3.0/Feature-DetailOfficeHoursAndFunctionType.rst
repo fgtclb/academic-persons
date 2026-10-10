@@ -45,17 +45,18 @@ Impact
 
 A profile page whose contracts carry office hours shows them after the
 update, without any configuration. A site that does not want them there hides
-``academic-persons-detail__contact-row--office-hours`` in its stylesheet or
-overrides :file:`Profile/PublicProfile/Contact.html`.
+``ace-office-hours`` in its stylesheet or overrides
+:file:`Profile/PublicProfile/Contact.html`.
 
 Plain text office hours are read as HTML too. A ``<`` in them starts a tag for
 the sanitizer and is lost, so such values are better written without angle
 brackets.
 
 The shipped position line still shows the position alone, but every value of
-the line now sits in a ``<span>`` of its own inside
-``academic-persons-detail__position``. A stylesheet that targets the line
-keeps working. One that expects text directly inside the paragraph targets
-``academic-persons-detail__position-part`` instead.
+the line sits in a ``<span class="ace-value">`` of its own, with the class of
+its field, ``ace-position``, ``ace-function-type`` or
+``ace-organisational-unit``, inside the line ``ace-attribute ace-position-line``.
+A stylesheet that expects text directly inside the line targets the
+``ace-value`` elements instead.
 
 ..  index:: Frontend, YAML, ext:academic_persons
