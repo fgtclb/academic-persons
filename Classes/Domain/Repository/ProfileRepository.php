@@ -732,7 +732,9 @@ class ProfileRepository extends Repository
      *
      * The uid is the one a link carries, the uid of the default record. In a translated
      * language it is resolved as the argument mapping resolves it, see
-     * {@see self::matchIdentifierAcrossLanguages()}.
+     * {@see self::matchIdentifierAcrossLanguages()}. The profile is fetched through
+     * {@see HiddenRecordsFetcher}, so that the hidden translation of a profile replaces its
+     * default record on TYPO3 v13 as well.
      */
     public function findByUidIncludingHidden(int $uid): ?Profile
     {
@@ -742,7 +744,7 @@ class ProfileRepository extends Repository
         $this->includeHiddenRecords($query);
         $query->matching($query->equals('uid', $uid));
         /** @var Profile|null $profile */
-        $profile = $query->execute()->getFirst();
+        $profile = $this->hiddenRecordsFetcher->execute($query)->getFirst();
         return $profile;
     }
 

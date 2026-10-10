@@ -16,16 +16,17 @@ use TYPO3\CMS\Frontend\Page\CacheHashCalculator;
 
 /**
  * The plugin option "Show hidden records" of the `academicpersons_detail` plugin on a
- * translated page (ACE-884).
+ * translated page (ACE-883, ACE-884).
  *
  * The detail link carries the uid of the default record. With the option the plugin
  * resolves the profile itself, and that lookup has to select the default record in a
- * translated language and overlay it with its translation, as the argument mapping of
- * Extbase does for a visible profile.
+ * translated language and overlay it with its translation, hidden or not, as the argument
+ * mapping of Extbase does for a visible profile.
  *
- * Profile 31 and its translation are visible. The hidden profile 37 has no translation.
- * The hidden profile 38 has a visible translation. `/profile` shows hidden records,
- * `/profile-without-hidden` does not.
+ * Profile 31 and its translation are visible. Profile 33 and its translation are hidden.
+ * Profile 35 is visible, its translation is hidden. The hidden profile 37 has no
+ * translation. The hidden profile 38 has a visible translation. `/profile` shows hidden
+ * records, `/profile-without-hidden` does not.
  */
 final class AcademicPersonsDetailShowHiddenRecordsTranslationTest extends AbstractAcademicPersonsTestCase
 {
@@ -166,6 +167,40 @@ final class AcademicPersonsDetailShowHiddenRecordsTranslationTest extends Abstra
         $content = (string)$response->getBody();
         $this->assertStringContainsString('Zurueckgezogen-Petrov', $content);
         $this->assertStringNotContainsString('Withdrawn-Petrov', $content);
+    }
+
+    /**
+     * @param 'strict'|'fallback'|'free' $fallbackType
+     */
+    #[DataProvider('fallbackTypes')]
+    #[Test]
+    public function translatedDetailPageShowsTheTranslationOfAHiddenProfile(string $fallbackType): void
+    {
+        $this->writeSite($fallbackType);
+
+        $response = $this->requestProfileDetail('https://www.acme.com/de/profil', self::PAGE_WITH_HIDDEN_RECORDS, 33);
+
+        $this->assertSame(200, $response->getStatusCode());
+        $content = (string)$response->getBody();
+        $this->assertStringContainsString('Verborgen-Moore', $content);
+        $this->assertStringNotContainsString('Hidden-Moore', $content);
+    }
+
+    /**
+     * @param 'strict'|'fallback'|'free' $fallbackType
+     */
+    #[DataProvider('fallbackTypes')]
+    #[Test]
+    public function translatedDetailPageShowsTheHiddenTranslationOfAVisibleProfile(string $fallbackType): void
+    {
+        $this->writeSite($fallbackType);
+
+        $response = $this->requestProfileDetail('https://www.acme.com/de/profil', self::PAGE_WITH_HIDDEN_RECORDS, 35);
+
+        $this->assertSame(200, $response->getStatusCode());
+        $content = (string)$response->getBody();
+        $this->assertStringContainsString('Versteckt-Novak', $content);
+        $this->assertStringNotContainsString('Shown-Novak', $content);
     }
 
     /**

@@ -15,19 +15,21 @@ translated site language that lookup found nothing, on TYPO3 v13 and v14 alike.
 The detail view then resolved the profile as without the option: a visible
 profile was still shown, a hidden one answered ``404``.
 
+On TYPO3 v13 a hidden translation was missed as well, once the profile was
+found: the profile was shown in the default language.
+
 The lookup now finds the profile in every site language, as the detail view
-finds a visible one.
+finds a visible one, and shows it with its translation, hidden or not.
 
 Impact
 ======
 
 In a translated site language, the detail view with
-:guilabel:`Show hidden records` shows a hidden profile where it answered
-``404``. A visible translation is shown on TYPO3 v13 and v14. A hidden
-translation is shown on TYPO3 v14, TYPO3 v13 still shows the default language
-record in its place. With the fallback types ``fallback`` and ``free``, a hidden
-profile without a translation is shown in the default language, as a visible
-one is.
+:guilabel:`Show hidden records` shows a hidden profile with its translation
+where it answered ``404``. The hidden translation of a visible profile is shown
+in place of its default language record. With the fallback types ``fallback``
+and ``free``, a hidden profile without a translation is shown in the default
+language, as a visible one is.
 
 Without the option nothing changes.
 

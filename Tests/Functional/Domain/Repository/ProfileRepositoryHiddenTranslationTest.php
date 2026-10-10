@@ -18,8 +18,8 @@ use TYPO3\CMS\Core\TypoScript\FrontendTypoScript;
 
 /**
  * The "including hidden" lookups of `ProfileRepository` that render a profile, in a
- * translated language (ACE-857, ACE-884): the selected profiles, the profiles of their
- * owner and the profile of the detail plugin.
+ * translated language (ACE-857, ACE-883, ACE-884): the selected profiles, the profiles of
+ * their owner and the profile of the detail plugin.
  * A hidden profile is returned with its hidden translation, like a visible one with its
  * visible translation.
  *
@@ -91,6 +91,15 @@ final class ProfileRepositoryHiddenTranslationTest extends AbstractAcademicPerso
     }
 
     /**
+     * ACE-883.
+     */
+    #[Test]
+    public function uidLookupIncludingHiddenReturnsTheTranslationOfAHiddenProfile(): void
+    {
+        $this->assertSame('Verborgen', $this->subject()->findByUidIncludingHidden(2)?->getLastName());
+    }
+
+    /**
      * The visibility aspect is lifted while the result is fetched on TYPO3 v13. Whatever the
      * request renders afterwards must see the aspect it had.
      */
@@ -102,6 +111,22 @@ final class ProfileRepositoryHiddenTranslationTest extends AbstractAcademicPerso
         $context->setAspect('visibility', $visibilityAspect);
 
         $this->subject()->findByUids([1, 2], true);
+
+        $this->assertSame($visibilityAspect, $context->getAspect('visibility'));
+    }
+
+    /**
+     * The same for the uid lookup of the detail plugin, which fetches through `getFirst()`
+     * of the lazy result.
+     */
+    #[Test]
+    public function uidLookupIncludingHiddenRestoresTheVisibilityOfTheRequest(): void
+    {
+        $context = $this->get(Context::class);
+        $visibilityAspect = new VisibilityAspect(includeHiddenPages: true);
+        $context->setAspect('visibility', $visibilityAspect);
+
+        $this->subject()->findByUidIncludingHidden(2);
 
         $this->assertSame($visibilityAspect, $context->getAspect('visibility'));
     }
