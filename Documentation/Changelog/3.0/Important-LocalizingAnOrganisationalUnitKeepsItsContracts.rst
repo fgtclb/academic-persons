@@ -1,4 +1,4 @@
-..  _important-localizing-an-organisational-unit-keeps-its-contracts:
+..  _important-localizing-an-organisational-unit-keeps-its-contracts-3-0:
 
 ===================================================================
 Important: Localizing an organisational unit leaves contracts alone

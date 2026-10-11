@@ -1,4 +1,4 @@
-.. _important-organisational-unit-sorts-its-contracts:
+.. _important-organisational-unit-sorts-its-contracts-3-0:
 
 ================================================================
 Important: An organisational unit sorts its contracts on its own

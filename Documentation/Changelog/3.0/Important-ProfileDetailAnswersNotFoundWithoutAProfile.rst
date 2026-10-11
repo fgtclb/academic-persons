@@ -1,4 +1,4 @@
-.. _important-profile-detail-answers-not-found-without-a-profile:
+.. _important-profile-detail-answers-not-found-without-a-profile-3-0:
 
 ===================================================================
 Important: The profile detail answers "not found" without a profile

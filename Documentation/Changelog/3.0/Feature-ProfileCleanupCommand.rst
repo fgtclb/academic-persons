@@ -1,4 +1,4 @@
-.. _feature-profile-cleanup-command:
+.. _feature-profile-cleanup-command-3-0:
 
 ======================================================================
 Feature: Command to hide or delete profiles of inactive frontend users

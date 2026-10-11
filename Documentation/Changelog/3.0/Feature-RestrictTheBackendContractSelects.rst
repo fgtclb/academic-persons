@@ -1,4 +1,4 @@
-..  _feature-restrict-the-backend-contract-selects:
+..  _feature-restrict-the-backend-contract-selects-3-0:
 
 ==============================================
 Feature: Restrict the backend contract selects

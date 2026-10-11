@@ -1,4 +1,4 @@
-.. _important-route-enhancers-limit-to-pages:
+.. _important-route-enhancers-limit-to-pages-3-0:
 
 ============================================================
 Important: Route enhancers have to be limited to their pages

@@ -1,4 +1,4 @@
-.. _important-remaining-unordered-queries-order-by-uid:
+.. _important-remaining-unordered-queries-order-by-uid-3-0:
 
 =======================================================
 Important: Remaining unordered queries now order by uid

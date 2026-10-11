@@ -1,4 +1,4 @@
-..  _important-frontend-user-labels-moved:
+..  _important-frontend-user-labels-moved-3-0:
 
 =========================================================
 Important: Frontend user labels moved into this extension

@@ -8,35 +8,32 @@ Description
 ===========
 
 A new boolean plugin option **Show hidden records**
-(:typoscript:`settings.showHiddenRecords`, checkbox/toggle, default off)
-was added to the following plugins:
+(:typoscript:`settings.showHiddenRecords`, a toggle, off by default) was added
+to the following plugins:
 
-* **List** (:php:`academicpersons_list`)
-* **List and detail** (:php:`academicpersons_listanddetail`)
-* **Card** (:php:`academicpersons_card`)
-* **Selected profiles** (:php:`academicpersons_selectedprofiles`)
-* **Selected contracts** (:php:`academicpersons_selectedcontracts`)
-* **Detail** (:php:`academicpersons_detail`)
+* **Persons List** (:php:`academicpersons_list`)
+* **Persons List and Detail** (:php:`academicpersons_listanddetail`)
+* **Profile Card** (:php:`academicpersons_card`)
+* **Profiles: Selected Profiles** (:php:`academicpersons_selectedprofiles`)
+* **Profiles: Selected Contracts** (:php:`academicpersons_selectedcontracts`)
+* **Persons Detail** (:php:`academicpersons_detail`)
 
-The `List`, `List and detail` and `Card` plugins share the
-core-version-aware :file:`List.xml` flexform; `Selected profiles`,
-`Selected contracts` and `Detail` use their own :file:`SelectedProfiles.xml`,
-:file:`SelectedContracts.xml` and :file:`Detail.xml` flexforms. All are
-provided for both the TYPO3 v12 and v13 flexform data structures.
+The :guilabel:`Persons List`, :guilabel:`Persons List and Detail` and
+:guilabel:`Profile Card` plugins share the core-version-aware :file:`List.xml`
+flexform. :guilabel:`Profiles: Selected Profiles`,
+:guilabel:`Profiles: Selected Contracts` and :guilabel:`Persons Detail` use
+their own :file:`SelectedProfiles.xml`, :file:`SelectedContracts.xml` and
+:file:`Detail.xml` flexforms. All are provided for both the TYPO3 v12 and v13
+flexform data structures.
 
 When the option is enabled, the affected frontend listing includes hidden
-(disabled) records, also for visitors without a preview of hidden records.
-Only the `hidden` enable column (`disabled`) is ignored; the `deleted`,
+(disabled) records, also for visitors without a preview of hidden records. Only
+the `hidden` enable column (`disabled`) is ignored. The `deleted`,
 `starttime`/`endtime` and `fe_group` restrictions stay in effect.
 
-On a translated page the listing shows the translation of a hidden record,
-and follows the fallback type of the site language like for any other
-record. The start and end time of the default record keep deciding for its
-translation.
-
-The single-profile **Detail** plugin resolves its profile through Extbase
-argument mapping, which normally respects enable fields. When the option
-is enabled, the detail view re-resolves the referenced profile including
+The single-profile **Persons Detail** plugin resolves its profile through
+Extbase argument mapping, which normally respects enable fields. When the
+option is enabled, the detail view re-resolves the referenced profile including
 hidden records, so a hidden profile can be displayed on its detail page.
 
 Impact

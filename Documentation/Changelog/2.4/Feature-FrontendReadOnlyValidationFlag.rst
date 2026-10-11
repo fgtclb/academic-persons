@@ -10,7 +10,7 @@ Description
 The :yaml:`readonly` and :yaml:`disabled` flags of a field in
 :file:`Configuration/AcademicPersons/Settings.yaml` lock it in the editing
 frontend and in the TYPO3 backend record editor at the same time. Installations
-that synchronise a field from a directory service usually want profile owners
+that synchronize a field from a directory service usually want profile owners
 kept away from it while backend editors can still correct it, and had to reset
 the backend lock field by field through TCEFORM.
 
@@ -50,17 +50,21 @@ backend no longer requires it either.
 The flag is matched case-insensitively, like every other flag, and works in
 every validation set.
 
-From academic_persons 3.0 on, the flags are listed in the :yaml:`validators`
-of the field itself, for example
-:yaml:`profile.lastName.validators: [required, frontendreadonly]`. A
-:yaml:`validations` map of 2.4 that lists the flag keeps it after the update
-to 3.0.
-
 Impact
 ======
 
 Nothing changes for an installation that does not list the flag. A TCEFORM
 reset of :php:`readOnly` that only served to unlock the backend can be
 replaced by :yaml:`frontendreadonly` in place of :yaml:`readonly`.
+
+The settings are cached. Flush the TYPO3 caches after changing
+:file:`Settings.yaml`.
+
+Affected Installations
+======================
+
+Installations that lock fields of the profile editing frontend of
+:composer:`fgtclb/academic-persons-edit` through their own
+:file:`Configuration/AcademicPersons/Settings.yaml`.
 
 .. index:: Backend, Frontend, ext:academic_persons

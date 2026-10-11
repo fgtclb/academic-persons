@@ -1,4 +1,4 @@
-.. _important-contact-find-all-orders-by-uid:
+.. _important-contact-find-all-orders-by-uid-3-0:
 
 ===================================================================
 Important: findAll of contact and profile information orders by uid

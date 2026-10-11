@@ -1,4 +1,4 @@
-..  _feature-profile-and-contract-query-events:
+..  _feature-profile-and-contract-query-events-3-0:
 
 =========================================================
 Feature: Narrow the profiles and contracts a plugin shows

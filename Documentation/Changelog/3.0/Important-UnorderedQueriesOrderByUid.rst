@@ -1,4 +1,4 @@
-.. _important-unordered-queries-order-by-uid:
+.. _important-unordered-queries-order-by-uid-3-0:
 
 =====================================================
 Important: Unordered profile queries now order by uid

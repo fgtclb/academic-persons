@@ -7,14 +7,14 @@ Important: Label overrides are read from the documented path
 Description
 ===========
 
-The templates of this extension translate their labels with the extension name
-:html:`AcademicPersons` instead of the extension key :html:`academic_persons`.
-TYPO3 v12 and v13 build the TypoScript path of :typoscript:`_LOCAL_LANG` from
-that name as it is given, so they read label overrides from
-:typoscript:`plugin.tx_academic_persons`. They now read them from
-:typoscript:`plugin.tx_academicpersons` and
+The templates of this extension translated their labels with the extension key
+:html:`academic_persons` as the extension name. TYPO3 v12 and v13 build the
+TypoScript path of :typoscript:`_LOCAL_LANG` from that name as it is given, so
+they read label overrides from :typoscript:`plugin.tx_academic_persons`. The
+templates now use the extension name :html:`AcademicPersons`, so the overrides
+are read from :typoscript:`plugin.tx_academicpersons` and
 :typoscript:`plugin.tx_academicpersons_<plugin>`, the paths the TYPO3
-documentation names and TYPO3 v14 reads anyway.
+documentation names.
 
 Every label of the extension, and where it is shown, is listed in
 :ref:`configuration-labels`.

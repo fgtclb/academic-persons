@@ -1,4 +1,4 @@
-.. _important-paginated-selection-keeps-its-order:
+.. _important-paginated-selection-keeps-its-order-3-0:
 
 ================================================
 Important: A paginated selection keeps its order

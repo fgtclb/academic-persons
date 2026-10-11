@@ -1,4 +1,4 @@
-.. _important-88886-strict-language-fallback-selected-profiles:
+.. _important-88886-strict-language-fallback-selected-profiles-3-0:
 
 =========================================================
 Important: Strict language fallback for selected profiles
