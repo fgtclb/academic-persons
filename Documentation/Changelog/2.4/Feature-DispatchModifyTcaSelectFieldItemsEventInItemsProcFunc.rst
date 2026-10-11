@@ -19,15 +19,30 @@ directly (without influence on the ordering) or by implementing a custom
 `itemsProcFunc` replacing the shipped one. Both ways were neither convenient
 nor testable.
 
-With the dispatched event, projects can modify the available select items for
-the backend (FormEngine) - and, where the handler is reused, for the frontend
-- through a single PSR-14 event listener, instead of dealing with a dozen
-dedicatedly named events for the same purpose.
+With the dispatched event, projects can modify the available select items of
+the backend form through a single PSR-14 event listener, instead of dealing
+with a dozen dedicatedly named events for the same purpose. The event carries
+the complete `itemsProcFunc` parameters, including :php:`table`, :php:`field`
+and :php:`items`. For a FlexForm field, :php:`field` is the name of the
+FlexForm element, for example :php:`settings.showFields`.
 
 Example
-=======
+-------
 
-.. code-block:: php
+:php:`TYPO3\CMS\Core\Attribute\AsEventListener` does not exist on TYPO3 v12,
+so a listener that has to run on both supported versions is registered in
+:file:`Configuration/Services.yaml`:
+
+..  code-block:: yaml
+    :caption: EXT:my_ext/Configuration/Services.yaml
+
+    services:
+      MyVendor\MyExt\EventListener\ModifyTcaSelectFieldItemsEventListener:
+        tags:
+          - name: event.listener
+            identifier: 'my-ext/modify-academic-persons-tca-select-items'
+
+..  code-block:: php
     :caption: EXT:my_ext/Classes/EventListener/ModifyTcaSelectFieldItemsEventListener.php
 
     <?php
@@ -37,10 +52,7 @@ Example
     namespace MyVendor\MyExt\EventListener;
 
     use FGTCLB\AcademicBase\Event\ModifyTcaSelectFieldItemsEvent;
-    use TYPO3\CMS\Backend\Utility\BackendUtility;
-    use TYPO3\CMS\Core\Attribute\AsEventListener;
 
-    #[AsEventListener(identifier: 'my-ext/modify-academic-persons-tca-select-items')]
     final class ModifyTcaSelectFieldItemsEventListener
     {
         public function __invoke(ModifyTcaSelectFieldItemsEvent $event): void
@@ -62,12 +74,12 @@ Example
         private function modifyPersonsShowFieldsSelectItems(
             ModifyTcaSelectFieldItemsEvent $event,
         ): void {
+            // This project does not show rooms, so the option is not offered.
             $parameters = $event->getParameters();
-            $parameters['items'][] = [
-                'label' => BackendUtility::getItemLabel('tx_academicpersons_domain_model_contract', 'position'),
-                'value' => 'contracts.position',
-                'group' => 'contracts',
-            ];
+            $parameters['items'] = array_values(array_filter(
+                $parameters['items'],
+                static fn(array $item): bool => ($item['value'] ?? null) !== 'contracts.room',
+            ));
             $event->setParameters($parameters);
         }
 
@@ -82,5 +94,19 @@ Example
             $event->setParameters($parameters);
         }
     }
+
+Impact
+======
+
+Nothing changes for an installation without a listener: the handlers deliver
+the items they delivered before. A listener receives the items after the
+handler added its own, and what it hands back with :php:`setParameters()` is
+what the backend form offers.
+
+Affected Installations
+======================
+
+Installations that adjust the items of the contract select or of the
+:guilabel:`Show only selected Fields` select of the persons plugins.
 
 .. index:: Backend, PHP, TCA, ext:academic_persons

@@ -12,16 +12,16 @@ Description
 dispatched immediately before a plugin query is executed. A listener adds
 conditions to it, and the records that do not satisfy them are not shown.
 
-The profile event covers every plugin that lists profiles — the list, the
-list-and-detail, the card and the selected-profiles plugin — and the contract
-event the selected-contracts plugin. Neither is dispatched for the detail view,
+The profile event covers every plugin that lists profiles: the list, the
+list-and-detail, the card and the selected-profiles plugin. The contract event
+covers the selected-contracts plugin. Neither is dispatched for the detail view,
 which resolves its profile through Extbase argument mapping.
 
 A listener builds its conditions on the query the event carries and hands each
 of them to :php:`addConstraint()`:
 
 ..  code-block:: php
-    :caption: EXT:my_extension/Classes/EventListener/ShowOnlyConsentingProfiles.php
+    :caption: EXT:my_extension/Classes/EventListener/ShowOnlyProfilesWithAWebsite.php
 
     <?php
 
@@ -31,12 +31,12 @@ of them to :php:`addConstraint()`:
 
     use FGTCLB\AcademicPersons\Event\ModifyProfileQueryEvent;
 
-    final class ShowOnlyConsentingProfiles
+    final class ShowOnlyProfilesWithAWebsite
     {
         public function __invoke(ModifyProfileQueryEvent $event): void
         {
             $query = $event->getQuery();
-            $event->addConstraint($query->equals('publicDisplayConsent', true));
+            $event->addConstraint($query->logicalNot($query->equals('website', '')));
         }
     }
 
@@ -44,10 +44,10 @@ of them to :php:`addConstraint()`:
     :caption: EXT:my_extension/Configuration/Services.yaml
 
     services:
-      MyVendor\MyExtension\EventListener\ShowOnlyConsentingProfiles:
+      MyVendor\MyExtension\EventListener\ShowOnlyProfilesWithAWebsite:
         tags:
           - name: event.listener
-            identifier: 'my-extension/show-only-consenting-profiles'
+            identifier: 'my-extension/show-only-profiles-with-a-website'
             event: FGTCLB\AcademicPersons\Event\ModifyProfileQueryEvent
 
 :php:`TYPO3\CMS\Core\Attribute\AsEventListener` does not exist on TYPO3 v12, so
@@ -55,17 +55,17 @@ a listener that has to run on both supported versions is registered with the
 tag rather than with the attribute.
 
 :php:`getDemand()` of the profile event is the list demand behind a query, and
-:php:`null` for the lookup of the uids an editor selected — a selected-profiles
-plugin knows no demand. :php:`ModifyContractQueryEvent` has no demand at all,
+:php:`null` for the lookup of the uids an editor selected, because a
+selected-profiles plugin knows no demand. :php:`ModifyContractQueryEvent` has no demand at all,
 for the same reason: a contract query is only ever such a lookup.
 
 Impact
 ======
 
 The conditions a listener adds are combined with the ones the extension builds
-itself — the storage folders, the organisational unit and function type filters
-of the content element, the letter filter, the hidden records setting and the
-language handling — with a logical **AND**. A *constraint* therefore only ever
+itself with a logical **AND**: the storage folders, the organisational unit and
+function type filters of the content element, the letter filter, the hidden
+records setting and the language handling. A *constraint* therefore only ever
 narrows a result, and it cannot remove a condition the extension put there.
 
 They apply **before pagination**, so the number of pages and the profiles on
@@ -83,18 +83,16 @@ the content element.
 
 ..  warning::
 
-    **A listener narrows every plugin of the extension alike.** This version
-    line does not tell a listener which plugin is being rendered, which
-    settings the content element carries or which request it belongs to, so a
-    condition cannot be limited to one plugin or one content element. Version
-    3.0 adds that context, and a listener written against this release runs
-    there unchanged.
+    **A listener narrows every plugin of the extension alike.** The events do
+    not tell a listener which plugin is being rendered, which settings the
+    content element carries or which request it belongs to, so a condition
+    cannot be limited to one plugin or one content element.
 
 ..  warning::
 
     **Use** :php:`addConstraint()`. A condition a listener sets with
     :php:`matching()` on the query is folded into the same logical AND rather
-    than dropped — so it still narrows — but :php:`matching()` *replaces*, so
+    than dropped, so it still narrows. But :php:`matching()` *replaces*, so
     with two such listeners only the last one to run survives.
 
     Everything else on the query object is **live**. The query settings
@@ -106,5 +104,11 @@ the content element.
 
     The constraint runs on every rendering of the plugin, so an expensive join
     is paid for on every page.
+
+Affected Installations
+======================
+
+Installations that want to narrow the profiles or contracts the plugins of
+this extension show, beyond what the content element offers.
 
 ..  index:: Frontend, PHP-API, ext:academic_persons

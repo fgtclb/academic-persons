@@ -10,7 +10,7 @@ Description
 The profile list and list-and-detail plugins let an editor pick the profiles by
 hand (:guilabel:`List of profiles`) and switch :guilabel:`Pagination` on at the
 same time. Such a selection is an ordered list, but the query that fetches it
-matches :sql:`uid IN (...)`, which does not preserve that order -
+matches :sql:`uid IN (...)`, which does not preserve that order.
 :php:`ProfileController::listAction()` restored it afterwards, in PHP.
 
 With pagination switched on, the pages were cut out of the *query* result

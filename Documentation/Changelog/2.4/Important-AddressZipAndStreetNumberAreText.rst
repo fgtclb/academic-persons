@@ -11,7 +11,7 @@ The shipped :file:`Configuration/AcademicPersons/Settings.yaml` listed the
 :yaml:`number` flag for the :yaml:`zip` and :yaml:`streetNumber` properties of
 the :yaml:`physicalAddress` set. The flag turns a field into a TCA
 :php:`number` field in the backend record editor and into a number input in
-the frontend editing form of ``academic_persons_edit``. A TCA
+the frontend editing form of `EXT:academic_persons_edit`. A TCA
 :php:`number` field stores an integer, so the backend saved ``01067`` as
 ``1067``, ``12a`` as ``12`` and a postcode such as ``SW1A 2AA`` as ``0``, and
 the frontend form refused ``12a`` and ``SW1A 2AA``.
@@ -36,15 +36,23 @@ An installation that ships its own :file:`Configuration/AcademicPersons/Settings
 with a :yaml:`validations` map replaces the shipped map as a whole, because
 the files are merged by their top-level keys. Such a copy keeps the
 :yaml:`number` flag on :yaml:`zip` and :yaml:`streetNumber` until it is removed
-there as well. The other sets of the copy are left out here:
+there as well. The shipped set reads as follows now, the other sets of the
+copy are left out here:
 
 ..  code-block:: yaml
+    :caption: EXT:site_package/Configuration/AcademicPersons/Settings.yaml
 
     validations:
       physicalAddress:
+        street:
+          - required
         streetNumber:
           - required
         zip:
+          - required
+        city:
+          - required
+        country:
           - required
 
 Flush the TYPO3 caches afterwards, the settings are cached.

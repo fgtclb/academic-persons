@@ -23,10 +23,11 @@ Both commands also report their result:
 
 *   :bash:`academic:createprofiles` prints the number of created profiles.
     When it created none and ``profile.autoCreateProfiles`` is disabled in the
-    extension configuration of ``academic_persons``, it says so, because that
-    option is what makes the default profile factory create profiles at all. A
-    profile factory chosen through the :php:`ChooseProfileFactoryEvent` may
-    ignore the option, the hint names the default factory for that reason.
+    extension configuration of `EXT:academic_persons`, it says so, because
+    that option is what makes the default profile factory create profiles at
+    all. A profile factory chosen through the
+    :php:`ChooseProfileFactoryEvent` may ignore the option, so the hint names
+    the default factory.
 *   :bash:`academic:updateprofiles` prints the number of frontend users whose
     profiles it updated.
 

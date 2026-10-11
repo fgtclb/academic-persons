@@ -37,9 +37,9 @@ Impact
 ======
 
 On a site that imports :file:`ListAndDetail.yaml` before :file:`Detail.yaml`,
-the page carrying the :guilabel:`Detail` plugin answers ``404`` for every link
-the list plugins generate for it — the profile argument arrives in the
-namespace of the other plugin, and :php:`ProfileController::detailAction()`
+the page carrying the :guilabel:`Persons Detail` plugin answers ``404`` for
+every link the list plugins generate for it. The profile argument arrives in
+the namespace of the other plugin, and :php:`ProfileController::detailAction()`
 receives nothing.
 
 The two list routes fail more quietly, and in whichever direction the import
@@ -50,9 +50,9 @@ Affected Installations
 ======================
 
 Installations whose site configuration imports more than one of
-:file:`List.yaml`, :file:`ListAndDetail.yaml` and :file:`Detail.yaml` — which is
-what a site showing both the separate and the combined plugin needs, and what
-the documentation of this extension recommended without further qualification
+:file:`List.yaml`, :file:`ListAndDetail.yaml` and :file:`Detail.yaml`. A site
+showing both the separate and the combined plugins needs that, and the
+documentation of this extension recommended it without further qualification
 until now.
 
 Installations that import a single one of the three files are not affected.

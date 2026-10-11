@@ -8,16 +8,16 @@ Description
 ===========
 
 A contract belongs to its profile and is translated with it. The
-:guilabel:`Contracts` field of an organisational unit lists the contracts of
-its people as an inline relation all the same, and core localizes every inline
-child of a localized record. Localizing an organisational unit therefore
-created a translation of each contract it lists, and one more copy of a
+:guilabel:`Employee Contracts` field of an organisational unit lists the
+contracts of its people as an inline relation all the same, and core localizes
+every inline child of a localized record. Localizing an organisational unit
+therefore created a translation of each contract it lists, and one more copy of a
 contract that is valid in all languages or in the target language already. A
 profile valid in all languages then showed such a contract twice.
 
 Localizing an organisational unit, or copying it into a language, no longer
 localizes its contracts. The contracts core creates are deleted again when the
-localization ends, together with their addresses, email addresses and phone
+localization ends, together with their addresses, e-mail addresses and phone
 numbers. For a contract that is translated already, because its profile is
 translated, core still reports that its localization failed, while nothing is
 created. A plain copy of an organisational unit keeps copying its contracts.
@@ -37,8 +37,8 @@ query lists them:
     JOIN tx_academicpersons_domain_model_organisational_unit AS unit ON unit.uid = contract.organisational_unit
     WHERE contract.deleted = 0 AND unit.sys_language_uid > 0;
 
-Delete them. The contracts of a profile and their translations point to the
-default language unit and are not listed.
+Delete them in the backend. The contracts of a profile and their translations
+point to the default language unit and are not listed.
 
 Affected Installations
 ======================

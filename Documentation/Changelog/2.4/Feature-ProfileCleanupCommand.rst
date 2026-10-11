@@ -13,7 +13,7 @@ online after its frontend user was disabled or deleted, and projects wrote a
 command of their own to take it offline.
 
 The new command :bash:`academic:cleanupprofiles` looks at the profiles the
-synchronisation manages, and at the frontend users linked to each of them:
+synchronization manages, and at the frontend users linked to each of them:
 
 *   When every linked frontend user is disabled or past its end time, the
     profile is hidden. :bash:`--disabled=keep` leaves it.
@@ -22,7 +22,7 @@ synchronisation manages, and at the frontend users linked to each of them:
     :bash:`--deleted=hide` hides it instead, :bash:`--deleted=keep` leaves it.
 *   A profile with at least one active frontend user, a profile with
     :guilabel:`Disable profile sync` set, a profile without a linked frontend
-    user and a profile an editor linked to a login the synchronisation does
+    user and a profile an editor linked to a login the synchronization does
     not read are never touched.
 
 :bash:`--include-pids` and :bash:`--exclude-pids` choose the profiles by the
@@ -53,5 +53,12 @@ A project that ships a command of its own named
 :bash:`academic:cleanupprofiles` keeps running that one: of two commands with
 the same name, the one registered last is used. Remove the project's command to
 use this one.
+
+Affected Installations
+======================
+
+Installations that synchronize profiles from frontend users and want profiles
+of disabled or deleted frontend users taken offline, in particular those that
+wrote a command of their own for it.
 
 .. index:: CLI, ext:academic_persons

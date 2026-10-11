@@ -10,20 +10,20 @@ Description
 The :php:`findAll()` methods of :php:`AddressRepository`,
 :php:`EmailRepository`, :php:`PhoneNumberRepository` and
 :php:`ProfileInformationRepository` executed without an ordering, so their
-result came in whatever order the database yielded — on PostgreSQL not
+result came in whatever order the database yielded. On PostgreSQL that is not
 necessarily the same list twice. They now order by :sql:`uid` ascending.
 
 The tables are manually sortable, but their :sql:`sorting` is kept per contract,
 or per profile and type, so it does not order records of different parents
-meaningfully. The methods returning the records of one contract or profile keep
-ordering by :sql:`sorting`.
+meaningfully. The methods returning the records of one contract or profile
+order by :sql:`sorting`, with :sql:`uid` breaking ties.
 
 Impact
 ======
 
 No visible change is expected: nothing in the extensions calls these methods,
 and :sql:`uid` ascending is the order SQLite, MySQL and MariaDB return in
-practice; PostgreSQL promises none. Code that calls them gets that order
+practice. PostgreSQL promises none. Code that calls them gets that order
 guaranteed now rather than by coincidence.
 
 Affected Installations

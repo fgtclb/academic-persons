@@ -7,9 +7,10 @@ Important: Extended `ProfileDemand`, `findByUids()` and demand handling
 Description
 ===========
 
-To support the new "Show hidden records" plugin option, the person demand
-and repository layer gained the following additions. All of them are
-non-breaking (new optional parameter / new transport flag with defaults):
+To support the new :guilabel:`Show hidden records` plugin option, the person
+demand and repository layer gained the following additions. All of them are
+non-breaking (a new optional parameter or a new transport flag, each with a
+default):
 
 * :php:`\FGTCLB\AcademicPersons\Domain\Model\Dto\ProfileDemand` has a new
   :php:`showHiddenRecords` transport flag with
@@ -41,7 +42,7 @@ non-breaking (new optional parameter / new transport flag with defaults):
   default Extbase argument mapping respects enable fields.
 
 When the flag/parameter is set, the query ignores only the `disabled`
-(`hidden`) enable field via the Extbase query settings; the `deleted`,
+(`hidden`) enable field via the Extbase query settings. The `deleted`,
 `starttime`/`endtime` and `fe_group` restrictions stay in effect.
 
 Impact
@@ -50,8 +51,8 @@ Impact
 The change is non-breaking: the new demand flag defaults to :php:`false`,
 the new :php:`findByUids()` parameter has a default value, and no existing
 method signature changed in an incompatible way. Projects that build a
-:php:`ProfileDemand` or call :php:`findByUids()` themselves can opt in via
-:php:`setShowHiddenRecords(true)` respectively the new parameter.
+:php:`ProfileDemand` or call :php:`findByUids()` themselves can opt in with
+:php:`setShowHiddenRecords(true)` or with the new parameter.
 
 Affected Installations
 ======================

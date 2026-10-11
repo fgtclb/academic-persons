@@ -9,7 +9,7 @@ Description
 
 :file:`Resources/Private/Partials/Profile/Contract/Field.html` translates
 :xml:`contracts.<field>` for every contract field an editor ticks in
-:guilabel:`Show fields`. The English
+:guilabel:`Show only selected Fields`. The English
 :file:`Resources/Private/Language/locallang.xlf` declared the unit of the
 e-mail addresses with one ``d``, as :xml:`contracts.emailAdresses`, so in
 English the e-mail row of a list, card, selected profiles or selected

@@ -32,8 +32,9 @@ adjusted accordingly.
 Impact
 ======
 
-Referencing the old class names or the old :php:`showFields()` method throws
-a PHP error. This affects TCA/FlexForm `itemsProcFunc` configurations,
+A reference to one of the old class names or to the old :php:`showFields()`
+method fails with an error as soon as the backend form that uses it is
+rendered. This affects TCA and FlexForm `itemsProcFunc` configurations,
 projects extending or replacing these classes and any code instantiating them
 directly.
 

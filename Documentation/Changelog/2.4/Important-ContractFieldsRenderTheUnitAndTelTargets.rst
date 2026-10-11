@@ -1,26 +1,33 @@
 ..  _important-contract-fields-render-the-unit-and-tel-targets:
 
-============================================================
-Important: Contract rows render the unit and dialable phones
-============================================================
+==========================================================================
+Important: Contract rows render the location, the unit and dialable phones
+==========================================================================
 
 Description
 ===========
 
 :file:`Resources/Private/Partials/Profile/Contract/Field.html` renders one
 contract field per call, for the fields an editor ticks in
-:guilabel:`Show fields` of a list, list and detail, card, selected profiles or
-selected contracts element. Two of those fields were rendered wrong, and both
-are corrected.
+:guilabel:`Show only selected Fields` of a list, list and detail, card,
+selected profiles or selected contracts element. Three of those fields were
+rendered wrong, and all three are corrected.
 
 **The organisational unit renders its name.** The field is offered in
-:guilabel:`Show fields`, but the partial had no branch for it and
-:file:`locallang.xlf` had no label for it either — so a contract that belongs
-to a unit rendered a row with an empty label and no value at all. The row now
-carries the label :guilabel:`Organisational Unit` (German
+:guilabel:`Show only selected Fields`, but the partial had no branch for it and
+:file:`locallang.xlf` had no label for it either. A contract that belongs to a
+unit therefore rendered a row with an empty label and no value at all. The row
+now carries the label :guilabel:`Organisational Unit` (German
 :guilabel:`Organisationseinheit`) followed by the unit's display text, falling
 back to its unit name where the display text is empty. A contract without a
 unit renders no row, as before.
+
+**The location renders its title.** The partial grouped the location with the
+plain text fields position, room and office hours and printed the value as it
+was. A location is a relation to a location record, so a contract with a
+location rendered the class name and uid of that record, for example
+``FGTCLB\AcademicPersons\Domain\Model\Location:1``, instead of its title.
+The row now shows the title of the location.
 
 **A phone link target carries no spaces.** The stored number was written into
 :html:`href="tel:…"` unchanged, so a number stored as ``+49 6241 509 123``
@@ -32,9 +39,13 @@ of its own. The visible link text keeps the stored spelling.
 Impact
 ======
 
+A contract with a location shows the title of the location instead of the
+class name and uid of the record.
+
 A contract with an organisational unit renders one row more than it visibly
-did before. An installation that hid the empty row with CSS — the row was
-there, only without content — sees the unit appear and can drop that rule.
+did before. The empty row was in the markup before, only without content. An
+installation that hid it with CSS sees the unit appear and can drop that
+rule.
 
 An installation that overrides
 :file:`Resources/Private/Partials/Profile/Contract/Field.html` or
@@ -46,7 +57,8 @@ partial is called with are unchanged, so an override of
 Affected Installations
 ======================
 
-Installations that display the organisational unit or phone numbers in a
-profile list, card or selection element, or in the profile detail view.
+Installations that display the location, the organisational unit or phone
+numbers in a profile list, card or selection element, or in the profile detail
+view.
 
 ..  index:: Frontend, ext:academic_persons

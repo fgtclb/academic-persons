@@ -27,7 +27,11 @@ To work with hidden records the matching repositories
 * :php:`findByContractIncludingHidden(int $contractUid): QueryResultInterface`
 * :php:`findByUidIncludingHidden(int $uid): ?<Model>`
 
-These are used by `EXT:academic_persons_edit` (optional) to let profile
+:php:`findByContractIncludingHidden()` orders the records by their
+:sql:`sorting`, with :sql:`uid` ascending breaking ties between records that
+share a :sql:`sorting` value.
+
+These are used by the optional `EXT:academic_persons_edit` to let profile
 owners show and hide their contact records in the frontend, while the
 public profile display keeps excluding hidden records via the default
 Extbase enable field handling.
@@ -43,14 +47,13 @@ methods to handle contact record visibility programmatically.
 Affected Installations
 ======================
 
-All installations using the `EXT:academic_persons` extension starting
-with version 2.4.
+All installations using `EXT:academic_persons`.
 
 Migration
 =========
 
-No migration is required, except you extended and replaced the extbase
-model in projects - then you need to adopt the newly added properties
-and setter/getter methods with the same signatures.
+No migration is required. A project that extends or replaces one of these
+Extbase models has to provide the new :php:`hidden` property and its getter
+and setter with the same signatures.
 
-.. index:: PHP, Database, Frontend
+.. index:: PHP, Database, Frontend, ext:academic_persons

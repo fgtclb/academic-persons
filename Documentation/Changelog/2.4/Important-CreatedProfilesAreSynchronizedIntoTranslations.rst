@@ -16,9 +16,10 @@ Extbase properties with each other:
 
 Only :php:`Persistence\Generic\Mapper\DataMapper` writes those, and only while
 it hydrates a database row. A profile that was built in PHP and then persisted
-never passes through it - :php:`Persistence\Generic\Backend::insertObject()`
-assigns `uid` and nothing else - so it holds a `uid` and an unset localized
-uid, and the strict comparison answered "is a translation".
+never passes through it, because
+:php:`Persistence\Generic\Backend::insertObject()` assigns `uid` and nothing
+else. Such a profile holds a `uid` and an unset localized uid, and the strict
+comparison answered "is a translation".
 
 :php:`Profile\AbstractProfileFactory::createProfileForUser()` builds exactly
 such an object: it persists the profile and announces it through
@@ -49,25 +50,26 @@ runs from the default language record only. A profile created by
 frontend users, was caught by that gate and never translated, no matter how
 ``profile.allowedLanguages`` was configured.
 
-Profiles created before this change stay untranslated until something announces
-them again. A run of :bash:`academic:updateprofiles` does that, and it was
-never affected by the defect, because it reads its profiles through the
-repository and they are therefore mapped.
+Profiles created before this change stay untranslated. Nothing in this version
+announces an existing profile again: :bash:`academic:updateprofiles` updates
+profiles without dispatching :php:`Event\AfterProfileUpdateEvent`. Translate
+such a profile in the backend, into the languages listed in
+``profile.allowedLanguages``.
 
 The answer is unchanged for every profile that came out of the data mapper,
 which is every profile the plugins and the backend work with. Only a profile
 built in PHP is answered differently, and only one that carries a translation
-language without a translation parent - a record Extbase cannot create, because
-:php:`Persistence\Generic\Backend::insertObject()` writes `l10n_parent` as `0`
-on every insert.
+language without a translation parent. Extbase cannot create such a record,
+because :php:`Persistence\Generic\Backend::insertObject()` writes
+`l10n_parent` as `0` on every insert.
 
 Affected Installations
 ======================
 
 Every installation that enables the translation synchronization through the
 ``profile.allowedLanguages`` setting of EXT:academic_persons_edit and creates
-profiles automatically, whether through the command or on frontend user login.
-Installations that leave that setting empty see no change.
+profiles with :bash:`academic:createprofiles`. Installations that leave that
+setting empty see no change.
 
 Installations calling :php:`Domain\Model\Profile::getIsTranslation()` from own
 code get the corrected answer for an unpersisted and for a freshly persisted
