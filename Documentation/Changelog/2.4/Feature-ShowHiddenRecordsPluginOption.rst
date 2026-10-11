@@ -8,8 +8,8 @@ Description
 ===========
 
 A new boolean plugin option **Show hidden records**
-(:typoscript:`settings.showHiddenRecords`, checkbox/toggle, default off)
-was added to the following plugins:
+(:typoscript:`settings.showHiddenRecords`, a toggle, off by default) was added
+to the following plugins:
 
 * **List** (:php:`academicpersons_list`)
 * **List and detail** (:php:`academicpersons_listanddetail`)
@@ -18,15 +18,15 @@ was added to the following plugins:
 * **Selected contracts** (:php:`academicpersons_selectedcontracts`)
 * **Detail** (:php:`academicpersons_detail`)
 
-The `List`, `List and detail` and `Card` plugins share the
-core-version-aware :file:`List.xml` flexform; `Selected profiles`,
-`Selected contracts` and `Detail` use their own :file:`SelectedProfiles.xml`,
-:file:`SelectedContracts.xml` and :file:`Detail.xml` flexforms. All are
-provided for both the TYPO3 v12 and v13 flexform data structures.
+The `List`, `List and detail` and `Card` plugins share the core-version-aware
+:file:`List.xml` flexform. `Selected profiles`, `Selected contracts` and
+`Detail` use their own :file:`SelectedProfiles.xml`,
+:file:`SelectedContracts.xml` and :file:`Detail.xml` flexforms. All are provided
+for both the TYPO3 v12 and v13 flexform data structures.
 
 When the option is enabled, the affected frontend listing includes hidden
-(disabled) records, independent of the Context API visibility settings.
-Only the `hidden` enable column (`disabled`) is ignored; the `deleted`,
+(disabled) records, also for visitors without a preview of hidden records. Only
+the `hidden` enable column (`disabled`) is ignored. The `deleted`,
 `starttime`/`endtime` and `fe_group` restrictions stay in effect.
 
 The single-profile **Detail** plugin resolves its profile through Extbase
