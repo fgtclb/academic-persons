@@ -9,17 +9,17 @@ Description
 
 A contract belongs to its profile and is translated with it. The
 :guilabel:`Employee Contracts` field of an organisational unit lists the
-contracts of its people as an inline relation all the same, and core localizes
+contracts of its people as an inline relation all the same, and TYPO3 localizes
 every inline child of a localized record. Localizing an organisational unit
 therefore created a translation of each contract it lists, and one more copy of a
 contract that is valid in all languages or in the target language already. A
 profile valid in all languages then showed such a contract twice.
 
 Localizing an organisational unit, or copying it into a language, no longer
-localizes its contracts. The contracts core creates are deleted again when the
+localizes its contracts. The contracts TYPO3 creates are deleted again when the
 localization ends, together with their addresses, e-mail addresses and phone
 numbers. For a contract that is translated already, because its profile is
-translated, core still reports that its localization failed, while nothing is
+translated, TYPO3 still reports that its localization failed, while nothing is
 created. A plain copy of an organisational unit keeps copying its contracts.
 
 Impact
