@@ -11,6 +11,8 @@ declare(strict_types=1);
 
 namespace FGTCLB\AcademicPersons\DemandValues;
 
+use TYPO3\CMS\Core\Configuration\Exception\ExtensionConfigurationExtensionNotConfiguredException;
+use TYPO3\CMS\Core\Configuration\Exception\ExtensionConfigurationPathDoesNotExistException;
 use TYPO3\CMS\Core\Configuration\ExtensionConfiguration;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
@@ -41,15 +43,26 @@ abstract class AbstractDemandValues implements DemandValuesInterface
             return;
         }
 
-        $typesString = $this->extensionConfiguration->get('academic_persons', $property);
-        $typesArray = GeneralUtility::trimExplode(',', $typesString);
+        try {
+            $typesString = $this->extensionConfiguration->get('academic_persons', $property);
+        } catch (ExtensionConfigurationExtensionNotConfiguredException | ExtensionConfigurationPathDoesNotExistException) {
+            // `get()` restores a path that `ext_conf_template.txt` declares, so these are
+            // thrown only for an extension or a path the template does not declare. An
+            // empty list leaves the select with its "none" item and the list in uid order.
+            // Throwing here would abort every list rendering and the backend form.
+            return;
+        }
+        $typesArray = GeneralUtility::trimExplode(',', is_string($typesString) ? $typesString : '', true);
 
         foreach ($typesArray as $type) {
-            $typeValue = $typeLabel = $type;
-            if (str_contains($type, '=')) {
-                [$typeValue, $typeLabel] = GeneralUtility::trimExplode('=', $type, true, 2);
+            // The empty side of `value=` or `=label` must keep its position, so it is not
+            // removed here. An empty value is skipped: as an item '' it would be the value
+            // of "none" and let "none" pass the allow list in `ProfileRepository`.
+            [$typeValue, $typeLabel] = GeneralUtility::trimExplode('=', $type, false, 2) + [1 => ''];
+            if ($typeValue === '') {
+                continue;
             }
-            $this->values[$typeValue] = $typeLabel;
+            $this->values[$typeValue] = $typeLabel !== '' ? $typeLabel : $typeValue;
         }
     }
 

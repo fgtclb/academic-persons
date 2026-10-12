@@ -34,8 +34,11 @@ final class AbstractTypesTest extends UnitTestCase
     }
 
     /**
-     * The last four cases are not what an integrator means to configure, but the parser
-     * has no validation in front of it, so they document what reaches the item list.
+     * The cases from the empty configuration on are not what an integrator means to
+     * configure, but the parser has no validation in front of it. The TCA of the type
+     * columns ships its own "undefined" item with the value '', so an empty value must
+     * not become a second, unlabelled one. An entry with an empty side must not raise a
+     * warning either, since every backend form with the select parses the list.
      *
      * @return array<string, array{0: string, 1: array<string, string>}>
      */
@@ -66,21 +69,41 @@ final class AbstractTypesTest extends UnitTestCase
                 'private=LLL:EXT:academic_persons/Resources/Private/Language/locallang_be.xlf:type.private',
                 ['private' => 'LLL:EXT:academic_persons/Resources/Private/Language/locallang_be.xlf:type.private'],
             ],
+            'a label may start with an equals sign' => [
+                'private==Private',
+                ['private' => '=Private'],
+            ],
             'a repeated value keeps the last label' => [
                 'private=First,private=Second',
                 ['private' => 'Second'],
             ],
-            'an empty configuration produces one empty item' => [
+            'an empty configuration produces no item' => [
                 '',
-                ['' => ''],
+                [],
             ],
-            'a trailing comma produces an empty item' => [
+            'a configuration of separators and whitespace produces no item' => [
+                ' , ,',
+                [],
+            ],
+            'a trailing comma adds no item' => [
                 'private=Private,',
-                ['private' => 'Private', '' => ''],
+                ['private' => 'Private'],
             ],
-            'a gap between two entries produces an empty item' => [
+            'a gap between two entries adds no item' => [
                 'private=Private,,business=Business',
-                ['private' => 'Private', '' => '', 'business' => 'Business'],
+                ['private' => 'Private', 'business' => 'Business'],
+            ],
+            'an entry with an empty label is labelled with its value' => [
+                'private=,business = ',
+                ['private' => 'private', 'business' => 'business'],
+            ],
+            'an entry with an empty value is dropped' => [
+                '=Private,business=Business',
+                ['business' => 'Business'],
+            ],
+            'an entry of only the equals sign is dropped' => [
+                'private=Private, = ',
+                ['private' => 'Private'],
             ],
         ];
     }

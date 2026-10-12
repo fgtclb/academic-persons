@@ -46,20 +46,23 @@ abstract class AbstractTypes implements TypesInterface
         try {
             $typesString = $this->extensionConfiguration->get('academic_persons', $property);
         } catch (ExtensionConfigurationExtensionNotConfiguredException | ExtensionConfigurationPathDoesNotExistException) {
-            // `get()` repairs a missing path from `ext_conf_template.txt` itself and only
-            // throws when it could not - an unwritable `system/settings.php`, for instance.
-            // An empty list degrades the select to its shipped `undefined` item; throwing
+            // `get()` restores a path that `ext_conf_template.txt` declares, so these are
+            // thrown only for an extension or a path the template does not declare. An
+            // empty list degrades the select to its shipped `undefined` item. Throwing
             // here would abort the backend form while it renders.
             return;
         }
-        $typesArray = GeneralUtility::trimExplode(',', is_string($typesString) ? $typesString : '');
+        $typesArray = GeneralUtility::trimExplode(',', is_string($typesString) ? $typesString : '', true);
 
         foreach ($typesArray as $type) {
-            $typeValue = $typeLabel = $type;
-            if (str_contains($type, '=')) {
-                [$typeValue, $typeLabel] = GeneralUtility::trimExplode('=', $type, true, 2);
+            // The empty side of `value=` or `=label` must keep its position, so it is not
+            // removed here. An empty value would be a second item '' beside the shipped
+            // `undefined` one, and is skipped.
+            [$typeValue, $typeLabel] = GeneralUtility::trimExplode('=', $type, false, 2) + [1 => ''];
+            if ($typeValue === '') {
+                continue;
             }
-            $this->types[$typeValue] = $typeLabel;
+            $this->types[$typeValue] = $typeLabel !== '' ? $typeLabel : $typeValue;
         }
     }
 

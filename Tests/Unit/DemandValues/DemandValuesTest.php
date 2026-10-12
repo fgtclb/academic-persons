@@ -43,10 +43,11 @@ final class DemandValuesTest extends UnitTestCase
 
     /**
      * `ExtensionConfiguration::get()` throws `ExtensionConfigurationPathDoesNotExistException`
-     * for a path that `ext_conf_template.txt` never declared, and nothing here catches
-     * it - both the FlexForm `itemsProcFunc` and every profile list query go through
-     * these classes. The template writes the path with dots and the classes ask for it
-     * with slashes, which is why a plain string comparison would not do.
+     * for a path that `ext_conf_template.txt` never declared. The classes catch it and
+     * offer no item, so an undeclared path would silently empty the FlexForm select and
+     * drop the ordering of every profile list. The template writes the path with dots
+     * and the classes ask for it with slashes, which is why a plain string comparison
+     * would not do.
      */
     #[Test]
     #[DataProvider('configurationPaths')]

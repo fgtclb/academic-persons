@@ -8,6 +8,8 @@ use FGTCLB\AcademicPersons\DemandValues\AbstractDemandValues;
 use FGTCLB\AcademicPersons\DemandValues\SortByValues;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\Attributes\Test;
+use TYPO3\CMS\Core\Configuration\Exception\ExtensionConfigurationExtensionNotConfiguredException;
+use TYPO3\CMS\Core\Configuration\Exception\ExtensionConfigurationPathDoesNotExistException;
 use TYPO3\CMS\Core\Configuration\ExtensionConfiguration;
 use TYPO3\TestingFramework\Core\Unit\UnitTestCase;
 
@@ -35,10 +37,12 @@ final class AbstractDemandValuesTest extends UnitTestCase
     }
 
     /**
-     * The last three cases are not what an integrator means to configure. They are
-     * listed because nothing validates the string, and the empty key they produce is
-     * also the value an unset `sortBy`/`groupBy` demand carries - so it passes the
-     * `in_array()` allow list in `ProfileRepository` and orders by a property named ''.
+     * The cases from the empty configuration on are not what an integrator means to
+     * configure, but nothing validates the string. An empty value must never become an
+     * item: it is also the value a list element on "none" demands, so it would pass the
+     * `in_array()` allow list in `ProfileRepository` and order by a property named ''.
+     * An entry with an empty side must not raise a warning either, since the list is
+     * parsed on every list rendering and every backend form with the select.
      *
      * @return array<string, array{0: string, 1: array<string, string>}>
      */
@@ -69,22 +73,74 @@ final class AbstractDemandValuesTest extends UnitTestCase
                 'firstName=a=b',
                 ['firstName' => 'a=b'],
             ],
+            'a label may start with an equals sign' => [
+                'firstName==First',
+                ['firstName' => '=First'],
+            ],
             'a repeated value keeps the last label' => [
                 'firstName=First,firstName=Second',
                 ['firstName' => 'Second'],
             ],
-            'an empty configuration produces one empty item' => [
+            'an empty configuration produces no item' => [
                 '',
-                ['' => ''],
+                [],
             ],
-            'a trailing comma produces an empty item' => [
+            'a configuration of separators and whitespace produces no item' => [
+                ' , ,',
+                [],
+            ],
+            'a trailing comma adds no item' => [
                 'firstName=First name,',
-                ['firstName' => 'First name', '' => ''],
+                ['firstName' => 'First name'],
             ],
-            'a gap between two entries produces an empty item' => [
+            'a gap between two entries adds no item' => [
                 'firstName=First,,lastName=Last',
-                ['firstName' => 'First', '' => '', 'lastName' => 'Last'],
+                ['firstName' => 'First', 'lastName' => 'Last'],
             ],
+            'an entry with an empty label is labelled with its value' => [
+                'firstName=,lastName = ',
+                ['firstName' => 'firstName', 'lastName' => 'lastName'],
+            ],
+            'an entry with an empty value is dropped' => [
+                '=First,lastName=Last',
+                ['lastName' => 'Last'],
+            ],
+            'an entry of only the equals sign is dropped' => [
+                'firstName=First, = ',
+                ['firstName' => 'First'],
+            ],
+        ];
+    }
+
+    /**
+     * `get()` restores a path that `ext_conf_template.txt` declares and throws one of the
+     * two exceptions only for an extension or a path the template does not declare, and
+     * it returns an array for a path that is the prefix of deeper options.
+     * `ProfileRepository` reads the list on every list rendering, so each of these
+     * degrades to no item: the list renders in uid order and the backend select offers
+     * only "none".
+     */
+    #[Test]
+    #[DataProvider('unreadableConfigurations')]
+    public function anUnreadableConfigurationProducesNoItem(mixed $read): void
+    {
+        $extensionConfiguration = $this->createMock(ExtensionConfiguration::class);
+        $extensionConfiguration->method('get')->willReturnCallback(
+            static fn(): mixed => $read instanceof \Throwable ? throw $read : $read
+        );
+
+        $this->assertSame([], (new SortByValues($extensionConfiguration))->getAll());
+    }
+
+    /**
+     * @return array<string, array{0: mixed}>
+     */
+    public static function unreadableConfigurations(): array
+    {
+        return [
+            'the extension is not configured' => [new ExtensionConfigurationExtensionNotConfiguredException('not configured', 1)],
+            'the path does not exist' => [new ExtensionConfigurationPathDoesNotExistException('no path', 2)],
+            'the path holds deeper options' => [['allowedSortByValues' => 'firstName']],
         ];
     }
 

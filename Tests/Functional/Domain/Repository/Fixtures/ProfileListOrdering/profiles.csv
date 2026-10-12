@@ -1,0 +1,8 @@
+"pages",
+,"uid","pid","sorting","doktype","title","slug","is_siteroot","sys_language_uid","hidden","deleted",
+,1,0,2,1,"Site Root (EN)","/",1,0,0,0,
+"tx_academicpersons_domain_model_profile",
+,"uid","pid","sys_language_uid","hidden","deleted","last_name","first_name",
+,1,1,0,0,0,"Meyer","Anna",
+,2,1,0,0,0,"Becker","Zoe",
+,3,1,0,0,0,"Schulz","Carl",
