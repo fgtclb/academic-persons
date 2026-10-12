@@ -1,0 +1,4 @@
+# Sorts the list by last name from Z to A, with the direction in upper case, the way an
+# integrator may type it into the free text site setting of the same name.
+plugin.tx_academicpersons.demand.sortBy = lastName
+plugin.tx_academicpersons.demand.sortByDirection = DESC

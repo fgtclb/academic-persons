@@ -68,6 +68,19 @@ final class ProfileRepositoryOrderingTest extends AbstractAcademicPersonsTestCas
         ];
     }
 
+    /**
+     * The direction is written the way the free text site setting, the TypoScript constant
+     * or an event listener may write it. Before ACE-439 the repository did not apply
+     * `DESC` and the list came out in creation order.
+     */
+    #[Test]
+    public function anUppercaseDirectionSortsTheLastNamesFromZToA(): void
+    {
+        $demand = (new ProfileDemand())->setSortBy('lastName')->setSortByDirection('DESC');
+
+        $this->assertSame([3, 1, 2], $this->resultUids($this->subject()->findByDemand($demand)));
+    }
+
     private function subject(): ProfileRepository
     {
         return $this->get(ProfileRepository::class);
