@@ -382,6 +382,13 @@ The `profile editing chapter
 of that extension names every file, every hook and the four prototype
 attributes an override has to keep.
 
+The editor renders no header of its content element any more. A 2.4 site that
+switched :typoscript:`plugin.tx_academicpersonsedit.renderContentElementHeader`
+on, because its content element layout renders no header, loses that header.
+The `breaking change entry on the content element header
+<https://docs.typo3.org/p/fgtclb/academic-persons-edit/main/en-us/Changelog/3.0/Breaking-ProfileEditingRendersNoContentElementHeader.html>`__
+shows the two ways to render it again.
+
 Icons
 -----
 
