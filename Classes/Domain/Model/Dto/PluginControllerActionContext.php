@@ -48,12 +48,14 @@ final class PluginControllerActionContext implements PluginControllerActionConte
 
     public function getSite(): ?Site
     {
-        return $this->request->getAttribute('site');
+        $attribute = $this->request->getAttribute('site');
+        return $attribute instanceof Site ? $attribute : null;
     }
 
     public function getLanguage(): ?SiteLanguage
     {
-        return $this->request->getAttribute('language');
+        $attribute = $this->request->getAttribute('language');
+        return $attribute instanceof SiteLanguage ? $attribute : null;
     }
 
     public function getPluginName(): ?string
