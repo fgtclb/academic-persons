@@ -42,6 +42,7 @@ final class PluginControllerActionContextTest extends AbstractAcademicPersonsTes
         $this->assertNull($pluginControllerActionContext->{$getterName}());
     }
 
+    #[Test]
     public function getRequestReturnsExpectedRequest(): void
     {
         $request = new ServerRequest();
