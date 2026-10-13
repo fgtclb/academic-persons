@@ -88,6 +88,9 @@ $tcaConfiguration = [
                 'type' => 'select',
                 'renderType' => 'selectSingle',
                 'foreign_table' => 'tx_academicpersons_domain_model_contract',
+                // The parent of the inline relation. Core must not move the pointer to the
+                // parent's version row when the parent is edited in a workspace (ACE-907).
+                'dontRemapTablesOnCopy' => 'tx_academicpersons_domain_model_contract',
                 'maxitems' => 1,
             ],
         ],

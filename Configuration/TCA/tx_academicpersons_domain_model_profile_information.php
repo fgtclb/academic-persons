@@ -87,6 +87,9 @@ $tcaConfiguration = [
                 'type' => 'select',
                 'renderType' => 'selectSingle',
                 'foreign_table' => 'tx_academicpersons_domain_model_profile',
+                // The parent of the inline relation. Core must not move the pointer to the
+                // parent's version row when the parent is edited in a workspace (ACE-907).
+                'dontRemapTablesOnCopy' => 'tx_academicpersons_domain_model_profile',
                 // The language of the record itself: a translation belongs to the translated profile.
                 'foreign_table_where' => 'AND {#tx_academicpersons_domain_model_profile}.{#sys_language_uid} IN (-1,0,###REC_FIELD_sys_language_uid###)',
             ],

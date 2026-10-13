@@ -92,6 +92,9 @@ $tcaConfiguration = [
                 'type' => 'select',
                 'renderType' => 'selectSingle',
                 'foreign_table' => 'tx_academicpersons_domain_model_profile',
+                // The parent of the inline relation. Core must not move the pointer to the
+                // parent's version row when the parent is edited in a workspace (ACE-907).
+                'dontRemapTablesOnCopy' => 'tx_academicpersons_domain_model_profile',
                 'maxitems' => 1,
             ],
         ],
@@ -109,6 +112,9 @@ $tcaConfiguration = [
                     ],
                 ],
                 'foreign_table' => 'tx_academicpersons_domain_model_organisational_unit',
+                // The parent of the inline relation. Core must not move the pointer to the
+                // parent's version row when the parent is edited in a workspace (ACE-907).
+                'dontRemapTablesOnCopy' => 'tx_academicpersons_domain_model_organisational_unit',
                 'foreign_table_where' => 'AND {#tx_academicpersons_domain_model_organisational_unit}.{#sys_language_uid} IN (-1, 0)',
                 'default' => 0,
                 'minitems' => 1,
