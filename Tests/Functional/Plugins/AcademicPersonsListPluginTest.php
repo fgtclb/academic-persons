@@ -63,17 +63,23 @@ final class AcademicPersonsListPluginTest extends AbstractAcademicPersonsTestCas
         parent::tearDown();
     }
 
-    private function setUpFrontendRootPageForTestCase(): void
+    /**
+     * @param list<string> $additionalConstantFiles Constants loaded after the pinned ones.
+     */
+    private function setUpFrontendRootPageForTestCase(array $additionalConstantFiles = []): void
     {
         $this->setUpFrontendRootPage(
             pageId: 1,
             typoScriptFiles: [
-                'constants' => [
-                    'EXT:fluid_styled_content/Configuration/TypoScript/constants.typoscript',
-                    'EXT:academic_persons/Configuration/TypoScript/Default/constants.typoscript',
-                    'EXT:test_plugin_templates/Configuration/TypoScript/constants.typoscript',
-                    'EXT:academic_persons/Tests/Functional/Plugins/Fixtures/TypoScript/Constants/PluginConfiguration.typoscript',
-                ],
+                'constants' => array_merge(
+                    [
+                        'EXT:fluid_styled_content/Configuration/TypoScript/constants.typoscript',
+                        'EXT:academic_persons/Configuration/TypoScript/Default/constants.typoscript',
+                        'EXT:test_plugin_templates/Configuration/TypoScript/constants.typoscript',
+                        'EXT:academic_persons/Tests/Functional/Plugins/Fixtures/TypoScript/Constants/PluginConfiguration.typoscript',
+                    ],
+                    $additionalConstantFiles,
+                ),
                 'setup' => [
                     'EXT:fluid_styled_content/Configuration/TypoScript/setup.typoscript',
                     'EXT:academic_persons/Configuration/TypoScript/Default/setup.typoscript',
@@ -125,6 +131,42 @@ final class AcademicPersonsListPluginTest extends AbstractAcademicPersonsTestCas
         $this->assertStringContainsString('<h2>Profilelist</h2>', $content);
         $this->assertStringContainsString('#0(1): Max Müllermann', $content);
         $this->assertStringContainsString('#1(2): Horst Huber', $content);
+    }
+
+    /**
+     * The element stores no direction, so the TypoScript constant decides, and it reaches
+     * the demand through Extbase property mapping, which writes through the setter. The
+     * last names of the fixture are not in uid order, so a direction that is not applied
+     * shows up as the creation order Meyer, Becker, Schulz (ACE-439).
+     */
+    #[Test]
+    public function anUppercaseSortDirectionFromTypoScriptIsApplied(): void
+    {
+        $this->importCSVDataSet(__DIR__ . '/Fixtures/AcademicPersonsListPlugin/defaultLanguageOnly_lastNamesNotInUidOrder.csv');
+        $this->setUpFrontendRootPageForTestCase(
+            additionalConstantFiles: ['EXT:academic_persons/Tests/Functional/Plugins/Fixtures/TypoScript/Constants/SortByLastNameDescendingUppercase.typoscript'],
+        );
+        $this->writeSiteConfiguration(
+            identifier: 'acme',
+            site: $this->buildSiteConfiguration(
+                rootPageId: 1,
+                base: 'https://www.acme.com/',
+            ),
+            languages: [
+                $this->buildDefaultLanguageConfiguration(
+                    identifier: 'EN',
+                    base: '/',
+                ),
+            ],
+        );
+
+        $response = $this->executeFrontendSubRequest(new InternalRequest('https://www.acme.com/home'), new InternalRequestContext());
+        $this->assertSame(200, $response->getStatusCode());
+
+        $content = (string)$response->getBody();
+        $this->assertStringContainsString('#0(3): Carl Schulz', $content);
+        $this->assertStringContainsString('#1(1): Anna Meyer', $content);
+        $this->assertStringContainsString('#2(2): Zoe Becker', $content);
     }
 
     #[Test]

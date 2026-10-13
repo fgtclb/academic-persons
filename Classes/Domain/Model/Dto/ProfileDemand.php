@@ -76,11 +76,18 @@ class ProfileDemand implements DemandInterface
     }
 
     /**
+     * Stores `asc` or `desc`, read in any letter case and without surrounding whitespace.
+     * Any other value keeps the direction the demand had, `asc` for a fresh one, like the
+     * program list does for an unknown sorting.
+     *
      * Does not have any effect when {@see self::getProfileList()} is not empty.
      */
     public function setSortByDirection(string $sortByDirection): self
     {
-        $this->sortByDirection = $sortByDirection;
+        $sortByDirection = strtolower(trim($sortByDirection));
+        if ($sortByDirection === 'asc' || $sortByDirection === 'desc') {
+            $this->sortByDirection = $sortByDirection;
+        }
         return $this;
     }
 

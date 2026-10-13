@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace FGTCLB\AcademicPersons\Tests\Unit\Domain\Model\Dto;
 
 use FGTCLB\AcademicPersons\Domain\Model\Dto\ProfileDemand;
+use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\Attributes\Test;
 use TYPO3\TestingFramework\Core\Unit\UnitTestCase;
 
@@ -20,8 +21,9 @@ final class ProfileDemandTest extends UnitTestCase
     /**
      * `ProfileRepository::getOrderingsFromDemand()` only accepts a `sortBy` that is
      * listed in the `demand/allowedSortByValues` extension configuration and a direction
-     * of `asc` or `desc`. A default that is not in that list leaves the query without any
-     * `ORDER BY`, and a profile list would come out in database order.
+     * of `asc` or `desc`. A default that is not in that list leaves the query with the
+     * `uid` ordering only, which every list falls back to since ACE-482, and a profile
+     * list would come out in creation order.
      */
     #[Test]
     public function aFreshDemandSortsByLastNameAscending(): void
@@ -31,6 +33,68 @@ final class ProfileDemandTest extends UnitTestCase
         $this->assertSame('lastName', $subject->getSortBy());
         $this->assertSame('asc', $subject->getSortByDirection());
         $this->assertSame('', $subject->getGroupBy());
+    }
+
+    /**
+     * The direction reaches the demand from the FlexForm, from the free text site
+     * setting and TypoScript constant `plugin.tx_academicpersons.demand.sortByDirection`
+     * and from `ModifyProfileDemandEvent` listeners. The repository applies only `asc`
+     * and `desc`, so the setter reads any letter case and surrounding whitespace.
+     */
+    #[Test]
+    #[DataProvider('directionsInAnyLetterCase')]
+    public function aDirectionIsReadInAnyLetterCase(string $previous, string $direction, string $expected): void
+    {
+        $subject = (new ProfileDemand())->setSortByDirection($previous);
+
+        $this->assertSame($expected, $subject->setSortByDirection($direction)->getSortByDirection());
+    }
+
+    /**
+     * Each case starts from the other direction, so a direction that is not stored
+     * cannot pass as the previous one.
+     *
+     * @return array<string, array{0: string, 1: string, 2: string}>
+     */
+    public static function directionsInAnyLetterCase(): array
+    {
+        return [
+            'lowercase descending' => ['asc', 'desc', 'desc'],
+            'uppercase descending' => ['asc', 'DESC', 'desc'],
+            'lowercase ascending' => ['desc', 'asc', 'asc'],
+            'mixed case ascending with whitespace' => ['desc', ' Asc ', 'asc'],
+        ];
+    }
+
+    /**
+     * An unknown direction keeps the one the demand had, like `ProgramDemand::setSorting()`
+     * of `academic_programs` (ACE-625). Storing it would make the repository skip the sort
+     * field, and the list would come out in creation order.
+     */
+    #[Test]
+    #[DataProvider('unknownDirections')]
+    public function anUnknownDirectionKeepsThePreviousOne(string $previous, string $unknown): void
+    {
+        $subject = new ProfileDemand();
+        if ($previous !== '') {
+            $subject->setSortByDirection($previous);
+        }
+
+        $subject->setSortByDirection($unknown);
+
+        $this->assertSame($previous !== '' ? $previous : 'asc', $subject->getSortByDirection());
+    }
+
+    /**
+     * @return array<string, array{0: string, 1: string}>
+     */
+    public static function unknownDirections(): array
+    {
+        return [
+            'a fresh demand stays ascending' => ['', 'down'],
+            'descending stays descending' => ['desc', 'reverse'],
+            'an empty value keeps descending' => ['desc', ''],
+        ];
     }
 
     /**
