@@ -93,6 +93,17 @@ There are some options for global extension configuration:
 ..  confval:: demand.allowedSortByValues
 
     :type: string
-    :Default: firstNameAlpha=LLL:EXT:academic_persons/Resources/Private/Language/locallang_be.xlf:flexform.el.groupBy.items.first_name,lastNameAlpha=LLL:EXT:academic_persons/Resources/Private/Language/locallang_be.xlf:flexform.el.groupBy.items.last_name
+    :Default: firstName=LLL:EXT:academic_persons/Resources/Private/Language/locallang_be.xlf:flexform.el.sortBy.items.first_name,lastName=LLL:EXT:academic_persons/Resources/Private/Language/locallang_be.xlf:flexform.el.sortBy.items.last_name
 
     What values are allowed to sort person listings?
+
+The three ``types.*`` options and the two ``demand.*`` options above share one
+format: entries separated by commas, each one a value, optionally followed by
+``=`` and a label, which may be a ``LLL:`` reference. Whitespace around both
+separators is ignored, and so is an empty entry, such as the one after a
+trailing comma. An entry without a label, such as ``lastName`` or
+``lastName=``, is labelled with its value. An entry without a value, such as
+``=Last name``, is ignored. A value that is listed twice keeps its last label.
+The values of :confval:`demand.allowedSortByValues` and
+:confval:`demand.allowedGroupByValues` are also the only fields a persons list
+can be sorted or grouped by.

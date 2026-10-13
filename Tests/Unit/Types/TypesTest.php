@@ -53,10 +53,10 @@ final class TypesTest extends UnitTestCase
 
     /**
      * `ExtensionConfiguration::get()` throws `ExtensionConfigurationPathDoesNotExistException`
-     * for a path that `ext_conf_template.txt` never declared, and nothing here catches
-     * it - the TCA `itemsProcFunc` would take the whole backend form down. The template
-     * writes the path with dots and the classes ask for it with slashes, which is why a
-     * plain string comparison would not do.
+     * for a path that `ext_conf_template.txt` never declared. The classes catch it and
+     * offer no item, so an undeclared path would silently leave the TCA select with its
+     * `undefined` item only. The template writes the path with dots and the classes ask
+     * for it with slashes, which is why a plain string comparison would not do.
      */
     #[Test]
     #[DataProvider('configurationPaths')]
