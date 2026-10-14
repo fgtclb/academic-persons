@@ -35,6 +35,14 @@
         <source>"academic:persons:settings:migrate --delta" prints the smallest file with the same effect.</source>
         <target>"academic:persons:settings:migrate --delta" gibt die kleinste Datei mit derselben Wirkung aus.</target>
       </trans-unit>
+      <trans-unit id="status.sharedColumn.title" resname="status.sharedColumn.title" approved="yes">
+        <source>Shared column</source>
+        <target>Gemeinsam genutzte Spalte</target>
+      </trans-unit>
+      <trans-unit id="status.sharedColumn.message" resname="status.sharedColumn.message" approved="yes">
+        <source>The fields "%1$s" of the persons settings all name this column. It takes the backend flags of "%2$s", the field applied last, and the flags of the other fields are lost. Give each field a column of its own, or remove the field whose flags the column should not get.</source>
+        <target>Die Felder "%1$s" der Personen-Konfiguration verwenden alle diese Spalte. Sie erhält die Backend-Eigenschaften von "%2$s", dem zuletzt angewendeten Feld, und die Eigenschaften der anderen Felder gehen verloren. Geben Sie jedem Feld eine eigene Spalte, oder entfernen Sie das Feld, dessen Eigenschaften die Spalte nicht erhalten soll.</target>
+      </trans-unit>
     </body>
   </file>
 </xliff>

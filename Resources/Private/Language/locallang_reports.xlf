@@ -27,6 +27,12 @@
       <trans-unit id="status.overrides.delta" resname="status.overrides.delta">
         <source>"academic:persons:settings:migrate --delta" prints the smallest file with the same effect.</source>
       </trans-unit>
+      <trans-unit id="status.sharedColumn.title" resname="status.sharedColumn.title">
+        <source>Shared column</source>
+      </trans-unit>
+      <trans-unit id="status.sharedColumn.message" resname="status.sharedColumn.message">
+        <source>The fields "%1$s" of the persons settings all name this column. It takes the backend flags of "%2$s", the field applied last, and the flags of the other fields are lost. Give each field a column of its own, or remove the field whose flags the column should not get.</source>
+      </trans-unit>
     </body>
   </file>
 </xliff>

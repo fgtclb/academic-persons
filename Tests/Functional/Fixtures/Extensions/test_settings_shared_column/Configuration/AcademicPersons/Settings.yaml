@@ -1,0 +1,12 @@
+# A second profile field naming the column of the shipped `teachingArea`
+# field. The settings are merged per entry, so this field follows the shipped
+# one, and the column takes its flags: it becomes required in the backend,
+# and the flags of `teachingArea` are lost.
+profile:
+  teachingAreaSummary:
+    section: information
+    fieldName: teaching_area
+    fieldType: textarea
+    renderType: ckeditor
+    validators:
+      - required

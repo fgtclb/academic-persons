@@ -550,7 +550,7 @@ class Profile extends AbstractEntity
      */
     public function getLanguageUid(): int
     {
-        // @toodo Property is planned to be made private in the future and will only be accessible via getter
+        // @todo Property is planned to be made private in the future and will only be accessible via getter
         return (int)$this->_languageUid;
     }
 

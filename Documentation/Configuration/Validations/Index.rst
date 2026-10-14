@@ -251,6 +251,28 @@ The property name is translated to the database column automatically:
 :yaml:`firstName` addresses :sql:`first_name`; a field that names a
 :yaml:`fieldName` addresses that column instead.
 
+Every column takes the flags of one field. When two fields of the profile, of
+the contracts or of one contact section, a profile field and a special field,
+or two special fields name the same column, the column gets the flags of the
+field applied later, and the flags of the earlier field are lost. The profile
+fields are applied in section order, then the special fields. A site package
+that adds a second profile field with :yaml:`fieldName: teaching_area` decides
+whether the teaching area is required in the backend, whatever the shipped
+:yaml:`teachingArea` field says. The same holds for two timeline sections of
+one record type. The console command :bash:`academic:upgrade:check` of
+:guilabel:`EXT:academic_base` and the status report under
+:guilabel:`Academic Persons` name such a column as a warning
+:bash:`shared-column`, with the table, the column and the fields. Give each
+field a column of its own.
+
+Two cases are not named. Two fields with the same property name, and a special
+field named like the property of a profile field, are combined into one before
+the flags are applied, so the later one replaces the earlier and no column is
+shared. And a project field is checked against the TCA as it is before the
+flags are applied, the warning against the TCA after them. Where another field
+of the same column turns it into an :yaml:`email` or :yaml:`number` column, the
+project field can be refused by one and accepted by the other.
+
 The seven timeline sections share one table, so their flags apply to **their
 record type only**: a required title of publications does not make the title
 of a lecture required. The :yaml:`fieldType` and :yaml:`renderType` of a field

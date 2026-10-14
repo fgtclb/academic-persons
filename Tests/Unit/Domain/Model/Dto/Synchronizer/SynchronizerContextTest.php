@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace FGTCLB\AcademicPersons\Tests\Unit\Domain\Model\Dto\Syncronizer;
+namespace FGTCLB\AcademicPersons\Tests\Unit\Domain\Model\Dto\Synchronizer;
 
-use FGTCLB\AcademicPersons\Domain\Model\Dto\Syncronizer\SynchronizerContext;
+use FGTCLB\AcademicPersons\Domain\Model\Dto\Synchronizer\SynchronizerContext;
 use FGTCLB\AcademicPersons\Service\RecordSynchronizerInterface;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\Attributes\Test;
@@ -220,7 +220,7 @@ final class SynchronizerContextTest extends UnitTestCase
         $this->assertSame('tx_academicpersons_domain_model_profile', $subject->tableName);
         $this->assertSame(42, $subject->uid);
 
-        $this->assertSame($recordSynchronizer, $child->recordSyncronizer);
+        $this->assertSame($recordSynchronizer, $child->recordSynchronizer);
         $this->assertSame($site, $child->site);
         $this->assertSame($subject->defaultLanguage, $child->defaultLanguage);
         $this->assertSame($subject->allowedSiteLanguages, $child->allowedSiteLanguages);

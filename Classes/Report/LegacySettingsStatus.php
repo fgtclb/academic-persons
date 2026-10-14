@@ -16,6 +16,7 @@ use FGTCLB\AcademicPersons\Settings\AcademicPersonsSettingsFactory;
 use FGTCLB\AcademicPersons\Settings\LegacySettingsMigrator;
 use FGTCLB\AcademicPersons\Settings\SettingsOverride;
 use FGTCLB\AcademicPersons\Settings\SettingsOverrideComparator;
+use FGTCLB\AcademicPersons\Settings\TcaValidationSets;
 use TYPO3\CMS\Core\Localization\LanguageService;
 use TYPO3\CMS\Core\Localization\LanguageServiceFactory;
 use TYPO3\CMS\Core\Type\ContextualFeedbackSeverity;
@@ -30,6 +31,11 @@ use TYPO3\CMS\Reports\StatusProviderInterface;
  * as {@see SettingsOverrideComparator} finds them. An omission is a notice:
  * the package inherits the entry since the files are merged per entry, and
  * only the integrator knows whether the copy meant to drop it.
+ *
+ * It also names, as a warning, every column that two fields of one validation
+ * set of the merged settings name, as {@see TcaValidationSets} finds them. The
+ * column takes the backend flags of the field applied last. The upgrade check of
+ * `academic_base` reports the same columns from the same finder.
  *
  * Registered by `Configuration/Services.php` only when EXT:reports is
  * loaded, because the interface belongs to that extension; EXT:reports
@@ -49,6 +55,7 @@ final class LegacySettingsStatus implements StatusProviderInterface
         private readonly LegacySettingsMigrator $legacySettingsMigrator,
         private readonly SettingsOverrideComparator $settingsOverrideComparator,
         private readonly LanguageServiceFactory $languageServiceFactory,
+        private readonly TcaValidationSets $tcaValidationSets,
     ) {}
 
     /**
@@ -94,6 +101,19 @@ final class LegacySettingsStatus implements StatusProviderInterface
             if ($override->removedEntries !== [] || $override->omittedEntries !== []) {
                 $statuses[] = $this->overrideStatus($override, $languageService);
             }
+        }
+        $tca = is_array($GLOBALS['TCA'] ?? null) ? $GLOBALS['TCA'] : [];
+        foreach ($this->tcaValidationSets->findSharedColumns($tca) as $sharedColumn) {
+            $statuses[] = new Status(
+                $languageService->sL(self::LANGUAGE_FILE . 'status.sharedColumn.title'),
+                $sharedColumn->getSubject(),
+                sprintf(
+                    $languageService->sL(self::LANGUAGE_FILE . 'status.sharedColumn.message'),
+                    implode('", "', $sharedColumn->fields),
+                    $sharedColumn->getDecidingField(),
+                ),
+                ContextualFeedbackSeverity::WARNING,
+            );
         }
         return $statuses;
     }

@@ -774,7 +774,7 @@ is what makes the created translations indistinguishable from ones created in
 the backend: inline children, file references, MM relations,
 ``l10n_diffsource``, reference index, history and hooks are all carried along.
 
-:php:`\FGTCLB\AcademicPersons\Domain\Model\Dto\Syncronizer\SynchronizerContext`
+:php:`\FGTCLB\AcademicPersons\Domain\Model\Dto\Synchronizer\SynchronizerContext`
 describes one synchronisation run. Build it through
 :php:`SynchronizerContext::create()`, which takes the synchronizer instance,
 the :php:`Site`, the allowed language ids, the table name and the record uid —

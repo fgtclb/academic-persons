@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace FGTCLB\AcademicPersons\Domain\Model\Dto\Syncronizer;
+namespace FGTCLB\AcademicPersons\Domain\Model\Dto\Synchronizer;
 
 use FGTCLB\AcademicPersons\Service\RecordSynchronizerInterface;
 use TYPO3\CMS\Core\Site\Entity\Site;
@@ -14,7 +14,7 @@ final class SynchronizerContext
      * @param array<int, SiteLanguage> $allowedSiteLanguages
      */
     public function __construct(
-        public readonly RecordSynchronizerInterface $recordSyncronizer,
+        public readonly RecordSynchronizerInterface $recordSynchronizer,
         public readonly Site $site,
         public readonly SiteLanguage $defaultLanguage,
         public readonly array $allowedSiteLanguages,
@@ -23,7 +23,7 @@ final class SynchronizerContext
     ) {}
 
     /**
-     * @param RecordSynchronizerInterface $recordSyncronizer
+     * @param RecordSynchronizerInterface $recordSynchronizer
      * @param Site $site
      * @param array<int, string|int> $allowedLanguageIds
      * @param string $tableName
@@ -31,7 +31,7 @@ final class SynchronizerContext
      * @return self
      */
     public static function create(
-        RecordSynchronizerInterface $recordSyncronizer,
+        RecordSynchronizerInterface $recordSynchronizer,
         Site $site,
         array $allowedLanguageIds,
         string $tableName,
@@ -56,7 +56,7 @@ final class SynchronizerContext
             }
         }
         return new self(
-            recordSyncronizer: $recordSyncronizer,
+            recordSynchronizer: $recordSynchronizer,
             site: $site,
             defaultLanguage: $site->getDefaultLanguage(),
             allowedSiteLanguages: $allowedSiteLanguages,
@@ -68,7 +68,7 @@ final class SynchronizerContext
     public function withRecord(string $tableName, int $uid): self
     {
         return new self(
-            recordSyncronizer: $this->recordSyncronizer,
+            recordSynchronizer: $this->recordSynchronizer,
             site: $this->site,
             defaultLanguage: $this->defaultLanguage,
             allowedSiteLanguages: $this->allowedSiteLanguages,

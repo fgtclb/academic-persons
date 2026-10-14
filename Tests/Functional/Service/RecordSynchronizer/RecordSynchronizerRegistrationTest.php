@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace FGTCLB\AcademicPersons\Tests\Functional\Service;
+namespace FGTCLB\AcademicPersons\Tests\Functional\Service\RecordSynchronizer;
 
 use FGTCLB\AcademicPersons\Service\RecordSynchronizer;
 use FGTCLB\AcademicPersons\Service\RecordSynchronizerInterface;
@@ -10,7 +10,7 @@ use FGTCLB\AcademicPersons\Tests\Functional\AbstractAcademicPersonsTestCase;
 use PHPUnit\Framework\Attributes\Test;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
-final class RecordSyncronizerTest extends AbstractAcademicPersonsTestCase
+final class RecordSynchronizerRegistrationTest extends AbstractAcademicPersonsTestCase
 {
     #[Test]
     public function serviceCanBeFetchedFromContainerByInterface(): void

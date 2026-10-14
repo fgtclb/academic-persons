@@ -12,6 +12,7 @@ use FGTCLB\AcademicPersons\Settings\AcademicPersonsSettings;
 use FGTCLB\AcademicPersons\Settings\ProfileField;
 use FGTCLB\AcademicPersons\Settings\ProfileSection;
 use FGTCLB\AcademicPersons\Settings\ProjectProfileFieldCheck;
+use FGTCLB\AcademicPersons\Settings\TcaValidationSets;
 use PHPUnit\Framework\Attributes\Test;
 use TYPO3\CMS\Core\Configuration\Event\AfterTcaCompilationEvent;
 use TYPO3\TestingFramework\Core\Unit\UnitTestCase;
@@ -128,7 +129,11 @@ final class ApplySettingsToTcaTest extends UnitTestCase
 
     private function listener(AcademicPersonsSettings $settings): ApplySettingsToTca
     {
-        return new ApplySettingsToTca($settings, new TcaValidationMerger(), new ProjectProfileFieldCheck());
+        return new ApplySettingsToTca(
+            $settings,
+            new TcaValidationMerger(),
+            new TcaValidationSets($settings, new ProjectProfileFieldCheck()),
+        );
     }
 
     /**

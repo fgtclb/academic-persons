@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace FGTCLB\AcademicPersons\Tests\Functional\Service\RecordSynchronizer;
 
-use FGTCLB\AcademicPersons\Domain\Model\Dto\Syncronizer\SynchronizerContext;
+use FGTCLB\AcademicPersons\Domain\Model\Dto\Synchronizer\SynchronizerContext;
 use FGTCLB\AcademicPersons\Service\RecordSynchronizerInterface;
 use FGTCLB\AcademicPersons\Tests\Functional\AbstractAcademicPersonsTestCase;
 use PHPUnit\Framework\Attributes\Test;
@@ -177,7 +177,7 @@ final class RecordSynchronizerTest extends AbstractAcademicPersonsTestCase
 
         $synchronizer = $this->get(RecordSynchronizerInterface::class);
         $context = SynchronizerContext::create(
-            recordSyncronizer: $synchronizer,
+            recordSynchronizer: $synchronizer,
             site: $this->getTestSite(),
             allowedLanguageIds: [0, '1', -1, 99],
             tableName: self::TABLE_PROFILE,
@@ -481,7 +481,7 @@ final class RecordSynchronizerTest extends AbstractAcademicPersonsTestCase
     {
         $synchronizer = $this->get(RecordSynchronizerInterface::class);
         $context = SynchronizerContext::create(
-            recordSyncronizer: $synchronizer,
+            recordSynchronizer: $synchronizer,
             site: $this->getTestSite(),
             allowedLanguageIds: $allowedLanguageIds,
             tableName: self::TABLE_PROFILE,

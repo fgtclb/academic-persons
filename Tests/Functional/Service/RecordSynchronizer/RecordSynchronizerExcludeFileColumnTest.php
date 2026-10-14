@@ -11,7 +11,7 @@ declare(strict_types=1);
 
 namespace FGTCLB\AcademicPersons\Tests\Functional\Service\RecordSynchronizer;
 
-use FGTCLB\AcademicPersons\Domain\Model\Dto\Syncronizer\SynchronizerContext;
+use FGTCLB\AcademicPersons\Domain\Model\Dto\Synchronizer\SynchronizerContext;
 use FGTCLB\AcademicPersons\Service\RecordSynchronizerInterface;
 use FGTCLB\AcademicPersons\Tests\Functional\AbstractAcademicPersonsTestCase;
 use PHPUnit\Framework\Attributes\Test;
@@ -69,7 +69,7 @@ final class RecordSynchronizerExcludeFileColumnTest extends AbstractAcademicPers
 
         $synchronizer = $this->get(RecordSynchronizerInterface::class);
         $synchronizer->synchronize(SynchronizerContext::create(
-            recordSyncronizer: $synchronizer,
+            recordSynchronizer: $synchronizer,
             site: $this->get(SiteFinder::class)->getSiteByIdentifier('synchronizer-test'),
             allowedLanguageIds: [1],
             tableName: self::TABLE_PROFILE,

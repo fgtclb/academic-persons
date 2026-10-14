@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace FGTCLB\AcademicPersons\Service;
 
 use FGTCLB\AcademicPersons\DataHandling\ProfileWriteCorrelation;
-use FGTCLB\AcademicPersons\Domain\Model\Dto\Syncronizer\SynchronizerContext;
+use FGTCLB\AcademicPersons\Domain\Model\Dto\Synchronizer\SynchronizerContext;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\DependencyInjection\Attribute\AsAlias;
 use Symfony\Component\DependencyInjection\Attribute\Autoconfigure;
