@@ -173,7 +173,9 @@ that does not reach the TCA. The sets map to these tables:
         -   :sql:`tx_academicpersons_domain_model_profile_information`
 
 The property name is translated to the database column automatically:
-:yaml:`firstName` addresses :sql:`first_name`.
+:yaml:`firstName` addresses :sql:`first_name`. Two spellings of one property in
+one set, :yaml:`firstName` and :yaml:`first_name`, therefore address the same
+column, and the record editor takes the configuration of the one listed later.
 
 Effects in the frontend editing plugin
 ======================================

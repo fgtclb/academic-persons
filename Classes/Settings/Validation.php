@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace FGTCLB\AcademicPersons\Settings;
 
 use Symfony\Component\DependencyInjection\Attribute\Exclude;

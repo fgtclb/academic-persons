@@ -36,9 +36,9 @@ final class ProfileInformationTypeTest extends UnitTestCase
     }
 
     /**
-     * Three of the four properties are checked. `fieldName` is not - an entry without
-     * one passes, which is the case worth pinning: it is the property that names the
-     * database column, so an incomplete configuration is kept rather than dropped.
+     * All four properties are checked. `fieldName` names the database column the
+     * profile TCA adds for the type, so an entry with an empty one is dropped like any
+     * other incomplete configuration instead of adding a column without a name.
      *
      * Emptiness is also literal, not semantic: a blank is a value.
      *
@@ -52,7 +52,7 @@ final class ProfileInformationTypeTest extends UnitTestCase
             'without a type' => ['email', 'email', '', 'E-Mail', false],
             'without a label' => ['email', 'email', 'string', '', false],
             'without anything' => ['', '', '', '', false],
-            'without a field name' => ['email', '', 'string', 'E-Mail', true],
+            'without a field name' => ['email', '', 'string', 'E-Mail', false],
             'whitespace counts as configured' => ['email', 'email', ' ', ' ', true],
         ];
     }

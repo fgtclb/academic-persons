@@ -26,9 +26,8 @@ final class ProfileInformationType
      *     type: string,
      *     label: string,
      * } $array
-     * @return self
      */
-    public static function __set_state(array $array): object
+    public static function __set_state(array $array): self
     {
         return new self(
             identifier: $array['identifier'],
@@ -41,6 +40,7 @@ final class ProfileInformationType
     public function isValid(): bool
     {
         return $this->identifier !== ''
+            && $this->fieldName !== ''
             && $this->type !== ''
             && $this->label !== '';
     }
