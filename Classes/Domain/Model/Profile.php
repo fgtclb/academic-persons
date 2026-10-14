@@ -357,10 +357,11 @@ class Profile extends AbstractEntity
      */
     public function setCooperation(ObjectStorage $cooperation): self
     {
+        $sanitizer = $this->getHtmlSanitizer();
         foreach ($cooperation as $singleCooperation) {
-            $singleCooperation->setTitle($this->getHtmlSanitizer()->sanitize($singleCooperation->getTitle()));
-            $singleCooperation->setBodytext($this->getHtmlSanitizer()->sanitize($singleCooperation->getBodytext()));
-            $singleCooperation->setLink($this->getHtmlSanitizer()->sanitize($singleCooperation->getLink()));
+            $singleCooperation->setTitle($sanitizer->sanitize($singleCooperation->getTitle()));
+            $singleCooperation->setBodytext($sanitizer->sanitize($singleCooperation->getBodytext()));
+            $singleCooperation->setLink($sanitizer->sanitize($singleCooperation->getLink()));
         }
         $this->cooperation = $cooperation;
         return $this;
@@ -379,10 +380,11 @@ class Profile extends AbstractEntity
      */
     public function setLectures(ObjectStorage $lectures): self
     {
+        $sanitizer = $this->getHtmlSanitizer();
         foreach ($lectures as $lecture) {
-            $lecture->setTitle($this->getHtmlSanitizer()->sanitize($lecture->getTitle()));
-            $lecture->setBodytext($this->getHtmlSanitizer()->sanitize($lecture->getBodytext()));
-            $lecture->setLink($this->getHtmlSanitizer()->sanitize($lecture->getLink()));
+            $lecture->setTitle($sanitizer->sanitize($lecture->getTitle()));
+            $lecture->setBodytext($sanitizer->sanitize($lecture->getBodytext()));
+            $lecture->setLink($sanitizer->sanitize($lecture->getLink()));
         }
         $this->lectures = $lectures;
         return $this;
@@ -401,10 +403,11 @@ class Profile extends AbstractEntity
      */
     public function setMemberships(ObjectStorage $memberships): self
     {
+        $sanitizer = $this->getHtmlSanitizer();
         foreach ($memberships as $membership) {
-            $membership->setTitle($this->getHtmlSanitizer()->sanitize($membership->getTitle()));
-            $membership->setBodytext($this->getHtmlSanitizer()->sanitize($membership->getBodytext()));
-            $membership->setLink($this->getHtmlSanitizer()->sanitize($membership->getLink()));
+            $membership->setTitle($sanitizer->sanitize($membership->getTitle()));
+            $membership->setBodytext($sanitizer->sanitize($membership->getBodytext()));
+            $membership->setLink($sanitizer->sanitize($membership->getLink()));
         }
         $this->memberships = $memberships;
         return $this;
@@ -423,10 +426,11 @@ class Profile extends AbstractEntity
      */
     public function setPressMedia(ObjectStorage $pressMedia): self
     {
+        $sanitizer = $this->getHtmlSanitizer();
         foreach ($pressMedia as $press) {
-            $press->setTitle($this->getHtmlSanitizer()->sanitize($press->getTitle()));
-            $press->setBodytext($this->getHtmlSanitizer()->sanitize($press->getBodytext()));
-            $press->setLink($this->getHtmlSanitizer()->sanitize($press->getLink()));
+            $press->setTitle($sanitizer->sanitize($press->getTitle()));
+            $press->setBodytext($sanitizer->sanitize($press->getBodytext()));
+            $press->setLink($sanitizer->sanitize($press->getLink()));
         }
         $this->pressMedia = $pressMedia;
         return $this;
@@ -445,10 +449,11 @@ class Profile extends AbstractEntity
      */
     public function setPublications(ObjectStorage $publications): self
     {
+        $sanitizer = $this->getHtmlSanitizer();
         foreach ($publications as $publication) {
-            $publication->setTitle($this->getHtmlSanitizer()->sanitize($publication->getTitle()));
-            $publication->setBodytext($this->getHtmlSanitizer()->sanitize($publication->getBodytext()));
-            $publication->setLink($this->getHtmlSanitizer()->sanitize($publication->getLink()));
+            $publication->setTitle($sanitizer->sanitize($publication->getTitle()));
+            $publication->setBodytext($sanitizer->sanitize($publication->getBodytext()));
+            $publication->setLink($sanitizer->sanitize($publication->getLink()));
         }
         $this->publications = $publications;
         return $this;
@@ -467,10 +472,11 @@ class Profile extends AbstractEntity
      */
     public function setScientificResearch(ObjectStorage $scientificResearch): self
     {
+        $sanitizer = $this->getHtmlSanitizer();
         foreach ($scientificResearch as $research) {
-            $research->setTitle($this->getHtmlSanitizer()->sanitize($research->getTitle()));
-            $research->setBodytext($this->getHtmlSanitizer()->sanitize($research->getBodytext()));
-            $research->setLink($this->getHtmlSanitizer()->sanitize($research->getLink()));
+            $research->setTitle($sanitizer->sanitize($research->getTitle()));
+            $research->setBodytext($sanitizer->sanitize($research->getBodytext()));
+            $research->setLink($sanitizer->sanitize($research->getLink()));
         }
         $this->scientificResearch = $scientificResearch;
         return $this;
@@ -489,10 +495,11 @@ class Profile extends AbstractEntity
      */
     public function setVita(ObjectStorage $vita): self
     {
+        $sanitizer = $this->getHtmlSanitizer();
         foreach ($vita as $singleVita) {
-            $singleVita->setTitle($this->getHtmlSanitizer()->sanitize($singleVita->getTitle()));
-            $singleVita->setBodytext($this->getHtmlSanitizer()->sanitize($singleVita->getBodytext()));
-            $singleVita->setLink($this->getHtmlSanitizer()->sanitize($singleVita->getLink()));
+            $singleVita->setTitle($sanitizer->sanitize($singleVita->getTitle()));
+            $singleVita->setBodytext($sanitizer->sanitize($singleVita->getBodytext()));
+            $singleVita->setLink($sanitizer->sanitize($singleVita->getLink()));
         }
         $this->vita = $vita;
         return $this;
@@ -560,12 +567,13 @@ class Profile extends AbstractEntity
      * Helper functions
      * --------------------------------------------------------
      */
+
+    /**
+     * Builds a new sanitizer on every call. A setter builds one and uses it for every
+     * value it sanitizes, nothing keeps it beyond that call.
+     */
     protected function getHtmlSanitizer(): Sanitizer
     {
-        static $htmlSanitizer = null;
-        if ($htmlSanitizer === null) {
-            $htmlSanitizer = GeneralUtility::makeInstance(CommonBuilder::class)->build();
-        }
-        return $htmlSanitizer;
+        return GeneralUtility::makeInstance(CommonBuilder::class)->build();
     }
 }

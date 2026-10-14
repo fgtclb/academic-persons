@@ -10,7 +10,11 @@ use FGTCLB\AcademicPersons\Domain\Model\Profile;
 use FGTCLB\AcademicPersons\Domain\Model\ProfileInformation;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\Attributes\Test;
+use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Extbase\Persistence\ObjectStorage;
+use TYPO3\HtmlSanitizer\Builder\CommonBuilder;
+use TYPO3\HtmlSanitizer\InitiatorInterface;
+use TYPO3\HtmlSanitizer\Sanitizer;
 use TYPO3\TestingFramework\Core\Unit\UnitTestCase;
 
 /**
@@ -301,6 +305,89 @@ final class ProfileTest extends UnitTestCase
         $profile->setPublications($storage);
 
         $this->assertSame('https://example.org/?page=1&amp;sort=name', $information->getLink());
+    }
+
+    /**
+     * The sanitizer is built for the setter call that needs it, not kept for the rest
+     * of the process. A builder registered after a first setter call is therefore the
+     * one the next setter call uses.
+     *
+     * The testing framework fails a test that leaves an instance of
+     * `GeneralUtility::addInstance()` unconsumed, so a sanitizer kept from an earlier
+     * call fails this test twice: the value is not the spied one, and the spy builder
+     * is left on the instance stack.
+     */
+    #[Test]
+    public function aSanitizingSetterBuildsItsSanitizerWhenItIsCalled(): void
+    {
+        $profile = new Profile();
+        $profile->setTeachingArea('<p>first</p>');
+        GeneralUtility::addInstance(CommonBuilder::class, $this->createSpyBuilder());
+
+        $profile->setMiscellaneous('<p>second</p>');
+
+        $this->assertSame('<p>first</p>', $profile->getTeachingArea());
+        $this->assertSame('spied:<p>second</p>', $profile->getMiscellaneous());
+    }
+
+    /**
+     * A storage setter sanitizes three values per element, and builds one sanitizer for
+     * all of them. The spy builder is added once: every value passing it proves that
+     * the setter did not build a second sanitizer, which would come from a builder of
+     * its own, and the empty instance stack the framework checks after the test proves
+     * that it built one.
+     *
+     * @param \Closure(Profile, ObjectStorage<ProfileInformation>): Profile $setter
+     * @param \Closure(Profile): ObjectStorage<ProfileInformation> $getter
+     */
+    #[Test]
+    #[DataProvider('sanitizedProfileInformationProperties')]
+    public function aStorageSetterBuildsOneSanitizerForEveryValueItSanitizes(\Closure $setter, \Closure $getter): void
+    {
+        $profile = new Profile();
+        /** @var ObjectStorage<ProfileInformation> $storage */
+        $storage = new ObjectStorage();
+        foreach (['first', 'second'] as $marker) {
+            $information = new ProfileInformation();
+            $information->setTitle($marker . ' title');
+            $information->setBodytext($marker . ' bodytext');
+            $information->setLink($marker . ' link');
+            $storage->attach($information);
+        }
+        GeneralUtility::addInstance(CommonBuilder::class, $this->createSpyBuilder());
+
+        $setter($profile, $storage);
+
+        $values = [];
+        foreach ($getter($profile) as $information) {
+            $values[] = [$information->getTitle(), $information->getBodytext(), $information->getLink()];
+        }
+        $this->assertSame(
+            [
+                ['spied:first title', 'spied:first bodytext', 'spied:first link'],
+                ['spied:second title', 'spied:second bodytext', 'spied:second link'],
+            ],
+            $values,
+        );
+    }
+
+    /**
+     * A builder whose sanitizer marks every value it is handed, so a value shows which
+     * sanitizer it passed.
+     */
+    private function createSpyBuilder(): CommonBuilder
+    {
+        return new class () extends CommonBuilder {
+            public function build(): Sanitizer
+            {
+                return new class ($this->createBehavior()) extends Sanitizer {
+                    public function sanitize(string $html, ?InitiatorInterface $initiator = null): string
+                    {
+                        return 'spied:' . $html;
+                    }
+                };
+            }
+        };
     }
 
     /**
