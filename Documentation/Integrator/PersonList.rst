@@ -155,10 +155,10 @@ below them the :guilabel:`Startingpoint`.
     :type: text
     :Default: empty
 
-    The number of profiles on one page. Fill it in whenever
-    :guilabel:`Pagination` is on: a saved empty value replaces the site
-    setting, and the element then fails with an exception instead of rendering
-    the list.
+    The number of profiles on one page. Empty or ``0`` uses the site setting
+    :typoscript:`plugin.tx_academicpersons.pagination.resultsPerPage`, ``10``
+    by default. A negative number here, or a site setting below ``1``, shows
+    ``10`` profiles per page.
 
 ..  confval:: Number of Links
     :name: person-list-number-of-links
@@ -166,9 +166,11 @@ below them the :guilabel:`Startingpoint`.
     :Default: empty
 
     How many page numbers the page navigation links at most. It only applies
-    while :composer:`georgringer/numbered-pagination` is installed, and empty
-    uses the default of that extension, ``10``. Without it, the navigation
-    links every page.
+    while :composer:`georgringer/numbered-pagination` is installed. Without it,
+    the navigation links every page. Empty or ``0`` uses the site setting
+    :typoscript:`plugin.tx_academicpersons.pagination.numberOfLinks`, ``5`` by
+    default. A negative number here, or a site setting below ``1``, links ``5``
+    pages.
 
 ..  figure:: /Images/Screenshots/person-list-pagination.png
     :alt: Page navigation on the second page with the links first and previous and the page numbers 1 and 2

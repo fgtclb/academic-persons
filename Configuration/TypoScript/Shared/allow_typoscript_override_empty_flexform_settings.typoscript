@@ -10,4 +10,6 @@ plugin.tx_academicpersons.ignoreFlexFormSettingsIfEmpty := addToList(detailPid)
 plugin.tx_academicpersons.ignoreFlexFormSettingsIfEmpty := addToList(detailLink)
 plugin.tx_academicpersons.ignoreFlexFormSettingsIfEmpty := addToList(pageTitleFormat)
 plugin.tx_academicpersons.ignoreFlexFormSettingsIfEmpty := addToList(showFields)
+plugin.tx_academicpersons.ignoreFlexFormSettingsIfEmpty := addToList(pagination.resultsPerPage)
+plugin.tx_academicpersons.ignoreFlexFormSettingsIfEmpty := addToList(pagination.numberOfLinks)
 // ----------------------------------------------------------------------------------------------------------------------

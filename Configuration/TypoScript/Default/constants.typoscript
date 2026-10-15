@@ -27,7 +27,7 @@ plugin.tx_academicpersons {
   }
   pagination {
     # cat=plugin.tx_academicpersons//a; type=string; label=Results per page
-    resultsPerPage = 1
+    resultsPerPage = 10
     # cat=plugin.tx_academicpersons//a; type=string; label=Number of links
     numberOfLinks = 5
   }

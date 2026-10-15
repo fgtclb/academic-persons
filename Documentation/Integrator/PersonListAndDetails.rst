@@ -113,8 +113,7 @@ description is on the page of the list.
     :type: text
     :Default: empty
 
-    See :confval:`Results per Page <person-list-results-per-page>`. Fill it in
-    whenever :guilabel:`Pagination` is on.
+    See :confval:`Results per Page <person-list-results-per-page>`.
 
 ..  confval:: Number of Links
     :name: person-list-and-details-number-of-links

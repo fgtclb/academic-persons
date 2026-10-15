@@ -23,14 +23,14 @@ Plugin options and site settings
 A plugin option the editor saved wins over the site setting or the TypoScript
 setting of the same name, and that includes an empty value: a field that was
 saved empty replaces the default of the site. A site setting such as
-:guilabel:`Group by`, :guilabel:`Sort by` or :guilabel:`Pagination | Results
-per page` therefore only reaches a content element whose stored options lack
-the key: one saved before the field existed, one whose form hides the field
-through page TSconfig, or one written without the backend form, by an import
-for example. An element that leaves :guilabel:`Group By` out that way is
-grouped by the first letter of the last name, the default of the site setting.
+:guilabel:`Group by` or :guilabel:`Sort by` therefore only reaches a content
+element whose stored options lack the key: one saved before the field existed,
+one whose form hides the field through page TSconfig, or one written without
+the backend form, by an import for example. An element that leaves
+:guilabel:`Group By` out that way is grouped by the first letter of the last
+name, the default of the site setting.
 
-Four options are the exception. While they are empty, the value of the site
+Six options are the exception. While they are empty, the value of the site
 applies:
 
 ..  list-table::
@@ -54,6 +54,16 @@ applies:
             values. None is shipped, so the shipped selection of fields is
             shown, see :confval:`Show only selected Fields
             <person-list-show-fields>`.
+    *   -   :guilabel:`Results per Page`, also while it is ``0``
+        -   The site setting
+            :typoscript:`plugin.tx_academicpersons.pagination.resultsPerPage`,
+            ``10`` by default, see :confval:`Results per Page
+            <person-list-results-per-page>`.
+    *   -   :guilabel:`Number of Links`, also while it is ``0``
+        -   The site setting
+            :typoscript:`plugin.tx_academicpersons.pagination.numberOfLinks`,
+            ``5`` by default, see :confval:`Number of Links
+            <person-list-number-of-links>`.
 
 ..  _integrator-content-elements:
 
