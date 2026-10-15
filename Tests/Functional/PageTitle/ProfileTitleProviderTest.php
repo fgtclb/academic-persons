@@ -18,6 +18,7 @@ use TYPO3\CMS\Core\Http\ServerRequest;
 use TYPO3\CMS\Core\Localization\Locales;
 use TYPO3\CMS\Core\Site\Entity\Site;
 use TYPO3\CMS\Core\Site\Entity\SiteLanguage;
+use TYPO3\CMS\Extbase\Domain\Model\FileReference;
 
 final class ProfileTitleProviderTest extends AbstractAcademicPersonsTestCase
 {
@@ -202,6 +203,146 @@ final class ProfileTitleProviderTest extends AbstractAcademicPersonsTestCase
         string $expected,
     ): void {
         $this->assertSame($expected, $this->createSubject($profile, $format)->getTitle());
+    }
+
+    public static function setFromProfileReplacesOnlyStringAndNumberGetterResultsDataSets(): \Generator
+    {
+        $profile = new Profile();
+        $profile->_setProperty('uid', 7);
+        $profile->setPid(12);
+        $profile->setLastName('Müllermann');
+        yield '#1 int is replaced as string' => [
+            'profile' => $profile,
+            'format' => '%%LAST_NAME%% (%%UID%%/%%PID%%)',
+            'expected' => 'Müllermann (7/12)',
+        ];
+        yield '#2 int zero is replaced as string' => [
+            'profile' => $profile,
+            'format' => '%%LAST_NAME%% %%LANGUAGE_UID%%',
+            'expected' => 'Müllermann 0',
+        ];
+        $profileWithFloatGetter = new class () extends Profile {
+            public function getRating(): float
+            {
+                return 1.5;
+            }
+        };
+        $profileWithFloatGetter->setLastName('Müllermann');
+        yield '#3 float is replaced as string' => [
+            'profile' => $profileWithFloatGetter,
+            'format' => '%%LAST_NAME%% %%RATING%%',
+            'expected' => 'Müllermann 1.5',
+        ];
+        yield '#4 null is not replaced' => [
+            'profile' => $profile,
+            'format' => '%%LAST_NAME%% %%IMAGE%%',
+            'expected' => 'Müllermann %%IMAGE%%',
+        ];
+        $profileWithImage = new Profile();
+        $profileWithImage->setLastName('Müllermann');
+        $profileWithImage->setImage(new FileReference());
+        yield '#5 object is not replaced' => [
+            'profile' => $profileWithImage,
+            'format' => '%%LAST_NAME%% %%IMAGE%%',
+            'expected' => 'Müllermann %%IMAGE%%',
+        ];
+        yield '#6 object storage is not replaced' => [
+            'profile' => $profile,
+            'format' => '%%LAST_NAME%% %%CONTRACTS%%',
+            'expected' => 'Müllermann %%CONTRACTS%%',
+        ];
+        yield '#7 bool is not replaced' => [
+            'profile' => $profile,
+            'format' => '%%LAST_NAME%% %%SKIP_SYNC%% %%IS_TRANSLATION%%',
+            'expected' => 'Müllermann %%SKIP_SYNC%% %%IS_TRANSLATION%%',
+        ];
+        $profileWithProtectedGetter = new class () extends Profile {
+            protected function getSecret(): string
+            {
+                return 'Secret';
+            }
+        };
+        $profileWithProtectedGetter->setLastName('Müllermann');
+        yield '#8 protected getter is not called' => [
+            'profile' => $profileWithProtectedGetter,
+            'format' => '%%LAST_NAME%% %%SECRET%%',
+            'expected' => 'Müllermann %%SECRET%%',
+        ];
+        $profileWithParameterGetter = new class () extends Profile {
+            public function getGreeting(string $name): string
+            {
+                return 'Hello ' . $name;
+            }
+        };
+        $profileWithParameterGetter->setLastName('Müllermann');
+        yield '#9 getter with a required parameter is not called' => [
+            'profile' => $profileWithParameterGetter,
+            'format' => '%%LAST_NAME%% %%GREETING%%',
+            'expected' => 'Müllermann %%GREETING%%',
+        ];
+    }
+
+    #[DataProvider('setFromProfileReplacesOnlyStringAndNumberGetterResultsDataSets')]
+    #[Test]
+    public function setFromProfileReplacesOnlyStringAndNumberGetterResults(
+        Profile $profile,
+        string $format,
+        string $expected,
+    ): void {
+        $this->assertSame($expected, $this->createSubject($profile, $format)->getTitle());
+    }
+
+    public static function listenerReceivesUnreplacedNonStringGetterPlaceholderDataSets(): \Generator
+    {
+        yield '#1 null' => [
+            'placeholder' => 'IMAGE',
+            'profile' => new Profile(),
+        ];
+        $profileWithImage = new Profile();
+        $profileWithImage->setImage(new FileReference());
+        yield '#2 object' => [
+            'placeholder' => 'IMAGE',
+            'profile' => $profileWithImage,
+        ];
+        yield '#3 object storage' => [
+            'placeholder' => 'CONTRACTS',
+            'profile' => new Profile(),
+        ];
+        yield '#4 bool' => [
+            'placeholder' => 'SKIP_SYNC',
+            'profile' => new Profile(),
+        ];
+    }
+
+    #[DataProvider('listenerReceivesUnreplacedNonStringGetterPlaceholderDataSets')]
+    #[Test]
+    public function listenerReceivesUnreplacedNonStringGetterPlaceholderAndCanReplaceIt(
+        string $placeholder,
+        Profile $profile,
+    ): void {
+        $receivedReplacement = null;
+        /** @var Container $container */
+        $container = $this->get('service_container');
+        $container->set(
+            'placeholder-replaced',
+            static function (ModifyProfileTitlePlaceholderReplacementEvent $event) use (
+                $placeholder,
+                &$receivedReplacement,
+            ): void {
+                if ($event->getPlaceholder() !== $placeholder) {
+                    return;
+                }
+                $receivedReplacement = $event->getReplacement();
+                $event->setReplacement('Replaced by listener');
+            }
+        );
+        $listenerProvider = $container->get(ListenerProvider::class);
+        $listenerProvider->addListener(ModifyProfileTitlePlaceholderReplacementEvent::class, 'placeholder-replaced');
+
+        $profile->setLastName('Müllermann');
+        $format = sprintf('%%%%LAST_NAME%%%%: %%%%%s%%%%', $placeholder);
+        $this->assertSame('Müllermann: Replaced by listener', $this->createSubject($profile, $format)->getTitle());
+        $this->assertSame($placeholder, $receivedReplacement);
     }
 
     private function createSubject(?Profile $profile = null, string $format = ProfileTitleProvider::DETAIL_PAGE_TITLE_FORMAT): ProfileTitleProvider

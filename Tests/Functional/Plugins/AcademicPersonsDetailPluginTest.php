@@ -146,6 +146,45 @@ final class AcademicPersonsDetailPluginTest extends AbstractAcademicPersonsTestC
         $this->assertStringContainsString('#1: [EN] Max Müllermann', $content);
     }
 
+    /**
+     * A placeholder of the page title format whose profile getter returns a number is replaced
+     * with it, one whose getter returns null or an object stays in the title as it is written.
+     */
+    #[Test]
+    public function thePageTitleKeepsPlaceholdersOfGettersReturningNoString(): void
+    {
+        $this->importCSVDataSet(__DIR__ . '/Fixtures/AcademicPersonsDetailPlugin/defaultLanguageOnly_pageTitleFormatNonStringGetters.csv');
+        $this->setUpFrontendRootPageForTestCase();
+        $this->writeSiteConfiguration(
+            identifier: 'acme',
+            site: $this->buildSiteConfiguration(
+                rootPageId: 1,
+                base: 'https://www.acme.com/',
+            ),
+            languages: [
+                $this->buildDefaultLanguageConfiguration('EN', '/'),
+            ],
+        );
+
+        $requestContext = new InternalRequestContext();
+        $request = new InternalRequest(
+            'https://www.acme.com/home?' . http_build_query([
+                'tx_academicpersons_detail' => [
+                    'controller' => 'Profile',
+                    'action' => 'detail',
+                    'profile' => 1,
+                ],
+                'cHash' => '13c8ec3ab2a317651a40bd164df8a366',
+            ])
+        );
+        $response = $this->executeFrontendSubRequest($request, $requestContext);
+        $this->assertSame(200, $response->getStatusCode());
+
+        $content = (string)$response->getBody();
+        $this->assertSame(1, preg_match('#<title>([^<]*)</title>#', $content, $matches));
+        $this->assertSame('Home: Müllermann 1 %%IMAGE%% %%CONTRACTS%%', html_entity_decode($matches[1]));
+    }
+
     #[Test]
     public function fullyLocalizedDisplaysLocalizedProfile(): void
     {
@@ -182,6 +221,50 @@ final class AcademicPersonsDetailPluginTest extends AbstractAcademicPersonsTestC
 
         $content = (string)$response->getBody();
         $this->assertStringContainsString('#1: [DE] Max Müllermann', $content);
+    }
+
+    /**
+     * The profile of a translated page is the translation, but Extbase hands out the uid of
+     * the record in the default language, so `%%UID%%` gives that uid on every language.
+     */
+    #[Test]
+    public function uidPlaceholderOfATranslatedProfileGivesTheDefaultLanguageUid(): void
+    {
+        $this->importCSVDataSet(__DIR__ . '/Fixtures/AcademicPersonsDetailPlugin/fullyLocalized_pageTitleFormatUid.csv');
+        $this->setUpFrontendRootPageForTestCase();
+        $this->writeSiteConfiguration(
+            identifier: 'acme',
+            site: $this->buildSiteConfiguration(1, 'https://www.acme.com/'),
+            languages: [
+                $this->buildDefaultLanguageConfiguration(
+                    identifier: 'EN',
+                    base: '/',
+                ),
+                $this->buildLanguageConfiguration(
+                    identifier: 'DE',
+                    base: '/de/',
+                ),
+            ],
+        );
+
+        $requestContext = new InternalRequestContext();
+        $request = new InternalRequest(
+            'https://www.acme.com/de/home?' . http_build_query([
+                'tx_academicpersons_detail' => [
+                    'controller' => 'Profile',
+                    'action' => 'detail',
+                    'profile' => 1,
+                ],
+                'cHash' => '008c1ca1df782f9191ecb45d4a4123e3',
+            ])
+        );
+        $response = $this->executeFrontendSubRequest($request, $requestContext);
+        $this->assertSame(200, $response->getStatusCode());
+
+        $content = (string)$response->getBody();
+        $this->assertStringContainsString('#1: [DE] Max Müllermann', $content);
+        $this->assertSame(1, preg_match('#<title>([^<]*)</title>#', $content, $matches));
+        $this->assertSame('Home: Müllermann 1', html_entity_decode($matches[1]));
     }
 
     #[Test]
