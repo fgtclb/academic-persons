@@ -64,11 +64,17 @@ Settings
     The page title of the detail view, built from the profile. A placeholder
     ``%%FIELD_NAME%%`` is replaced with the field of the profile, the field
     name in capitals with underscores: ``%%TITLE%%``, ``%%FIRST_NAME%%``,
-    ``%%MIDDLE_NAME%%``, ``%%LAST_NAME%%``. A placeholder
-    ``%%LLL:EXT:my_sitepackage/Resources/Private/Language/locallang.xlf:key%%``
+    ``%%MIDDLE_NAME%%``, ``%%LAST_NAME%%``. A field is replaced when its value
+    is a text or a number. ``%%UID%%`` gives the uid of the profile, on a
+    translated page the uid of the profile in the default language. A
+    placeholder of a label,
+    ``%%LLL:EXT:my_sitepackage/Resources/Private/Language/locallang.xlf:key%%``,
     is replaced with the label in the language of the page. Spaces of empty
     parts are collapsed. A placeholder that matches neither is left in the
-    title as it is written, so a typing error is visible.
+    title as it is written, so a typing error is visible. So is a field whose
+    value is neither a text nor a number: an image, the contracts, a yes or no
+    field such as ``%%HIDDEN%%``, or an empty relation like ``%%IMAGE%%`` of a
+    profile without an image.
 
     The value picker offers :guilabel:`Default page title`, which empties the
     field, :guilabel:`Title Firstname Middlename Lastname` and

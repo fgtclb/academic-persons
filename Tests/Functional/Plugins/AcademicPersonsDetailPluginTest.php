@@ -116,6 +116,7 @@ final class AcademicPersonsDetailPluginTest extends AbstractAcademicPersonsTestC
         return [
             'default format' => ['defaultLanguageOnly', 'Home: [EN] Max Müllermann'],
             'format of the content element' => ['defaultLanguageOnly_pageTitleFormat', 'Home: Müllermann, [EN] Max'],
+            'format with getters returning no string' => ['defaultLanguageOnly_pageTitleFormatNonStringGetters', 'Home: Müllermann 1 %%IMAGE%% %%CONTRACTS%%'],
         ];
     }
 
@@ -178,6 +179,45 @@ final class AcademicPersonsDetailPluginTest extends AbstractAcademicPersonsTestC
             ])
         );
         $this->assertStringContainsString('#1: [DE] Max Müllermann', $content);
+    }
+
+    /**
+     * The profile of a translated page is the translation, but Extbase hands out the uid of
+     * the record in the default language, so `%%UID%%` gives that uid on every language.
+     */
+    #[Test]
+    public function uidPlaceholderOfATranslatedProfileGivesTheDefaultLanguageUid(): void
+    {
+        $this->importCSVDataSet(__DIR__ . '/Fixtures/AcademicPersonsDetailPlugin/fullyLocalized_pageTitleFormatUid.csv');
+        $this->setUpFrontendRootPageForTestCase();
+        $this->writeSiteConfiguration(
+            identifier: 'acme',
+            site: $this->buildSiteConfiguration(1, 'https://www.acme.com/'),
+            languages: [
+                $this->buildDefaultLanguageConfiguration(
+                    identifier: 'EN',
+                    base: '/',
+                ),
+                $this->buildLanguageConfiguration(
+                    identifier: 'DE',
+                    base: '/de/',
+                ),
+            ],
+        );
+
+        $content = $this->renderFrontendPage(
+            'https://www.acme.com/de/home?' . http_build_query([
+                'tx_academicpersons_detail' => [
+                    'controller' => 'Profile',
+                    'action' => 'detail',
+                    'profile' => 1,
+                ],
+                'cHash' => '008c1ca1df782f9191ecb45d4a4123e3',
+            ])
+        );
+        $this->assertStringContainsString('#1: [DE] Max Müllermann', $content);
+        $this->assertSame(1, preg_match('#<title>([^<]*)</title>#', $content, $matches));
+        $this->assertSame('Home: Müllermann 1', html_entity_decode($matches[1]));
     }
 
     #[Test]

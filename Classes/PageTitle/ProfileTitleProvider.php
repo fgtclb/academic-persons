@@ -41,7 +41,9 @@ final class ProfileTitleProvider extends AbstractPageTitleProvider
      * converted to camel-cased model getter `getUpperCasedProfileField()`
      * to retrieve replacement value.
      *
-     * Note: Non-existing model getter will be not replaced and does not throw or log any errors.
+     * Note: A placeholder without a public model getter, with a getter that needs an argument,
+     * or whose getter returns neither a string nor a number, is not replaced and does not
+     * throw or log any errors.
      */
     public function setFromProfile(
         PluginControllerActionContext $pluginControllerActionContext,
@@ -78,14 +80,31 @@ final class ProfileTitleProvider extends AbstractPageTitleProvider
         $this->setTitle($title);
     }
 
+    /**
+     * Replaces the placeholder with the result of the matching public profile getter
+     * that takes no argument. A string is used trimmed of spaces, an int or a float as string.
+     * Any other result, null, a bool, an object or an array, leaves the placeholder
+     * unreplaced, so it stays visible in the title and a listener of
+     * {@see ModifyProfileTitlePlaceholderReplacementEvent} can still replace it.
+     */
     private function profileGetterPlaceholderReplacement(
         Profile $profile,
         string $placeholder
     ): string {
         $getterName = 'get' . str_replace('_', '', ucwords(mb_strtolower($placeholder), '_'));
-        return method_exists($profile, $getterName)
-            ? trim($profile->{$getterName}(), ' ')
-            : $placeholder;
+        if (!method_exists($profile, $getterName)) {
+            return $placeholder;
+        }
+        $getter = new \ReflectionMethod($profile, $getterName);
+        if (!$getter->isPublic() || $getter->getNumberOfRequiredParameters() > 0) {
+            return $placeholder;
+        }
+        $value = $getter->invoke($profile);
+        return match (true) {
+            is_string($value) => trim($value, ' '),
+            is_int($value), is_float($value) => (string)$value,
+            default => $placeholder,
+        };
     }
 
     /**

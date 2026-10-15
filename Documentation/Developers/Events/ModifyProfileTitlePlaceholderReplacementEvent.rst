@@ -23,8 +23,11 @@ The event is dispatched once for every placeholder of the format, a text
 between two ``%%``, in the order the placeholders appear. Before it, the
 extension has already replaced what it knows:
 
-#.  A placeholder that names a getter of the profile is replaced by its value:
-    ``%%FIRST_NAME%%`` by :php:`getFirstName()`.
+#.  A placeholder that names a public getter of the profile, one without a
+    required argument, is replaced by its value when that is a string or a
+    number: ``%%FIRST_NAME%%`` by :php:`getFirstName()`, ``%%UID%%`` by the
+    uid as a string. Any other value, :php:`null`, a boolean, an object or an
+    array, leaves the placeholder unreplaced.
 #.  A placeholder that starts with ``LLL:EXT:`` is replaced by the translation
     of that label in the language of the site.
 #.  The event is dispatched with what these two steps produced.
@@ -109,6 +112,10 @@ Rules and pitfalls
     a placeholder that matches one is replaced by the value of that getter
     before the listener is called, and the listener sees that value as the
     replacement.
+*   A placeholder whose getter returns no string and no number reaches the
+    listener unreplaced, just like one that matches no getter. A listener can
+    therefore give ``%%IMAGE%%``, ``%%CONTRACTS%%`` or ``%%HIDDEN%%`` a text of
+    its own. Without a listener such a placeholder stays in the title.
 *   The event is dispatched for every placeholder, the shipped ones included.
     Return early for every placeholder the listener does not handle.
 *   A placeholder may contain letters, digits, the underscore, spaces and the
@@ -124,6 +131,9 @@ Introduced in
 *   :ref:`feature-1746706500` (2.1) introduced the event.
 *   :ref:`feature-1746706600` (2.1) added the ``LLL:EXT:`` placeholders that
     are replaced before it.
+*   :ref:`important-ace-915-academic-persons` (2.4) leaves a placeholder
+    unreplaced for the listener when its getter returns no string and no
+    number, instead of failing the page.
 *   :ref:`breaking-plugin-controller-action-context-interface-extends-base`
     made its context satisfy the interface of :guilabel:`academic_base` in
     3.0.
