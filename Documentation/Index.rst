@@ -55,6 +55,11 @@ created, edited and displayed in the front end and in different display modes.
         Install :guilabel:`academic_persons` via Composer, the Extension
         Manager or a TER upload.
 
+    ..  card:: :ref:`Upgrade <upgrade>`
+
+        The steps to upgrade :guilabel:`academic_persons` to a newer
+        version, in the order to take them.
+
     ..  card:: :ref:`Configuration <configuration>`
 
         Configure the extension and its plugins for your installation.
@@ -79,6 +84,7 @@ created, edited and displayed in the front end and in different display modes.
 
     Introduction/Index
     Installation/Index
+    Upgrade/Index
     Configuration/Index
     Templates/Index
     KnownProblems/Index
