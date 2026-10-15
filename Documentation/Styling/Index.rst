@@ -318,8 +318,11 @@ The development instances style this markup with the partials
 <https://github.com/fgtclb/academic-extensions/blob/main/packages-dev/dev-site/Resources/Private/Scss/frontend/_academic-persons.scss>`__,
 the profile detail, and `_academic-persons-list.scss
 <https://github.com/fgtclb/academic-extensions/blob/main/packages-dev/dev-site/Resources/Private/Scss/frontend/_academic-persons-list.scss>`__,
-the lists and cards, of the site package `academics_dev_site`, a complete
-example to copy from.
+the lists and cards, together with the shared rules of
+`_academic-base.scss
+<https://github.com/fgtclb/academic-extensions/blob/main/packages-dev/dev-site/Resources/Private/Scss/frontend/_academic-base.scss>`__,
+all of the site package `academics_dev_site`, a complete example to copy
+from.
 
 To change the markup itself, override the partials as described in
 :ref:`templates`.
