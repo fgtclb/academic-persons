@@ -121,6 +121,8 @@ Introduced in
 
 The event is part of the extension since its first release. Later changes:
 
+*   :ref:`important-ace-439-academic-persons` (2.4) normalises the sort
+    direction a listener sets.
 *   :ref:`breaking-removed-profile-view-events` made it the place to change
     which profiles a list queries, instead of the removed list event.
 *   :ref:`feature-letter-navigation-availability` dispatches it for the
@@ -128,5 +130,3 @@ The event is part of the extension since its first release. Later changes:
 *   :ref:`feature-1790802602` added the two visitor filters to the demand.
 *   :ref:`important-1790607226` describes when a letter switches the
     pagination off.
-*   :ref:`important-ace-439-academic-persons` normalises the sort direction a
-    listener sets.
