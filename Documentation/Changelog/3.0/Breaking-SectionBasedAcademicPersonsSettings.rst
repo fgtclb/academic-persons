@@ -5,7 +5,8 @@ Breaking: Section-based AcademicPersons settings
 ================================================
 
 ..  seealso::
-    :ref:`upgrade` is the order in which the 3.0 changes have to be applied.
+    :ref:`upgrade-from-2-4-to-3-0` is the order in which the 3.0 changes have
+    to be applied.
 
 Description
 ===========
@@ -82,10 +83,10 @@ What an integrator sees:
     flag - :yaml:`cooperation` offers no link field and therefore no flag on
     one. **Relaxed**:
     the :yaml:`type` of an email address or phone number is no longer
-    required, and the address's :yaml:`streetNumber` and :yaml:`zip` lose
-    the :yaml:`number` flag - their columns return from the ``number`` TCA
-    type the flag set to the ``input`` their TCA file declares, so a street
-    number like ``12a`` is stored as entered instead of being cast to ``12``.
+    required. The address's :yaml:`streetNumber` and :yaml:`zip` lost the
+    :yaml:`number` flag in 2.4 already, see
+    :ref:`important-ace-841-academic-persons`, so a copy of the 2.3 file that
+    still carries it keeps casting a street number like ``12a`` to ``12``.
     Unchanged: the address's :yaml:`country`, and the :yaml:`title` and
     :yaml:`year` of every timeline entry were required before.
 *   The timeline entry validators address the year columns: :yaml:`year` is

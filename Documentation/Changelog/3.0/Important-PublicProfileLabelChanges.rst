@@ -8,40 +8,22 @@ Description
 ===========
 
 The rebuilt public profile detail view (see
-:ref:`feature-configurable-public-profile`) changes three things about the
-labels of :file:`Resources/Private/Language/locallang.xlf`. All three are
-relevant for an installation that ships its own translation of this file or
-overrides single units through
+:ref:`feature-configurable-public-profile`) changes two things about the
+labels of :file:`Resources/Private/Language/locallang.xlf`. Both are relevant
+for an installation that ships its own translation of this file or overrides
+single units through
 :php:`$GLOBALS['TYPO3_CONF_VARS']['SYS']['locallangXMLOverride']` on TYPO3 v13,
 :php:`$GLOBALS['TYPO3_CONF_VARS']['LANG']['resourceOverrides']` on TYPO3 v14, or
 :typoscript:`_LOCAL_LANG`.
 
-**A misspelled unit id is corrected.** The English file declared the unit
-
-..  code-block:: xml
-
-    <trans-unit id="contracts.emailAdresses">
-
-with one ``d``, while the German file always declared
-:xml:`contracts.emailAddresses`. The label is looked up as
-:php:`contracts.emailAddresses` by
-:file:`Resources/Private/Partials/Profile/Contract/Field.html`, which
-translates :html:`contracts.{fieldName}` for the fields a list or card plugin
-was configured to show. The German target was therefore found, while the
-English source was never rendered: in English, the e-mail row showed an empty
-label in front of the addresses. The id is now spelled
-:xml:`contracts.emailAddresses` in both files, and the row reads
-:guilabel:`E-Mail` in English as well. An override keyed on the old id never
-took effect, as no shipped template read it.
-
 **Three units are added for the detail view:** :xml:`detail.subline`,
 :xml:`detail.contact` and
-:xml:`detail.navigation` - the subline of the shipped layout, the heading of
+:xml:`detail.navigation`, the subline of the shipped layout, the heading of
 the contact block and the accessible name of the section navigation.
 
 **Two units are no longer rendered by the shipped templates:**
 :xml:`detail.contracts` and :xml:`detail.additionalInformation`. They were the
-headings of the two static sections the old detail template had; the rebuilt
+headings of the two static sections the old detail template had. The rebuilt
 view has no equivalent, because its blocks are the configured elements and
 each of them carries its own heading. Both units are kept in the file for
 installations that reference them from their own templates.
@@ -49,12 +31,12 @@ installations that reference them from their own templates.
 Impact
 ======
 
-A translation of :file:`locallang.xlf` into a further language that copied the
-misspelled id has to rename its unit to :xml:`contracts.emailAddresses`,
-otherwise the English label is shown in its place. An override keyed on the
-misspelled id had no effect before and has none now, it can be re-keyed to
-take effect. Nothing else has to be changed: the added units ship with an
-English source and a German target, and the two unused ones are still there.
+Nothing has to be changed: the added units ship with an English source and a
+German target, and the two unused ones are still there.
+
+An installation that comes from 2.3 also gets the corrected unit id
+:xml:`contracts.emailAddresses` of the contract e-mail label, which 2.4
+shipped, see :ref:`important-contract-email-label-unit-id`.
 
 Affected Installations
 ======================

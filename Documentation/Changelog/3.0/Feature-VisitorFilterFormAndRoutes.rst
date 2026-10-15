@@ -45,7 +45,7 @@ schema is updated. It gives every existing function type and organisational
 unit the slug a save would generate. Until it ran, the filter URLs of those
 records are query arguments, which keep working. The wizard is repeatable and
 is offered again whenever a record has no slug. See
-:ref:`upgrade-step-filter-slugs`.
+:ref:`upgrade-from-2-4-to-3-0-filter-slugs`.
 
 A list whose element has no filter switched on renders what it rendered before.
 A project copy of :file:`Profile/List.html` that does not render the new

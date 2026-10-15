@@ -57,8 +57,8 @@ created, edited and displayed in the front end and in different display modes.
 
     ..  card:: :ref:`Upgrade <upgrade>`
 
-        The ordered steps from 2.4 to 3.0.0: schema update, upgrade wizards,
-        settings migration, templates, and the columns to drop last.
+        The steps to upgrade :guilabel:`academic_persons` to a newer
+        version, in the order to take them.
 
     ..  card:: :ref:`For integrators <integrator>`
 

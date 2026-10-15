@@ -5,7 +5,8 @@ Breaking: The persons plugin action context extends the one of academic_base
 ============================================================================
 
 ..  seealso::
-    :ref:`upgrade` is the order in which the 3.0 changes have to be applied.
+    :ref:`upgrade-from-2-4-to-3-0` is the order in which the 3.0 changes have
+    to be applied.
 
 Description
 ===========

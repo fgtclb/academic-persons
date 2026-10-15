@@ -238,10 +238,10 @@ the whole installation, so a list resolves the records of a folder in another
 site as well.
 
 A record without a slug, or with a slug an editor gave a slash, cannot be a
-segment. Its filter stays a query argument with a cHash, and works as it is. The upgrade wizard
-``academicPersons_fillFilterSlugs`` gives every such record its slug, see
-:ref:`upgrade-step-filter-slugs`. A slug no record carries matches no route,
-and the site answers with its page-not-found response.
+segment. Its filter stays a query argument with a cHash, and works as it is. The
+upgrade wizard ``academicPersons_fillFilterSlugs`` gives every such record its
+slug, see :ref:`upgrade-from-2-4-to-3-0-filter-slugs`. A slug no record carries
+matches no route, and the site answers with its page-not-found response.
 
 ..  _configuration-route-enhancers-extend:
 

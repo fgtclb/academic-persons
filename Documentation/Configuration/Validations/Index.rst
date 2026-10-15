@@ -488,5 +488,5 @@ Two things are not mapped and are reported by the command and in the log:
     record type and the relation field that match the TCA, and the value the
     override named is printed as a note. Act on that note: a timeline type of
     your own needs its own column in a TCA override of the profile table, as
-    :ref:`configuration-sections-documents` and the :ref:`upgrade` page
-    describe.
+    :ref:`configuration-sections-documents` and the
+    :ref:`upgrade-from-2-4-to-3-0` page describe.

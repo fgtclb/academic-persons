@@ -8,8 +8,8 @@ The extension has to be installed like any other TYPO3 CMS extension. You can
 download and install it using one of the following methods.
 
 Version 3 requires TYPO3 13.4.35 or TYPO3 14.3.7 at least, and PHP 8.2 or
-newer. Updating an existing 2.4 installation is an ordered sequence rather than a single command -
-see :ref:`upgrade`.
+newer. Updating an existing 2.4 installation is an ordered sequence rather than
+a single command, see :ref:`upgrade-from-2-4-to-3-0`.
 
 ..  tabs::
 
