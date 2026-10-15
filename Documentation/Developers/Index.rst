@@ -4,986 +4,154 @@
 For developers
 ==============
 
-This chapter documents the programmatic surface this extension ships: the two
-events that let a project narrow what the plugins show, the two events of the
-frontend user synchronisation, the import writer for persons of other
-sources and its event, the translation
-synchronisation - the event that triggers it, the service interface behind it,
-and how it behaves in workspaces - the event that lets a project decide
-what is written as the metadata of a profile image, and the plugin action
-context the plugin events carry.
+This chapter documents the programmatic surface this extension ships: the
+events that let a project narrow what the plugins show and add to what they
+render, the events of the frontend user synchronisation and of the import
+writer, the event that announces every change of a profile, and the one that
+decides what is written as the metadata of a profile image. Each event has a
+page of its own. The topics behind them, the profile lists, the frontend user
+synchronisation, the import of persons, the translation synchronisation and
+the plugin action context, have pages of their own as well.
 
 Which classes of this extension are public API, and what that promises, is
 stated for all academic extensions on the `extension points page of
 academic_base <https://docs.typo3.org/p/fgtclb/academic-base/main/en-us/Developers/ExtensionPoints/Index.html>`__.
-A further variable for the templates of a plugin comes from a listener of
-:php:`ModifyPluginViewEvent` of :guilabel:`academic_base`, which every plugin of
-this extension dispatches when it renders; that page describes it with an
-example.
+Every event a listener may rely on is public API. A listener registers with
+the attribute of TYPO3, :php:`TYPO3\CMS\Core\Attribute\AsEventListener`.
+Symfony's attribute of the same name registers nothing, and the listener never
+runs.
 
-..  warning::
+..  _developers-events:
 
-    **The translation synchronisation is experimental.**
-    :php:`RecordSynchronizerInterface` and :php:`RecordSynchronizer` are marked
-    :php:`@internal`, and the rest of :ref:`developers-synchronisation` and
-    :ref:`developers-workspaces` - :php:`SynchronizerContext` among it - is to
-    be treated the same way. It works and is covered by functional tests, but
-    signatures may still change in a minor release. Depend on it deliberately.
-    The events - the query events below, :php:`AfterProfileUpdateEvent` and
-    :php:`ModifyProfileImageMetadataEvent` - are public API.
-
-..  _developers-query-events:
-
-Narrowing what a plugin shows
-=============================
-
-:php:`\FGTCLB\AcademicPersons\Event\ModifyProfileQueryEvent` and
-:php:`\FGTCLB\AcademicPersons\Event\ModifyContractQueryEvent` are dispatched
-immediately before a plugin query is executed, and a listener adds conditions
-to it. They are the supported way to make a plugin show fewer records than it
-would - a consent flag, a site the profile belongs to, an editorial state.
+Events
+======
 
 ..  list-table::
     :header-rows: 1
-
-    *   -   Event
-        -   Dispatched for
-    *   -   :php:`ModifyProfileQueryEvent`
-        -   the profile query of the list, list-and-detail and card plugins,
-            the letter query of the two list plugins (see
-            :ref:`developers-letter-availability`), and the uid lookup of the
-            selected-profiles plugin
-    *   -   :php:`ModifyContractQueryEvent`
-        -   the uid lookup of the selected-contracts plugin
-
-Both carry the Extbase :php:`QueryInterface` the conditions are built on
-(:php:`getQuery()`), collect them through :php:`addConstraint()` and hand them
-back through :php:`getConstraints()`. :php:`getPluginControllerActionContext()` is the plugin the
-query is rendered for - its name, the settings of the content element, the
-request, the site, the language and the content object - and is :php:`null`
-where the query has no plugin behind it. :php:`ModifyProfileQueryEvent` also
-carries :php:`getDemand()`, the list demand, which is :php:`null` for the uid
-lookup of the selected-profiles plugin.
-
-..  code-block:: php
-    :caption: EXT:my_extension/Classes/EventListener/ShowOnlyConsentingProfiles.php
-
-    <?php
-
-    declare(strict_types=1);
-
-    namespace MyVendor\MyExtension\EventListener;
-
-    use FGTCLB\AcademicPersons\Event\ModifyProfileQueryEvent;
-    use TYPO3\CMS\Core\Attribute\AsEventListener;
-
-    final class ShowOnlyConsentingProfiles
-    {
-        #[AsEventListener(identifier: 'my-extension/show-only-consenting-profiles')]
-        public function __invoke(ModifyProfileQueryEvent $event): void
-        {
-            // The two list plugins only; the card plugin of the same page keeps everything.
-            if (!in_array($event->getPluginControllerActionContext()?->getPluginName(), ['List', 'ListAndDetail'], true)) {
-                return;
-            }
-            $query = $event->getQuery();
-            $event->addConstraint($query->equals('publicDisplayConsent', true));
-        }
-    }
-
-:php:`getPluginName()` is the name a plugin is **registered** with, not its
-content element type. There are six, and two of them render a profile list:
-
-..  list-table::
-    :header-rows: 1
-
-    *   - Plugin name
-        - Content element type
-    *   - :php:`List`
-        - :sql:`academicpersons_list`
-    *   - :php:`ListAndDetail`
-        - :sql:`academicpersons_listanddetail`
-    *   - :php:`Card`
-        - :sql:`academicpersons_card`
-    *   - :php:`SelectedProfiles`
-        - :sql:`academicpersons_selectedprofiles`
-    *   - :php:`SelectedContracts`
-        - :sql:`academicpersons_selectedcontracts`
-    *   - :php:`Detail`
-        - :sql:`academicpersons_detail`
-
-:php:`Detail` is in the table for completeness and never reaches these events:
-neither of them is dispatched for the detail action. A detail view rendered by
-the :php:`ListAndDetail` plugin reports that plugin's name, not :php:`Detail`.
-
-The collected conditions are combined with the ones the extension builds
-itself - storage folders, the organisational unit and function type filters of
-the content element, the letter filter, hidden records and the language
-handling - with a logical **AND**, and they are applied **before pagination**.
-A *constraint* therefore only ever narrows a result, and it cannot drop a
-condition the extension put there.
-
-..  warning::
-
-    That guarantee covers the constraints, and nothing else about the query.
-
-    :php:`setOrderings()` is called on the query *after* the event, so a
-    listener that sets an ordering is overwritten without a notice. The
-    ordering belongs to the plugin: it is what the editor chose in the content
-    element, and a listener that changed it would override that choice for
-    every element at once.
-
-    A condition set with :php:`matching()` instead of :php:`addConstraint()` is
-    **folded into the same AND** rather than dropped, so it narrows like any
-    other. Use :php:`addConstraint()` anyway: :php:`matching()` replaces what
-    is on the query, so two listeners doing it leave only the last one's
-    condition standing, while :php:`addConstraint()` collects.
-
-    The **query settings, the limit and the offset are live**.
-    :php:`getQuerySettings()` hands out the object the query is parsed from,
-    and it is read after this event, so a listener that calls
-    :php:`setRespectStoragePage(false)` or :php:`setIgnoreEnableFields(true)`
-    on it widens the result past the content element - and a listener that
-    calls :php:`setLimit()` cuts it. Nothing guards any of this; it is the same
-    object because a listener needs it to build an expression in the first
-    place. Add constraints and leave the rest of the query alone.
-
-The detail view is not covered: neither event is dispatched for it. It resolves
-its profile through Extbase argument mapping, and the one finder it does use -
-for a hidden profile, when the plugin's "show hidden records" is on - builds
-its own query and never goes through the shared path these events sit in. So a
-profile a listener hides from the lists is still reachable through its own
-detail URL; a condition that has to hold there as well belongs in an access
-check, not in these events.
-
-A project that narrowed the plugins by subclassing or XCLASSing the
-repositories moves that code here; see
-:ref:`breaking-profile-and-contract-finder-signatures`.
-
-..  _developers-letter-availability:
-
-Which letters lead somewhere
-============================
-
-The letter navigation of the list and list-and-detail plugins is told which
-letters lead to a list that is not empty:
-:php:`ProfileRepository::findAlphabetFilterLetters()`, assigned to the view as
-`alphabetFilterLetters` - the letters `a` to `z`, each mapped to a boolean. It
-is assigned only while the content element has the navigation switched on and
-no profiles are selected by hand; a manual selection ignores the letter filter.
-
-The letters come from the list's own query with the letter cleared, so the
-active letter never narrows the others, and both events reach it:
-:php:`ModifyProfileDemandEvent` and :php:`ModifyProfileQueryEvent` are
-dispatched **twice** for a list that shows the navigation - once for the list,
-once for its letters - and the query event carries the same plugin context both
-times. A listener that narrows the list narrows the letters in the same way, as
-long as it answers both calls alike. The demand of the second call carries no
-letter.
-
-While the content element shows only contracts valid today,
-:php:`ModifyProfileDemandEvent` is dispatched once more, for the next day on which
-the list changes because a contract that meets its conditions starts or ends.
-That day caps the page cache lifetime, so a listener that adds a condition on
-contracts should answer this call like the others.
-
-Two things the letters do not see, both shared with the list's own pagination
-count, which is computed in SQL as well:
-
-*   a listener of :php:`ModifyPluginViewEvent` that assigns other profiles to
-    the view - the letters are computed from the query, not from the records
-    the view renders;
-*   in a workspace preview, a profile deleted or hidden only in the workspace -
-    it still makes its letter available. Live, the letters are exact.
-
-The method compares with the letter filter's own predicate - :sql:`LIKE`, or
-:sql:`ILIKE` on PostgreSQL, against the last name - so a name is available
-under exactly the letter the list files it under. Where a name starting with an
-umlaut ends up is a question of the database collation: under O on MariaDB and
-MySQL, under no letter on PostgreSQL and SQLite.
-
-..  _developers-navigation-links:
-
-What the navigation links carry
-===============================
-
-The list action of the list and list-and-detail plugins assigns
-`activeListArguments`, the visitor's choices the pagination and the letter
-navigation carry into their links - see
-:ref:`what the navigation links carry <templates-navigation-links>` for the
-templates. Which demand properties a visitor may set is one list in
-:php:`ProfileController`, and it decides both what the property mapping accepts
-from the request and what the links carry, so the two cannot differ. Today it
-holds the page, the letter, the view mode and the two visitor filters. A value
-equal to its default is left out.
-
-The view mode is resolved before that: the list action checks the requested
-mode against the switch of the content element and the allowed modes, and
-writes the result back into the demand - empty for the default mode, and for a
-mode it rejected, so neither ever reaches a link. The mode the list renders is
-also read before the events, so a demand a listener hands back cannot name a
-partial.
-
-The filters are checked before that as well. A value that is not a whole
-number never reaches the property mapping, and the list action resets a
-function type or unit that is not one of the options of the filter to `0`,
-which includes every value while the content element does not offer the
-filter. :php:`ProfileDemand::getFunctionTypeFilter()` and
-:php:`getOrganisationalUnitFilter()` therefore hold an offered uid in the
-default language, or `0`, when a listener of :php:`ModifyProfileDemandEvent`
-receives the demand. A value the listener sets itself is applied as it is.
-
-The value is read from the mapped demand before any event of the list is
-dispatched, :php:`ModifyProfileDemandEvent` and :php:`ModifyProfileQueryEvent`
-alike. A listener acts again on the request a link leads to, so what it changes
-need not travel in the URL.
-
-..  _developers-frontend-user-sync-events:
-
-Taking part in the frontend user synchronisation
-================================================
-
-The commands :bash:`academic:createprofiles` and
-:bash:`academic:updateprofiles` build profiles from the data of frontend
-users, following the map described in :ref:`configuration-frontend-user-sync`.
-Two events let a project add data of its own and adjust the result, without a
-profile factory of its own. :php:`AbstractProfileFactory` dispatches them, so
-every factory extending it does, a project's factory included, unless it
-overrides :php:`createProfileForUser()` or :php:`updateProfileForUser()`
-without calling the parent method.
-
-..  list-table::
-    :header-rows: 1
+    :widths: 25 35 25 15
 
     *   -   Event
         -   Dispatched
-        -   A listener can
-    *   -   :php:`\FGTCLB\AcademicPersons\Event\BeforeProfileMappedFromFrontendUserEvent`
-        -   before the data of a frontend user is mapped: once per frontend
-            user when a profile is created, and once per synchronised profile
-            of the frontend user when profiles are updated, not for a profile
-            whose :sql:`skip_sync` flag is set
-        -   add or change values, or skip the frontend user on creation and
-            the profile on update
-    *   -   :php:`\FGTCLB\AcademicPersons\Event\AfterProfileMappedFromFrontendUserEvent`
-        -   after the mapping, before the profile is saved
+        -   What a listener can change
+        -   Owner
+    *   -   :ref:`ModifyProfileDemandEvent <developers-event-modify-profile-demand-event>`
+        -   in the list, list-and-detail and card plugins, before the profile
+            query, the query of the letter navigation and the cache lifetime
+            query are built from the demand
+        -   replace the demand
+        -   this extension
+    *   -   :ref:`ModifyProfileQueryEvent <developers-event-modify-profile-query-event>`
+        -   right before the profile query of the list, list-and-detail and
+            card plugins, of the letter navigation and of the
+            selected-profiles plugin is executed
+        -   add conditions
+        -   this extension
+    *   -   :ref:`ModifyContractQueryEvent <developers-event-modify-contract-query-event>`
+        -   right before the contract query of the selected-contracts plugin
+            is executed
+        -   add conditions
+        -   this extension
+    *   -   :ref:`ModifyProfileTitlePlaceholderReplacementEvent <developers-event-modify-profile-title-placeholder-replacement-event>`
+        -   in the detail view, once per placeholder of the page title format
+        -   replace the value of the placeholder
+        -   this extension
+    *   -   :ref:`ModifyPluginViewEvent <developers-event-modify-plugin-view-event>`
+        -   in every plugin, once each time an action renders its view
+        -   assign further view variables
+        -   :guilabel:`academic_base`
+    *   -   :ref:`ModifyTcaSelectFieldItemsEvent <developers-event-modify-tca-select-field-items-event>`
+        -   when the backend builds the items of the shown fields of the
+            plugins and of the contract selects
+        -   reorder, remove or add items
+        -   :guilabel:`academic_base`
+    *   -   :ref:`ModifyProfileImageMetadataEvent <developers-event-modify-profile-image-metadata-event>`
+        -   right before the metadata of a profile image is written, for the
+            file and for the file reference
+        -   change or empty the fields that are written
+        -   this extension
+    *   -   :ref:`AfterProfileUpdateEvent <developers-event-after-profile-update-event>`
+        -   after a profile was created or updated: by a backend save or an
+            import, by the frontend user commands, and by the profile editing
+            of :guilabel:`academic_persons_edit`
+        -   react to it, the event is read only
+        -   this extension
+    *   -   :ref:`BeforeImportedRecordWriteEvent <developers-event-before-imported-record-write-event>`
+        -   in the import writer, once for every record of a person before it
+            is written
+        -   change the values that are written, veto the record
+        -   this extension
+    *   -   :ref:`ChooseProfileFactoryEvent <developers-event-choose-profile-factory-event>`
+        -   in the commands :bash:`academic:createprofiles` and
+            :bash:`academic:updateprofiles`, once per frontend user
+        -   choose the profile factory
+        -   this extension
+    *   -   :ref:`BeforeProfileMappedFromFrontendUserEvent <developers-event-before-profile-mapped-from-frontend-user-event>`
+        -   in the same commands, before the data of a frontend user is mapped
+            onto a profile
+        -   add or change values, skip the frontend user or the profile
+        -   this extension
+    *   -   :ref:`AfterProfileMappedFromFrontendUserEvent <developers-event-after-profile-mapped-from-frontend-user-event>`
+        -   in the same commands, after the mapping and before the profile is
+            saved
         -   change the profile
-
-For one frontend user, a run goes through these steps:
-
-#.  :php:`ChooseProfileFactoryEvent` chooses the factory.
-#.  :php:`BeforeProfileMappedFromFrontendUserEvent` carries the data of the
-    frontend user, the action (:php:`ProfileActionType::Create` or
-    :php:`ProfileActionType::Update`) and, on update, the profile.
-    :php:`getProfile()` is :php:`null` when a profile is created.
-#.  The factory maps the data onto the profile and its imported contract.
-#.  :php:`AfterProfileMappedFromFrontendUserEvent` carries the profile, the
-    data the mapping used, with the values added in step 2, and the action.
-#.  The profile is saved, and :php:`AfterProfileUpdateEvent` announces it, see
-    :ref:`developers-trigger`.
-
-On update, steps 2 to 4 repeat for every synchronised profile of the frontend
-user, and step 5 then saves and announces them together. Each event of step 2
-starts from the data of the frontend user, not from what a listener set for
-the profile before.
-
-Adding values
--------------
-
-A value a listener adds is read by the map like a column of the frontend user.
-Name it :samp:`{source}.{key}`, for example ``ldap.room``: no column of a TYPO3
-table contains a dot, so such a key never hides a real column. The convention
-is not enforced. Keep :sql:`uid` and :sql:`pid` as they are, the default
-factory stores the profile on the page :sql:`pid` and names the imported
-records after :sql:`uid`.
-
-The default factory refuses a map that reads a key the data does not have,
-with the code ``1790142326``. A listener that adds a key the map reads
-therefore adds it for every frontend user, as ``''`` when its source has no
-value.
-
-..  code-block:: yaml
-    :caption: EXT:my_sitepackage/Configuration/AcademicPersons/Settings.yaml
-
-    frontendUserSync:
-      contract:
-        room: ldap.room
-
-Skipping
---------
-
-After :php:`skip()` on creation, :bash:`academic:createprofiles` creates no
-profile for the frontend user and goes on with the next one. The next run asks
-again, because the frontend user still has no profile. On update, the event
-belongs to one profile, and :bash:`academic:updateprofiles` leaves that profile
-as it is and does not announce it, like a profile whose :sql:`skip_sync` flag
-is set. The other profiles of the frontend user are updated as usual, so a
-listener that should skip the whole frontend user skips every one of its
-events. Listeners after the one that skipped still run, and :php:`isSkipped()`
-tells them.
-
-Listeners are shared services, one object for the whole run and every frontend
-user of it. Keep nothing of one frontend user in a property of the listener,
-and fetch what it needs per event:
-
-..  code-block:: php
-    :caption: EXT:my_sitepackage/Classes/EventListener/AddDirectoryData.php
-
-    <?php
-
-    declare(strict_types=1);
-
-    namespace MyVendor\MySitepackage\EventListener;
-
-    use FGTCLB\AcademicPersons\Event\BeforeProfileMappedFromFrontendUserEvent;
-    use FGTCLB\AcademicPersons\Profile\ProfileActionType;
-    use MyVendor\MySitepackage\Directory\DirectoryClient;
-    use TYPO3\CMS\Core\Attribute\AsEventListener;
-
-    final readonly class AddDirectoryData
-    {
-        public function __construct(
-            private DirectoryClient $directoryClient,
-        ) {}
-
-        #[AsEventListener(identifier: 'my-sitepackage/add-directory-data')]
-        public function __invoke(BeforeProfileMappedFromFrontendUserEvent $event): void
-        {
-            $frontendUserData = $event->getFrontendUserData();
-            $entry = $this->directoryClient->findByUsername((string)$frontendUserData['username']);
-            if ($entry === null && $event->getAction() === ProfileActionType::Create) {
-                // Unknown to the directory: no profile is created for the frontend user.
-                $event->skip();
-                return;
-            }
-            // An existing profile keeps being updated, with empty directory values when the entry is gone.
-            $event->setFrontendUserData([
-                ...$frontendUserData,
-                'ldap.room' => $entry?->room ?? '',
-                'ldap.gender' => $entry?->gender ?? '',
-            ]);
-        }
-    }
-
-Adjusting the mapped profile
-----------------------------
-
-A listener of :php:`AfterProfileMappedFromFrontendUserEvent` translates a
-value of the source into one the profile offers, or derives a value from
-others. What it sets on the profile and its contracts is saved with the
-profile:
-
-..  code-block:: php
-    :caption: EXT:my_sitepackage/Classes/EventListener/MapGender.php
-
-    <?php
-
-    declare(strict_types=1);
-
-    namespace MyVendor\MySitepackage\EventListener;
-
-    use FGTCLB\AcademicPersons\Event\AfterProfileMappedFromFrontendUserEvent;
-    use TYPO3\CMS\Core\Attribute\AsEventListener;
-
-    final readonly class MapGender
-    {
-        private const GENDERS = ['w' => 'ms', 'm' => 'mr', 'd' => 'diverse'];
-
-        #[AsEventListener(identifier: 'my-sitepackage/map-gender')]
-        public function __invoke(AfterProfileMappedFromFrontendUserEvent $event): void
-        {
-            $source = (string)($event->getFrontendUserData()['ldap.gender'] ?? '');
-            $event->getProfile()->setGender(self::GENDERS[$source] ?? '');
-        }
-    }
-
-Listeners of one event are ordered with the :php:`before` and :php:`after`
-arguments of :php:`#[AsEventListener]`. Use TYPO3's attribute,
-:php:`TYPO3\CMS\Core\Attribute\AsEventListener`: Symfony's registers nothing,
-and the listener never runs.
-
-A factory of its own may decline to create a profile, see
-:ref:`configuration-frontend-user-sync-factories`.
-
-..  _developers-trigger:
-
-The trigger: AfterProfileUpdateEvent
-====================================
-
-:php:`\FGTCLB\AcademicPersons\Event\AfterProfileUpdateEvent` is a PSR-14 event
-announcing that a profile aggregate — the profile record or one of its child
-records — has changed and was persisted. It is dispatched
-
-*   after a profile is auto-created for a frontend user
-    (:php:`AbstractProfileFactory::createProfileForUser()`, also reached by the
-    :bash:`academic:createprofiles` command);
-*   after a profile is updated from its frontend user record
-    (:php:`AbstractProfileFactory::updateProfileForUser()`, command
-    :bash:`academic:updateprofiles`), per profile the update runs through —
-    even when every value already matched. A profile whose :sql:`skip_sync`
-    flag is set, or that a listener of :php:`BeforeProfileMappedFromFrontendUserEvent`
-    skips, is neither updated nor announced;
-*   by `EXT:academic_persons_edit` after every persisting frontend edit action;
-*   after a **DataHandler save** of a live, default-language profile: the
-    backend form, and any code that writes profiles through the DataHandler.
-    Every default-language profile in the run's datamap is announced once per
-    run, after all of the run is written. Saves of translations alone, saves
-    in a workspace, commands such as copy, move or localize, and a save of
-    only a child record - a contract edited on its own - are not announced.
-
-Besides the profile the event carries the site the profile belongs to, and
-the origin of the update:
-
-..  list-table::
-    :header-rows: 1
-
-    *   - :php:`getOrigin()`
-        - Dispatched by
-        - :php:`getSite()`
-    *   - :php:`ProfileUpdateOrigin::Creation`
-        - :bash:`academic:createprofiles`
-        - :php:`null`
-    *   - :php:`ProfileUpdateOrigin::Synchronization`
-        - :bash:`academic:updateprofiles`
-        - :php:`null`
-    *   - :php:`ProfileUpdateOrigin::FrontendEditing`
-        - the profile editing plugin of `EXT:academic_persons_edit`
-        - the site of the request
-    *   - :php:`ProfileUpdateOrigin::Backend`
-        - a DataHandler save
-        - the site of the profile's page, :php:`null` when it belongs to none
-    *   - :php:`ProfileUpdateOrigin::Import`
-        - a DataHandler save of a run marked as an import (below)
-        - the site of the profile's page, :php:`null` when it belongs to none
-    *   - :php:`ProfileUpdateOrigin::Unknown`
-        - code that passes no origin, such as code written for 2.x
-        - whatever it passes, usually :php:`null`
-
-The case set of :php:`ProfileUpdateOrigin` is fixed, so a listener may
-:php:`match` over it exhaustively.
-
-The dispatch contract, for code that dispatches the event itself:
-
-*   The event carries the **persisted default language profile**: its
-    :php:`getUid()` returns a real uid, and the record is not a translation
-    overlay. Listeners read the database, not the object, so all changes must
-    be persisted before dispatching.
-*   The site is optional. Without one the synchronisation listener of
-    `EXT:academic_persons_edit` determines it from the site of the global
-    request, then from the pid, and skips the event silently when it cannot.
-    An event of origin :php:`ProfileUpdateOrigin::Backend` or
-    :php:`ProfileUpdateOrigin::Import` without a site is not synchronised at
-    all: the DataHandler hook passes none only when the profile's page belongs
-    to no site, and the site of a backend request is the one of the page
-    selected in the page tree.
-*   A project that dispatched the event from its own DataHandler hook to have
-    backend saves synchronised must remove that hook: the save is announced
-    by this extension now, and the hook would announce it a second time.
-
-..  _developers-profile-write-correlation:
-
-Marking a DataHandler run: ProfileWriteCorrelation
---------------------------------------------------
-
-The DataHandler hook of this extension recognises two kinds of run by an
-aspect of the run's correlation id, which
-:php:`\FGTCLB\AcademicPersons\DataHandling\ProfileWriteCorrelation` creates:
-
-:php:`ProfileWriteCorrelation::Import`
-    An import. Its saves are announced like backend saves, once per profile
-    and synchronously, with the origin :php:`ProfileUpdateOrigin::Import`, so
-    that a listener can tell them apart or defer its own work. Every profile
-    is synchronised in the same request, which is the cost of a large import.
-
-:php:`ProfileWriteCorrelation::Internal`
-    A write of this extension itself — the translation synchronisation and
-    the profile image writes. Such a run is never announced: the update it
-    belongs to is announced by the code that started it. A listener of
-    :php:`AfterProfileUpdateEvent` that writes profiles through the
-    DataHandler marks its run the same way: an announcement from the frontend
-    or from a command has no DataHandler run around it, and the listener's
-    write would be announced as a save of its own.
-
-The synchronisation runs as the backend user of the save. An editor without
-access to a target language gets no translation in it; the DataHandler error
-is logged, not shown.
-
-A DataHandler run a listener starts from inside a backend save is nested in
-the save's run, and the DataHandler flushes the reference index of the
-outermost run only. Such a run passes a :php:`ReferenceIndexUpdater` of its
-own to :php:`start()` and calls :php:`update()` on it afterwards, as the
-synchronisation does.
-
-The mark is set after :php:`start()`, which replaces the correlation id:
-
-..  code-block:: php
-
-    use FGTCLB\AcademicPersons\DataHandling\ProfileWriteCorrelation;
-    use TYPO3\CMS\Core\DataHandling\DataHandler;
-    use TYPO3\CMS\Core\Utility\GeneralUtility;
-
-    $dataHandler = GeneralUtility::makeInstance(DataHandler::class);
-    $dataHandler->start($datamap, []);
-    $dataHandler->setCorrelationId(ProfileWriteCorrelation::Import->create());
-    $dataHandler->process_datamap();
-
-A DataHandler run started from inside another DataHandler run — from one of
-its hooks, or from a listener of the announcement it made — is never
-announced, marked or not.
-
-..  _developers-import-identifier:
-
-Finding what an import wrote
-============================
-
-The profile, the contract, the e-mail address, the phone number, the physical
-address, the location, the organisational unit and the function type carry a
-column :sql:`import_identifier`. It holds the key of the record in the source
-it came from, written as :samp:`{source}:{key}`, for instance ``hr:4711``. The
-frontend user synchronisation writes ``fe_users:<uid>`` and the identifiers
-listed in :ref:`The records of a list <configuration-frontend-user-sync-records>`.
-Pick a source name of your own for an import, so its identifiers never meet
-the ones of another source.
-
-:php:`\FGTCLB\AcademicPersons\Import\ImportedRecordFinder` looks up the record
-that carries an identifier, so the next run of the import updates it instead of
-creating a second one:
-
-..  code-block:: php
-    :caption: EXT:my_sitepackage/Classes/Import/HrImport.php
-
-    $uid = $this->importedRecordFinder->findUid(
-        'tx_academicpersons_domain_model_profile',
-        'hr:' . $employee['id'],
-    );
-    $id = $uid ?? StringUtility::getUniqueId('NEW');
-    $datamap['tx_academicpersons_domain_model_profile'][$id] = [
-        'import_identifier' => 'hr:' . $employee['id'],
-        // ...
-    ];
-
-:php:`findUid()` returns the uid, or :php:`null` when no record carries the
-identifier.
-
-*   It finds the record hidden or not, and whatever its start and end time: an
-    import updates what it wrote even after an editor has hidden it.
-*   It finds live records of the default language or of all languages only.
-    Deleted records, workspace versions and translations are never found.
-*   Nothing keeps two records from carrying one identifier, a copy made in the
-    backend keeps the one of its original. The record with the lowest uid is
-    found then.
-*   The identifier is compared exactly, on every database. MySQL and MariaDB
-    alone would ignore case and trailing spaces.
-*   The empty identifier, which every record an editor created carries, finds
-    nothing.
-*   A table without the column is refused with an
-    :php:`\InvalidArgumentException`.
-
-The backend shows the identifier read-only, and only on a record that has one.
-The DataHandler writes the column all the same. Editors find a profile,
-location, organisational unit or function type by its identifier in the list
-module and in the backend search. The backend search never lists contracts and
-contact records. Page TSconfig shows them in the list module, whose search then
-finds them:
-
-..  code-block:: typoscript
-    :caption: EXT:my_sitepackage/Configuration/page.tsconfig
-
-    mod.web_list.table.tx_academicpersons_domain_model_contract.hideTable = 0
-
-On SQLite a search term with ``_`` finds nothing: the core search escapes it
-for :sql:`LIKE` without naming an escape character, and SQLite has no default
-one. A part of the identifier without it, ``users:12``, finds the record.
-
-..  _developers-import-writer:
-
-Writing what an import supplies
-===============================
-
-:php:`\FGTCLB\AcademicPersons\Import\ProfileImportWriter` writes the persons
-of a source other than the frontend users, one person per call. Import code
-reads its source and maps each person to plain data objects:
-:php:`ImportedProfile` holds the profile fields and its contracts,
-:php:`ImportedContract` the contract fields, the import identifiers of its
-organisational unit and function type, and its e-mail addresses, phone numbers
-and physical addresses as :php:`ImportedContact`. Every record carries its
-import identifier, and its fields are database columns.
-
-..  code-block:: php
-    :caption: EXT:my_sitepackage/Classes/Import/HrImport.php
-
-    use FGTCLB\AcademicPersons\Import\ImportedContact;
-    use FGTCLB\AcademicPersons\Import\ImportedContract;
-    use FGTCLB\AcademicPersons\Import\ImportedProfile;
-    use FGTCLB\AcademicPersons\Import\ProfileImportWriter;
-    use FGTCLB\AcademicPersons\Import\RetirePolicy;
-
-    final readonly class HrImport
-    {
-        public function __construct(
-            private HrClient $hrClient,
-            private ProfileImportWriter $profileImportWriter,
-        ) {}
-
-        public function run(int $storagePage): void
-        {
-            $keep = [];
-            foreach ($this->hrClient->fetchEmployees() as $employee) {
-                $person = new ImportedProfile(
-                    identifier: 'hr:' . $employee['id'],
-                    pid: $storagePage,
-                    fields: [
-                        'first_name' => $employee['firstName'],
-                        'last_name' => $employee['lastName'],
-                    ],
-                    contracts: [
-                        new ImportedContract(
-                            identifier: 'hr:contract:' . $employee['contractId'],
-                            fields: ['position' => $employee['position']],
-                            organisationalUnitIdentifier: 'hr:unit:' . $employee['unitId'],
-                            emailAddresses: [
-                                new ImportedContact(
-                                    identifier: 'hr:mail:' . $employee['id'],
-                                    fields: ['email' => $employee['mail'], 'type' => 'business'],
-                                ),
-                            ],
-                        ),
-                    ],
-                );
-                $result = $this->profileImportWriter->write($person);
-                foreach ($result->records as $record) {
-                    $keep[] = $record->identifier;
-                }
-            }
-            $this->profileImportWriter->retire('hr', $keep, RetirePolicy::Hide);
-        }
-    }
-
-Every record the source supplied is kept, a vetoed one included. Leave a
-record out of the list to retire it. Retire only after a run that got through
-the whole source: a run that stopped early would retire every person it did
-not get to.
-
-:php:`write()` returns an :php:`ImportResult`: one :php:`ImportedRecordResult`
-per record, with its table, identifier, uid and an
-:php:`ImportedRecordOutcome` (created, updated, unchanged, skipped, vetoed or
-failed) and a reason where one applies, the messages of the write, such as an
-organisational unit no record carries, and the errors the DataHandler logged.
-An updated record is one whose managed fields were handed to the DataHandler:
-whether it stored them is in the errors.
-
-How a record is written:
-
-*   A record whose identifier no live record carries is created with every
-    supplied field. A new profile is created on the page the person names, its
-    new records on the page of the profile.
-*   An existing record gets only the supplied fields that are managed on it,
-    see :ref:`configuration-managed-fields`. Without such a declaration none
-    of its fields changes. :sql:`hidden` is never written on an existing record.
-*   A profile with :sql:`skip_sync` set is not written, nor is anything of it.
-    The result reports it as skipped.
-*   A record the identifier finds below another profile or contract is skipped
-    and reported. The writer does not move records between persons.
-*   A new contract or contact record is added after the ones its parent has,
-    an editor's included.
-*   The organisational unit and the function type are looked up by their
-    identifiers. One that no record carries is not set and is reported as a
-    message.
-*   Fields that name a column the writer sets itself, the uid, the page, the
-    identifier, the language and workspace columns and the relations, are
-    refused with an :php:`\InvalidArgumentException`, and so is an identifier
-    that is empty or used twice for one table within a person.
-
-The whole person is one DataHandler run as an administrator in the live
-workspace, marked :php:`ProfileWriteCorrelation::Import`. History, the
-reference index and the hooks apply as for a backend save. The profile is
-announced once, synchronously and with the origin
-:php:`ProfileUpdateOrigin::Import`. With :composer:`fgtclb/academic-persons-edit`
-installed, that synchronises its translations and its slug, from a command as
-well. Every profile is synchronised in the request that writes it, and the
-memory a long import needs grows with it, see
-:ref:`important-backend-saves-announce-profile-updates`.
-
-:php:`retire()` hides or deletes, as the :php:`RetirePolicy` says, every
-profile, contract and contact record whose identifier starts with
-:samp:`{source}:` and is not in the list of identifiers to keep. The list is
-one list for every table. Records without an identifier, records of other
-sources and records of a profile excluded from the synchronisation are never
-retired. Hiding leaves a record that is hidden already alone. Deleting a
-profile deletes its contracts and their contact records with it, the ones an
-editor created included. The profiles whose contracts or contact records were
-retired are announced. Hiding and deleting are handed to the DataHandler, its
-errors are in the result.
-
-..  _developers-import-writer-event:
-
-Changing or vetoing a record: BeforeImportedRecordWriteEvent
-------------------------------------------------------------
-
-:php:`\FGTCLB\AcademicPersons\Event\BeforeImportedRecordWriteEvent` is
-dispatched once for every record of a person before it is written: the profile
-first, then each contract followed by its contact records. It carries the
-table, the identifier, the uid of an existing record, the row that is going to
-be written and the fields the import code supplied. On an existing record the
-row holds the managed fields only, so a listener decides on
-:php:`getSuppliedFields()` and changes what is written through the row.
-
-..  code-block:: php
-    :caption: EXT:my_sitepackage/Classes/EventListener/SkipStudentAssistants.php
-
-    use FGTCLB\AcademicPersons\Event\BeforeImportedRecordWriteEvent;
-    use TYPO3\CMS\Core\Attribute\AsEventListener;
-
-    final class SkipStudentAssistants
-    {
-        #[AsEventListener]
-        public function __invoke(BeforeImportedRecordWriteEvent $event): void
-        {
-            if ($event->getTableName() !== 'tx_academicpersons_domain_model_contract') {
-                return;
-            }
-            if (($event->getSuppliedFields()['position'] ?? '') === 'Student assistant') {
-                $event->veto('Student assistants are not listed.');
-                return;
-            }
-            $row = $event->getRow();
-            if (isset($row['room'])) {
-                $event->setRow([...$row, 'room' => trim((string)$row['room'])]);
-            }
-        }
-    }
-
-:php:`setRow()` replaces the row. The writer applies its rules to it again:
-on an existing record a column that is not managed is dropped, :sql:`hidden`
-is never written, and the page, the identifier and the relations stay the
-writer's. :php:`veto()` keeps the record and every record that belongs to it
-from being written and needs a reason, which the result reports. Vetoing stops
-the propagation, so later listeners are not called.
-
-..  _developers-synchronisation:
-
-The synchronisation surface
-===========================
-
-:php:`\FGTCLB\AcademicPersons\Service\RecordSynchronizerInterface` declares one
-method, :php:`synchronize(SynchronizerContext $context)`. The shipped
-implementation (:php:`RecordSynchronizer`) routes **every write through the
-TYPO3 DataHandler** — nothing in TYPO3 outside the DataHandler honours
-:php:`l10n_mode=exclude` or keeps translations consistent, so going through it
-is what makes the created translations indistinguishable from ones created in
-the backend: inline children, file references, MM relations,
-``l10n_diffsource``, reference index, history and hooks are all carried along.
-
-:php:`\FGTCLB\AcademicPersons\Domain\Model\Dto\Synchronizer\SynchronizerContext`
-describes one synchronisation run. Build it through
-:php:`SynchronizerContext::create()`, which takes the synchronizer instance,
-the :php:`Site`, the allowed language ids, the table name and the record uid —
-and silently drops language ids that are not positive or that the site does not
-define, so a run never targets a language the site cannot render.
-
-For each remaining language, :php:`synchronize()`:
-
-*   creates a missing translation with a DataHandler ``localize`` command —
-    the full record, including its inline child tree;
-*   for an existing translation, re-submits the default record's
-    :php:`l10n_mode=exclude` column values as a datamap (core's
-    ``DataMapProcessor`` propagates them into every translation) and issues an
-    ``inlineLocalizeSynchronize`` command per inline column, which carries
-    child records added to the default record after the translation was
-    created.
-
-A missing record, a record that is not in the default language, or a record
-that is invisible in the acting workspace makes the run a silent no-op.
-
-..  _developers-workspaces:
-
-Workspace behaviour
-===================
-
-The synchronisation acts **in the workspace of the acting backend user**: run
-from a backend context inside a workspace, it creates versioned rows only
-(``t3ver_wsid`` set, ``t3ver_state=1``) and never touches the live records —
-publishing the workspace publishes the translations. When no backend user is
-available (frontend and CLI contexts), a synthetic in-memory admin user acting
-in the workspace of the current :php:`Context` is used.
-
-Two refusals protect the live state:
-
-*   A **frontend request acting in a non-live workspace** (a workspace preview)
-    is refused entirely; a notice is logged and nothing is written. This
-    policy is currently hardcoded.
-*   A uid addressing a **workspace version row** (``t3ver_oid > 0``) is
-    refused: the DataHandler addresses versioned records through their live
-    uid, and accepting the version uid would publish draft values as live
-    translations.
-
-..  _developers-image-metadata:
-
-Image metadata: ModifyProfileImageMetadataEvent
-===============================================
-
-:php:`\FGTCLB\AcademicPersons\Event\ModifyProfileImageMetadataEvent` is
-dispatched immediately before this extension writes the metadata of a profile
-image, and a listener decides what is written: whatever it leaves in
-:php:`getMetadata()` is the field map that goes to the database, and an empty
-map writes nothing at all.
-
-It is dispatched for each of the two records that carry image metadata, and
-:php:`getTargetTable()` says which one:
-
-..  list-table::
-    :header-rows: 1
-
-    *   - :php:`getTargetTable()`
-        - Written when
-        - Fields
-    *   - :sql:`sys_file_metadata`
-        - a profile image is uploaded in the frontend, once, for the file that
-          upload created — and only for the fields that record has empty
-        - :sql:`title`, :sql:`alternative` and, with
-          :composer:`typo3/cms-filemetadata`, :sql:`copyright`
-    *   - :sql:`sys_file_reference`
-        - the name of a profile record changes, from a backend save, a
-          localization or a frontend edit
-        - :sql:`title` and :sql:`alternative`
-
-**Both records are handed over, whichever of them is written.**
-:php:`getFile()` is the file — its own metadata record is
-:php:`$event->getFile()->getMetaData()` — and :php:`getFileReference()` is the
-image relation of the profile, :php:`null` only for a profile that has none.
-:php:`getProfileUid()` is the profile record the image belongs to, a
-translation for an image of its own, and :php:`getRequest()` the request the
-write happens in: the frontend request for an upload or a frontend edit, the
-backend request for a save, and :php:`null` on the command line or where the
-caller has no request to pass on.
-
-Fields the target table does not declare are dropped before the write, so a
-listener may set a column unconditionally: where the installation does not have
-it, the value goes nowhere. :sql:`copyright` is one such column — it belongs to
-:sql:`sys_file_metadata` and :composer:`typo3/cms-filemetadata`, and the
-relation row has no equivalent.
-
-..  warning::
-
-    **System fields are refused.** The identity of the record, the relation it
-    is part of, its localization, its workspace columns and its enable columns —
-    :sql:`uid`, :sql:`pid`, :sql:`file`, :sql:`uid_local`, :sql:`uid_foreign`,
-    :sql:`tablenames`, :sql:`fieldname`, :sql:`sys_language_uid`,
-    :sql:`l10n_parent`, :sql:`t3ver_*`, :sql:`deleted`, :sql:`hidden` and the
-    rest of their kind — are dropped and a warning is written to the log. This
-    event writes metadata; repointing a relation or moving a record is the
-    :php:`DataHandler`'s business.
-
-The two dispatches are not interchangeable. The metadata record of the file is
-written **once**, which makes it the place for a value that has to survive —
-the required attributes of :composer:`typo3/cms-filemetadata` or
-:composer:`fgtclb/file-required-attributes`, for instance. The reference row is
-rewritten on **every** save of the profile, so a listener that wants to own a
-field there has to set it on every dispatch.
-
-..  code-block:: php
-    :caption: EXT:my_extension/Classes/EventListener/AddImageRightOfUse.php
-
-    <?php
-
-    declare(strict_types=1);
-
-    namespace MyVendor\MyExtension\EventListener;
-
-    use FGTCLB\AcademicPersons\Event\ModifyProfileImageMetadataEvent;
-    use TYPO3\CMS\Core\Attribute\AsEventListener;
-
-    final class AddImageRightOfUse
-    {
-        #[AsEventListener(identifier: 'my-extension/add-image-right-of-use')]
-        public function __invoke(ModifyProfileImageMetadataEvent $event): void
-        {
-            if ($event->getTargetTable() !== 'sys_file_metadata') {
-                return;
-            }
-            $metadata = $event->getMetadata();
-            $metadata['right_of_use'] = 'Portrait, own use only';
-            $event->setMetadata($metadata);
-        }
-    }
-
-..  warning::
-
-    A listener runs inside the write of the profile record — for a backend save
-    from within a :php:`DataHandler` hook. Keep it short and do not write
-    profile records from it.
-
-..  _developers-plugin-action-context:
-
-The plugin action context
-=========================
-
-The events in the table below carry the context the plugin renders in: the
-request, the site and language, the plugin and action name, the settings of the
-content element and the content element itself.
-:php:`getPluginControllerActionContext()` returns it.
-
-..  list-table::
-    :header-rows: 1
-
-    *   -   Event
-        -   Declared context type
-    *   -   :php:`ModifyProfileTitlePlaceholderReplacementEvent`
-        -   the interface of this extension, deprecated
-    *   -   :php:`ModifyProfileQueryEvent`, :php:`ModifyContractQueryEvent`
-        -   the interface of :guilabel:`academic_base`, :php:`null` where the
-            query has no plugin behind it
-    *   -   :php:`\FGTCLB\AcademicBase\Event\ModifyPluginViewEvent` of
-            :guilabel:`academic_base`, which every plugin of this extension
-            dispatches when it renders
-        -   the interface of :guilabel:`academic_base`
-
-Type a listener against
-:php:`\FGTCLB\AcademicBase\Domain\Model\Dto\PluginControllerActionContextInterface`,
-whichever of the events it listens to. The interface of this extension extends
-it and declares nothing of its own, so every context a persons event carries
-satisfies it, and the same code serves the events of the other academic
-extensions. The interface of this extension is removed in 4.0, and the title
-placeholder event then declares the :guilabel:`academic_base` one; see
-:ref:`deprecation-persons-plugin-controller-action-context`.
-
-..  code-block:: php
-    :caption: EXT:my_extension/Classes/EventListener/LogPluginContentElement.php
-
-    <?php
-
-    declare(strict_types=1);
-
-    namespace MyVendor\MyExtension\EventListener;
-
-    use FGTCLB\AcademicBase\Domain\Model\Dto\PluginControllerActionContextInterface;
-    use FGTCLB\AcademicPersons\Event\ModifyProfileTitlePlaceholderReplacementEvent;
-    use Psr\Log\LoggerInterface;
-    use TYPO3\CMS\Core\Attribute\AsEventListener;
-
-    final class LogPluginContentElement
-    {
-        public function __construct(private readonly LoggerInterface $logger) {}
-
-        #[AsEventListener(identifier: 'my-extension/log-plugin-content-element')]
-        public function __invoke(ModifyProfileTitlePlaceholderReplacementEvent $event): void
-        {
-            $this->log($event->getPluginControllerActionContext());
-        }
-
-        private function log(PluginControllerActionContextInterface $context): void
-        {
-            $this->logger->info('Profile page title built', [
-                'plugin' => $context->getPluginName(),
-                'contentElement' => $context->getContentObjectRenderer()?->data['uid'] ?? null,
-            ]);
-        }
-    }
-
-:php:`getContentObjectRenderer()` is the content element of the plugin, also
-for the page title placeholder event, which is dispatched while the detail
-action builds the page title. It is :php:`null` for a context built from a
-request without a content element.
+        -   this extension
+    *   -   :php:`ModifyProfileCommandEnvironmentStateBuildContextForFrontendUserEvent`
+        -   in the same commands, before the environment of a frontend user's
+            site is set up
+        -   nothing a project should rely on: the event is :php:`@internal`
+            and experimental, like the environment handling it belongs to
+        -   this extension, internal
+
+..  toctree::
+    :hidden:
+    :titlesonly:
+
+    Events/ModifyProfileDemandEvent
+    Events/ModifyProfileQueryEvent
+    Events/ModifyContractQueryEvent
+    Events/ModifyProfileTitlePlaceholderReplacementEvent
+    Events/ModifyPluginViewEvent
+    Events/ModifyTcaSelectFieldItemsEvent
+    Events/ModifyProfileImageMetadataEvent
+    Events/AfterProfileUpdateEvent
+    Events/BeforeImportedRecordWriteEvent
+    Events/ChooseProfileFactoryEvent
+    Events/BeforeProfileMappedFromFrontendUserEvent
+    Events/AfterProfileMappedFromFrontendUserEvent
+
+..  _developers-topics:
+
+Topics
+======
+
+:ref:`developers-profile-list`
+    Which letters of the letter navigation lead somewhere, and what the links
+    of the pagination and the navigation carry.
+
+:ref:`developers-frontend-user-sync-events`
+    The order in which the commands :bash:`academic:createprofiles` and
+    :bash:`academic:updateprofiles` dispatch their events.
+
+:ref:`developers-import`
+    Finding what an import wrote by its identifier, and writing the persons of
+    another source with the import writer.
+
+:ref:`developers-translation-synchronisation`
+    The synchronizer that keeps the translations of a profile in step, and how
+    it behaves in workspaces. Experimental.
+
+:ref:`developers-plugin-action-context`
+    The context the plugin events carry, and the names of the plugins.
+
+..  toctree::
+    :hidden:
+    :titlesonly:
+
+    ProfileList
+    FrontendUserSync
+    Import
+    TranslationSynchronisation
+    PluginActionContext
 
 ..  _developers-see-also:
 

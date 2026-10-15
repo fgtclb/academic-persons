@@ -181,7 +181,7 @@ categories carry no type in :guilabel:`EXT:academic_persons`, so a title can
 match categories of any purpose. A project that takes the employee type from
 the frontend user data sets it in a listener of
 :php:`AfterProfileMappedFromFrontendUserEvent`, see
-:ref:`developers-frontend-user-sync-events`. The listener reads the value from
+:ref:`developers-event-after-profile-mapped-from-frontend-user-event`. The listener reads the value from
 the frontend user data, looks the category up with a query of its own and sets
 it on the imported contract. The query is ordered, and the title is compared in
 PHP, because MySQL and MariaDB ignore case and accents when they compare it.

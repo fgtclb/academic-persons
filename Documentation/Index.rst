@@ -60,9 +60,15 @@ created, edited and displayed in the front end and in different display modes.
         The ordered steps from 2.4 to 3.0.0: schema update, upgrade wizards,
         settings migration, templates, and the columns to drop last.
 
+    ..  card:: :ref:`For integrators <integrator>`
+
+        The six content elements, and what each of their plugin options does
+        in the frontend.
+
     ..  card:: :ref:`Configuration <configuration>`
 
-        Configure the extension and its plugins for your installation.
+        Site sets, site settings, TypoScript and the settings files of the
+        extension.
 
     ..  card:: :ref:`Templates <templates>`
 
@@ -75,8 +81,9 @@ created, edited and displayed in the front end and in different display modes.
 
     ..  card:: :ref:`For developers <developers>`
 
-        The translation synchronisation surface: the trigger event, the
-        service interface and the workspace behaviour.
+        The events this extension dispatches and the extension points for
+        developers: queries, frontend user synchronisation, import and profile
+        updates.
 
     ..  card:: :ref:`Known problems <known-problems>`
 
@@ -95,6 +102,7 @@ created, edited and displayed in the front end and in different display modes.
     Introduction/Index
     Installation/Index
     Upgrade/Index
+    Integrator/Index
     Configuration/Index
     Templates/Index
     Styling/Index

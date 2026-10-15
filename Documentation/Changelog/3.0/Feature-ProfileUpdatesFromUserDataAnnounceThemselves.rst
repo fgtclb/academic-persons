@@ -24,6 +24,8 @@ carrying it is neither data-updated nor announced. Previously the flag was
 only evaluated per frontend user, so a user carrying a second, synchronisable
 profile had the :sql:`skip_sync` profile updated through that side door.
 
+See :ref:`developers-event-after-profile-update-event`.
+
 Impact
 ======
 

@@ -88,7 +88,7 @@ only, shows the names as text instead:
 ..  confval:: plugin.tx_academicpersons.detailLink
     :name: plugin-tx-academicpersons-detaillink
     :type: string
-    :Default: link
+    :Default: ``link``
 
     `link` links the names to the detail view, `none` shows them as text, in
     the table view mode as well.
@@ -98,13 +98,9 @@ only, shows the names as text instead:
     links as well, see :ref:`templates-item-partials-detail-page`, and so do the
     contacts of a page of :guilabel:`EXT:academic_contacts4pages`.
 
-An element can choose otherwise. The plugin options of the four elements carry
-:guilabel:`Link the names to the detail view` with :guilabel:`Use the site
-setting`, the default, :guilabel:`Link to the detail view` and :guilabel:`No
-link`. A chosen value wins over the site setting in both directions: a site
-without detail pages links one list that has them, and a site with detail
-pages shows one selection without links. The list-and-detail element does not
-offer the field.
+An element can choose otherwise with its option :guilabel:`Link the names to the
+detail view`, see :confval:`Link the names to the detail view
+<person-list-detail-link>`.
 
 On a site that uses the site set, the setting is :guilabel:`Link the names to
 the detail view` of `fgtclb/academic-persons`. It is declared for the site set
@@ -128,7 +124,7 @@ setting is what completes it.
 ..  confval:: plugin.tx_academicpersons.phoneNumbers.telPrefix
     :name: plugin-tx-academicpersons-phonenumbers-telprefix
     :type: string
-    :Default: (empty)
+    :Default: empty
 
     Prepended to the :html:`tel:` target of every phone number, in the list,
     card and selection elements, in the profile detail view and in the contacts
@@ -148,16 +144,14 @@ template, with the same default in both — see
 The selected letter of the letter navigation
 ============================================
 
-The list and list-and-detail elements can show a letter navigation above the
-list (:guilabel:`Alphabetical Pagination` in the content element). A letter
-without profiles in that list is shown disabled and is not a link, and the
-navigation is left out for a list of profiles selected by hand. What the
-selected letter does is a setting:
+The letter navigation of the list elements is an option of the content element,
+see :confval:`Alphabetical Pagination <person-list-alphabetical-pagination>`.
+What the selected letter does is a setting:
 
 ..  confval:: plugin.tx_academicpersons.alphabet.activeLetterResets
     :name: plugin-tx-academicpersons-alphabet-activeletterresets
     :type: boolean
-    :Default: 0
+    :Default: ``0``
 
     Off, the selected letter is marked as the current one and is not a link.
     On, it is still marked as the current one, and links back to the list
@@ -173,29 +167,15 @@ View modes
 ==========
 
 The list, list-and-detail, selected profiles and selected contracts elements
-render their profiles in a view mode. Two fields of the content element choose
-it:
-
-:guilabel:`View Mode Default`
-    The mode the element renders: :guilabel:`Tiles`, the grid every list
-    rendered so far, or :guilabel:`Table`. The stored value of the tiles is
-    still ``list``, so a content element saved before needs no migration, and
-    one saved without the field renders the tiles as well.
-
-:guilabel:`View Mode Toggle`
-    Offers the visitor a switch between the allowed modes above the list - when
-    at least two are allowed. The active mode is marked as current. Off, a mode
-    the request asks for is ignored and the default renders.
-
-The card element shares the fields with the list, hides both, and renders tiles
-whatever it stores.
-
-Two settings decide which modes exist and what the table shows:
+render their profiles in a view mode, which the options :guilabel:`View Mode
+Default` and :guilabel:`View Mode Toggle` of the content element choose, see
+:confval:`View Mode Default <person-list-view-mode-default>`. Two settings
+decide which modes exist and what the table shows:
 
 ..  confval:: plugin.tx_academicpersons.viewMode.allowed
     :name: plugin-tx-academicpersons-viewmode-allowed
     :type: string
-    :Default: list,table
+    :Default: ``list,table``
 
     The modes the elements may render, comma separated. Neither the default of
     a content element nor the request of a visitor renders a mode outside this
@@ -207,7 +187,7 @@ Two settings decide which modes exist and what the table shows:
 ..  confval:: plugin.tx_academicpersons.table.columns
     :name: plugin-tx-academicpersons-table-columns
     :type: string
-    :Default: name,position,emailAddresses,phoneNumbers,room
+    :Default: ``name,position,emailAddresses,phoneNumbers,room``
 
     The columns of the table, comma separated, in this order. The shipped
     columns are ``name``, ``position``, ``organisationalUnit``,
@@ -227,145 +207,19 @@ and an entry in the allowed modes, see
 :ref:`adding a view mode <templates-view-modes-own>`; its URL is described in
 :ref:`the route enhancers <configuration-route-enhancers-view-modes>`.
 
-..  _configuration-visitor-filters:
+..  _configuration-plugin-options:
 
-Filters for visitors
-====================
-
-A visitor can narrow the list and list-and-detail elements to one function type
-or one organisational unit, where the element allows it. Two fields of the
-content element, on the sheet :guilabel:`Settings` below :guilabel:`Function
-Types`, switch the filters on. Both are off by default, and a list that does
-not switch them on shows what it showed before:
-
-:guilabel:`Visitors may filter by function type`
-    The list takes a function type from the request and shows only the profiles
-    with a contract of that type.
-
-:guilabel:`Visitors may filter by organisational unit`
-    The same for an organisational unit. The unit has to match exactly, a
-    contract in a unit below it does not count.
-
-With both filters set, the function type and the unit have to be on the same
-contract: a person who is a professor in one unit and a lecturer in another is
-not listed among the professors of the second one. A profile with several
-matching contracts is listed once, and the pagination and the letter
-navigation count only the profiles the filter leaves.
-
-The options of a filter are the function types or units the element is
-restricted to in :guilabel:`Function Types` and :guilabel:`Organisational
-Units`, or all of them while it is restricted to none, ordered by name. A
-visitor can therefore never see more than the editor chose. The list ignores a
-value that is not one of the options: a number of a record that does not exist
-or is hidden, a record outside the restriction, anything that is not a whole
-number, and any value while the field is off. It then renders as if no filter
-had been given. A manual selection of profiles ignores both filters.
-
-The request carries the uid of the record in the default language, as the
-demand arguments `functionTypeFilter` and `organisationalUnitFilter` of the
-plugin. The list renders a form above the profiles with one choice per
-filter, and its submission leads to the URL of the filtered list, see
-:ref:`configuration-route-enhancers-filters`. The list template receives the
-options as `filterOptions`, see :ref:`templates-visitor-filters`. The page and
-letter links keep an active filter.
-
-The filters select profiles, and do not change which contracts of a profile are
-shown. :guilabel:`Only contracts of the selected organisational units and
-function types` below applies the restriction of the element, not the choice of
-the visitor. While :guilabel:`Only contracts valid today` is on, a filter finds a
-profile only through a contract valid today, see
-:ref:`configuration-contract-display`.
-
-The card element shares the fields with the list and hides both.
-
-..  _configuration-contract-display:
-
-Which contracts a profile shows
+Options of the content elements
 ===============================
 
-A profile has one or more contracts, sorted by the editor. Every view shows all
-of them unless it is told otherwise.
+The options an editor sets in a content element are described with the element,
+in :ref:`integrator`. That is where these two topics moved:
 
-**The list and list-and-detail elements** offer three fields in their plugin
-options, on the sheet :guilabel:`Settings` below the :ref:`filters for visitors
-<configuration-visitor-filters>`:
-
-:guilabel:`Contracts per profile`
-    All contracts (the default), or only the first one.
-
-:guilabel:`Only contracts of the selected organisational units and function types`
-    Leaves out the contracts of a profile in other units or with other function
-    types than the element is restricted to. Without such a restriction the
-    option has no effect. Without the option, the restriction selects the
-    profiles and every contract of a selected profile is shown, as before.
-
-:guilabel:`Only contracts valid today`
-    Leaves out the contracts that have ended or not started yet. While the
-    element is restricted to organisational units or function types, or a
-    visitor filters it, the option also decides which contracts select a
-    profile: only one valid today does. A profile whose only matching contract
-    has ended is not listed, rather than listed without that contract, and the
-    pagination and the letter navigation count the same profiles. A list
-    without such conditions selects nobody by a contract and still lists a
-    profile whose contracts have all ended, without a contract.
-
-**The card and selected-profiles elements** offer :guilabel:`Contracts per
-profile` and :guilabel:`Only contracts valid today`. They select their profiles
-by hand and apply no unit or function type restriction, so there is nothing for
-the contracts to match. The card hides the field in its form; a value stored
-while the element was a list stays in effect after a switch to the card, as a
-detail page stored while it was a list does.
-
-**The detail view** - of the detail and the list-and-detail elements - is
-configured in :file:`Settings.yaml`, once for the installation rather than per
-content element. Its two blocks rendered from the contracts take a key each for
-the same two choices; see :ref:`configuration-sections-profile-contracts`:
-
-..  code-block:: yaml
-    :caption: EXT:my_sitepackage/Configuration/AcademicPersons/Settings.yaml
-
-    profile:
-      details:
-        position:
-          onlyValid: true
-        contact:
-          contracts: first
-
-**The selected-contracts element** and the contacts element of
-:guilabel:`EXT:academic_contacts4pages` show the contract that was chosen,
-whatever the options say, even one that has ended.
-
-The options apply in a fixed order: the unit and function type filter, then
-validity, then "first". "Only the first" is the first of the contracts left, in
-the editor's order of the profile's contracts, so a list restricted to one unit
-shows each profile's first contract in that unit.
-
-Validity is a matter of days. A contract is valid from the first day of
-:guilabel:`Valid from` through the last day of :guilabel:`Valid to`; an empty
-date does not limit it on that side, and no setting changes that. "Today" is the
-date the page is rendered for, in the time zone of the installation - a date
-simulated in the frontend preview of a backend user counts.
-
-..  _configuration-contract-display-cache:
-
-The page cache follows the validity
------------------------------------
-
-A cached page would keep showing a contract that ended yesterday until its cache
-entry expires. On TYPO3 v13 a page with profiles expires after 24 hours at the
-latest, whatever :typoscript:`config.cache_period` says, because every record
-Extbase loads limits the page to that; on TYPO3 v14 a page without
-:typoscript:`config.cache_period` is cached for a year. So while "only contracts
-valid today" applies, a page is cached no longer than until the next midnight on
-which a contract that passes the unit and function type filter ends - the day
-after its :guilabel:`Valid to` - or starts. While the option also decides
-which contracts select the profiles of a list, the same holds for every
-contract that meets the restriction and the visitor filters of the list, so a
-profile whose contract starts tomorrow is listed tomorrow, though nothing of it
-was rendered today. Those contracts are read from the storage pages of the
-list. The limit is set only on the cache entry of the page that rendered those
-contracts or the list, only when that date comes before the regular expiry, and
-never when no validity option applies.
+*   :ref:`Filters for visitors <configuration-visitor-filters>` of the list
+    elements.
+*   :ref:`Which contracts a profile shows <configuration-contract-display>`,
+    and how :ref:`the page cache follows the validity
+    <configuration-contract-display-cache>` of a contract.
 
 ..  _configuration-contract-select-storage-scope:
 
@@ -390,7 +244,7 @@ configured storage page would get an empty select and no error.
 ..  confval:: itemsProcFunc.storagePids
     :name: contract-select-storage-pids
     :type: string, a comma-separated list of page uids
-    :Default: (empty)
+    :Default: empty
 
     The pages a contract has to be stored on to be offered. Empty — the default
     — offers every contract of the installation.
@@ -398,7 +252,7 @@ configured storage page would get an empty select and no error.
 ..  confval:: itemsProcFunc.recursive
     :name: contract-select-recursive
     :type: integer
-    :Default: 0
+    :Default: ``0``
 
     How many levels below each listed page are included. The default ``0`` uses
     the listed pages themselves. A hidden folder is included as well, because a

@@ -67,3 +67,9 @@ notice :file:`Resources/Public/Icons/LICENSE-font-awesome.txt` lists every file
 with its Font Awesome name and the changes made to it. Five record icons and
 the icons of the public profile draw the shared icons of
 :guilabel:`academic_base`, which lists them in its own notice.
+
+This manual shows the icons of the content elements from
+:file:`Documentation/Images/Icons/`, copies of the files below
+:file:`Resources/Public/Icons/plugin/`, the Font Awesome icons `users`,
+`address-card` and `user-check`, drawn in a fixed grey instead of the colour of
+the surrounding text, so that they read on a light and a dark page alike.

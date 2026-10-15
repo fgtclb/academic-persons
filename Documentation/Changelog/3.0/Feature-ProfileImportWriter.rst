@@ -44,7 +44,8 @@ it over:
 
 The writer, its data objects, its result and the event are public API.
 
-See :ref:`developers-import-writer`.
+See :ref:`developers-import-writer`, and
+:ref:`developers-event-before-imported-record-write-event` for the event.
 
 Impact
 ======

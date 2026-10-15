@@ -42,6 +42,8 @@ Its saves are then announced with the origin ``Import`` instead of
 a listener of the event that writes profiles through the DataHandler uses it
 for its own runs.
 
+See :ref:`developers-event-after-profile-update-event`.
+
 Impact
 ======
 

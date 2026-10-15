@@ -22,9 +22,11 @@ and :php:`getTargetTable()` says which one is being written:
     record an installation requiring file attributes reads, which is why the
     :php:`File` is handed over rather than only its uid.
 
-*   :sql:`sys_file_reference`, the profile's own relation row, written whenever
-    the name of the profile record changes — from a backend save, a
-    localization or a frontend edit.
+*   :sql:`sys_file_reference`, the profile's own relation row, written when a
+    DataHandler save writes the name or the image of the profile record, from
+    a backend save, a localization or an import, and after every profile
+    update the frontend editing or the frontend user commands announce,
+    whatever changed.
 
 Both records are handed over either way: :php:`getFile()` is the file, whose
 own metadata record is :php:`$event->getFile()->getMetaData()`, and
@@ -52,6 +54,8 @@ writes metadata.
         $metadata['copyright'] = $metadata['alternative'] ?? '';
         $event->setMetadata($metadata);
     }
+
+See :ref:`developers-event-modify-profile-image-metadata-event`.
 
 Impact
 ======

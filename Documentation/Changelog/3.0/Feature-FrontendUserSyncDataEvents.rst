@@ -85,7 +85,9 @@ project's profile factory. Its protected methods
 :php:`updateProfileFromFrontendUser()` are the part a subclass implements.
 
 The events, the order they are dispatched in and a listener setting the
-employee type are described in :ref:`developers-frontend-user-sync-events` and
+employee type are described in :ref:`developers-frontend-user-sync-events`,
+:ref:`developers-event-before-profile-mapped-from-frontend-user-event`,
+:ref:`developers-event-after-profile-mapped-from-frontend-user-event` and
 :ref:`configuration-frontend-user-sync-relations`.
 
 Impact

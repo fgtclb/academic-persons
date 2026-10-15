@@ -50,7 +50,7 @@ renders:
 ..  confval:: plugin.tx_academicpersons.image.list.cropVariant
     :name: plugin-tx-academicpersons-image-list-cropvariant
     :type: string
-    :Default: default
+    :Default: ``default``
 
     The profile cards of the list, list and detail, selected profiles and
     selected contracts elements, and of the contacts of a page.
@@ -58,14 +58,14 @@ renders:
 ..  confval:: plugin.tx_academicpersons.image.card.cropVariant
     :name: plugin-tx-academicpersons-image-card-cropvariant
     :type: string
-    :Default: default
+    :Default: ``default``
 
     The profile cards of the card element.
 
 ..  confval:: plugin.tx_academicpersons.image.detail.cropVariant
     :name: plugin-tx-academicpersons-image-detail-cropvariant
     :type: string
-    :Default: default
+    :Default: ``default``
 
     The profile image of the public profile.
 
@@ -108,7 +108,7 @@ The placeholder
 ..  confval:: plugin.tx_academicpersons.image.placeholder.default
     :name: plugin-tx-academicpersons-image-placeholder-default
     :type: string
-    :Default: EXT:academic_persons/Resources/Public/Images/ProfilePlaceholder.svg
+    :Default: ``EXT:academic_persons/Resources/Public/Images/ProfilePlaceholder.svg``
 
     The placeholder of a profile without an image, a neutral silhouette by
     default. An empty value switches it off: a card of a profile without an
@@ -117,7 +117,7 @@ The placeholder
 ..  confval:: plugin.tx_academicpersons.image.placeholder.mr
     :name: plugin-tx-academicpersons-image-placeholder-mr
     :type: string
-    :Default: (empty)
+    :Default: empty
 
     The placeholder of a profile of the gender :guilabel:`Mr.` without an
     image. `placeholder.ms` and `placeholder.diverse` do the same for the

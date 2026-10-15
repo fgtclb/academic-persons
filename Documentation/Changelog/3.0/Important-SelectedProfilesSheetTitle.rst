@@ -29,9 +29,11 @@ The wrapper is removed and the title moved one level up, which is how the
 Impact
 ======
 
-The settings sheet of the :guilabel:`Selected profiles` content element shows
-its title again instead of an untitled tab. Nothing else changes: the fields,
-their order and the stored values are untouched.
+The title of the settings sheet of the :guilabel:`Selected profiles` content
+element is read again. The backend shows no tab for a FlexForm with a single
+sheet, so an editor sees no difference today, and the title appears as soon as
+the plugin has a second sheet. Nothing else changes: the fields, their order
+and the stored values are untouched.
 
 Affected Installations
 ======================

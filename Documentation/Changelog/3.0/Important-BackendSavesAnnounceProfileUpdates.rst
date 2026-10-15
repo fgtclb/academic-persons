@@ -30,6 +30,8 @@ The image metadata listener of this extension ignores announcements with the
 origin ``Backend`` or ``Import``: the DataHandler hook has written the
 metadata for those saves already, where a name or the image changed.
 
+See :ref:`developers-event-after-profile-update-event`.
+
 Impact
 ======
 

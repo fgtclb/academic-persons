@@ -27,7 +27,9 @@ of this kind, dispatches
 :php:`\FGTCLB\AcademicBase\Event\ModifyPluginViewEvent` of
 :guilabel:`academic_base` instead, once each time it renders. It is one event
 for every academic plugin, so a view variable is added the same way everywhere.
-See :ref:`feature-plugin-view-event` and the `changelog of academic_base
+See :ref:`feature-plugin-view-event`,
+:ref:`developers-event-modify-plugin-view-event` and the `changelog of
+academic_base
 <https://docs.typo3.org/p/fgtclb/academic-base/main/en-us/Changelog/3.0/Feature-ModifyPluginViewEvent.html>`__.
 
 The new event carries the view and the plugin context, but no data of this

@@ -49,6 +49,9 @@ content element types:
 
 The context is :php:`null` where a query has no plugin behind it.
 
+See :ref:`developers-event-modify-profile-query-event` and
+:ref:`developers-event-modify-contract-query-event`.
+
 Impact
 ======
 
