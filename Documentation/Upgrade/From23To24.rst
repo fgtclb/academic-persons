@@ -212,6 +212,25 @@ without a site set, `lastNameAlpha` and `lastName`.
     to 2.3 was rejected by the extension, so these lists had no ordering at
     all.
 
+..  _upgrade-from-2-3-to-2-4-pagination:
+
+Pagination of the profile list
+------------------------------
+
+The default of :typoscript:`plugin.tx_academicpersons.pagination.resultsPerPage`
+is ``10`` now, with and without a site set. It was ``1``. A paginated profile
+list whose content element lacks the field, because it was saved before the
+field existed, its form hides the field through page TSconfig or it was
+imported, shows ten profiles per page instead of one. Set the constant or the
+site setting to keep another number.
+
+An empty :guilabel:`Results per Page` or :guilabel:`Number of Links` of a
+content element now takes the value of the site. Up to 2.3 an empty
+:guilabel:`Results per Page` with :guilabel:`Pagination` switched on ended the
+request with an exception. A negative number of the content element, or a site
+value below ``1``, falls back to ``10`` profiles and ``5`` links. See
+:ref:`important-ace-913-academic-persons`.
+
 ..  _upgrade-from-2-3-to-2-4-settings-file:
 
 The settings file
@@ -393,7 +412,7 @@ Check the result
 #.  The new content element wizard offers the content elements on the pages of
     every site that should have them, and an existing persons content element
     opens in the backend with its own type.
-#.  A profile list groups and sorts its profiles as intended.
+#.  A profile list groups, sorts and paginates its profiles as intended.
 #.  An organisational unit form lists its contracts in the order it showed
     before the update.
 #.  The detail page is hidden in menus. A request of it without a profile now

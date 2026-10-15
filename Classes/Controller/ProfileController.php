@@ -110,8 +110,18 @@ final class ProfileController extends ActionController
         }
 
         if (($this->settings['paginationEnabled'] ?? null) === '1') {
-            $resultsPerPage = (int)($this->settings['pagination']['resultsPerPage'] ?? 10);
-            $numberOfPaginationLinks = (int)($this->settings['pagination']['numberOfLinks'] ?? 5);
+            // An empty field of the element takes the site value through
+            // `ignoreFlexFormSettingsIfEmpty`. What is still below 1, from the site, from
+            // TypoScript or a negative number of the element, falls back here, because the
+            // paginators throw for fewer than one item per page.
+            $resultsPerPage = (int)($this->settings['pagination']['resultsPerPage'] ?? 0);
+            if ($resultsPerPage < 1) {
+                $resultsPerPage = 10;
+            }
+            $numberOfPaginationLinks = (int)($this->settings['pagination']['numberOfLinks'] ?? 0);
+            if ($numberOfPaginationLinks < 1) {
+                $numberOfPaginationLinks = 5;
+            }
             // A manual selection is ordered in PHP and not by the database, so its pages are
             // cut out of that ordered array. A QueryResultPaginator would page the query
             // result instead, which is in uid order rather than in the order of the selection.

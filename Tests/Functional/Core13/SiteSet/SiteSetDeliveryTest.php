@@ -258,7 +258,7 @@ final class SiteSetDeliveryTest extends AbstractDeliveryTestCase
                 'plugin.tx_academicpersons.demand.groupBy' => 'lastNameAlpha',
                 'plugin.tx_academicpersons.demand.sortBy' => 'lastName',
                 'plugin.tx_academicpersons.demand.sortByDirection' => 'asc',
-                'plugin.tx_academicpersons.pagination.resultsPerPage' => 1,
+                'plugin.tx_academicpersons.pagination.resultsPerPage' => 10,
                 'plugin.tx_academicpersons.pagination.numberOfLinks' => 5,
             ],
             $definitions,
