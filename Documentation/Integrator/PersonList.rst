@@ -178,14 +178,14 @@ does not offer it.
 
     Profiles picked by hand. The list then shows exactly these profiles, in the
     order they are picked. :guilabel:`Sort By`, the filters for visitors, the
-    letter navigation and the restriction to :guilabel:`Organisational Units`
-    and :guilabel:`Function Types` no longer decide which profiles are listed.
-    Pagination, view modes, the contract options, :guilabel:`Show hidden
-    records` and the language fallback still apply.
+    letter navigation, the restriction to :guilabel:`Organisational Units`
+    and :guilabel:`Function Types` and the :guilabel:`Startingpoint` no longer
+    decide which profiles are listed: a picked profile is shown wherever it is
+    stored. Pagination, view modes, the contract options, :guilabel:`Show
+    hidden records` and the language fallback still apply, and a hidden or
+    deleted profile stays out of the list as anywhere else.
 
-    The :guilabel:`Startingpoint` applies as well: while it is set, a picked
-    profile stored outside of it is not shown. For a selection that needs
-    neither pagination nor a letter navigation,
+    For a selection that needs neither pagination nor a letter navigation,
     :ref:`Selected Person’s Profiles <integrator-selected-profiles>` is the
     simpler element.
 
@@ -342,7 +342,7 @@ does not offer it.
 
     The folders the profiles are stored in. Their subfolders are not included,
     so select every folder. Empty lists the profiles of the whole installation,
-    of every site.
+    of every site. A list of :guilabel:`List of profiles` ignores the field.
 
 ..  _configuration-visitor-filters:
 
@@ -437,9 +437,8 @@ options, below the :ref:`filters for visitors
 profile` and :guilabel:`Only contracts valid today`. They select their profiles
 by hand and apply no unit or function type restriction, so there is nothing for
 the contracts to match. The card hides the field in its form, together with
-:guilabel:`Organisational Units` and :guilabel:`Function Types`. A value stored
-while the element was a list stays in effect after a switch to the card, as a
-detail page stored while it was a list does.
+:guilabel:`Organisational Units` and :guilabel:`Function Types`, and ignores a
+value of it stored while the element was a list.
 
 **The detail view**, of the detail and the list-and-detail elements, is
 configured in :file:`Settings.yaml`, once for the installation rather than per

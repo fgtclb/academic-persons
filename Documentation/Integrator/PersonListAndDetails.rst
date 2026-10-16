@@ -220,5 +220,5 @@ behaves exactly as in the list, its description is on the page of the list.
     :Default: empty
 
     See :confval:`Startingpoint <person-list-startingpoint>`. It applies to the
-    list. The detail view shows the profile the link names, wherever it is
-    stored.
+    list without :guilabel:`List of profiles`. The detail view shows the
+    profile the link names, wherever it is stored.

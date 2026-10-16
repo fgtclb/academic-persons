@@ -47,7 +47,8 @@ TCEFORM.tt_content {
         settings\.filter\.functionType.disabled = 1
         settings\.filter\.organisationalUnit.disabled = 1
         # The card selects its profiles by hand and applies no unit or function type
-        # restriction, so there is nothing for its contracts to match either.
+        # restriction, so there is nothing for its contracts to match either. A value
+        # stored while the element was a list is ignored by the card action.
         settings\.organisationalUnits.disabled = 1
         settings\.functionTypes.disabled = 1
         settings\.contracts\.matchFilter.disabled = 1

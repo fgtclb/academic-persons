@@ -782,6 +782,9 @@ Check the result
 *   A profile list groups, sorts and paginates its profiles as intended, and a
     list filtered by a function type or an organisational unit shows the slug
     in the URL.
+*   A profile list with :guilabel:`List of profiles` shows every picked
+    profile, also one stored outside its :guilabel:`Startingpoint`, see
+    :ref:`important-ace-923-picked-profiles-academic-persons`.
 *   An organisational unit form lists its contracts in the order it showed
     before the update.
 *   The detail page is hidden in menus. A request of it without a profile ends

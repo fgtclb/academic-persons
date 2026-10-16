@@ -16,7 +16,10 @@ choose which of them:
     types` and :guilabel:`Only contracts valid today`.
 *   The card and selected-profiles elements offer :guilabel:`Contracts per
     profile` and :guilabel:`Only contracts valid today`. They select their
-    profiles by hand and apply no unit or function type restriction.
+    profiles by hand and apply no unit or function type restriction. A card
+    ignores :guilabel:`Only contracts of the selected organisational units and
+    function types` stored while it was a list, and shows the contracts its
+    other options leave.
 *   The detail view is configured in :file:`Settings.yaml`, per block:
     :yaml:`profile.details.position` and :yaml:`profile.details.contact` take
     :yaml:`contracts` (``all`` or ``first``) and :yaml:`onlyValid`.

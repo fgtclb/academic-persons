@@ -127,9 +127,9 @@ Rules and pitfalls
 ==================
 
 The collected conditions are combined with a logical **AND** with the ones the
-extension builds itself: the storage folders, the organisational unit and
-function type filters of the content element, the letter filter, hidden
-records and the language handling. They are applied **before pagination**.
+extension builds itself: the storage folders (of a list without a selection
+by hand), the organisational unit and function type filters of the content
+element, the letter filter, hidden records and the language handling. They are applied **before pagination**.
 A *constraint* therefore only ever narrows a result, and it cannot drop a
 condition the extension put there.
 

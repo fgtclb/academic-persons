@@ -138,7 +138,6 @@ per Page`, :guilabel:`Number of Links`, :guilabel:`View Mode Toggle`,
 type`, :guilabel:`Visitors may filter by organisational unit`,
 :guilabel:`Organisational Units`, :guilabel:`Function Types` and
 :guilabel:`Only contracts of the selected organisational units and function
-types`. The card reads none of them, except the last one, whose stored value
-stays in effect together with the two restrictions. The same page TSconfig is
-what makes the card selectable, so wherever an editor can add a card, the
-fields are hidden.
+types`. The card reads none of them, and a value stored while the element was
+a list has no effect. The same page TSconfig is what makes the card
+selectable, so wherever an editor can add a card, the fields are hidden.

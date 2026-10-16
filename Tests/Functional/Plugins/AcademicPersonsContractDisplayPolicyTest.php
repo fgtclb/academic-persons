@@ -254,6 +254,53 @@ final class AcademicPersonsContractDisplayPolicyTest extends AbstractAcademicPer
         );
     }
 
+    /**
+     * A list switched to a card keeps the values of its form. The card does not offer the
+     * contract restriction and applies none, so a stored one does not narrow its contracts.
+     *
+     * @return \Generator<string, array{0: array<string, string>}>
+     */
+    public static function restrictionStoredWhileTheCardWasAListDataProvider(): \Generator
+    {
+        yield 'unit' => [['organisationalUnits' => '2', 'contracts.matchFilter' => '1']];
+        yield 'function type' => [['functionTypes' => '2', 'contracts.matchFilter' => '1']];
+        yield 'unit and function type' => [['organisationalUnits' => '2', 'functionTypes' => '2', 'contracts.matchFilter' => '1']];
+    }
+
+    /**
+     * @param array<string, string> $settings
+     */
+    #[Test]
+    #[DataProvider('restrictionStoredWhileTheCardWasAListDataProvider')]
+    public function cardIgnoresARestrictionStoredWhileItWasAList(array $settings): void
+    {
+        $this->addContentElement('academicpersons_card', ['demand.profileList' => '1,2'] + $settings);
+
+        $this->assertSame(
+            [self::ADA => ['Emeritus', 'Professor', 'Dean'], self::GRACE => ['Lecturer', 'Researcher', 'Advisor']],
+            $this->contractsPerProfile($this->renderHomePage()),
+        );
+    }
+
+    /**
+     * The other contract options of the card still apply next to a stored restriction.
+     */
+    #[Test]
+    public function cardAppliesItsOwnOptionsNextToAStoredRestriction(): void
+    {
+        $this->addContentElement('academicpersons_card', [
+            'demand.profileList' => '1,2',
+            'organisationalUnits' => '2',
+            'contracts.matchFilter' => '1',
+            'contracts.display' => 'first',
+        ]);
+
+        $this->assertSame(
+            [self::ADA => ['Emeritus'], self::GRACE => ['Lecturer']],
+            $this->contractsPerProfile($this->renderHomePage()),
+        );
+    }
+
     #[Test]
     public function selectedProfilesShowTheConfiguredContracts(): void
     {

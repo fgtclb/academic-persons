@@ -418,6 +418,9 @@ Check the result
     every site that should have them, and an existing persons content element
     opens in the backend with its own type.
 #.  A profile list groups, sorts and paginates its profiles as intended.
+#.  A profile list with :guilabel:`List of profiles` shows every picked
+    profile, also one stored outside its :guilabel:`Startingpoint`, see
+    :ref:`important-ace-923-picked-profiles-academic-persons`.
 #.  An organisational unit form lists its contracts in the order it showed
     before the update.
 #.  The detail page is hidden in menus. A request of it without a profile now

@@ -1,0 +1,13 @@
+"pages",
+,"uid","pid","doktype","deleted","hidden","sys_language_uid","l10n_parent","l18n_cfg","slug","title"
+,1,0,1,0,0,0,0,0,"/","Site Root"
+,2,1,1,0,0,0,0,0,"/home","Home (EN)"
+,100,1,254,0,0,0,0,0,"/staff","Staff"
+,101,1,254,0,0,0,0,0,"/guests","Guests"
+"tx_academicpersons_domain_model_profile",
+,"uid","pid","deleted","hidden","sys_language_uid","l10n_parent","first_name","last_name","slug"
+,1,100,0,0,0,0,"Max","Müllermann","max-muellermann"
+,2,100,0,0,0,0,"Horst","Huber","horst-huber"
+,3,101,0,0,0,0,"Erika","Musterfrau","erika-musterfrau"
+,4,101,0,1,0,0,"Hanna","Hidden","hanna-hidden"
+,5,101,1,0,0,0,"Dora","Deleted","dora-deleted"

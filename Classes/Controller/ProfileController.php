@@ -316,9 +316,19 @@ final class ProfileController extends ActionController
         return $sorted;
     }
 
+    /**
+     * The card selects its profiles by hand and applies no unit or function type restriction,
+     * so it does not offer "Only contracts of the selected organisational units and function
+     * types". A value stored while the element was a list is dropped here, before the settings
+     * reach the view and `persons:contracts`, so the units and function types stored with it
+     * select no contract either.
+     */
     public function initializeCardAction(): void
     {
         $this->settings['showFields'] = !empty($this->settings['showFields']) ? GeneralUtility::trimExplode(',', $this->settings['showFields']) : null;
+        if (is_array($this->settings['contracts'] ?? null)) {
+            unset($this->settings['contracts']['matchFilter']);
+        }
     }
 
     /**
