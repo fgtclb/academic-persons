@@ -19,12 +19,12 @@ use TYPO3\CMS\Install\Updates\UpgradeWizardInterface;
 
 /**
  * Seeds `organisational_unit_sorting`, the sort column the organisational unit
- * relation gained in 3.0.
+ * relation gained in 2.4.
  *
  * A contract is an inline child of its profile and of its organisational unit.
  * Both relations wrote the shared `sorting` column until now, so saving a unit
  * renumbered its contracts across the profiles that own them. The unit relation
- * orders by `organisational_unit_sorting` from 3.0 on, and every contract that
+ * orders by `organisational_unit_sorting` from 2.4 on, and every contract that
  * existed before the update carries `0` in it - which would leave the unit form
  * showing its contracts in whatever order the database happens to return.
  *
@@ -91,7 +91,7 @@ final readonly class SeedContractOrganisationalUnitSortingUpgradeWizard implemen
         return 'Contracts are inline children of their profile and of their organisational unit, and'
             . ' both relations wrote the same sort column until now, so saving an organisational unit'
             . ' could rearrange the contracts of a profile. The organisational unit relation has a sort'
-            . ' column of its own from 3.0 on. This wizard fills it with the order the organisational'
+            . ' column of its own from 2.4 on. This wizard fills it with the order the organisational'
             . ' unit forms show today.';
     }
 
