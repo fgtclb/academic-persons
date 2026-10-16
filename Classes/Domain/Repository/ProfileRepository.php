@@ -309,8 +309,14 @@ class ProfileRepository extends Repository
         // paginates the restored list. The query still gets the deterministic fallback
         // ordering, because the result is what listeners of `ModifyListProfilesEvent` receive
         // and an unordered result is not the same list twice (ACE-482, ACE-491).
+        //
+        // The editor picked these profiles explicitly, so they are found wherever they are
+        // stored, as the card and the selected profiles element find theirs: the storage pages
+        // of the element are dropped for them (ACE-923). Enable fields, hidden records, the
+        // language handling and the workspace apply as for any other list.
         if ($demand->getProfileList() !== '') {
             $profileUidArray = GeneralUtility::intExplode(',', $demand->getProfileList(), true);
+            $query->getQuerySettings()->setRespectStoragePage(false);
             $this->matchSelectedUidsAcrossLanguages($query);
             return [$query->in('uid', $profileUidArray), self::FALLBACK_ORDERINGS];
         }

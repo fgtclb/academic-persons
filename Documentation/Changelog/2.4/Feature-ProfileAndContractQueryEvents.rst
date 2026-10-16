@@ -63,9 +63,10 @@ Impact
 ======
 
 The conditions a listener adds are combined with the ones the extension builds
-itself with a logical **AND**: the storage folders, the organisational unit and
-function type filters of the content element, the letter filter, the hidden
-records setting and the language handling. A *constraint* therefore only ever
+itself with a logical **AND**: the storage folders (of a list without a
+selection by hand), the organisational unit and function type filters of the
+content element, the letter filter, the hidden records setting and the
+language handling. A *constraint* therefore only ever
 narrows a result, and it cannot remove a condition the extension put there.
 
 They apply **before pagination**, so the number of pages and the profiles on
