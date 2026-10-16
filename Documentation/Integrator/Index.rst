@@ -78,7 +78,7 @@ The content elements
         -   Content element
         -   CType
         -   What it shows
-    *   -   ..  image:: /Images/Icons/persons.svg
+    *   -   ..  figure:: /Images/Icons/persons.svg
                 :width: 32px
                 :alt: Icon of the profile list
         -   :ref:`Person List <integrator-person-list>`
@@ -86,35 +86,35 @@ The content elements
         -   A directory of profiles, with grouping, letter navigation,
             pagination, visitor filters and view modes. The names link to a
             detail page.
-    *   -   ..  image:: /Images/Icons/persons.svg
+    *   -   ..  figure:: /Images/Icons/persons.svg
                 :width: 32px
                 :alt: Icon of the profile list and detail
         -   :ref:`Person List and Details <integrator-person-list-and-details>`
         -   ``academicpersons_listanddetail``
         -   The same directory, and the profile a visitor opens from it on the
             same page.
-    *   -   ..  image:: /Images/Icons/persons.svg
+    *   -   ..  figure:: /Images/Icons/persons.svg
                 :width: 32px
                 :alt: Icon of the profile detail
         -   :ref:`Person Details <integrator-person-details>`
         -   ``academicpersons_detail``
         -   The public profile of one person, on the detail page the other
             elements link to.
-    *   -   ..  image:: /Images/Icons/card.svg
+    *   -   ..  figure:: /Images/Icons/card.svg
                 :width: 32px
                 :alt: Icon of the contact card
         -   :ref:`Person Contact Card <integrator-person-contact-card>`
         -   ``academicpersons_card``
         -   Contact cards of a few profiles an editor picks, for a sidebar or
             a contact box.
-    *   -   ..  image:: /Images/Icons/selected-profiles.svg
+    *   -   ..  figure:: /Images/Icons/selected-profiles.svg
                 :width: 32px
                 :alt: Icon of the selected profiles
         -   :ref:`Selected Person’s Profiles <integrator-selected-profiles>`
         -   ``academicpersons_selectedprofiles``
         -   Profiles an editor picks, as tiles or a table, with their
             contracts.
-    *   -   ..  image:: /Images/Icons/selected-profiles.svg
+    *   -   ..  figure:: /Images/Icons/selected-profiles.svg
                 :width: 32px
                 :alt: Icon of the selected contracts
         -   :ref:`Selected Person’s Contracts <integrator-selected-contracts>`
