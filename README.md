@@ -1,10 +1,10 @@
 # TYPO3 Extension `Academic person database` (READ-ONLY)
 
-|                  | URL                                                                   |
-|------------------|-----------------------------------------------------------------------|
-| **Repository:**  | https://github.com/fgtclb/academic-persons                            |
-| **Read online:** | https://docs.typo3.org/p/fgtclb/academic/academic-persons/main/en-us/ |
-| **TER:**         | https://extensions.typo3.org/extension/academic_persons/              |
+|                  | URL                                                          |
+|------------------|--------------------------------------------------------------|
+| **Repository:**  | https://github.com/fgtclb/academic-persons                   |
+| **Read online:** | https://docs.typo3.org/p/fgtclb/academic-persons/main/en-us/ |
+| **TER:**         | https://extensions.typo3.org/extension/academic_persons/     |
 
 ## Description
 
