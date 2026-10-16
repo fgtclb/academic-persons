@@ -68,11 +68,11 @@ What a listener of these fields finds in them:
 *   ``row`` is the record being edited, and for a FlexForm field the values of
     the FlexForm. ``flexParentDatabaseRow`` is the content element then.
 
-In the backend form, TYPO3 v13 hands the static items of a field to the item
-provider as :php:`\TYPO3\CMS\Core\Schema\Struct\SelectItem` objects, TYPO3
-v14 as arrays, and the items a provider adds are arrays on both versions. A
-:php:`SelectItem` implements :php:`\ArrayAccess`, so a closure typed
-:php:`array|SelectItem` that reads :php:`$item['value']` works on both.
+In the backend form, TYPO3 v13 and v14 hand the static items of a field to the
+item provider as :php:`\TYPO3\CMS\Core\Schema\Struct\SelectItem` objects,
+and the items a provider adds are arrays. A :php:`SelectItem` implements
+:php:`\ArrayAccess`, so a closure typed :php:`array|SelectItem` that reads
+:php:`$item['value']` works for both.
 
 Example
 =======
