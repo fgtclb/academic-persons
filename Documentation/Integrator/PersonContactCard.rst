@@ -38,22 +38,15 @@ with the crop variant of the card, see
 The card shares its options with the :ref:`Person List
 <integrator-person-list>`. The page TSconfig of its component, which comes
 with the set `fgtclb/academic-persons-card`, hides the list, sorting,
-pagination, view mode and filter fields, because a fixed selection has no use
-for them. The card always renders tiles.
+pagination, view mode, filter and restriction fields, because a fixed selection
+has no use for them. The card always renders tiles. It has no
+:guilabel:`PageTitle display format` either: set the format on the
+:ref:`Person Details <integrator-person-details>` element of the detail page.
 
 ..  _integrator-person-contact-card-configuration:
 
 Settings
 ========
-
-..  confval:: PageTitle display format
-    :name: person-contact-card-page-title-format
-    :type: text, with a value picker
-    :Default: empty
-
-    Has no effect in this element. Set the format on the
-    :ref:`Person Details <integrator-person-details>` element of the detail
-    page.
 
 ..  confval:: Detail Page
     :name: person-contact-card-detail-pid
@@ -107,25 +100,6 @@ Settings
     A card with an empty field selection shows the image and every contract
     field except the function type and the organisational unit.
 
-..  confval:: Organisational Units
-    :name: person-contact-card-organisational-units
-    :type: select, several values
-    :Default: empty
-
-    Has no effect in this element on its own. The card shows the profiles it
-    is given, and the contract restriction that would read this field is
-    hidden. A value of :guilabel:`Only contracts of the selected
-    organisational units and function types` stored while the element was a
-    list stays in effect, and then this field decides which contracts the card
-    shows.
-
-..  confval:: Function Types
-    :name: person-contact-card-function-types
-    :type: select, several values
-    :Default: empty
-
-    The same as :guilabel:`Organisational Units`.
-
 ..  confval:: Contracts per profile
     :name: person-contact-card-contracts-display
     :type: select
@@ -161,8 +135,10 @@ The page TSconfig of the card disables these fields of the shared options:
 :guilabel:`Pagination`, :guilabel:`Alphabetical Pagination`, :guilabel:`Results
 per Page`, :guilabel:`Number of Links`, :guilabel:`View Mode Toggle`,
 :guilabel:`View Mode Default`, :guilabel:`Visitors may filter by function
-type`, :guilabel:`Visitors may filter by organisational unit` and
+type`, :guilabel:`Visitors may filter by organisational unit`,
+:guilabel:`Organisational Units`, :guilabel:`Function Types` and
 :guilabel:`Only contracts of the selected organisational units and function
 types`. The card reads none of them, except the last one, whose stored value
-stays in effect. The same page TSconfig is what makes the card selectable, so
-wherever an editor can add a card, the fields are hidden.
+stays in effect together with the two restrictions. The same page TSconfig is
+what makes the card selectable, so wherever an editor can add a card, the
+fields are hidden.

@@ -10,9 +10,10 @@
 #
 # It also carries the FlexForm restriction of this one content element: the card
 # renders a fixed selection of profiles, so the list, sorting and pagination
-# fields of the shared FlexForm are of no use in it and are hidden. That block
-# travels with the component instead of applying installation wide, so an
-# installation that does not use the card is not configured for it either.
+# fields of the shared FlexForm, and its unit and function type restriction, are
+# of no use in it and are hidden. That block travels with the component instead
+# of applying installation wide, so an installation that does not use the card
+# is not configured for it either.
 # The detail page stays: the card links every profile to its detail view.
 TCEFORM.tt_content.CType.removeItems := removeFromList(academicpersons_card)
 
@@ -47,6 +48,8 @@ TCEFORM.tt_content {
         settings\.filter\.organisationalUnit.disabled = 1
         # The card selects its profiles by hand and applies no unit or function type
         # restriction, so there is nothing for its contracts to match either.
+        settings\.organisationalUnits.disabled = 1
+        settings\.functionTypes.disabled = 1
         settings\.contracts\.matchFilter.disabled = 1
       }
     }

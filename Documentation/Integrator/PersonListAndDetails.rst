@@ -52,9 +52,11 @@ Settings
 ========
 
 The element has the options of the :guilabel:`Person List`, in the same order,
-apart from :guilabel:`Link the names to the detail view`, and below them the
-:guilabel:`Startingpoint`. Where an option behaves exactly as in the list, its
-description is on the page of the list.
+and below them the :guilabel:`Startingpoint`. It adds :guilabel:`PageTitle
+display format` for its detail view, and leaves out :guilabel:`Detail Page` and
+:guilabel:`Link the names to the detail view`: the names always link to the
+page of the element, which shows the detail view itself. Where an option
+behaves exactly as in the list, its description is on the page of the list.
 
 ..  confval:: PageTitle display format
     :name: person-list-and-details-page-title-format
@@ -63,14 +65,6 @@ description is on the page of the list.
 
     The page title of the detail view. Works as in the detail element, see
     :confval:`PageTitle display format <person-details-page-title-format>`.
-
-..  confval:: Detail Page
-    :name: person-list-and-details-detail-pid
-    :type: page
-    :Default: empty
-
-    Has no effect in this element. The names always link to the page of the
-    element, which shows the detail view itself.
 
 ..  confval:: Group By (is given priority in sorting if active)
     :name: person-list-and-details-group-by

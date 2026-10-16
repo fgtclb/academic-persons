@@ -49,17 +49,10 @@ Settings
 ========
 
 The tab :guilabel:`Configuration` holds the plugin options, in this order, and
-below them the :guilabel:`Startingpoint`.
-
-..  confval:: PageTitle display format
-    :name: person-list-page-title-format
-    :type: text, with a value picker
-    :Default: empty
-
-    Has no effect in this element. The page title is set by the element that
-    shows the profile, so set the format on the :ref:`Person Details
-    <integrator-person-details>` element of the detail page. The field exists
-    here because the list shares its options with the list-and-detail element.
+below them the :guilabel:`Startingpoint`. The page title of a profile is set by
+the element that shows it, so its format is an option of the :ref:`Person
+Details <integrator-person-details>` element of the detail page, and the list
+does not offer it.
 
 ..  confval:: Detail Page
     :name: person-list-detail-pid
@@ -443,7 +436,8 @@ options, below the :ref:`filters for visitors
 **The card and selected-profiles elements** offer :guilabel:`Contracts per
 profile` and :guilabel:`Only contracts valid today`. They select their profiles
 by hand and apply no unit or function type restriction, so there is nothing for
-the contracts to match. The card hides the field in its form. A value stored
+the contracts to match. The card hides the field in its form, together with
+:guilabel:`Organisational Units` and :guilabel:`Function Types`. A value stored
 while the element was a list stays in effect after a switch to the card, as a
 detail page stored while it was a list does.
 
