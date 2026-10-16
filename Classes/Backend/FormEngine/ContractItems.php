@@ -7,7 +7,6 @@ namespace FGTCLB\AcademicPersons\Backend\FormEngine;
 use FGTCLB\AcademicBase\Event\ModifyTcaSelectFieldItemsEvent;
 use FGTCLB\AcademicPersons\Domain\Repository\ContractRepository;
 use Psr\EventDispatcher\EventDispatcherInterface;
-use TYPO3\CMS\Core\Site\Entity\Site;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
@@ -17,33 +16,13 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
  *
  * This is executed in the backend in FormEngine for TCA fields using this itemsProcFunc
  * handler and also in controllers to retrieve the select options of the field.
+ *
+ * @phpstan-import-type ItemsProcFuncParameters from ModifyTcaSelectFieldItemsEvent
  */
 final class ContractItems
 {
     /**
-     * @param array{
-     *      items: array<int, array{
-     *       label?: string|null,
-     *       value?: mixed,
-     *       icon?: string|null,
-     *       group?: string|null,
-     *      }>,
-     *      config: array<string, mixed>,
-     *      TSconfig: array<string, mixed>|null,
-     *      table: string,
-     *      row: array<string, mixed>,
-     *      field: string,
-     *      effectivePid: int,
-     *      site: Site|null,
-     *      flexParentDatabaseRow?: array<string, mixed>|null,
-     *      inlineParentUid?: int,
-     *      inlineParentTableName?: string,
-     *      inlineParentFieldName?: string,
-     *      inlineParentConfig?: array<string, mixed>,
-     *      inlineTopMostParentUid?: int,
-     *      inlineTopMostParentTableName?: string,
-     *      inlineTopMostParentFieldName?: string,
-     *  } $parameters
+     * @param ItemsProcFuncParameters $parameters
      */
     public function itemsProcFunc(array &$parameters): void
     {
@@ -59,29 +38,7 @@ final class ContractItems
     }
 
     /**
-     * @param array{
-     *      items: array<int, array{
-     *       label?: string|null,
-     *       value?: mixed,
-     *       icon?: string|null,
-     *       group?: string|null,
-     *      }>,
-     *      config: array<string, mixed>,
-     *      TSconfig: array<string, mixed>|null,
-     *      table: string,
-     *      row: array<string, mixed>,
-     *      field: string,
-     *      effectivePid: int,
-     *      site: Site|null,
-     *      flexParentDatabaseRow?: array<string, mixed>|null,
-     *      inlineParentUid?: int,
-     *      inlineParentTableName?: string,
-     *      inlineParentFieldName?: string,
-     *      inlineParentConfig?: array<string, mixed>,
-     *      inlineTopMostParentUid?: int,
-     *      inlineTopMostParentTableName?: string,
-     *      inlineTopMostParentFieldName?: string,
-     *  } $parameters
+     * @param ItemsProcFuncParameters $parameters
      * @return array<int<0, max>, array{
      *     label: string,
      *     value: int<1, max>|string,

@@ -11,12 +11,12 @@ declare(strict_types=1);
 
 namespace FGTCLB\AcademicPersons\Domain\Repository;
 
+use FGTCLB\AcademicBase\Event\ModifyTcaSelectFieldItemsEvent;
 use FGTCLB\AcademicPersons\Backend\FormEngine\ContractSelectScopeResolver;
 use FGTCLB\AcademicPersons\Domain\Model\Contract;
 use FGTCLB\AcademicPersons\Event\ModifyContractQueryEvent;
 use Psr\EventDispatcher\EventDispatcherInterface;
 use TYPO3\CMS\Core\Context\LanguageAspect;
-use TYPO3\CMS\Core\Site\Entity\Site;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Extbase\Persistence\Generic\Qom\ConstraintInterface;
 use TYPO3\CMS\Extbase\Persistence\QueryInterface;
@@ -25,6 +25,7 @@ use TYPO3\CMS\Extbase\Persistence\Repository;
 
 /**
  * @extends Repository<Contract>
+ * @phpstan-import-type ItemsProcFuncParameters from ModifyTcaSelectFieldItemsEvent
  */
 class ContractRepository extends Repository
 {
@@ -66,29 +67,7 @@ class ContractRepository extends Repository
      * query can be narrowed by context (effective pid, site, ...) later on
      * without touching the calling handler again.
      *
-     * @param array{
-     *      items: array<int, array{
-     *       label?: string|null,
-     *       value?: mixed,
-     *       icon?: string|null,
-     *       group?: string|null,
-     *      }>,
-     *      config: array<string, mixed>,
-     *      TSconfig: array<string, mixed>|null,
-     *      table: string,
-     *      row: array<string, mixed>,
-     *      field: string,
-     *      effectivePid: int,
-     *      site: Site|null,
-     *      flexParentDatabaseRow?: array<string, mixed>|null,
-     *      inlineParentUid?: int,
-     *      inlineParentTableName?: string,
-     *      inlineParentFieldName?: string,
-     *      inlineParentConfig?: array<string, mixed>,
-     *      inlineTopMostParentUid?: int,
-     *      inlineTopMostParentTableName?: string,
-     *      inlineTopMostParentFieldName?: string,
-     *  } $parameters
+     * @param ItemsProcFuncParameters $parameters
      * @return QueryResultInterface<int, Contract>
      */
     public function getContractItemsForTcaItemsProcFunc(array $parameters): QueryResultInterface
