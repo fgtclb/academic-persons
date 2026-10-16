@@ -21,3 +21,14 @@ services:
       - name: event.listener
         identifier: 'test-profile-query-constraints/restrict-contracts'
         event: FGTCLB\AcademicPersons\Event\ModifyContractQueryEvent
+
+  TESTS\TestProfileQueryConstraints\EventListener\ChangeProfileDemandInPlaceListener:
+    tags:
+      - name: event.listener
+        identifier: 'test-profile-query-constraints/change-profile-demand-in-place'
+        event: FGTCLB\AcademicPersons\Event\ModifyProfileDemandEvent
+        method: changeDemand
+      - name: event.listener
+        identifier: 'test-profile-query-constraints/record-list-event-demand'
+        event: FGTCLB\AcademicPersons\Event\ModifyListProfilesEvent
+        method: recordListEventDemand

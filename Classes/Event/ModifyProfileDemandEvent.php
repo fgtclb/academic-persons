@@ -15,7 +15,10 @@ use FGTCLB\AcademicPersons\Domain\Model\Dto\DemandInterface;
 use FGTCLB\AcademicPersons\Domain\Repository\ProfileRepository;
 
 /**
- * Dispatched in {@see ProfileRepository::findByDemand().
+ * Dispatched in {@see ProfileRepository::findByDemand()}, before the query is built from the
+ * demand. The listeners receive a copy of the demand it was given, so a listener changes the
+ * query, whether it changes the demand in place or replaces it, and never the demand of the
+ * caller.
  */
 final class ModifyProfileDemandEvent
 {
