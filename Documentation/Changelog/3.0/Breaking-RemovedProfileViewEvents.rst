@@ -74,8 +74,9 @@ A demand a listener of :php:`ModifyListProfilesEvent` handed back came after
 the query and drove the rest of the list action: the letters offered, the
 active letter, the switch that turns the pagination off under a letter, the
 current page and the order of a manual selection. A demand a listener of
-:php:`ModifyProfileDemandEvent` hands back reaches the repository only: it
-decides which profiles are queried and which letters are offered. The active
+:php:`ModifyProfileDemandEvent` hands back, or changes in place, reaches the
+repository only, see :ref:`important-ace-920-academic-persons`: it decides
+which profiles are queried and which letters are offered. The active
 letter, the pagination and the order of a manual selection keep following the
 demand of the request. A listener that set a letter or a manual selection
 through the removed event and moves to :php:`ModifyProfileDemandEvent` narrows

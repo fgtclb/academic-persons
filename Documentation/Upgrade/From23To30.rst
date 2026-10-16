@@ -711,6 +711,12 @@ Adapt your code
     :php:`ModifyProfileDemandEvent`. See
     :ref:`breaking-removed-profile-view-events` and
     :ref:`developers-event-modify-plugin-view-event`.
+*   A listener of :php:`ModifyProfileDemandEvent` receives a copy of the
+    demand of the list. One that changes it in place still changes the
+    profiles the list queries, but no longer the order of a selection by
+    hand, the page or the demand of the template, and neither does a change
+    of the demand moved there from :php:`ModifyListProfilesEvent`. See
+    :ref:`important-ace-920-academic-persons`.
 *   A project that extends or replaces :php:`ProfileDemand`,
     :php:`ProfileRepository`, :php:`ContractRepository` or
     :php:`ProfileController` takes the parameters and the demand flag of 2.4

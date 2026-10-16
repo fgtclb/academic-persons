@@ -18,6 +18,7 @@ use FGTCLB\AcademicPersons\DemandValues\AlphabetFilterLetters;
 use FGTCLB\AcademicPersons\DemandValues\GroupByValues;
 use FGTCLB\AcademicPersons\DemandValues\SortByValues;
 use FGTCLB\AcademicPersons\Domain\Model\Dto\DemandInterface;
+use FGTCLB\AcademicPersons\Domain\Model\Dto\ProfileDemand;
 use FGTCLB\AcademicPersons\Domain\Model\Profile;
 use FGTCLB\AcademicPersons\Event\ModifyProfileDemandEvent;
 use FGTCLB\AcademicPersons\Event\ModifyProfileQueryEvent;
@@ -107,6 +108,12 @@ class ProfileRepository extends Repository
     }
 
     /**
+     * The listeners of {@see ModifyProfileDemandEvent} receive a copy of the demand, so the query
+     * follows what they change, in place or by handing back another demand, while the caller's
+     * demand stays as it was: the list action keeps reading it after the query (ACE-920). The
+     * copy is a shallow clone, complete for {@see ProfileDemand}, which holds no object. A demand
+     * class of another kind that does is responsible for its own `__clone()`.
+     *
      * @param PluginControllerActionContextInterface|null $context The plugin the query is rendered
      *        for, handed to the listeners of {@see ModifyProfileQueryEvent}. A caller outside the
      *        plugins - a command, a backend module - passes none.
@@ -117,7 +124,7 @@ class ProfileRepository extends Repository
         ?PluginControllerActionContextInterface $context = null,
     ): QueryResultInterface {
         $query = $this->createQuery();
-        $demand = $this->eventDispatcher->dispatch(new ModifyProfileDemandEvent($demand))->getDemand();
+        $demand = $this->eventDispatcher->dispatch(new ModifyProfileDemandEvent(clone $demand))->getDemand();
         $this->applyDemandSettings($query, $demand);
         [$constraint, $orderings] = $this->resolveDemandForQuery($query, $demand);
         $this->applyQuery($query, $constraint, $orderings, $demand, $context);

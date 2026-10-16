@@ -209,4 +209,49 @@ final class ProfileDemandTest extends UnitTestCase
         $this->assertSame('B', $subject->getAlphabetFilter());
         $this->assertSame('firstName', $subject->getSortBy());
     }
+
+    /**
+     * `ProfileRepository` hands every `ModifyProfileDemandEvent` listener a clone, so a
+     * listener that changes the demand in place cannot reach the demand of the list (ACE-920).
+     * PHP clones shallowly, which is a complete copy only while no property holds an object.
+     * A property that does needs a `__clone()` that copies it, and a change of this test.
+     */
+    #[Test]
+    public function everyPropertyHoldsAValueSoACloneIsACompleteCopy(): void
+    {
+        foreach ((new \ReflectionClass(ProfileDemand::class))->getProperties() as $property) {
+            $type = $property->getType();
+            $this->assertInstanceOf(\ReflectionNamedType::class, $type, $property->getName());
+            $this->assertContains($type->getName(), ['string', 'int', 'bool', 'array'], $property->getName());
+        }
+    }
+
+    #[Test]
+    public function changingACloneLeavesTheOriginalAsItWas(): void
+    {
+        $subject = (new ProfileDemand())
+            ->setFunctionTypes([5])
+            ->setOrganisationalUnits([8])
+            ->setProfileList('12,34');
+        $expected = var_export($subject, true);
+
+        (clone $subject)
+            ->setGroupBy('contracts.organisationalUnit')
+            ->setSortBy('firstName')
+            ->setSortByDirection('desc')
+            ->setCurrentPage(3)
+            ->setAlphabetFilter('B')
+            ->setViewMode('table')
+            ->setProfileList('56')
+            ->setFunctionTypes([1, 2])
+            ->setOrganisationalUnits([3])
+            ->setFunctionTypeFilter(1)
+            ->setOrganisationalUnitFilter(3)
+            ->setStoragePages('7,9')
+            ->setFallbackForNonTranslated(1)
+            ->setShowHiddenRecords(true)
+            ->setOnlyValidContracts(true);
+
+        $this->assertSame($expected, var_export($subject, true));
+    }
 }

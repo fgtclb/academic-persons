@@ -15,8 +15,12 @@ use FGTCLB\AcademicPersons\Domain\Model\Dto\DemandInterface;
 use FGTCLB\AcademicPersons\Domain\Repository\ProfileRepository;
 
 /**
- * Dispatched in {@see ProfileRepository::findByDemand()} and
- * {@see ProfileRepository::findAlphabetFilterLetters()}, before the query is built from the demand.
+ * Dispatched in {@see ProfileRepository::findByDemand()},
+ * {@see ProfileRepository::findAlphabetFilterLetters()} and
+ * {@see ProfileRepository::findNextContractValidityChange()}, before the query is built from the
+ * demand. Each of them hands the listeners a copy of the demand it was given, so a listener
+ * changes the query of that call, whether it changes the demand in place or replaces it, and
+ * never the demand of the caller.
  *
  * @api
  */

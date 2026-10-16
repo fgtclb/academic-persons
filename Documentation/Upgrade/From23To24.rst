@@ -396,6 +396,11 @@ Adapt your code
     demand flag into account. See :ref:`important-ace-250-academic-persons`.
     Narrowing what a plugin shows no longer needs such a subclass, see
     :ref:`feature-profile-and-contract-query-events`.
+*   A listener of :php:`ModifyProfileDemandEvent` receives a copy of the
+    demand of the list. One that changes it in place still changes the
+    profiles the list queries, but no longer the order of a selection by
+    hand, the page or the demand of the template. See
+    :ref:`important-ace-920-academic-persons`.
 *   A project that extends or replaces the models :php:`Address`, :php:`Email`
     or :php:`PhoneNumber` adds the :php:`hidden` property with its getter and
     setter. See :ref:`feature-1782285578`.
