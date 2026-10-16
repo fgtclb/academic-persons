@@ -11,9 +11,10 @@
 #
 # It also carries the FlexForm restriction of this one content element: the card
 # renders a fixed selection of profiles, so the list, sorting and pagination
-# fields of the shared FlexForm are of no use in it and are hidden. That block
-# travels with the component instead of applying installation wide, so an
-# installation that does not use the card is not configured for it either.
+# fields of the shared FlexForm, and its unit and function type restriction, are
+# of no use in it and are hidden. That block travels with the component instead
+# of applying installation wide, so an installation that does not use the card
+# is not configured for it either.
 # The detail page stays: the card links every profile to its detail view.
 #
 # The "show" entry below is what TYPO3 v12 reads to decide whether the wizard
@@ -50,6 +51,10 @@ TCEFORM.tt_content {
         settings\.pagination\.numberOfLinks.disabled = 1
         settings\.viewMode\.enabled.disabled = 1
         settings\.viewMode\.default.disabled = 1
+        # The card selects its profiles by hand and applies no unit or function type
+        # restriction.
+        settings\.organisationalUnits.disabled = 1
+        settings\.functionTypes.disabled = 1
       }
     }
   }

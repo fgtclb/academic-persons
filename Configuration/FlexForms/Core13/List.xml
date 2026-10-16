@@ -6,6 +6,7 @@
             <settings.pageTitleFormat>
                 <label>LLL:EXT:academic_persons/Resources/Private/Language/locallang_be.xlf:flexform.el.pageTitleFormat.label</label>
                 <description>LLL:EXT:academic_persons/Resources/Private/Language/locallang_be.xlf:flexform.el.pageTitleFormat.listanddetail_description</description>
+                <displayCond>FIELD:parentRec.CType:=:academicpersons_listanddetail</displayCond>
                 <config>
                     <type>input</type>
                     <size>100</size>
@@ -30,6 +31,7 @@
             </settings.pageTitleFormat>
             <settings.detailPid>
                 <label>LLL:EXT:academic_persons/Resources/Private/Language/locallang_be.xlf:flexform.el.detailPid.label</label>
+                <displayCond>FIELD:parentRec.CType:!=:academicpersons_listanddetail</displayCond>
                 <config>
                     <type>group</type>
                     <allowed>pages</allowed>
