@@ -95,8 +95,9 @@ only, shows the names as text instead:
 
     The list-and-detail element always links its names, because it shows the
     detail view itself. A detail page a template passes to the item partial
-    links as well, see :ref:`templates-item-partials-detail-page`, and so do the
-    contacts of a page of :guilabel:`EXT:academic_contacts4pages`.
+    links as well, see :ref:`templates-item-partials-detail-page`. The contact
+    list of :guilabel:`EXT:academic_contacts4pages` follows the setting, it
+    has no option of its own.
 
 An element can choose otherwise with its option :guilabel:`Link the names to the
 detail view`, see :confval:`Link the names to the detail view

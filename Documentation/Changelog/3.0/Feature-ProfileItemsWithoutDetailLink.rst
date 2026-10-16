@@ -25,8 +25,9 @@ directions.
 
 The list-and-detail element always links its names, because it shows the
 detail view itself, and does not offer the choice. A detail page that a
-template passes to the item partial links as well, and so do the contacts of
-a page of :guilabel:`EXT:academic_contacts4pages`.
+template passes to the item partial links as well. The contact list of
+:guilabel:`EXT:academic_contacts4pages` follows the setting, without a choice
+of its own.
 
 See :ref:`configuration-detail-link`.
 
@@ -65,4 +66,4 @@ shipped partial that case reads:
 The cases for a passed :html:`detailPid` and for the list-and-detail element
 stay as they are.
 
-.. index:: Backend, Frontend, FlexForm, TypoScript, ext:academic_persons
+.. index:: Backend, Frontend, FlexForm, TypoScript, ext:academic_persons, ext:academic_contacts4pages
