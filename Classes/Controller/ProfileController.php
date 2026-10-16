@@ -459,7 +459,7 @@ final class ProfileController extends ActionController
     public function selectedProfilesAction(): ResponseInterface
     {
         $context = $this->pluginControllerActionContext();
-        $this->assignViewMode($this->resolveViewMode($this->requestedViewMode()));
+        $this->assignSelectionViewMode();
         if (empty($this->settings['selectedProfiles'])) {
             // Nothing is selected, and the header of the content element still renders.
             $this->assignContentElement();
@@ -489,7 +489,7 @@ final class ProfileController extends ActionController
     public function selectedContractsAction(): ResponseInterface
     {
         $context = $this->pluginControllerActionContext();
-        $this->assignViewMode($this->resolveViewMode($this->requestedViewMode()));
+        $this->assignSelectionViewMode();
         if (empty($this->settings['selectedContracts'])) {
             // Nothing is selected, and the header of the content element still renders.
             $this->assignContentElement();
@@ -703,13 +703,47 @@ final class ProfileController extends ActionController
     }
 
     /**
-     * The view mode the request of a selected profiles or contracts element asks for. They
-     * have no demand, so it is a plugin argument of its own.
+     * Assign the view mode of a selected profiles or contracts element, and the arguments of
+     * the links of its switch as `viewModeArguments`: per allowed mode the plugin arguments
+     * its link carries, none for the default mode.
+     *
+     * The elements have no demand, so the mode is a plugin argument of its own. Every element
+     * of a plugin type on a page shares the namespace of the plugin, so the argument is a map
+     * keyed by the element, `viewMode[<uid>]`, of which each element reads its own key and a
+     * link carries only that one. Fluid cannot build an array with a computed key, which is
+     * why the links are prepared here.
      */
-    private function requestedViewMode(): string
+    private function assignSelectionViewMode(): void
     {
-        $requested = $this->request->hasArgument('viewMode') ? $this->request->getArgument('viewMode') : '';
-        return is_string($requested) ? $requested : '';
+        $elementUid = $this->viewModeElementUid();
+        $requested = $this->request->hasArgument('viewMode') ? $this->request->getArgument('viewMode') : [];
+        $requested = is_array($requested) ? ($requested[$elementUid] ?? '') : '';
+        $this->assignViewMode($this->resolveViewMode(is_string($requested) ? $requested : ''));
+
+        $defaultViewMode = $this->defaultViewMode();
+        $viewModeArguments = [];
+        foreach ($this->allowedViewModes() as $mode) {
+            $viewModeArguments[$mode] = $mode === $defaultViewMode ? [] : ['viewMode' => [$elementUid => $mode]];
+        }
+        $this->view->assign('viewModeArguments', $viewModeArguments);
+    }
+
+    /**
+     * The key of the view mode of a selected element: the uid of its record in the default
+     * language, so a link works on every language of the page. An overlaid translation
+     * carries the default uid as its `uid`. A translation shown in its own language, with
+     * the fallback type "free", carries its own uid and the default one in `l18n_parent`.
+     * A record without a default-language parent is its own key, and a plugin rendered
+     * without a content element gets `0`.
+     */
+    private function viewModeElementUid(): int
+    {
+        $data = $this->getCurrentContentObjectRenderer()?->data;
+        if (!is_array($data)) {
+            return 0;
+        }
+        $defaultLanguageUid = (int)($data['l18n_parent'] ?? 0);
+        return $defaultLanguageUid > 0 ? $defaultLanguageUid : (int)($data['uid'] ?? 0);
     }
 
     /**

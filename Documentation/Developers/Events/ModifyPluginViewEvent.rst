@@ -77,10 +77,12 @@ a letter switches the pagination off.
         -   `profiles`, `data`, `record`
     *   -   :php:`selectedProfiles`
         -   `profiles` while profiles are selected, `data`, `record`,
-            `viewMode`, `viewModePartial`, `viewModes`, `defaultViewMode`
+            `viewMode`, `viewModePartial`, `viewModes`, `defaultViewMode`,
+            `viewModeArguments`
     *   -   :php:`selectedContracts`
         -   `contracts` while contracts are selected, `data`, `record`,
-            `viewMode`, `viewModePartial`, `viewModes`, `defaultViewMode`
+            `viewMode`, `viewModePartial`, `viewModes`, `defaultViewMode`,
+            `viewModeArguments`
 
 Example
 =======

@@ -14,8 +14,10 @@
     of the demand, and a link keeps the other choices of the visitor, activeListArguments;
     the link to the default mode carries no mode at all, so the list keeps its plain URL -
     the page itself when the visitor chose nothing else.
-    The selected profiles and contracts elements have no demand, and their mode is a
-    plugin argument of its own.
+    The selected profiles and contracts elements have no demand. Their mode is a plugin
+    argument of its own, keyed by the uid of the content element in the default language,
+    so two elements of one type on a page keep their modes apart. The action prepares the
+    arguments of each link as viewModeArguments, because Fluid cannot build that key.
 
     The label of a mode is "list.viewMode.<mode>" of EXT:academic_persons, the mode
     itself for a project mode without a label.
@@ -26,6 +28,8 @@
     - defaultViewMode:     the default mode of the content element
     - activeListArguments: the visitor's choices of a list element
     - inDemand:            set by the list elements, whose mode is part of the demand
+    - viewModeArguments:   set by the selected elements, the plugin arguments of the link
+                           to each mode, empty for the default mode
 </f:comment>
 
 <f:if condition="{viewModes}">
@@ -35,20 +39,28 @@
     >
         <ul class="ace-list">
             <f:for each="{viewModes}" as="mode">
-                <f:if condition="{mode} == {defaultViewMode}">
+                <f:if condition="{viewModeArguments}">
                     <f:then>
-                        <f:variable name="modeArguments" value="{persons:listArguments(arguments: activeListArguments, remove: 'viewMode')}" />
-                    </f:then>
-                    <f:else>
-                        <f:variable name="modeArguments" value="{persons:listArguments(arguments: activeListArguments, overrides: {viewMode: mode})}" />
-                    </f:else>
-                </f:if>
-                <f:if condition="{inDemand}">
-                    <f:then>
-                        <f:variable name="linkArguments" value="{demand: modeArguments}" />
-                    </f:then>
-                    <f:else>
+                        <f:variable name="modeArguments" value="{viewModeArguments.{mode}}" />
                         <f:variable name="linkArguments" value="{modeArguments}" />
+                    </f:then>
+                    <f:else>
+                        <f:if condition="{mode} == {defaultViewMode}">
+                            <f:then>
+                                <f:variable name="modeArguments" value="{persons:listArguments(arguments: activeListArguments, remove: 'viewMode')}" />
+                            </f:then>
+                            <f:else>
+                                <f:variable name="modeArguments" value="{persons:listArguments(arguments: activeListArguments, overrides: {viewMode: mode})}" />
+                            </f:else>
+                        </f:if>
+                        <f:if condition="{inDemand}">
+                            <f:then>
+                                <f:variable name="linkArguments" value="{demand: modeArguments}" />
+                            </f:then>
+                            <f:else>
+                                <f:variable name="linkArguments" value="{modeArguments}" />
+                            </f:else>
+                        </f:if>
                     </f:else>
                 </f:if>
                 <f:comment>

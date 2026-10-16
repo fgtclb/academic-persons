@@ -92,8 +92,9 @@ Settings
     :type: checkbox
     :Default: off
 
-    See :confval:`View Mode Toggle <selected-profiles-view-mode-toggle>`. Two
-    elements of this kind on one page share the chosen mode.
+    See :confval:`View Mode Toggle <selected-profiles-view-mode-toggle>`. The
+    argument is ``tx_academicpersons_selectedcontracts[viewMode][<uid>]``, each
+    element keeps its own mode.
 
 ..  confval:: View Mode Default
     :name: selected-contracts-view-mode-default

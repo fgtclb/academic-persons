@@ -444,6 +444,14 @@ modes are allowed - with :html:`rel="nofollow"`, and marks the active one with
 or by its name, for a mode without a label. In the list elements a link keeps
 `activeListArguments` and changes only the mode; the link to the default mode
 carries no mode, and is the page itself when the visitor chose nothing else.
+In the selected elements the mode is keyed by the uid of the content element in
+the default language, `viewMode[<uid>]`, so that two elements on one page keep
+their modes apart. Fluid cannot build that key, so their actions assign
+`viewModeArguments`, the plugin arguments of the link to each mode, and the
+selected templates pass it to the switch. A copy of a selected template that
+does not pass it on, or a copy of :file:`Profile/ViewMode/Switch.html` from a
+3.0 development state that does not read it, renders links no element answers
+to.
 
 A project copy of :file:`Profile/List/ItemList.html`,
 :file:`Templates/Profile/SelectedProfiles.html` or

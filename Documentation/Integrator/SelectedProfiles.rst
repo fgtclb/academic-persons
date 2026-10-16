@@ -107,9 +107,15 @@ Settings
 
     Offers the visitor a switch between the allowed view modes, see
     :confval:`View Mode Toggle <person-list-view-mode-toggle>`. The chosen mode
-    is a plugin argument of its own here. Two elements of this kind on one page
-    share it: switching the mode of one switches the other as well, when it
-    offers the switch.
+    is a plugin argument of its own here, keyed by the uid of the content
+    element in the default language, for example
+    ``tx_academicpersons_selectedprofiles[viewMode][12]=table``. Each element
+    reads only its own key, so two elements of this kind on one page keep
+    their modes apart, and a link reaches the same element in every language
+    of the page. A translation without a record in the default language, an
+    element created in another language for example, is keyed by its own uid,
+    so a link of the default language does not reach it. A link of the switch
+    carries the mode of its own element and nothing else.
 
 ..  confval:: View Mode Default
     :name: selected-profiles-view-mode-default

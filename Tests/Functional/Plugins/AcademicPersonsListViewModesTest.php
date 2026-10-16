@@ -371,8 +371,9 @@ final class AcademicPersonsListViewModesTest extends AbstractAcademicPersonsTest
     public static function switchDataProvider(): \Generator
     {
         yield 'list' => [self::LIST_ELEMENT, '/home', 2, 'tx_academicpersons_list', ['demand', 'viewMode']];
-        yield 'selected profiles' => [self::SELECTED_PROFILES_ELEMENT, '/selected-profiles', 4, 'tx_academicpersons_selectedprofiles', ['viewMode']];
-        yield 'selected contracts' => [self::SELECTED_CONTRACTS_ELEMENT, '/selected-contracts', 5, 'tx_academicpersons_selectedcontracts', ['viewMode']];
+        // The selected elements key the mode by the uid of their content element.
+        yield 'selected profiles' => [self::SELECTED_PROFILES_ELEMENT, '/selected-profiles', 4, 'tx_academicpersons_selectedprofiles', ['viewMode', (string)self::SELECTED_PROFILES_ELEMENT]];
+        yield 'selected contracts' => [self::SELECTED_CONTRACTS_ELEMENT, '/selected-contracts', 5, 'tx_academicpersons_selectedcontracts', ['viewMode', (string)self::SELECTED_CONTRACTS_ELEMENT]];
     }
 
     /**
@@ -467,8 +468,8 @@ final class AcademicPersonsListViewModesTest extends AbstractAcademicPersonsTest
 
         $requests = [
             $this->renderWithArguments('/home', 2, 'tx_academicpersons_list', ['demand' => ['viewMode' => $requested]]),
-            $this->renderWithArguments('/selected-profiles', 4, 'tx_academicpersons_selectedprofiles', ['viewMode' => $requested]),
-            $this->renderWithArguments('/selected-contracts', 5, 'tx_academicpersons_selectedcontracts', ['viewMode' => $requested]),
+            $this->renderWithArguments('/selected-profiles', 4, 'tx_academicpersons_selectedprofiles', ['viewMode' => [self::SELECTED_PROFILES_ELEMENT => $requested]]),
+            $this->renderWithArguments('/selected-contracts', 5, 'tx_academicpersons_selectedcontracts', ['viewMode' => [self::SELECTED_CONTRACTS_ELEMENT => $requested]]),
         ];
 
         foreach ($requests as $xpath) {
