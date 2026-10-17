@@ -20,8 +20,8 @@ now applied once the TCA is compiled, by a listener of the PSR-14 event
 :php:`TYPO3\CMS\Core\Configuration\Event\AfterTcaCompilationEvent` with the
 identifier ``academic-persons/apply-settings-to-tca``. That is after every TCA
 override, and the result is what the TCA cache and the TCA schema cache hold.
-The identifier is public API, listed on the `extension points page of
-academic_base <https://docs.typo3.org/p/fgtclb/academic-base/main/en-us/Developers/ExtensionPoints/Index.html>`__.
+The identifier is public API, listed on the :ref:`extension points page of
+academic_base <fgtclb/academic-base:developers-extension-points>`.
 The listener class is not.
 
 Impact

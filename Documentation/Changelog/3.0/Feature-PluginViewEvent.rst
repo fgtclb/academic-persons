@@ -23,9 +23,9 @@ It replaces the list, detail, selected profiles and selected contracts events
 of this extension, which are removed, see
 :ref:`breaking-removed-profile-view-events`.
 
-The event, with an example listener, is described in the `changelog of
+The event, with an example listener, is described in the :ref:`changelog of
 academic_base
-<https://docs.typo3.org/p/fgtclb/academic-base/main/en-us/Changelog/3.0/Feature-ModifyPluginViewEvent.html>`__.
+<fgtclb/academic-base:feature-modify-plugin-view-event>`.
 What the plugins of this extension pass in is described in
 :ref:`developers-event-modify-plugin-view-event`.
 

@@ -8,8 +8,8 @@ ModifyTcaSelectFieldItemsEvent
 :guilabel:`academic_base`. The item providers of several academic extensions
 dispatch it when the backend builds the items of a select field, so one
 listener reorders, removes or adds items of any of them. The event and its
-parameters are documented in the `manual of academic_base
-<https://docs.typo3.org/p/fgtclb/academic-base/main/en-us/Developers/Events/ModifyTcaSelectFieldItemsEvent.html>`__.
+parameters are documented in the :ref:`manual of academic_base
+<fgtclb/academic-base:developers-event-modify-tca-select-field-items-event>`.
 This page describes the fields of this extension that dispatch it.
 
 When it is dispatched

@@ -8,9 +8,9 @@ ModifyPluginViewEvent
 :guilabel:`academic_base`, and the plugins of seven academic extensions
 dispatch it when they render. A listener assigns further variables to the
 view, which the templates, partials and sections of the plugin then render.
-The event, its contract and an example are documented in the `manual of
+The event, its contract and an example are documented in the :ref:`manual of
 academic_base
-<https://docs.typo3.org/p/fgtclb/academic-base/main/en-us/Developers/Events/ModifyPluginViewEvent.html>`__.
+<fgtclb/academic-base:developers-event-modify-plugin-view-event>`.
 This page describes what the plugins of this extension pass in.
 
 When it is dispatched

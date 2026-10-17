@@ -14,8 +14,8 @@ synchronisation, the import of persons, the translation synchronisation and
 the plugin action context, have pages of their own as well.
 
 Which classes of this extension are public API, and what that promises, is
-stated for all academic extensions on the `extension points page of
-academic_base <https://docs.typo3.org/p/fgtclb/academic-base/main/en-us/Developers/ExtensionPoints/Index.html>`__.
+stated for all academic extensions on the :ref:`extension points page of
+academic_base <fgtclb/academic-base:developers-extension-points>`.
 Every event a listener may rely on is public API. A listener registers with
 the attribute of TYPO3, :php:`TYPO3\CMS\Core\Attribute\AsEventListener`.
 Symfony's attribute of the same name registers nothing, and the listener never

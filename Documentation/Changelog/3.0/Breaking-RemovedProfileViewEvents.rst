@@ -29,9 +29,9 @@ of this kind, dispatches
 :guilabel:`academic_base` instead, once each time it renders. It is one event
 for every academic plugin, so a view variable is added the same way everywhere.
 See :ref:`feature-plugin-view-event`,
-:ref:`developers-event-modify-plugin-view-event` and the `changelog of
+:ref:`developers-event-modify-plugin-view-event` and the :ref:`changelog of
 academic_base
-<https://docs.typo3.org/p/fgtclb/academic-base/main/en-us/Changelog/3.0/Feature-ModifyPluginViewEvent.html>`__.
+<fgtclb/academic-base:feature-modify-plugin-view-event>`.
 
 The new event carries the view and the plugin context, but no data of this
 extension. What the removed events let a listener change has other places:
