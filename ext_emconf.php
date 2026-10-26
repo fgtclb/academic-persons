@@ -3,7 +3,7 @@
 $EM_CONF[$_EXTKEY] = [
     'title' => 'FGTCLB: Academic Persons',
     'description' => 'Adds a person database to TYPO3 with plugins to show them in the frontend.',
-    'version' => '2.4.1',
+    'version' => '2.5.0',
     'category' => 'plugin',
     'state' => 'beta',
     'author' => 'FGTCLB',
@@ -18,7 +18,7 @@ $EM_CONF[$_EXTKEY] = [
             'install' => '12.4.22-13.4.99',
             'rte_ckeditor' => '12.4.22-13.4.99',
             'environment_state_manager' => '1.0.0-1.99.99',
-            'academic_base' => '2.4.1',
+            'academic_base' => '2.5.0',
         ],
         'suggests' => [
             'numbered_pagination' => '2.1.0-2.99.99',
