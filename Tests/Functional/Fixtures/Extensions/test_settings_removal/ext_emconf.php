@@ -3,7 +3,7 @@
 $EM_CONF[$_EXTKEY] = [
     'title' => 'TESTS: academic_persons settings removal',
     'description' => 'Removes one profile field with a tilde and changes nothing else',
-    'version' => '3.0.0',
+    'version' => '3.0.1',
     'category' => 'misc',
     'state' => 'beta',
     'author' => 'Stefan Bürk',
@@ -13,7 +13,7 @@ $EM_CONF[$_EXTKEY] = [
         'depends' => [
             'typo3' => '13.4.35-14.3.99',
             'core' => '13.4.35-14.3.99',
-            'academic_persons' => '3.0.0',
+            'academic_persons' => '3.0.1',
         ],
     ],
 ];
