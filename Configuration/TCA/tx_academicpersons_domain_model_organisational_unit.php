@@ -194,6 +194,14 @@ $tcaConfiguration = [
                 ],
                 'enableCascadingDelete' => true,
                 'foreign_field' => 'organisational_unit',
+                // Only default language contracts are children of this relation. A
+                // translated contract points at the default language record here, and
+                // TYPO3 14.3.10 gives every inline child the language of its parent:
+                // without the match, a new contract added here turned every translated
+                // contract of the record into a default language one (ACE-943).
+                'foreign_match_fields' => [
+                    'sys_language_uid' => 0,
+                ],
                 // A sort column of this relation's own: the profile relation owns
                 // "sorting", the column the frontend renders contracts in.
                 'foreign_sortby' => 'organisational_unit_sorting',
