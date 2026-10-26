@@ -3,7 +3,7 @@
 $EM_CONF[$_EXTKEY] = [
     'title' => 'TESTS: Academic Persons renamed contract publish column',
     'description' => 'The contract column publish as the database analyser leaves it once renamed for removal',
-    'version' => '3.0.1',
+    'version' => '3.1.0',
     'category' => 'misc',
     'state' => 'beta',
     'author' => 'FGTCLB GmbH',
@@ -13,7 +13,7 @@ $EM_CONF[$_EXTKEY] = [
         'depends' => [
             'typo3' => '13.4.35-14.3.99',
             'core' => '13.4.35-14.3.99',
-            'academic_persons' => '3.0.1',
+            'academic_persons' => '3.1.0',
         ],
     ],
 ];

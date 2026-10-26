@@ -3,7 +3,7 @@
 $EM_CONF[$_EXTKEY] = [
     'title' => 'TESTS: Academic Persons frontend user synchronisation events',
     'description' => 'Listeners of the frontend user synchronisation events and a profile factory that declines, for the functional tests of the synchronisation',
-    'version' => '3.0.1',
+    'version' => '3.1.0',
     'category' => 'plugin',
     'state' => 'beta',
     'author' => 'FGTCLB GmbH',
@@ -13,7 +13,7 @@ $EM_CONF[$_EXTKEY] = [
         'depends' => [
             'typo3' => '13.4.35-14.3.99',
             'core' => '13.4.35-14.3.99',
-            'academic_persons' => '3.0.1',
+            'academic_persons' => '3.1.0',
         ],
     ],
 ];
