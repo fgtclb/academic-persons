@@ -433,7 +433,7 @@ Every other key is a field, and fields share one shape across
             column a site package adds to the profile table and makes
             editable in the profile editor. Its :yaml:`fieldName` is required,
             and its key is its property name. See `project fields
-            <https://docs.typo3.org/p/fgtclb/academic-persons-edit/main/en-us/Configuration/Settings/Index.html#configuration-editor-project-fields>`__
+            <https://docs.typo3.org/p/fgtclb/academic-persons-edit/3.0/en-us/Configuration/Settings/Index.html#configuration-editor-project-fields>`__
             of academic_persons_edit.
 
 A field is dropped silently when it has no section (profile fields), no

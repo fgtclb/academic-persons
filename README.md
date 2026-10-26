@@ -1,10 +1,10 @@
 # TYPO3 Extension `Academic person database` (READ-ONLY)
 
-|                  | URL                                                          |
-|------------------|--------------------------------------------------------------|
-| **Repository:**  | https://github.com/fgtclb/academic-persons                   |
-| **Read online:** | https://docs.typo3.org/p/fgtclb/academic-persons/main/en-us/ |
-| **TER:**         | https://extensions.typo3.org/extension/academic_persons/     |
+|                  | URL                                                         |
+|------------------|-------------------------------------------------------------|
+| **Repository:**  | https://github.com/fgtclb/academic-persons                  |
+| **Read online:** | https://docs.typo3.org/p/fgtclb/academic-persons/3.0/en-us/ |
+| **TER:**         | https://extensions.typo3.org/extension/academic_persons/    |
 
 ## Description
 
@@ -69,7 +69,7 @@ validators), `special` (the composed name, the image and the sync switch),
 contract owns) and `documentSections` (the timeline entries and the contracts
 as sortable lists). The same file drives the backend record editor and the
 editing frontend of `academic_persons_edit`; see the
-[Configuration](https://docs.typo3.org/p/fgtclb/academic-persons/main/en-us/Configuration/Index.html)
+[Configuration](https://docs.typo3.org/p/fgtclb/academic-persons/3.0/en-us/Configuration/Index.html)
 chapter of the manual.
 
 > [!NOTE]
