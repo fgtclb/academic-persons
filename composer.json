@@ -17,7 +17,7 @@
     "homepage": "https://www.fgtclb.com/",
     "require": {
         "php": "^8.2 || ^8.3 || ^8.4",
-        "fgtclb/academic-base": "~3.0.0@dev",
+        "fgtclb/academic-base": "3.0.0@dev",
         "fgtclb/environment-state-manager": "^2.0.1",
         "typo3/cms-core": "~13.4.35 || ~14.3.7",
         "typo3/cms-extbase": "~13.4.35 || ~14.3.7",
@@ -50,7 +50,7 @@
             "web-dir": ".Build/Web",
             "app-dir": ".Build",
             "extension-key": "academic_persons",
-            "version": "3.0.0-dev",
+            "version": "3.0.0",
             "Package": {
                 "providesPackages": []
             }
